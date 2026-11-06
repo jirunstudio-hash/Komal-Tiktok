@@ -6,34 +6,22 @@
     <title>Display Studio - TikTok Live HD</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #060608; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA POTRET (TULISAN HEADER SUDAH DIHAPUS, GARIS PAS) */
+        /* KOTAK UTAMA LAYAR HP */
         .phone-screen { 
-            height: 485px; 
-            width: 100vw; 
-            max-width: 420px; 
-            background: #0c0d12; 
-            position: relative; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-start; 
-            align-items: center; 
-            padding: 10px; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.9); 
-            border: 2px solid #23232c; 
-            border-radius: 12px;
+            height: 100vh; width: 100vw; max-width: 420px; max-height: 840px;
+            background: #000; position: relative; overflow: hidden; display: flex; 
+            flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px 10px 0 10px; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.8); border: 2px solid #222; 
+            border-radius: 0;
         }
 
         /* ===== AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) ===== */
         .live-layout { 
-            display: flex; 
-            gap: 8px; 
-            width: 100%; 
-            height: 350px;
+            display: flex; gap: 8px; width: 100%; max-width: 400px; 
             position: relative; 
-            z-index: 10; /* Lapisan di belakang video gift */
+            z-index: 10; 
             align-items: stretch; 
         }
 
@@ -45,15 +33,9 @@
 
         /* KOTAK HOST */
         .host-box { 
-            flex: 1; 
-            height: 100%;
+            flex: 1; height: auto; min-height: 380px; 
             background: #16161c; 
-            border-radius: 6px; 
-            overflow: hidden; 
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            border-radius: 0; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; 
             border: 2px solid #00d2ff; 
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
             animation: hostBluePulse 1.2s infinite ease-in-out;
@@ -64,65 +46,53 @@
         .host-placeholder { color: #888; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
         .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
-        .gold-host-badge { background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); color: #fff; font-size: 0.58rem; font-weight: 800; padding: 2px 7px; border-radius: 3px; }
+        .gold-host-badge { background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); color: #fff; font-size: 0.55rem; font-weight: 800; padding: 2px 7px; border-radius: 3px; }
 
         /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
-            width: 178px; 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            grid-template-rows: repeat(4, 1fr); 
-            gap: 6px; 
-            flex-shrink: 0; 
-            position: relative; 
-            z-index: 10; 
+            width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
+            grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; position: relative; z-index: 10; 
         }
 
         /* KOTAK SLOT KOMAL */
         .slot-box { 
-            width: 100%; 
-            aspect-ratio: 1 / 1; 
-            background: #1c1d24; 
-            border-radius: 4px; 
-            position: relative; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.2); 
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+            width: 100%; aspect-ratio: 1 / 1; 
+            background: #202127; 
+            border-radius: 0; 
+            position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            border: 1.5px solid rgba(255, 255, 255, 0.22); 
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
             transition: all 0.25s ease;
         }
 
         .slot-bg-blur { position: absolute !important; inset: -20px !important; width: calc(100% + 40px) !important; height: calc(100% + 40px) !important; object-fit: cover !important; filter: blur(14px) brightness(0.65) contrast(1.05) !important; transform: scale(1.2) !important; display: none; z-index: 1; pointer-events: none; }
         .slot-bg-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.25); display: none; z-index: 2; pointer-events: none; }
-        .slot-icon { color: rgba(255, 255, 255, 0.65); font-size: 1.25rem; margin-bottom: 2px; font-weight: 800; z-index: 3; line-height: 1; }
-        .slot-req { color: rgba(255, 255, 255, 0.70); font-size: 0.50rem; font-weight: 700; z-index: 3; }
+        .slot-icon { color: rgba(255, 255, 255, 0.65); font-size: 1.35rem; margin-bottom: 2px; font-weight: 800; z-index: 3; line-height: 1; }
+        .slot-req { color: rgba(255, 255, 255, 0.70); font-size: 0.54rem; font-weight: 700; z-index: 3; }
 
-        .slot-circle-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6); }
+        .slot-circle-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6); }
 
         /* BADGE BINTANG BIRU KIRI ATAS */
         .slot-coin-badge { 
-            position: absolute; top: 3px; left: 3px; display: flex; align-items: center; gap: 3px; 
-            background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px); padding: 1.5px 6px 1.5px 2px; border-radius: 999px; z-index: 6; border: 0.5px solid rgba(255, 255, 255, 0.12);
+            position: absolute; top: 4px; left: 4px; display: flex; align-items: center; gap: 4px; 
+            background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px); padding: 2px 7px 2px 3px; border-radius: 999px; z-index: 6; border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
         .cyan-diamond-circle { 
-            width: 13px; height: 13px; background: radial-gradient(circle at center, #ffffff 15%, #38bdf8 52%, #0077ff 95%); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 6px rgba(0, 210, 255, 0.95); border: 1px solid #ffffff; flex-shrink: 0;
+            width: 14px; height: 14px; background: radial-gradient(circle at center, #ffffff 15%, #38bdf8 52%, #0077ff 95%); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 8px rgba(0, 210, 255, 0.95), 0 0 2px #ffffff; border: 1.2px solid #ffffff; flex-shrink: 0;
         }
-        .star-svg { width: 7px; height: 7px; fill: #ffffff; }
-        .coin-count { font-size: 0.54rem; color: #ffffff; font-weight: 800; line-height: 1; }
+        .star-svg { width: 7.5px; height: 7.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
+        .coin-count { font-size: 0.58rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
-        /* FOTO GIFT DI KANAN ATAS */
+        /* FOTO GIFT DI KANAN ATAS (POP-UP 5 DETIK) */
         @keyframes popGiftBadge {
             0% { transform: scale(0.3); opacity: 0; }
             70% { transform: scale(1.2); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
         .slot-top-badge {
-            position: absolute; top: 3px; right: 3px; z-index: 8;
-            width: 23px; height: 23px; display: none; object-fit: contain;
+            position: absolute; top: 4px; right: 4px; z-index: 8;
+            width: 25px; height: 25px; display: none; object-fit: contain;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.95));
             pointer-events: none;
             animation: popGiftBadge 0.3s ease-out;
@@ -130,36 +100,36 @@
 
         /* PILL NAMA KIRI BAWAH */
         .slot-name-pill { 
-            position: absolute; bottom: 3px; left: 3px; max-width: calc(100% - 28px); 
-            display: flex; align-items: center; gap: 3px; z-index: 6; 
+            position: absolute; bottom: 4px; left: 4px; max-width: calc(100% - 32px); 
+            display: flex; align-items: center; gap: 4px; z-index: 6; 
             background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px);
-            padding: 1.5px 2px 1.5px 6px; border-radius: 999px; border: 0.5px solid rgba(255, 255, 255, 0.12);
+            padding: 2px 3px 2px 7px; border-radius: 999px; border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
-        .slot-name-text { color: #ffffff; font-size: 0.48rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44px; }
+        .slot-name-text { color: #ffffff; font-size: 0.52rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46px; }
 
         .slot-plus-circle { 
-            width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); 
+            width: 14px; height: 14px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); 
             position: relative; flex-shrink: 0;
         }
         .slot-plus-circle::before, .slot-plus-circle::after { content: ''; position: absolute; background: #ffffff; border-radius: 1px; }
-        .slot-plus-circle::before { top: 5px; left: 2.5px; width: 7px; height: 1.8px; }
-        .slot-plus-circle::after { top: 2.5px; left: 5px; width: 1.8px; height: 7px; }
+        .slot-plus-circle::before { top: 6px; left: 3px; width: 8px; height: 2px; }
+        .slot-plus-circle::after { top: 3px; left: 6px; width: 2px; height: 8px; }
 
         /* MIC KANAN BAWAH DICORET */
         .mic-container { 
-            position: absolute; bottom: 3px; right: 3px; z-index: 6; 
-            width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; 
+            position: absolute; bottom: 4px; right: 4px; z-index: 6; 
+            width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; 
             background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px);
             border-radius: 50%; border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
-        .mic-icon-svg { width: 10px; height: 10px; display: block; }
+        .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* ===== AREA VIDEO GIFT: DI DEPAN LAYAR KOTAK (KOTAK DI BELAKANGNYA) ===== */
+        /* ===== AREA VIDEO GIFT (DI DEPAN KOTAK, TRANSPARAN PENUH) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            z-index: 50; /* Di depan seluruh kotak live */
+            z-index: 50; 
             pointer-events: none; 
             display: none; 
             background: transparent; 
@@ -168,12 +138,9 @@
             display: none; 
         }
         #giftCanvas { 
-            width: 100%; 
-            height: 100%; 
+            width: 100%; height: 100%; 
             object-fit: contain; 
-            /* Posisi dinaikkan ke atas agar pas berada di depan kotak host & komal */
-            object-position: center 18%; 
-            transform: translateY(-10px);
+            object-position: center bottom;
             display: block;
             pointer-events: none;
         }
@@ -182,9 +149,9 @@
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) -->
+    <!-- AREA ATAS (HOST & KOTAK 1 - 8) DI BELAKANG VIDEO -->
     <div class="live-layout">
-        <!-- Kotak Host -->
+        <!-- Kotak Host bisa diklik langsung untuk menyalakan kamera lokal -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
             <div class="host-top-pill"><span class="gold-host-badge">Host</span></div>
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
@@ -192,7 +159,6 @@
             <img id="hostCameraImg" alt="Host Cam">
         </div>
 
-        <!-- Grid 8 Komal -->
         <div class="komal-grid" id="komalGrid">
             <script>
                 for(let i = 1; i <= 8; i++) {
@@ -235,7 +201,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT: MUNCUL TRANSPARAN DI DEPAN LAYAR KOTAK -->
+    <!-- AREA VIDEO GIFT (DI DEPAN KOTAK) -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -249,13 +215,13 @@
     let animFrameId = null;
     let displayCamStream = null;
     
-    // WATCHDOG KAMERA KONTROL
+    // WATCHDOG UNTUK DETEKSI JIKA KONTROL PUTUS / KAMERA KONTROL MATI
     let controlWatchdogTimer = null;
     let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI AKTIFKAN KAMERA LOKAL HOST
+    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (FALLBACK)
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -279,10 +245,12 @@
         }
     }
 
+    // RESET WATCHDOG SETIAP FRAME DITERIMA DARI CONTROL
     function feedWatchdog() {
         isUsingControlStream = true;
         if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
         
+        // Jika dalam 1.2 detik tidak ada frame baru dari kontrol, otomatis nyalakan webcam Display
         controlWatchdogTimer = setTimeout(() => {
             if (isUsingControlStream) {
                 console.log("Stream kontrol terhenti, beralih ke kamera lokal display...");
@@ -337,7 +305,7 @@
             imgElem.removeAttribute('src');
             if (bgElem) { bgElem.style.display = 'none'; bgElem.removeAttribute('src'); }
             if (bgOverlay) bgOverlay.style.display = 'none';
-            if (slotBox) slotBox.style.background = '#1c1d24';
+            if (slotBox) slotBox.style.background = '#202127';
 
             iconElem.style.display = 'inline-block';
             reqElem.style.display = 'inline-block';
@@ -429,6 +397,7 @@
             }
         }
         else if (data.type === 'HOST_CAM_FRAME') {
+            // Sinyal frame dari kontrol masuk:
             feedWatchdog();
             
             const camImg = document.getElementById('hostCameraImg');
@@ -436,12 +405,20 @@
             camImg.src = data.frame;
             camImg.style.display = 'block';
 
+            // Matikan tampilan video lokal jika sedang aktif menerima gambar dari kontrol
             const hVid = document.getElementById('hostVideo');
             if (hVid.style.display !== 'none') {
                 hVid.style.display = 'none';
             }
         }
-        else if (data.type === 'HOST_CAM_STOP' || data.type === 'CONTROL_CLOSED') {
+        else if (data.type === 'HOST_CAM_STOP') {
+            // BILA KONTROL MENUTUP KAMERA: Langsung ambil alih dengan kamera lokal Display
+            isUsingControlStream = false;
+            if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
+            startDisplayDirectCamera();
+        }
+        else if (data.type === 'CONTROL_CLOSED') {
+            // BILA JENDELA KONTROL DITUTUP
             isUsingControlStream = false;
             if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
             startDisplayDirectCamera();
@@ -455,7 +432,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // SISTEM OTOMATIS GREEN SCREEN (CHROMA KEY) & BLACK SCREEN
+    // PEMUTAR VIDEO TRANSPARAN DI DEPAN KOTAK
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -489,22 +466,17 @@
                 for (let i = 0; i < len; i += 4) {
                     const r = d[i], g = d[i + 1], b = d[i + 2];
 
-                    // 1. SISTEM OTOMATIS HAPUS GREEN SCREEN (CHROMA KEY)
+                    // Green screen
                     const maxRB = r > b ? r : b;
-                    const diff = g - maxRB;
-
-                    if (g > 50 && diff > 15) {
-                        if (diff > 45) {
-                            d[i + 3] = 0; // Transparan penuh
-                        } else {
-                            // Tepi anti-aliasing halus & hilangkan sisa hijau (spill removal)
-                            d[i + 3] = ((1 - (diff - 15) / 30) * 255) | 0;
-                            d[i + 1] = maxRB;
-                        }
+                    const greenDiff = g - maxRB;
+                    if (greenDiff > 16 && g > 55) {
+                        const alpha = greenDiff > 42 ? 0 : (1 - (greenDiff - 16) / 26);
+                        d[i + 3] = (alpha * 255) | 0;
+                        d[i + 1] = maxRB;
                         continue;
                     }
 
-                    // 2. SISTEM OTOMATIS HAPUS LATAR HITAM (BLACK BACKGROUND)
+                    // Background hitam
                     const lum = (r * 77 + g * 150 + b * 29) >> 8;
                     if (lum <= 18) {
                         d[i + 3] = 0;
