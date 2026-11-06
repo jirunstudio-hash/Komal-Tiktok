@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #000; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* KOTAK LAYAR HP UTAMA */
+        /* KOTAK LAYAR HP UTAMA - GARIS MERAH RAMPING & PAS (TIDAK TERLALU TEBAL) */
         .phone-screen { 
             height: calc(100vh - 20px); 
             width: 100vw; 
@@ -21,7 +21,8 @@
             justify-content: flex-start; 
             align-items: center; 
             padding: 4px;
-            border: 1px solid #1a1a1a;
+            border: 1.5px solid #ff0033; /* KETEBALAN GARIS MERAH DIKURANGI AGAR PAS */
+            box-shadow: 0 0 14px rgba(255, 0, 51, 0.35);
         }
 
         /* ===== AREA UTAMA (HOST KIRI & KOMAL KANAN) ===== */
@@ -34,7 +35,19 @@
             align-items: stretch; 
         }
 
-        /* KOTAK HOST */
+        /* ANIMASI GARIS BIRU HOST BERKEDIP CEPAT (0.5s) */
+        @keyframes hostBluePulseFast {
+            0%, 100% { 
+                border-color: #00d2ff; 
+                box-shadow: 0 0 8px rgba(0, 210, 255, 0.8), inset 0 0 4px rgba(0, 210, 255, 0.25); 
+            }
+            50% { 
+                border-color: rgba(0, 150, 255, 0.2); 
+                box-shadow: 0 0 2px rgba(0, 150, 255, 0.15), inset 0 0 0px transparent; 
+            }
+        }
+
+        /* KOTAK HOST - GARIS BIRU RAMPING BERKEDIP CEPAT (TIDAK TERLALU TEBAL) */
         .host-box { 
             flex: 1; 
             background: #1c1d24; 
@@ -45,7 +58,8 @@
             justify-content: center; 
             align-items: center; 
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            border: 1.5px solid #00d2ff; /* KETEBALAN GARIS BIRU DIKURANGI AGAR TIDAK KETEBALAN */
+            animation: hostBluePulseFast 0.5s infinite ease-in-out;
         }
         .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; }
@@ -119,18 +133,23 @@
         .slot-bg-blur { position: absolute !important; inset: -15px !important; width: calc(100% + 30px) !important; height: calc(100% + 30px) !important; object-fit: cover !important; filter: blur(12px) brightness(0.7) !important; display: none; z-index: 1; pointer-events: none; }
         .slot-bg-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.25); display: none; z-index: 2; pointer-events: none; }
         
-        .slot-icon { 
-            color: rgba(255, 255, 255, 0.45); 
-            font-size: 1.25rem; 
-            line-height: 1; 
-            font-weight: 300; 
-            margin-bottom: 3px; 
-            z-index: 3; 
+        /* IKON + TEBAL BESAR ABU */
+        .slot-plus-svg { 
+            width: 28px;
+            height: 28px;
+            stroke: #8e95a3;
+            stroke-width: 4;
+            stroke-linecap: round;
+            z-index: 3;
+            margin-bottom: 2px;
+            display: block;
         }
+
+        /* TEKS PERMINTAAN TEBAL ABU */
         .slot-req { 
-            color: rgba(255, 255, 255, 0.4); 
-            font-size: 0.62rem; 
-            font-weight: 500; 
+            color: #8e95a3; 
+            font-size: 0.66rem; 
+            font-weight: 700; 
             z-index: 3; 
             letter-spacing: 0.2px;
         }
@@ -346,7 +365,7 @@
 
     <!-- AREA ATAS (HOST & KOTAK KOMAL 1 - 8) -->
     <div class="live-layout">
-        <!-- KOTAK HOST -->
+        <!-- KOTAK HOST (GARIS BIRU KEDIP-KEDIP TIDAK TERLALU TEBAL) -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
             <div class="host-top-pill">Host</div>
             
@@ -378,7 +397,13 @@
 
                             <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
-                            <span class="slot-icon" id="icon-${i}">+</span>
+                            <!-- IKON + TEBAL BESAR ABU -->
+                            <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+
+                            <!-- TEKS PERMINTAAN TEBAL ABU -->
                             <span class="slot-req" id="req-${i}">Permintaan</span>
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
@@ -403,7 +428,7 @@
         </div>
     </div>
 
-    <!-- BANNER NOTIFIKASI GIFT MUNCUL DI BAWAH HOST -->
+    <!-- BANNER NOTIFIKASI GIFT DI BAWAH HOST -->
     <div class="gift-banner-wrapper">
         <div class="gift-banner-toast" id="giftBannerToast">
             <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
@@ -430,7 +455,6 @@
     let displayCamStream = null;
     let toastTimeout = null;
 
-    // VARIABEL PENYIMPAN IDENTITAS PROFIL HOST DARI DETEKSI TIKTOK
     let detectedHostName = 'Host';
     let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
     
@@ -520,7 +544,7 @@
             if (bgOverlay) bgOverlay.style.display = 'none';
             if (slotBox) slotBox.style.background = '#1c1d24';
 
-            iconElem.style.display = 'inline-block';
+            iconElem.style.display = 'block';
             reqElem.style.display = 'inline-block';
             namePill.style.display = 'none';
             micContainer.style.display = 'none';
@@ -574,7 +598,6 @@
         }, 5000);
     }
 
-    // FUNGSI NOTIFIKASI GIFT PERSIS TIKTOK (FOTO PROFIL HOST & FORMAT "mengirim [Nama Gift]")
     function showGiftToast(data, callbackAfter3Sec) {
         const toast = document.getElementById('giftBannerToast');
         const avatar = document.getElementById('toastGifterAvatar');
@@ -582,7 +605,6 @@
         const descElem = document.getElementById('toastGiftDesc');
         const iconElem = document.getElementById('toastGiftIcon');
 
-        // Gunakan nama & foto profil host yang terdeteksi
         const hostName = data.senderName || detectedHostName || 'Host';
         const hostAvatar = data.senderAvatar || detectedHostAvatar;
         const giftTitle = data.giftTitle || 'Gift';
@@ -590,8 +612,6 @@
 
         avatar.src = hostAvatar;
         nameElem.innerText = hostName;
-        
-        // HANYA "mengirim [Nama Gift]" (Tanpa teks "ke Kotak 1", dll)
         descElem.innerText = `mengirim ${giftTitle}`;
         iconElem.src = giftIcon;
 
@@ -600,7 +620,6 @@
         toast.style.animation = 'bannerSlideIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards';
         toast.style.display = 'inline-flex';
 
-        // TAMPILKAN 3 DETIK LALU PUTAR VIDEO
         toastTimeout = setTimeout(() => {
             toast.style.animation = 'bannerSlideOut 0.3s ease-in forwards';
             setTimeout(() => {
@@ -610,11 +629,9 @@
         }, 3000);
     }
 
-    // LISTENER PESAN BROADCAST
     channel.onmessage = async (event) => {
         const data = event.data;
 
-        // SIMPAN IDENTITAS PROFIL & NAMA HOST DARI DETEKSI
         if (data.type === 'UPDATE_HOST' || data.type === 'UPDATE_HOST_NAME') {
             if (data.hostName) {
                 detectedHostName = data.hostName;
@@ -652,7 +669,6 @@
                 videoUrl = data.src;
             }
 
-            // TAMPILKAN NOTIFIKASI SELAMA 3 DETIK BARU PUTAR VIDIO
             showGiftToast(data, () => {
                 if (videoUrl) {
                     playGiftVideo(videoUrl);
