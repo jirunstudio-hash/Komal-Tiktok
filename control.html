@@ -108,7 +108,7 @@
 
     <div class="dashboard">
 
-        <!-- 1. KAMERA HOST -->
+        <!-- 1. KAMERA HOST (TANPA INPUT NAMA HOST) -->
         <div class="card">
             <h3>1. Kamera Host Realtime</h3>
             <div style="display:flex; gap: 8px;">
@@ -160,7 +160,7 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
+        <!-- 3. KATALOG 9 GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
                 <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
@@ -255,7 +255,7 @@
             }
         ];
 
-        // IndexedDB untuk menyimpan file video secara permanen (tidak hilang saat di-refresh)
+        // IndexedDB: Video disimpan permanen di browser
         const DB_NAME = "TikTokStudioStorageDB";
         const STORE_NAME = "permanent_assets";
 
@@ -459,7 +459,6 @@
             var clean = encodeURIComponent(username);
             var api = 'https://www.tikwm.com/api/user/info/';
             
-            // Coba akses langsung
             try {
                 var r = await fetch(api, {
                     method: 'POST',
@@ -472,7 +471,6 @@
                 }
             } catch(e) {}
 
-            // Cadangan proxy jika diblokir oleh browser
             var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(api + '?unique_id=' + clean);
             var resP = await fetch(proxy);
             var jsonP = await resP.json();
