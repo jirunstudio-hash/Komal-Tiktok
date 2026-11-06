@@ -73,7 +73,7 @@
         .star-svg { width: 7.5px; height: 7.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
         .coin-count { font-size: 0.58rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
-        /* FOTO GIFT DI KANAN ATAS (POP-UP & HILANG 5 DETIK) */
+        /* FOTO GIFT DI KANAN ATAS */
         @keyframes popGiftBadge {
             0% { transform: scale(0.3); opacity: 0; }
             70% { transform: scale(1.2); opacity: 1; }
@@ -113,10 +113,24 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* VIDEO GIFT */
-        .gift-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; pointer-events: none; display: none; background: transparent; }
-        #giftVideo { display: none; }
-        #giftCanvas { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; position: absolute; top: 0; left: 0; }
+        /* ===== AREA VIDEO GIFT (JERNIH HD 60FPS DENGAN HARDWARE ACCELERATION) ===== */
+        .gift-overlay { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            z-index: 50; 
+            pointer-events: none; 
+            display: none; 
+            background: transparent; 
+        }
+        #giftVideo { 
+            width: 100%; height: 100%; 
+            object-fit: contain; 
+            object-position: center bottom;
+            display: block;
+            /* Latar hitam hilang otomatis transparan, video tetap jernih HD tanpa burik! */
+            mix-blend-mode: screen; 
+        }
     </style>
 </head>
 <body>
@@ -173,20 +187,18 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT -->
+    <!-- AREA VIDEO GIFT JERNIH HD -->
     <div class="gift-overlay" id="giftOverlayContainer">
-        <video id="giftVideo" crossorigin="anonymous" playsinline></video>
-        <canvas id="giftCanvas"></canvas>
+        <video id="giftVideo" playsinline muted></video>
     </div>
 </div>
 
 <script>
     const channel = new BroadcastChannel('tiktok_live_channel');
     const slotPoints = {};
-    const badgeTimers = {}; // Timer 5 detik masing-masing kotak
+    const badgeTimers = {};
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // Akses Database IndexedDB untuk mengambil video
     const DB_NAME = "TikTokStudioStorageDB";
     const STORE_NAME = "permanent_assets";
 
@@ -259,6 +271,7 @@
             micContainer.style.display = 'flex';
         }
 
+        // FOTO PROFIL BULAT DI TENGAH & BACKGROUND BLUR
         if (profileImg) {
             iconElem.style.display = 'none';
             reqElem.style.display = 'none';
@@ -269,7 +282,7 @@
         }
     }
 
-    // FUNGSI MUNCULKAN FOTO GIFT 5 DETIK LALU HILANG
+    // FOTO GIFT MUNCUL 5 DETIK LALU HILANG
     function showGiftBadgeTemporarily(slotNum, badgeSrc) {
         if (!badgeSrc || !slotNum) return;
         const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
@@ -282,7 +295,6 @@
         topBadge.src = badgeSrc;
         topBadge.style.display = 'block';
 
-        // TEPAT 5 DETIK HILANG OTOMATIS
         badgeTimers[slotNum] = setTimeout(() => {
             topBadge.style.display = 'none';
             topBadge.removeAttribute('src');
@@ -307,12 +319,12 @@
                 if (badge) badge.style.display = 'flex';
             }
 
-            // 2. Tampilkan Foto Gift Selama 5 Detik
+            // 2. Munculkan Foto Gift 5 Detik
             if (data.badgeImg) {
                 showGiftBadgeTemporarily(targetSlot, data.badgeImg);
             }
 
-            // 3. Putar Video Gift dari Database Permanen
+            // 3. Putar Video Asli HD (Hardware GPU)
             let videoUrl = null;
             if (data.videoBlob) {
                 videoUrl = URL.createObjectURL(data.videoBlob);
@@ -346,58 +358,23 @@
         return val.toLocaleString('id-ID');
     }
 
+    // PEMUTAR VIDEO ASLI (HD, TANPA BURIK, BEBAS LAG)
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
-        const canvas = document.getElementById('giftCanvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
 
         overlayContainer.style.display = 'block';
-        if (giftVideo.src !== src) { giftVideo.src = src; giftVideo.load(); }
+        giftVideo.src = src;
         giftVideo.currentTime = 0;
 
-        giftVideo.play().then(() => {
-            function renderFrame() {
-                if (giftVideo.paused || giftVideo.ended) {
-                    overlayContainer.style.display = 'none';
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    return;
-                }
-                if (giftVideo.videoWidth > 0 && giftVideo.videoHeight > 0) {
-                    if (canvas.width !== giftVideo.videoWidth || canvas.height !== giftVideo.videoHeight) {
-                        canvas.width = giftVideo.videoWidth;
-                        canvas.height = giftVideo.videoHeight;
-                    }
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
+        giftVideo.onended = () => {
+            overlayContainer.style.display = 'none';
+            giftVideo.src = '';
+        };
 
-                    try {
-                        const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const pixels = frame.data;
-                        for (let i = 0; i < pixels.length; i += 4) {
-                            let r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
-                            let maxRB = Math.max(r, b);
-                            let greenDiff = g - maxRB;
-                            if (greenDiff > 8 && g > 35) {
-                                let alphaFactor = Math.min(1, (greenDiff - 8) / 20);
-                                pixels[i + 3] = Math.floor((1 - alphaFactor) * 255);
-                            }
-                            let brightness = Math.max(r, Math.max(g, b));
-                            if (brightness < 42) {
-                                let blackAlpha = Math.max(0, (brightness - 10) / 32);
-                                pixels[i + 3] = Math.min(pixels[i + 3], Math.floor(blackAlpha * 255));
-                            }
-                        }
-                        ctx.putImageData(frame, 0, 0);
-                    } catch (e) {}
-                }
-                requestAnimationFrame(renderFrame);
-            }
-            requestAnimationFrame(renderFrame);
-        }).catch(() => { overlayContainer.style.display = 'none'; });
+        giftVideo.play().catch(() => {
+            overlayContainer.style.display = 'none';
+        });
     }
 </script>
 </body>
