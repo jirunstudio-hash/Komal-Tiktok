@@ -6,35 +6,34 @@
     <title>Display Studio - TikTok Live HD</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        body { background-color: #060608; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA LAYAR HP - GARIS BAWAH SUDAH DINAIKKAN KE ATAS (490px) */
+        /* KOTAK UTAMA POTRET (TULISAN HEADER SUDAH DIHAPUS, GARIS PAS) */
         .phone-screen { 
-            height: 490px; 
+            height: 485px; 
             width: 100vw; 
-            max-width: 390px; 
-            background: #000; 
+            max-width: 420px; 
+            background: #0c0d12; 
             position: relative; 
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
             justify-content: flex-start; 
             align-items: center; 
-            padding: 8px 8px 0 8px; 
-            box-shadow: 0 0 35px rgba(0,0,0,0.85); 
-            border: 2px solid #282828; 
-            border-radius: 10px;
+            padding: 10px; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.9); 
+            border: 2px solid #23232c; 
+            border-radius: 12px;
         }
 
-        /* ===== AREA KOTAK KOMAL & HOST (LAPISAN DI BELAKANG VIDEO GIFT) ===== */
+        /* ===== AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) ===== */
         .live-layout { 
             display: flex; 
-            gap: 6px; 
+            gap: 8px; 
             width: 100%; 
-            max-width: 375px; 
-            height: 338px;
+            height: 350px;
             position: relative; 
-            z-index: 10; /* Berada di belakang video gift */
+            z-index: 10; /* Lapisan di belakang video gift */
             align-items: stretch; 
         }
 
@@ -49,31 +48,31 @@
             flex: 1; 
             height: 100%;
             background: #16161c; 
-            border-radius: 4px; 
+            border-radius: 6px; 
             overflow: hidden; 
             position: relative; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             border: 2px solid #00d2ff; 
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
             animation: hostBluePulse 1.2s infinite ease-in-out;
             cursor: pointer;
         }
         .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; }
-        .host-placeholder { color: #888; font-size: 0.75rem; font-weight: 500; text-align: center; z-index: 1; }
+        .host-placeholder { color: #888; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
-        .host-top-pill { position: absolute; top: 6px; left: 6px; z-index: 12; }
-        .gold-host-badge { background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); color: #fff; font-size: 0.52rem; font-weight: 800; padding: 2px 6px; border-radius: 3px; }
+        .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
+        .gold-host-badge { background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); color: #fff; font-size: 0.58rem; font-weight: 800; padding: 2px 7px; border-radius: 3px; }
 
         /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
-            width: 168px; 
+            width: 178px; 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
             grid-template-rows: repeat(4, 1fr); 
-            gap: 5px; 
+            gap: 6px; 
             flex-shrink: 0; 
             position: relative; 
             z-index: 10; 
@@ -83,7 +82,7 @@
         .slot-box { 
             width: 100%; 
             aspect-ratio: 1 / 1; 
-            background: #202127; 
+            background: #1c1d24; 
             border-radius: 4px; 
             position: relative; 
             overflow: hidden; 
@@ -91,17 +90,17 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.22); 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
             transition: all 0.25s ease;
         }
 
         .slot-bg-blur { position: absolute !important; inset: -20px !important; width: calc(100% + 40px) !important; height: calc(100% + 40px) !important; object-fit: cover !important; filter: blur(14px) brightness(0.65) contrast(1.05) !important; transform: scale(1.2) !important; display: none; z-index: 1; pointer-events: none; }
         .slot-bg-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.25); display: none; z-index: 2; pointer-events: none; }
-        .slot-icon { color: rgba(255, 255, 255, 0.65); font-size: 1.15rem; margin-bottom: 1px; font-weight: 800; z-index: 3; line-height: 1; }
-        .slot-req { color: rgba(255, 255, 255, 0.70); font-size: 0.48rem; font-weight: 700; z-index: 3; }
+        .slot-icon { color: rgba(255, 255, 255, 0.65); font-size: 1.25rem; margin-bottom: 2px; font-weight: 800; z-index: 3; line-height: 1; }
+        .slot-req { color: rgba(255, 255, 255, 0.70); font-size: 0.50rem; font-weight: 700; z-index: 3; }
 
-        .slot-circle-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6); }
+        .slot-circle-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6); }
 
         /* BADGE BINTANG BIRU KIRI ATAS */
         .slot-coin-badge { 
@@ -109,11 +108,11 @@
             background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px); padding: 1.5px 6px 1.5px 2px; border-radius: 999px; z-index: 6; border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
         .cyan-diamond-circle { 
-            width: 12px; height: 12px; background: radial-gradient(circle at center, #ffffff 15%, #38bdf8 52%, #0077ff 95%); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 6px rgba(0, 210, 255, 0.95), 0 0 2px #ffffff; border: 1px solid #ffffff; flex-shrink: 0;
+            width: 13px; height: 13px; background: radial-gradient(circle at center, #ffffff 15%, #38bdf8 52%, #0077ff 95%); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 6px rgba(0, 210, 255, 0.95); border: 1px solid #ffffff; flex-shrink: 0;
         }
-        .star-svg { width: 6.5px; height: 6.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
-        .coin-count { font-size: 0.52rem; color: #ffffff; font-weight: 800; line-height: 1; }
+        .star-svg { width: 7px; height: 7px; fill: #ffffff; }
+        .coin-count { font-size: 0.54rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
         /* FOTO GIFT DI KANAN ATAS */
         @keyframes popGiftBadge {
@@ -123,7 +122,7 @@
         }
         .slot-top-badge {
             position: absolute; top: 3px; right: 3px; z-index: 8;
-            width: 22px; height: 22px; display: none; object-fit: contain;
+            width: 23px; height: 23px; display: none; object-fit: contain;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.95));
             pointer-events: none;
             animation: popGiftBadge 0.3s ease-out;
@@ -136,7 +135,7 @@
             background: rgba(14, 14, 16, 0.88); backdrop-filter: blur(8px);
             padding: 1.5px 2px 1.5px 6px; border-radius: 999px; border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
-        .slot-name-text { color: #ffffff; font-size: 0.48rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42px; }
+        .slot-name-text { color: #ffffff; font-size: 0.48rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44px; }
 
         .slot-plus-circle { 
             width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); 
@@ -155,12 +154,12 @@
         }
         .mic-icon-svg { width: 10px; height: 10px; display: block; }
 
-        /* ===== AREA VIDEO GIFT: MUNCUL DI DEPAN LAYAR KOTAK (KOTAK DI BELAKANGNYA) ===== */
+        /* ===== AREA VIDEO GIFT: DI DEPAN LAYAR KOTAK (KOTAK DI BELAKANGNYA) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            z-index: 50; /* Lapisan paling depan di atas kotak */
+            z-index: 50; /* Di depan seluruh kotak live */
             pointer-events: none; 
             display: none; 
             background: transparent; 
@@ -172,9 +171,9 @@
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            /* Posisi dinaikkan ke atas agar tepat berada di atas kotak host & komal */
+            /* Posisi dinaikkan ke atas agar pas berada di depan kotak host & komal */
             object-position: center 18%; 
-            transform: translateY(-15px);
+            transform: translateY(-10px);
             display: block;
             pointer-events: none;
         }
@@ -183,7 +182,7 @@
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA KOTAK (HOST & KOMAL) - BERADA DI BELAKANG VIDEO GIFT -->
+    <!-- AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) -->
     <div class="live-layout">
         <!-- Kotak Host -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
@@ -236,7 +235,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT (MUNCUL DI DEPAN LAYAR KOTAK SECARA TRANSPARAN) -->
+    <!-- AREA VIDEO GIFT: MUNCUL TRANSPARAN DI DEPAN LAYAR KOTAK -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -250,13 +249,13 @@
     let animFrameId = null;
     let displayCamStream = null;
     
-    // WATCHDOG KAMERA
+    // WATCHDOG KAMERA KONTROL
     let controlWatchdogTimer = null;
     let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI KAMERA LANGSUNG DI DISPLAY
+    // FUNGSI AKTIFKAN KAMERA LOKAL HOST
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -276,7 +275,7 @@
             document.getElementById('hostPlaceholder').style.display = 'none';
             await hVid.play().catch(()=>{});
         } catch(err) {
-            console.log("Kamera lokal aktif/error:", err);
+            console.log("Kamera lokal display aktif/error:", err);
         }
     }
 
@@ -338,7 +337,7 @@
             imgElem.removeAttribute('src');
             if (bgElem) { bgElem.style.display = 'none'; bgElem.removeAttribute('src'); }
             if (bgOverlay) bgOverlay.style.display = 'none';
-            if (slotBox) slotBox.style.background = '#202127';
+            if (slotBox) slotBox.style.background = '#1c1d24';
 
             iconElem.style.display = 'inline-block';
             reqElem.style.display = 'inline-block';
@@ -498,7 +497,7 @@
                         if (diff > 45) {
                             d[i + 3] = 0; // Transparan penuh
                         } else {
-                            // Tepi halus (anti-aliasing) & hilangkan sisa hijau
+                            // Tepi anti-aliasing halus & hilangkan sisa hijau (spill removal)
                             d[i + 3] = ((1 - (diff - 15) / 30) * 255) | 0;
                             d[i + 1] = maxRB;
                         }
