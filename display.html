@@ -146,14 +146,14 @@
         .slot-bg-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.25); display: none; z-index: 2; pointer-events: none; }
         
         .slot-plus-svg { 
-            width: 28px;
-            height: 28px;
-            stroke: #8e95a3;
-            stroke-width: 4;
-            stroke-linecap: round;
-            z-index: 3;
-            margin-bottom: 2px;
-            display: block;
+            width: 28px; 
+            height: 28px; 
+            stroke: #8e95a3; 
+            stroke-width: 4; 
+            stroke-linecap: round; 
+            z-index: 3; 
+            margin-bottom: 2px; 
+            display: block; 
         }
 
         .slot-req { 
@@ -161,7 +161,7 @@
             font-size: 0.66rem; 
             font-weight: 700; 
             z-index: 3; 
-            letter-spacing: 0.2px;
+            letter-spacing: 0.2px; 
         }
 
         .slot-circle-img { 
@@ -215,16 +215,17 @@
             position: absolute; 
             top: 5px; 
             right: 5px; 
-            z-index: 8;
+            z-index: 8; 
             width: 24px; 
             height: 24px; 
             display: none; 
-            object-fit: contain;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
-            pointer-events: none;
-            animation: popGiftBadge 0.3s ease-out;
+            object-fit: contain; 
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8)); 
+            pointer-events: none; 
+            animation: popGiftBadge 0.3s ease-out; 
         }
 
+        /* PILL NAMA KIRI BAWAH */
         .slot-name-pill { 
             position: absolute; 
             bottom: 5px; 
@@ -232,11 +233,11 @@
             max-width: calc(100% - 30px); 
             display: flex; 
             align-items: center; 
-            gap: 3px; 
+            gap: 4px; 
             z-index: 6; 
             background: rgba(0, 0, 0, 0.55); 
             backdrop-filter: blur(6px);
-            padding: 2px 5px; 
+            padding: 2.5px 5px 2.5px 6px; 
             border-radius: 999px; 
         }
         .slot-name-text { 
@@ -246,37 +247,57 @@
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
-            max-width: 48px; 
+            max-width: 46px; 
+            line-height: 1;
         }
+
+        /* LINGKARAN IKON + DI UJUNG NAMA: PAS PERSIS DI TENGAH-TENGAH */
         .slot-plus-circle { 
-            width: 12px; 
-            height: 12px; 
+            width: 13px; 
+            height: 13px; 
             border-radius: 50%; 
             background: rgba(255, 255, 255, 0.25); 
-            position: relative; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            padding: 0;
+            margin: 0;
         }
-        .slot-plus-circle::before, .slot-plus-circle::after { content: ''; position: absolute; background: #ffffff; }
-        .slot-plus-circle::before { top: 5px; left: 2.5px; width: 7px; height: 1.8px; }
-        .slot-plus-circle::after { top: 2.5px; left: 5px; width: 1.8px; height: 7px; }
+        .slot-pill-plus-svg {
+            width: 7.5px;
+            height: 7.5px;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            display: block;
+        }
 
+        /* WADAH MIKROFON KANAN BAWAH: PAS PERSIS DI TENGAH-TENGAH */
         .mic-container { 
             position: absolute; 
             bottom: 5px; 
             right: 5px; 
             z-index: 6; 
-            width: 18px; 
-            height: 18px; 
+            width: 19px; 
+            height: 19px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             background: rgba(0, 0, 0, 0.55); 
             backdrop-filter: blur(6px);
             border-radius: 50%; 
+            padding: 0;
+            margin: 0;
         }
-        .mic-icon-svg { width: 11px; height: 11px; display: block; }
+        .mic-icon-svg { 
+            width: 11.5px; 
+            height: 11.5px; 
+            display: block; 
+            flex-shrink: 0;
+        }
 
-        /* ===== BANNER NOTIFIKASI GIFT ===== */
+        /* ===== BANNER NOTIFIKASI GIFT DI BAWAH HOST ===== */
         .gift-banner-wrapper {
             width: 100%;
             display: flex;
@@ -380,7 +401,7 @@
 <div class="phone-screen" id="displayContainer">
 
     <div class="live-layout">
-        <!-- KOTAK HOST (BISA DIKLIK ATAU DIKONTROL DARI CONTROL PANEL) -->
+        <!-- KOTAK HOST -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
             <div class="host-top-pill">Host</div>
             
@@ -393,6 +414,7 @@
             </div>
         </div>
 
+        <!-- GRID 8 SLOT KOMAL -->
         <div class="komal-grid" id="komalGrid">
             <script>
                 for(let i = 1; i <= 8; i++) {
@@ -419,11 +441,18 @@
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
                             
+                            <!-- PILL NAMA DENGAN IKON + PAS PERSIS DI TENGAH -->
                             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                                 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
-                                <div class="slot-plus-circle"></div>
+                                <div class="slot-plus-circle">
+                                    <svg class="slot-pill-plus-svg" viewBox="0 0 10 10" fill="none">
+                                        <line x1="5" y1="2" x2="5" y2="8"></line>
+                                        <line x1="2" y1="5" x2="8" y2="5"></line>
+                                    </svg>
+                                </div>
                             </div>
 
+                            <!-- WADAH MIKROFON PAS PERSIS DI TENGAH -->
                             <div class="mic-container" id="mic-slot-${i}" style="display:none;">
                                 <svg class="mic-icon-svg" viewBox="0 0 24 24">
                                     <path fill="#ffffff" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
@@ -451,7 +480,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT FULL SCREEN DENGAN WEBGL GPU HARDWARE -->
+    <!-- AREA VIDEO GIFT FULL SCREEN WEBGL -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -471,7 +500,6 @@
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI AKTIFKAN KAMERA NATIVE DI DISPLAY
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -495,7 +523,6 @@
         }
     }
 
-    // FUNGSI MATIKAN KAMERA NATIVE DI DISPLAY
     function stopDisplayDirectCamera() {
         if (displayCamStream) {
             displayCamStream.getTracks().forEach(track => track.stop());
@@ -742,7 +769,6 @@
     channel.onmessage = async (event) => {
         const data = event.data;
 
-        // MENERIMA SINYAL REMOTE DARI PANEL KONTROL UNTUK NYALAKAN / MATIKAN KAMERA DISPLAY
         if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
             if (data.action === 'start') {
                 startDisplayDirectCamera();
