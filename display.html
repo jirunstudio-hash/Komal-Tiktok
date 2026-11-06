@@ -7,202 +7,216 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-/* KOTAK UTAMA (SUDAH SIKU / KOTAK SEMPURNA TANPA LENGKUNGAN) */
-    .phone-screen { 
-        height: 100vh; width: 100vw; max-width: 420px; max-height: 840px;
-        background: #000; position: relative; overflow: hidden; display: flex; 
-        flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px 10px 0 10px; 
-        box-shadow: 0 0 40px rgba(0,0,0,0.8); border: 2px solid #222; 
-        border-radius: 0; /* TANPA LENGKUNGAN */
-    }
 
-    /* ===== AREA ATAS: HOST & KOTAK 1 - 8 ===== */
-    .live-layout { 
-        display: flex; gap: 8px; width: 100%; max-width: 400px; 
-        position: relative; z-index: 10; 
-        align-items: stretch; 
-    }
-
-    /* ANIMASI GARIS BIRU KEDAP-KEDIP PADA HOST */
-    @keyframes hostBluePulse {
-        0%, 100% {
-            border-color: #00d2ff;
-            box-shadow: 0 0 12px rgba(0, 210, 255, 0.75), inset 0 0 8px rgba(0, 210, 255, 0.35);
+        /* KOTAK UTAMA */
+        .phone-screen { 
+            height: 100vh; width: 100vw; max-width: 420px; max-height: 840px;
+            background: #000; position: relative; overflow: hidden; display: flex; 
+            flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px 10px 0 10px; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.8); border: 2px solid #222; 
+            border-radius: 0;
         }
-        50% {
-            border-color: rgba(0, 150, 255, 0.25);
-            box-shadow: 0 0 2px rgba(0, 150, 255, 0.1), inset 0 0 0px rgba(0, 0, 0, 0);
+
+        /* ===== AREA ATAS: HOST & KOTAK 1 - 8 ===== */
+        .live-layout { 
+            display: flex; gap: 8px; width: 100%; max-width: 400px; 
+            position: relative; z-index: 10; 
+            align-items: stretch; 
         }
-    }
 
-    /* KOTAK HOST (KOTAK SIKU DENGAN GARIS BIRU KEDAP-KEDIP) */
-    .host-box { 
-        flex: 1; height: auto; min-height: 380px; background: #16161c; 
-        border-radius: 0; /* TANPA LENGKUNGAN */
-        overflow: hidden; 
-        position: relative; display: flex; justify-content: center; align-items: center; 
-        border: 2px solid #00d2ff; 
-        box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
-        animation: hostBluePulse 1.2s infinite ease-in-out;
-    }
-    .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
-    #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
-    .host-placeholder { color: #666; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
+        /* ANIMASI GARIS BIRU KEDAP-KEDIP PADA HOST */
+        @keyframes hostBluePulse {
+            0%, 100% {
+                border-color: #00d2ff;
+                box-shadow: 0 0 12px rgba(0, 210, 255, 0.75), inset 0 0 8px rgba(0, 210, 255, 0.35);
+            }
+            50% {
+                border-color: rgba(0, 150, 255, 0.25);
+                box-shadow: 0 0 2px rgba(0, 150, 255, 0.1), inset 0 0 0px rgba(0, 0, 0, 0);
+            }
+        }
 
-    /* BADGE HOST EMAS */
-    .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
-    .gold-host-badge { 
-        background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); 
-        color: #fff; font-size: 0.55rem; font-weight: 800; padding: 2px 7px; 
-        border-radius: 3px; display: flex; align-items: center; gap: 3px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-    }
+        /* KOTAK HOST */
+        .host-box { 
+            flex: 1; height: auto; min-height: 380px; background: #16161c; 
+            border-radius: 0;
+            overflow: hidden; 
+            position: relative; display: flex; justify-content: center; align-items: center; 
+            border: 2px solid #00d2ff; 
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+            animation: hostBluePulse 1.2s infinite ease-in-out;
+        }
+        .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+        #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
+        .host-placeholder { color: #666; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
-    .host-bottom-pill { 
-        position: absolute; bottom: 8px; left: 8px; max-width: calc(100% - 16px);
-        background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); 
-        border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 10px; z-index: 12; 
-    }
-    .host-bottom-text { font-size: 0.55rem; color: #fff; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* BADGE HOST EMAS */
+        .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
+        .gold-host-badge { 
+            background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); 
+            color: #fff; font-size: 0.55rem; font-weight: 800; padding: 2px 7px; 
+            border-radius: 3px; display: flex; align-items: center; gap: 3px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+        }
 
-    /* GRID KOMAL (KOTAK 1 - 8) */
-    .komal-grid { 
-        width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
-        grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; 
-        position: relative; z-index: 10; 
-    }
+        .host-bottom-pill { 
+            position: absolute; bottom: 8px; left: 8px; max-width: calc(100% - 16px);
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); 
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 10px; z-index: 12; 
+        }
+        .host-bottom-text { font-size: 0.55rem; color: #fff; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* KOTAK SLOT KOMAL 1 - 8 (KOTAK SIKU TANPA LENGKUNGAN) */
-    .slot-box { 
-        width: 100%; aspect-ratio: 1 / 1; 
-        background: #202127; 
-        border-radius: 0; /* TANPA LENGKUNGAN */
-        position: relative; 
-        overflow: hidden; 
-        display: flex; flex-direction: column; 
-        align-items: center; justify-content: center; 
-        border: 1.5px solid rgba(255, 255, 255, 0.22); 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        transition: all 0.25s ease;
-    }
+        /* GRID KOMAL (KOTAK 1 - 8) */
+        .komal-grid { 
+            width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
+            grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; 
+            position: relative; z-index: 10; 
+        }
 
-    /* 1. LATAR BELAKANG BLUR */
-    .slot-bg-blur {
-        position: absolute !important;
-        inset: -20px !important;
-        width: calc(100% + 40px) !important;
-        height: calc(100% + 40px) !important;
-        object-fit: cover !important;
-        filter: blur(14px) brightness(0.65) contrast(1.05) !important;
-        transform: scale(1.2) !important;
-        display: none;
-        z-index: 1;
-        pointer-events: none;
-    }
-    .slot-bg-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.25);
-        display: none;
-        z-index: 2;
-        pointer-events: none;
-    }
+        /* KOTAK SLOT KOMAL 1 - 8 */
+        .slot-box { 
+            width: 100%; aspect-ratio: 1 / 1; 
+            background: #202127; 
+            border-radius: 0;
+            position: relative; 
+            overflow: hidden; 
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            border: 1.5px solid rgba(255, 255, 255, 0.22); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            transition: all 0.25s ease;
+        }
 
-    /* 2. TAMPILAN STANDBY / KOTAK KOSONG */
-    .slot-icon { color: #6b6f7d; font-size: 1.25rem; margin-bottom: 2px; font-weight: 300; z-index: 3; line-height: 1; }
-    .slot-req { color: #767a89; font-size: 0.52rem; font-weight: 500; letter-spacing: 0.1px; z-index: 3; }
+        /* 1. LATAR BELAKANG BLUR */
+        .slot-bg-blur {
+            position: absolute !important;
+            inset: -20px !important;
+            width: calc(100% + 40px) !important;
+            height: calc(100% + 40px) !important;
+            object-fit: cover !important;
+            filter: blur(14px) brightness(0.65) contrast(1.05) !important;
+            transform: scale(1.2) !important;
+            display: none;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .slot-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            z-index: 2;
+            pointer-events: none;
+        }
 
-    /* 3. FOTO PROFIL BULAT DI TENGAH */
-    .slot-circle-img { 
-        width: 44px; height: 44px; 
-        border-radius: 50%; object-fit: cover; 
-        display: none; position: absolute; 
-        top: 50%; left: 50%; 
-        transform: translate(-50%, -50%); 
-        z-index: 4; 
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
-    }
+        /* 2. TAMPILAN STANDBY / KOTAK KOSONG (SUDAH DIUBAH TEBAL) */
+        .slot-icon { 
+            color: rgba(255, 255, 255, 0.65); 
+            font-size: 1.35rem; 
+            margin-bottom: 2px; 
+            font-weight: 800; /* Font tebal tegas */
+            z-index: 3; 
+            line-height: 1; 
+        }
+        .slot-req { 
+            color: rgba(255, 255, 255, 0.70); 
+            font-size: 0.54rem; 
+            font-weight: 700; /* Font tebal tegas */
+            letter-spacing: 0.2px; 
+            z-index: 3; 
+        }
 
-    /* 4. BADGE KOIN CYAN NEON DI KIRI ATAS */
-    .slot-coin-badge { 
-        position: absolute; top: 6px; left: 6px; 
-        display: flex; align-items: center; gap: 4px; 
-        background: rgba(0, 0, 0, 0.65); 
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        padding: 2px 7px 2px 3px; 
-        border-radius: 999px; z-index: 6; 
-        border: 0.5px solid rgba(255, 255, 255, 0.15);
-    }
-    .cyan-diamond-circle { 
-        width: 14px; height: 14px; 
-        background: radial-gradient(circle, #ffffff 18%, #38bdf8 65%, #0284c7 100%); 
-        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-        box-shadow: 0 0 6px rgba(56, 189, 248, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.9);
-        flex-shrink: 0;
-    }
-    .diamond-svg { width: 7px; height: 7px; fill: #ffffff; }
-    .coin-count { font-size: 0.56rem; color: #ffffff; font-weight: 800; letter-spacing: 0.1px; line-height: 1; }
+        /* 3. FOTO PROFIL BULAT DI TENGAH */
+        .slot-circle-img { 
+            width: 44px; height: 44px; 
+            border-radius: 50%; object-fit: cover; 
+            display: none; position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            z-index: 4; 
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+        }
 
-    /* BADGE KANAN ATAS */
-    .slot-top-badge {
-        position: absolute; top: 5px; right: 6px; z-index: 6;
-        width: 16px; height: 16px; display: none;
-        object-fit: contain;
-    }
+        /* 4. BADGE KOIN CYAN NEON DI KIRI ATAS */
+        .slot-coin-badge { 
+            position: absolute; top: 6px; left: 6px; 
+            display: flex; align-items: center; gap: 4px; 
+            background: rgba(0, 0, 0, 0.65); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            padding: 2px 7px 2px 3px; 
+            border-radius: 999px; z-index: 6; 
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .cyan-diamond-circle { 
+            width: 14px; height: 14px; 
+            background: radial-gradient(circle, #ffffff 18%, #38bdf8 65%, #0284c7 100%); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 0 6px rgba(56, 189, 248, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            flex-shrink: 0;
+        }
+        .diamond-svg { width: 7px; height: 7px; fill: #ffffff; }
+        .coin-count { font-size: 0.56rem; color: #ffffff; font-weight: 800; letter-spacing: 0.1px; line-height: 1; }
 
-    /* 5. PILL NAMA DI KIRI BAWAH */
-    .slot-name-pill { 
-        position: absolute; bottom: 6px; left: 6px; 
-        max-width: calc(100% - 34px); 
-        display: flex; align-items: center; gap: 3.5px; z-index: 6; 
-        background: rgba(0, 0, 0, 0.65); 
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        padding: 2.5px 3.5px 2.5px 7px; border-radius: 999px; 
-        border: 0.5px solid rgba(255, 255, 255, 0.15);
-    }
-    .slot-name-text { 
-        color: #ffffff; font-size: 0.50rem; font-weight: 700; 
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44px; 
-        line-height: 1.1;
-    }
-    .slot-plus-circle { 
-        width: 13px; height: 13px; 
-        border-radius: 50%; 
-        background: rgba(255, 255, 255, 0.28); 
-        display: flex; align-items: center; justify-content: center; 
-        color: #ffffff; font-size: 0.60rem; font-weight: 900; 
-        line-height: 1; flex-shrink: 0;
-    }
+        /* BADGE KANAN ATAS */
+        .slot-top-badge {
+            position: absolute; top: 5px; right: 6px; z-index: 6;
+            width: 16px; height: 16px; display: none;
+            object-fit: contain;
+        }
 
-    /* 6. TOMBOL MIC BULAT KANAN BAWAH */
-    .mic-container { 
-        position: absolute; bottom: 6px; right: 6px; z-index: 6; 
-        width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; 
-        background: rgba(0, 0, 0, 0.65); 
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        border-radius: 50%; border: 0.5px solid rgba(255, 255, 255, 0.15);
-    }
-    .mic-icon-svg { width: 11px; height: 11px; fill: #ffffff; }
+        /* 5. PILL NAMA DI KIRI BAWAH */
+        .slot-name-pill { 
+            position: absolute; bottom: 6px; left: 6px; 
+            max-width: calc(100% - 34px); 
+            display: flex; align-items: center; gap: 3.5px; z-index: 6; 
+            background: rgba(0, 0, 0, 0.65); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            padding: 2.5px 3.5px 2.5px 7px; border-radius: 999px; 
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .slot-name-text { 
+            color: #ffffff; font-size: 0.50rem; font-weight: 700; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44px; 
+            line-height: 1.1;
+        }
+        .slot-plus-circle { 
+            width: 13px; height: 13px; 
+            border-radius: 50%; 
+            background: rgba(255, 255, 255, 0.28); 
+            display: flex; align-items: center; justify-content: center; 
+            color: #ffffff; font-size: 0.60rem; font-weight: 900; 
+            line-height: 1; flex-shrink: 0;
+        }
 
-    /* ===== AREA VIDEO GIFT ===== */
-    .gift-overlay { 
-        position: absolute; 
-        top: 0; left: 0; 
-        width: 100%; height: 100%; 
-        z-index: 50; 
-        pointer-events: none; 
-        display: none; 
-        background: transparent; 
-    }
-    #giftVideo { display: none; }
-    #giftCanvas { 
-        width: 100%; height: 100%; 
-        object-fit: contain; object-position: center bottom;
-        position: absolute; top: 0; left: 0; 
-        image-rendering: -webkit-optimize-contrast; 
-    }
-</style>
+        /* 6. TOMBOL MIC BULAT KANAN BAWAH */
+        .mic-container { 
+            position: absolute; bottom: 6px; right: 6px; z-index: 6; 
+            width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; 
+            background: rgba(0, 0, 0, 0.65); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border-radius: 50%; border: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .mic-icon-svg { width: 11px; height: 11px; fill: #ffffff; }
+
+        /* ===== AREA VIDEO GIFT ===== */
+        .gift-overlay { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            z-index: 50; 
+            pointer-events: none; 
+            display: none; 
+            background: transparent; 
+        }
+        #giftVideo { display: none; }
+        #giftCanvas { 
+            width: 100%; height: 100%; 
+            object-fit: contain; object-position: center bottom;
+            position: absolute; top: 0; left: 0; 
+            image-rendering: -webkit-optimize-contrast; 
+        }
+    </style>
 </head>
 <body>
 <div class="phone-screen" id="displayContainer">
