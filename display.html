@@ -137,10 +137,10 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
         }
 
-        /* 4. BADGE POIN BINTANG BIRU MENYALA (POSISI LEBIH KE SUDUT KIRI ATAS) */
+        /* 4. BADGE POIN BINTANG BIRU MENYALA */
         .slot-coin-badge { 
             position: absolute; 
-            top: 4px; left: 4px; /* Lebih mepet ke sudut */
+            top: 4px; left: 4px; 
             display: flex; align-items: center; gap: 4px; 
             background: rgba(14, 14, 16, 0.88); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -148,7 +148,6 @@
             border-radius: 999px; z-index: 6; 
             border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
-        /* Lingkaran Bintang Biru Neon */
         .cyan-diamond-circle { 
             width: 14px; height: 14px; 
             background: radial-gradient(circle at center, #ffffff 15%, #38bdf8 52%, #0077ff 95%); 
@@ -158,7 +157,6 @@
             flex-shrink: 0;
             position: relative;
         }
-        /* Ikon Bintang 4 Sudut */
         .star-svg { 
             width: 7.5px; height: 7.5px; 
             fill: #ffffff; 
@@ -169,18 +167,18 @@
         /* BADGE KANAN ATAS */
         .slot-top-badge {
             position: absolute; 
-            top: 4px; right: 4px; /* Lebih mepet ke sudut */
+            top: 4px; right: 4px; 
             z-index: 6;
             width: 16px; height: 16px; display: none;
             object-fit: contain;
         }
 
-        /* 5. PILL NAMA (GESER LEBIH MEPEK KE SUDUT KIRI BAWAH) */
+        /* 5. PILL NAMA DI SUDUT KIRI BAWAH */
         .slot-name-pill { 
             position: absolute; 
-            bottom: 4px; left: 4px; /* Lebih mepet ke pinggir */
+            bottom: 4px; left: 4px; 
             max-width: calc(100% - 32px); 
-            display: flex; align-items: center; gap: 3.5px; z-index: 6; 
+            display: flex; align-items: center; gap: 4px; z-index: 6; 
             background: rgba(14, 14, 16, 0.88); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             padding: 2px 3px 2px 7px; border-radius: 999px; 
@@ -191,19 +189,26 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46px; 
             line-height: 1.1;
         }
+
+        /* LINGKARAN PLUS (DIJAMIN 100% PRESISI DI TENGAH) */
         .slot-plus-circle { 
             width: 13px; height: 13px; 
             border-radius: 50%; 
-            background: rgba(255, 255, 255, 0.25); 
+            background: rgba(255, 255, 255, 0.28); 
             display: flex; align-items: center; justify-content: center; 
-            color: #ffffff; font-size: 0.62rem; font-weight: 900; 
-            line-height: 1; flex-shrink: 0;
+            flex-shrink: 0;
+            padding: 0; margin: 0;
+        }
+        .plus-svg {
+            width: 7.5px;
+            height: 7.5px;
+            display: block;
         }
 
-        /* 6. TOMBOL MIC (GESER LEBIH MEPEK KE SUDUT KANAN BAWAH) */
+        /* 6. TOMBOL MIC DI SUDUT KANAN BAWAH */
         .mic-container { 
             position: absolute; 
-            bottom: 4px; right: 4px; /* Lebih mepet ke pinggir */
+            bottom: 4px; right: 4px; 
             z-index: 6; 
             width: 19px; height: 19px; display: flex; align-items: center; justify-content: center; 
             background: rgba(14, 14, 16, 0.88); 
@@ -268,10 +273,14 @@
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
                             
-                            <!-- PILL NAMA DI SUDUT KIRI BAWAH -->
+                            <!-- PILL NAMA DENGAN ICON + PAS DI TENGAH -->
                             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                                 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
-                                <div class="slot-plus-circle">+</div>
+                                <div class="slot-plus-circle">
+                                    <svg class="plus-svg" viewBox="0 0 24 24">
+                                        <path fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </div>
                             </div>
 
                             <!-- TOMBOL MIC DI SUDUT KANAN BAWAH -->
