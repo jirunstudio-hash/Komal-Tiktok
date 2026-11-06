@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Studio - TikTok Live HD</title>
     <style>
-        /* OPTIMASI RESOLUSI HD & ANTI-BLUR / ANTI-BURIK */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -25,7 +24,6 @@
             overflow: hidden; 
         }
 
-        /* KOTAK LAYAR HP UTAMA - TAJAM, RAMPING & PAS UNTUK TIKTOK STUDIO */
         .phone-screen { 
             height: calc(100vh - 20px); 
             width: 100vw; 
@@ -40,11 +38,10 @@
             padding: 4px;
             border: 1.5px solid #ff0033;
             box-shadow: 0 0 14px rgba(255, 0, 51, 0.35);
-            transform: translateZ(0); /* AKSELERASI GPU HARDWARE */
+            transform: translateZ(0);
             backface-visibility: hidden;
         }
 
-        /* ===== AREA UTAMA (HOST KIRI & KOMAL KANAN) ===== */
         .live-layout { 
             display: flex; 
             gap: 4px; 
@@ -54,7 +51,6 @@
             align-items: stretch; 
         }
 
-        /* ANIMASI GARIS BIRU HOST BERKEDIP CEPAT (0.5s) */
         @keyframes hostBluePulseFast {
             0%, 100% { 
                 border-color: #00d2ff; 
@@ -66,7 +62,6 @@
             }
         }
 
-        /* KOTAK HOST */
         .host-box { 
             flex: 1; 
             background: #1c1d24; 
@@ -85,7 +80,6 @@
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; image-rendering: high-quality; }
         .host-placeholder { color: #555761; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
-        /* BADGE HOST (KIRI ATAS) */
         .host-top-pill { 
             position: absolute; 
             top: 6px; 
@@ -100,7 +94,6 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* PILL NAMA HOST (KIRI BAWAH) */
         .host-bottom-pill {
             position: absolute;
             bottom: 6px;
@@ -124,7 +117,6 @@
             text-overflow: ellipsis;
         }
 
-        /* GRID KOMAL KANAN */
         .komal-grid { 
             flex: 1; 
             display: grid; 
@@ -135,7 +127,6 @@
             z-index: 10; 
         }
 
-        /* KOTAK SLOT KOMAL 1 - 8 */
         .slot-box { 
             width: 100%; 
             aspect-ratio: 1 / 1; 
@@ -154,7 +145,6 @@
         .slot-bg-blur { position: absolute !important; inset: -15px !important; width: calc(100% + 30px) !important; height: calc(100% + 30px) !important; object-fit: cover !important; filter: blur(12px) brightness(0.7) !important; display: none; z-index: 1; pointer-events: none; }
         .slot-bg-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.25); display: none; z-index: 2; pointer-events: none; }
         
-        /* IKON + TEBAL BESAR ABU */
         .slot-plus-svg { 
             width: 28px;
             height: 28px;
@@ -166,7 +156,6 @@
             display: block;
         }
 
-        /* TEKS PERMINTAAN TEBAL ABU */
         .slot-req { 
             color: #8e95a3; 
             font-size: 0.66rem; 
@@ -175,7 +164,6 @@
             letter-spacing: 0.2px;
         }
 
-        /* FOTO PROFIL KOMAL LEBIH BESAR & TAJAM */
         .slot-circle-img { 
             width: 56px; 
             height: 56px; 
@@ -288,7 +276,7 @@
         }
         .mic-icon-svg { width: 11px; height: 11px; display: block; }
 
-        /* ===== BANNER NOTIFIKASI GIFT DI BAWAH HOST ===== */
+        /* ===== BANNER NOTIFIKASI GIFT ===== */
         .gift-banner-wrapper {
             width: 100%;
             display: flex;
@@ -363,7 +351,6 @@
             image-rendering: high-quality;
         }
 
-        /* ===== AREA VIDEO GIFT FULL SCREEN (HARDWARE ACCELERATED) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; 
@@ -377,7 +364,6 @@
         }
         #giftVideo { display: none; }
         
-        /* CANVAS ULTRA HD BERKECEPATAN TINGGI */
         #giftCanvas { 
             width: 100%; 
             height: 100%; 
@@ -386,30 +372,27 @@
             display: block; 
             pointer-events: none; 
             image-rendering: high-quality;
-            transform: translateZ(0); /* KUNCI AKSELERASI GPU KARTU GRAFIS */
+            transform: translateZ(0);
         }
     </style>
 </head>
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA ATAS (HOST & KOTAK KOMAL 1 - 8) -->
     <div class="live-layout">
-        <!-- KOTAK HOST -->
-        <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
+        <!-- KOTAK HOST (BISA DIKLIK ATAU DIKONTROL DARI CONTROL PANEL) -->
+        <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
             <div class="host-top-pill">Host</div>
             
-            <div id="hostPlaceholder" class="host-placeholder">Kamera Host</div>
+            <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
             <img id="hostCameraImg" alt="Host Cam">
 
-            <!-- PILL NAMA HOST -->
             <div class="host-bottom-pill" id="hostBottomPill">
                 <span class="host-name-text" id="hostNameText">Host</span>
             </div>
         </div>
 
-        <!-- GRID 8 SLOT KOMAL -->
         <div class="komal-grid" id="komalGrid">
             <script>
                 for(let i = 1; i <= 8; i++) {
@@ -427,13 +410,11 @@
 
                             <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
-                            <!-- IKON + TEBAL BESAR ABU -->
                             <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
 
-                            <!-- TEKS PERMINTAAN TEBAL ABU -->
                             <span class="slot-req" id="req-${i}">Permintaan</span>
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
@@ -470,7 +451,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT FULL SCREEN DENGAN TEKNOLOGI WEBGL (60 FPS NO LAG) -->
+    <!-- AREA VIDEO GIFT FULL SCREEN DENGAN WEBGL GPU HARDWARE -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -487,13 +468,46 @@
 
     let detectedHostName = 'Host';
     let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
-    
-    let controlWatchdogTimer = null;
-    let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // ================= SISTEM ENGINE WEBGL (ANTI-LAG & ANTI-BURIK) =================
+    // FUNGSI AKTIFKAN KAMERA NATIVE DI DISPLAY
+    async function startDisplayDirectCamera() {
+        try {
+            const hVid = document.getElementById('hostVideo');
+            const camImg = document.getElementById('hostCameraImg');
+            
+            camImg.style.display = 'none';
+            camImg.src = '';
+
+            if (!displayCamStream) {
+                displayCamStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 720 }, height: { ideal: 1280 }, facingMode: 'user' },
+                    audio: false
+                });
+            }
+            hVid.srcObject = displayCamStream;
+            hVid.style.display = 'block';
+            document.getElementById('hostPlaceholder').style.display = 'none';
+            await hVid.play().catch(()=>{});
+        } catch(err) {
+            console.log("Kamera lokal display aktif/error:", err);
+        }
+    }
+
+    // FUNGSI MATIKAN KAMERA NATIVE DI DISPLAY
+    function stopDisplayDirectCamera() {
+        if (displayCamStream) {
+            displayCamStream.getTracks().forEach(track => track.stop());
+            displayCamStream = null;
+        }
+        const hVid = document.getElementById('hostVideo');
+        hVid.srcObject = null;
+        hVid.style.display = 'none';
+        document.getElementById('hostPlaceholder').style.display = 'block';
+    }
+
+    // ================= ENGINE WEBGL (60 FPS NO LAG) =================
     let gl = null;
     let glProgram = null;
     let glTexture = null;
@@ -516,7 +530,6 @@
                 }
             `;
 
-            // SHADER GPU: MENGHAPUS GREEN SCREEN & BLACK BACKGROUND OTOMATIS LANGSUNG DI KARTU GRAFIS
             const fsSource = `
                 precision mediump float;
                 uniform sampler2D u_tex;
@@ -526,14 +539,12 @@
                     float maxRB = max(c.r, c.b);
                     float gDiff = c.g - maxRB;
                     
-                    // PENGHAPUS GREEN SCREEN HALUS (DESPILL & ANTI-EDGE HIJAU)
                     if (gDiff > 0.06 && c.g > 0.18) {
                         float a = 1.0 - smoothstep(0.06, 0.18, gDiff);
                         c.a = min(c.a, a);
                         c.g = maxRB;
                     }
                     
-                    // PENGHAPUS BACKGROUND HITAM PEKAT SECARA INSTAN
                     float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
                     if (lum < 0.07) {
                         c.a = 0.0;
@@ -593,44 +604,8 @@
 
             return true;
         } catch(e) {
-            console.warn("WebGL fallback to Canvas 2D:", e);
             return false;
         }
-    }
-
-    async function startDisplayDirectCamera() {
-        try {
-            const hVid = document.getElementById('hostVideo');
-            const camImg = document.getElementById('hostCameraImg');
-            
-            camImg.style.display = 'none';
-            camImg.src = '';
-
-            if (!displayCamStream) {
-                displayCamStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 720 }, height: { ideal: 1280 }, facingMode: 'user' },
-                    audio: false
-                });
-            }
-            hVid.srcObject = displayCamStream;
-            hVid.style.display = 'block';
-            document.getElementById('hostPlaceholder').style.display = 'none';
-            await hVid.play().catch(()=>{});
-        } catch(err) {
-            console.log("Kamera lokal display aktif/error:", err);
-        }
-    }
-
-    function feedWatchdog() {
-        isUsingControlStream = true;
-        if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
-        
-        controlWatchdogTimer = setTimeout(() => {
-            if (isUsingControlStream) {
-                isUsingControlStream = false;
-                startDisplayDirectCamera();
-            }
-        }, 1200);
     }
 
     const DB_NAME = "TikTokStudioStorageDB";
@@ -767,7 +742,15 @@
     channel.onmessage = async (event) => {
         const data = event.data;
 
-        if (data.type === 'UPDATE_HOST' || data.type === 'UPDATE_HOST_NAME') {
+        // MENERIMA SINYAL REMOTE DARI PANEL KONTROL UNTUK NYALAKAN / MATIKAN KAMERA DISPLAY
+        if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
+            if (data.action === 'start') {
+                startDisplayDirectCamera();
+            } else if (data.action === 'stop') {
+                stopDisplayDirectCamera();
+            }
+        }
+        else if (data.type === 'UPDATE_HOST' || data.type === 'UPDATE_HOST_NAME') {
             if (data.hostName) {
                 detectedHostName = data.hostName;
                 document.getElementById('hostNameText').innerText = data.hostName;
@@ -810,29 +793,6 @@
                 }
             });
         }
-        else if (data.type === 'HOST_CAM_FRAME') {
-            feedWatchdog();
-            
-            const camImg = document.getElementById('hostCameraImg');
-            document.getElementById('hostPlaceholder').style.display = 'none';
-            camImg.src = data.frame;
-            camImg.style.display = 'block';
-
-            const hVid = document.getElementById('hostVideo');
-            if (hVid.style.display !== 'none') {
-                hVid.style.display = 'none';
-            }
-        }
-        else if (data.type === 'HOST_CAM_STOP') {
-            isUsingControlStream = false;
-            if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
-            startDisplayDirectCamera();
-        }
-        else if (data.type === 'CONTROL_CLOSED') {
-            isUsingControlStream = false;
-            if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
-            startDisplayDirectCamera();
-        }
     };
 
     function formatPoin(val) {
@@ -842,7 +802,6 @@
         return val.toLocaleString('id-ID');
     }
 
-    // ================= PEMUTAR VIDEO ULTRA HD 60 FPS (WEBGL GPU HARDWARE) =================
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -859,14 +818,12 @@
         isWebGLSupported = initWebGL(canvas);
 
         giftVideo.onloadedmetadata = () => {
-            // MENGUNCI RESOLUSI HD ASLI VIDEO (720p / 1080p) SUPAYA TIDAK BURIK / BLUR
             const vWidth = giftVideo.videoWidth || 720;
             const vHeight = giftVideo.videoHeight || 1280;
             canvas.width = vWidth;
             canvas.height = vHeight;
 
             if (isWebGLSupported && gl) {
-                // RENDER MENGGUNAKAN GPU WEBGL (SUPER CEPAT & LANCAR 60 FPS)
                 gl.viewport(0, 0, vWidth, vHeight);
                 gl.useProgram(glProgram);
 
@@ -904,7 +861,6 @@
                 });
 
             } else {
-                // METODE CADANGAN CANVAS 2D
                 const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 function render2DFrame() {
                     if (giftVideo.paused || giftVideo.ended) {
