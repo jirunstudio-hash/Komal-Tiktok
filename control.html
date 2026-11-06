@@ -37,7 +37,7 @@
         .slot-item { background: #20202c; border: 1px solid #2d2d3f; border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .slot-item-info { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px; }
 
-        /* GRID KATALOG GIFT OTOMATIS */
+        /* GRID KATALOG GIFT SESUAI VIDEO */
         .gift-catalog-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -46,8 +46,8 @@
         }
         .gift-card-btn {
             background: #20202c;
-            border: 1px solid #353549;
-            border-radius: 10px;
+            border: 1.5px solid #353549;
+            border-radius: 12px;
             padding: 10px 6px;
             display: flex;
             flex-direction: column;
@@ -55,31 +55,48 @@
             gap: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
         .gift-card-btn:hover {
-            background: #2a2a3c;
+            background: #28283a;
             border-color: #f59e0b;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
         }
         .gift-card-btn img {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+            border-radius: 8px;
         }
         .gift-card-btn .g-title {
             font-size: 0.72rem;
             font-weight: 700;
             color: #fff;
             text-align: center;
+            line-height: 1.2;
         }
         .gift-card-btn .g-coins {
             font-size: 0.65rem;
-            color: #f59e0b;
+            color: #fcd34d;
             font-weight: 800;
-            background: rgba(245, 158, 11, 0.15);
-            padding: 2px 6px;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 2px 7px;
             border-radius: 999px;
+            border: 0.5px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .upload-badge-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: #222230;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px dashed #555;
         }
     </style>
 </head>
@@ -140,15 +157,15 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG GIFT RESMI TIKTOK (KLIK LANGSUNG JALAN + OTOMATIS POIN & ICON) -->
+        <!-- 3. KATALOG GIFT SESUAI VIDEO (OTOMATIS POIN, ANIMASI & IKON MUNCUL) -->
         <div class="card" style="border: 1px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
-                <span>🎁 3. Katalog Gift TikTok (1-Klik Otomatis Animasi, Poin & Badge)</span>
+                <span>🎁 3. Katalog Gift Sesuai Video (Klik Langsung Muncul Ikon & Koin)</span>
             </h3>
 
             <div class="form-group">
                 <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
-                <select id="quickGiftTargetSlot" style="border-color:#f59e0b; background:#29221b;">
+                <select id="quickGiftTargetSlot" style="border-color:#f59e0b; background:#29221b; font-weight:bold;">
                     <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
                     <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
                     <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
@@ -156,8 +173,17 @@
                 </select>
             </div>
 
-            <!-- Grid 8 Gift Resmi dari Video Anda -->
+            <!-- Grid 8 Gift Sesuai Video Pengguna -->
             <div class="gift-catalog-grid" id="giftCatalogContainer"></div>
+
+            <!-- Upload Custom GIF jika punya animasi GIF sendiri -->
+            <div class="upload-badge-box">
+                <div style="flex:1;">
+                    <label style="color:#aaa; font-size:0.7rem;">Atau Pasang File Gambar / GIF Sendiri ke Kotak:</label>
+                    <input type="file" id="customBadgeInput" accept="image/gif,image/png,image/jpeg,image/webp" onchange="handleCustomBadgeUpload(event)" style="font-size:0.75rem; padding:5px;">
+                </div>
+                <button class="btn-red" style="padding: 7px 10px; font-size: 0.75rem;" onclick="removeGiftBadgeFromSlot()" title="Hapus Ikon Gift">❌ Hapus Ikon</button>
+            </div>
         </div>
 
         <!-- 4. KELOLA & TURUNKAN KOTAK 1-8 -->
@@ -204,74 +230,95 @@
         let currentDetectedProfile = null;
         let selectedGiftBase64 = "";
 
-        // ================= DATABASE GIFT DARI VIDEO ANDA =================
+        // Helper pembuat SVG data-uri resolusi tinggi anti gagal
+        function createSvgIcon(symbol, bgColor, glowColor) {
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+                    <defs>
+                        <radialGradient id="grad" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+                            <stop offset="60%" stop-color="${bgColor}" stop-opacity="0.95"/>
+                            <stop offset="100%" stop-color="#000000" stop-opacity="0.95"/>
+                        </radialGradient>
+                        <filter id="glow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="${glowColor}"/>
+                        </filter>
+                    </defs>
+                    <circle cx="50" cy="50" r="44" fill="url(#grad)" stroke="${glowColor}" stroke-width="3" filter="url(#glow)"/>
+                    <text x="50%" y="62%" font-size="46" text-anchor="middle" dominant-baseline="middle">${symbol}</text>
+                </svg>
+            `;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        // DATABASE 8 GIFT SESUAI VIDEO DENGAN IKON ANTI-GAGAL
         const TIKTOK_GIFTS = [
             {
                 id: 'universe',
                 title: 'TikTok Universe',
                 coins: 44999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/tiktok_universe.png~tplv-obj.png',
-                video: 'https://assets.mixkit.co/videos/preview/mixkit-flying-through-a-starfield-in-space-32943-large.mp4' // Ganti URL video universe Anda
+                icon: createSvgIcon('🌌', '#7928ca', '#00f2fe'),
+                video: '' 
             },
             {
                 id: 'lion',
                 title: 'Singa (Lion)',
                 coins: 29999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/lion.png~tplv-obj.png',
-                video: '' 
-            },
-            {
-                id: 'dragon',
-                title: 'Naga Api (Dragon)',
-                coins: 26999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/dragon_flame.png~tplv-obj.png',
+                icon: createSvgIcon('🦁', '#d97706', '#f59e0b'),
                 video: ''
             },
             {
-                id: 'falcon',
-                title: 'Elang Petir (Falcon)',
-                coins: 19999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/thunder_falcon.png~tplv-obj.png',
+                id: 'dragon',
+                title: 'Naga Api',
+                coins: 26999,
+                icon: createSvgIcon('🐉', '#dc2626', '#ef4444'),
                 video: ''
             },
             {
                 id: 'phoenix',
                 title: 'Burung Phoenix',
                 coins: 25999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/phoenix.png~tplv-obj.png',
+                icon: createSvgIcon('🔥', '#ea580c', '#fb923c'),
+                video: ''
+            },
+            {
+                id: 'falcon',
+                title: 'Elang Petir',
+                coins: 19999,
+                icon: createSvgIcon('🦅', '#0284c7', '#38bdf8'),
                 video: ''
             },
             {
                 id: 'mecha',
                 title: 'Robot Mecha',
                 coins: 29999,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/mecha.png~tplv-obj.png',
+                icon: createSvgIcon('🤖', '#4338ca', '#818cf8'),
                 video: ''
             },
             {
                 id: 'whale',
                 title: 'Paus Antariksa',
                 coins: 2150,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/diving_whale.png~tplv-obj.png',
+                icon: createSvgIcon('🐳', '#0d9488', '#2dd4bf'),
                 video: ''
             },
             {
                 id: 'rose',
                 title: 'Mawar (Rose)',
                 coins: 1,
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/rose.png~tplv-obj.png',
+                icon: createSvgIcon('🌹', '#be123c', '#fb7185'),
                 video: ''
             }
         ];
 
-        // RENDER KATALOG GIFT KE PANEL
+        // RENDER KATALOG GIFT
         function renderGiftCatalog() {
             const container = document.getElementById('giftCatalogContainer');
             container.innerHTML = '';
             TIKTOK_GIFTS.forEach(g => {
                 container.innerHTML += `
                     <div class="gift-card-btn" onclick="sendBuiltInGift('${g.id}')">
-                        <img src="${g.icon}" alt="${g.title}" onerror="this.src='https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/rose.png~tplv-obj.png'">
+                        <img src="${g.icon}" alt="${g.title}">
                         <span class="g-title">${g.title}</span>
                         <span class="g-coins">🪙 ${g.coins.toLocaleString('id-ID')}</span>
                     </div>
@@ -280,14 +327,14 @@
         }
         renderGiftCatalog();
 
-        // 1-KLIK TRIGGER GIFT KE DISPLAY
+        // 1-KLIK TRIGGER GIFT: VIDEO JALAN, POIN DITAMBAH, IKON MUNCUL DI POJOK KANAN ATAS
         function sendBuiltInGift(giftId) {
             const gift = TIKTOK_GIFTS.find(g => g.id === giftId);
             if (!gift) return;
 
             const target = parseInt(document.getElementById('quickGiftTargetSlot').value);
 
-            // 1. Kirim Animasi Video & Penambahan Koin Otomatis
+            // 1. Kirim Poin & Play Animasi
             channel.postMessage({
                 type: 'PLAY_GIFT',
                 src: gift.video || selectedGiftBase64 || document.getElementById('giftUrlInput').value.trim(),
@@ -296,12 +343,41 @@
                 giftId: gift.id
             });
 
-            // 2. Pasang Foto/Icon Gift di Pojok Kanan Atas Kotak Penerima
+            // 2. Pasang Ikon Gift di Pojok Kanan Atas
             channel.postMessage({
                 type: 'UPDATE_SLOT',
                 slotNum: target,
                 badgeImg: gift.icon
             });
+        }
+
+        // UPLOAD GAMBAR / GIF CUSTOM DARI HP / PC
+        function handleCustomBadgeUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const target = parseInt(document.getElementById('quickGiftTargetSlot').value);
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const base64Img = ev.target.result;
+                channel.postMessage({
+                    type: 'UPDATE_SLOT',
+                    slotNum: target,
+                    badgeImg: base64Img
+                });
+                alert(`✅ File GIF/Foto berhasil dipasang di pojok kanan atas Kotak ${target}!`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeGiftBadgeFromSlot() {
+            const target = parseInt(document.getElementById('quickGiftTargetSlot').value);
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slotNum: target,
+                badgeImg: "" 
+            });
+            alert(`🗑 Ikon Gift di Kotak ${target} telah dihapus.`);
         }
 
         function renderSlotList() {
@@ -350,7 +426,7 @@
                     }
                 }, 33);
             } catch (err) {
-                alert("Izin kamera ditolak atau tidak ditemukan: " + err.message);
+                alert("Izin kamera ditolak: " + err.message);
             }
         }
 
@@ -371,7 +447,7 @@
             channel.postMessage({ type: 'HOST_CAM_STOP' });
         }
 
-        // ================= 2. DETEKSI USER TIKWM =================
+        // ================= 2. DETEKSI TIKTOK =================
         function pickNested(obj, keys) {
             if (!obj) return null;
             for (var i = 0; i < keys.length; i++) {
@@ -456,7 +532,6 @@
             alert(`✅ Kotak ${slotNum} berhasil dipasang!`);
         }
 
-        // ================= 3. TURUNKAN KOTAK =================
         function clearSingleSlot(slotNum) {
             slotData[slotNum] = null;
             channel.postMessage({
@@ -480,7 +555,6 @@
             renderSlotList();
         }
 
-        // ================= 4. VIDEO MANUAL =================
         function handleGalleryVideo(e) {
             const file = e.target.files[0];
             if (!file) return;
