@@ -23,9 +23,6 @@
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; }
 
-        .cam-preview-box { width: 100%; height: 140px; background: #000; border-radius: 8px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 8px; }
-        #camPreviewVideo { width: 100%; height: 100%; object-fit: cover; display: none; }
-
         .profile-preview { display: none; align-items: center; gap: 12px; background: #222230; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border: 1px solid #38384a; }
         .profile-preview img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
         .profile-meta { display: flex; flex-direction: column; font-size: 0.85rem; }
@@ -108,16 +105,16 @@
 
     <div class="dashboard">
 
-        <!-- 1. IDENTITAS HOST (INPUT USERNAME TIKTOK) & KAMERA -->
+        <!-- 1. IDENTITAS & KONTROL KAMERA DISPLAY -->
         <div class="card">
             <h3>
-                <span>1. Kamera & Identitas Host (Cari Akun TikTok)</span>
-                <span id="camStatusBadge" style="font-size:0.65rem; color:#10b981; font-weight:normal;"></span>
+                <span>1. Identitas Host & Remote Kamera Display</span>
+                <span id="remoteCamStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Kamera Standby</span>
             </h3>
 
             <!-- CARI USERNAME TIKTOK HOST -->
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label>Ketik Username TikTok Host (Foto & Nama Otomatis Jadi Pengirim Gift):</label>
+            <div class="form-group">
+                <label>Ketik Username TikTok Host (Nama & Foto Otomatis ke Display):</label>
                 <div style="display:flex; gap:6px;">
                     <input type="text" id="hostUsernameInput" placeholder="Contoh: atjunior atau @username" style="flex:1;">
                     <button id="btnDetectHost" class="btn-tiktok" onclick="detectHostTikTokUser()">🔍 Cari Akun Host</button>
@@ -125,7 +122,7 @@
             </div>
 
             <!-- PREVIEW PROFIL HOST -->
-            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom:10px;">
+            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom: 12px;">
                 <img id="hostPrevImg" src="" alt="Avatar Host" referrerpolicy="no-referrer">
                 <div class="profile-meta">
                     <b id="hostPrevNick">Nama Host</b>
@@ -133,13 +130,10 @@
                 </div>
             </div>
 
+            <!-- TOMBOL REMOTE UNTUK MENYALAKAN KAMERA DI DISPLAY SECARA OTOMATIS -->
             <div style="display:flex; gap: 8px;">
-                <button id="btnStartCam" class="btn-green" style="flex:1;" onclick="startCamera()">🔴 Aktifkan Kamera Host</button>
-                <button id="btnStopCam" class="btn-red" style="flex:1; display:none;" onclick="stopCamera()">⏹ Matikan Kamera</button>
-            </div>
-            <div class="cam-preview-box">
-                <span id="camPlaceholder" style="font-size:0.75rem; color:#666;">Preview Kamera Panel Operator</span>
-                <video id="camPreviewVideo" autoplay playsinline muted></video>
+                <button id="btnRemoteStartCam" class="btn-green" style="flex:1;" onclick="controlDisplayCamera('start')">🔴 Nyalakan Kamera di Display</button>
+                <button id="btnRemoteStopCam" class="btn-red" style="flex:1; display:none;" onclick="controlDisplayCamera('stop')">⏹ Matikan Kamera di Display</button>
             </div>
         </div>
 
@@ -207,17 +201,39 @@
 
     </div>
 
-    <canvas id="camCanvas" width="360" height="640" style="display:none;"></canvas>
-
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
 
-        // PENYIMPAN IDENTITAS PROFIL HOST (HASIL DETEKSI TIKTOK)
+        // PENYIMPAN IDENTITAS PROFIL HOST
         let currentHostProfile = {
             nickname: localStorage.getItem('saved_host_name') || 'Host',
             avatar: localStorage.getItem('saved_host_avatar') || 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg',
             username: localStorage.getItem('saved_host_user') || ''
         };
+
+        // REMOTE KONTROL KAMERA DISPLAY (TIDAK MEMBEBANI KOMPUTER)
+        function controlDisplayCamera(action) {
+            channel.postMessage({
+                type: 'TRIGGER_DISPLAY_CAMERA',
+                action: action
+            });
+
+            const btnStart = document.getElementById('btnRemoteStartCam');
+            const btnStop = document.getElementById('btnRemoteStopCam');
+            const statusLabel = document.getElementById('remoteCamStatus');
+
+            if (action === 'start') {
+                btnStart.style.display = 'none';
+                btnStop.style.display = 'inline-block';
+                statusLabel.innerText = "🟢 Kamera Aktif di Display";
+                statusLabel.style.color = "#10b981";
+            } else {
+                btnStart.style.display = 'inline-block';
+                btnStop.style.display = 'none';
+                statusLabel.innerText = "Kamera Standby";
+                statusLabel.style.color = "#aaa";
+            }
+        }
 
         // ================= DATABASE 9 GIFT RESMI =================
         const GIFTS_DATABASE = [
@@ -302,7 +318,6 @@
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
         }
 
-        // TRIGGER GIFT: MENGGUNAKAN NAMA DAN FOTO PROFIL HOST HASIL DETEKSI SECARA OTOMATIS
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
@@ -323,72 +338,7 @@
             });
         }
 
-        // ================= 1. KAMERA HOST =================
-        let camStream = null;
-        let camWorker = null;
-
-        const workerBlob = new Blob([`
-            let timer = null;
-            self.onmessage = function(e) {
-                if (e.data === 'start') {
-                    timer = setInterval(() => self.postMessage('tick'), 40);
-                } else if (e.data === 'stop') {
-                    if (timer) clearInterval(timer);
-                }
-            };
-        `], { type: 'application/javascript' });
-
-        async function startCamera() {
-            try {
-                camStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' }, 
-                    audio: false 
-                });
-
-                const preview = document.getElementById('camPreviewVideo');
-                preview.srcObject = camStream;
-                preview.style.display = 'block';
-                document.getElementById('camPlaceholder').style.display = 'none';
-                document.getElementById('btnStartCam').style.display = 'none';
-                document.getElementById('btnStopCam').style.display = 'inline-block';
-                document.getElementById('camStatusBadge').innerText = "🟢 Streaming Aktif";
-
-                const canvas = document.getElementById('camCanvas');
-                const ctx = canvas.getContext('2d');
-
-                if (camWorker) camWorker.terminate();
-                camWorker = new Worker(URL.createObjectURL(workerBlob));
-                camWorker.onmessage = () => {
-                    if (preview.readyState >= preview.HAVE_CURRENT_DATA) {
-                        ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
-                        channel.postMessage({ type: 'HOST_CAM_FRAME', frame: canvas.toDataURL('image/jpeg', 0.6) });
-                    }
-                };
-                camWorker.postMessage('start');
-
-                channel.postMessage({ type: 'HOST_CAM_STARTED' });
-
-            } catch (e) {
-                console.warn("Izin kamera gagal:", e);
-            }
-        }
-
-        function stopCamera() {
-            if (camWorker) { camWorker.postMessage('stop'); camWorker.terminate(); camWorker = null; }
-            if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
-            document.getElementById('camPreviewVideo').style.display = 'none';
-            document.getElementById('camPlaceholder').style.display = 'block';
-            document.getElementById('btnStartCam').style.display = 'inline-block';
-            document.getElementById('btnStopCam').style.display = 'none';
-            document.getElementById('camStatusBadge').innerText = "";
-            channel.postMessage({ type: 'HOST_CAM_STOP' });
-        }
-
-        window.addEventListener('beforeunload', () => {
-            channel.postMessage({ type: 'CONTROL_CLOSED' });
-        });
-
-        // ================= 2. API DETEKSI TIKTOK (HOST & KOMAL) =================
+        // ================= DETEKSI PROFIL TIKTOK =================
         function pickNested(obj, keys) {
             if (!obj) return null;
             for (var i = 0; i < keys.length; i++) {
@@ -446,7 +396,7 @@
             return extractTikwmUser(JSON.parse(jsonP.contents));
         }
 
-        // CARI DAN DETEKSI AKUN TIKTOK HOST
+        // CARI AKUN TIKTOK HOST
         async function detectHostTikTokUser() {
             var inputVal = document.getElementById('hostUsernameInput').value.trim();
             if (!inputVal) return;
@@ -473,7 +423,6 @@
                 document.getElementById('hostPrevUser').innerText = '@' + data.username;
                 document.getElementById('hostProfilePreviewBox').style.display = 'flex';
 
-                // Langsung kirim nama & foto profil host ke layar display
                 channel.postMessage({
                     type: 'UPDATE_HOST',
                     hostName: data.nickname,
@@ -493,7 +442,7 @@
             }
         }
 
-        // CARI DAN DETEKSI AKUN KOMAL
+        // CARI AKUN TIKTOK KOMAL
         let currentDetectedProfile = null;
 
         async function detectTikTokUser() {
@@ -545,7 +494,7 @@
             }
         });
 
-        // PASANG KE KOTAK (RESET & GESER KE KOTAK BERIKUTNYA)
+        // PASANG USER KE KOTAK SECARA OTOMATIS
         function placeUserToSlot() {
             const slotSelect = document.getElementById('targetSlotSelect');
             const slotNum = parseInt(slotSelect.value);
@@ -589,7 +538,7 @@
             }
         }
 
-        // ================= 4. SLOT MANAGER =================
+        // ================= KELOLA KOTAK =================
         const slotData = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null };
 
         function renderSlotList() {
