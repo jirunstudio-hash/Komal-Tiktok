@@ -23,9 +23,9 @@
         }
 
         .host-box { 
-            flex: 1; height: auto; min-height: 380px; background: #16161c; border-radius: 16px; overflow: hidden; 
+            flex: 1; height: auto; min-height: 380px; background: #16161c; border-radius: 20px; overflow: hidden; 
             position: relative; display: flex; justify-content: center; align-items: center; 
-            border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.18); box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
         .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
@@ -49,34 +49,34 @@
 
         /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
-            width: 188px; display: grid; grid-template-columns: repeat(2, 1fr); 
+            width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
             grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; 
             position: relative; z-index: 10; 
         }
 
-        /* ===== KOTAK SLOT PERSIS TIKTOK ===== */
+        /* ===== KOTAK SLOT IDENTIK PERSIS TIKTOK ===== */
         .slot-box { 
             width: 100%; aspect-ratio: 1 / 1; 
-            background: #1e1e24; 
-            border-radius: 16px; 
+            background: #202127; 
+            border-radius: 20px; /* Sudut melengkung halus persis foto */
             position: relative; 
             overflow: hidden; 
             display: flex; flex-direction: column; 
             align-items: center; justify-content: center; 
-            border: 1px solid rgba(255, 255, 255, 0.12); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.22); /* Border luar kartu */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
             transition: all 0.25s ease;
         }
 
-        /* 1. LATAR BELAKANG BLUR (PERSIS FOTO ASLI) */
+        /* 1. LATAR BELAKANG BLUR MENYELURUH */
         .slot-bg-blur {
             position: absolute !important;
-            inset: -12px !important;
-            width: calc(100% + 24px) !important;
-            height: calc(100% + 24px) !important;
+            inset: -20px !important;
+            width: calc(100% + 40px) !important;
+            height: calc(100% + 40px) !important;
             object-fit: cover !important;
-            filter: blur(14px) brightness(0.68) contrast(1.1) !important;
-            transform: scale(1.15) !important;
+            filter: blur(14px) brightness(0.65) contrast(1.05) !important;
+            transform: scale(1.2) !important;
             display: none;
             z-index: 1;
             pointer-events: none;
@@ -84,35 +84,35 @@
         .slot-bg-overlay {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle, rgba(0,0,0,0.05) 10%, rgba(0,0,0,0.5) 100%);
+            background: rgba(0, 0, 0, 0.25);
             display: none;
             z-index: 2;
             pointer-events: none;
         }
 
-        /* 2. KOTAK KOSONG */
+        /* 2. KOTAK KOSONG (+ DAN Permintaan) */
         .slot-icon { color: #6b6f7d; font-size: 1.25rem; margin-bottom: 2px; font-weight: 300; z-index: 3; line-height: 1; }
         .slot-req { color: #767a89; font-size: 0.52rem; font-weight: 500; letter-spacing: 0.1px; z-index: 3; }
 
-        /* 3. FOTO PROFIL BULAT DI TENGAH */
+        /* 3. FOTO PROFIL BULAT DI TENGAH (BERSIH TANPA GARIS TEBAL) */
         .slot-circle-img { 
             width: 44px; height: 44px; 
             border-radius: 50%; object-fit: cover; 
             display: none; position: absolute; 
             top: 50%; left: 50%; 
             transform: translate(-50%, -50%); 
-            z-index: 5; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75);
+            z-index: 4; 
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
         }
 
-        /* 4. PILL KOIN CYAN DI KIRI ATAS */
+        /* 4. BADGE KOIN CYAN NEON DI KIRI ATAS */
         .slot-coin-badge { 
-            position: absolute; top: 5px; left: 5px; 
+            position: absolute; top: 6px; left: 6px; 
             display: flex; align-items: center; gap: 4px; 
-            background: rgba(18, 18, 22, 0.65); 
+            background: rgba(0, 0, 0, 0.65); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             padding: 2px 7px 2px 3px; 
-            border-radius: 999px; z-index: 8; 
+            border-radius: 999px; z-index: 6; 
             border: 0.5px solid rgba(255, 255, 255, 0.15);
         }
         .cyan-diamond-circle { 
@@ -120,24 +120,25 @@
             background: radial-gradient(circle, #ffffff 18%, #38bdf8 65%, #0284c7 100%); 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             box-shadow: 0 0 6px rgba(56, 189, 248, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             flex-shrink: 0;
         }
         .diamond-svg { width: 7px; height: 7px; fill: #ffffff; }
-        .coin-count { font-size: 0.56rem; color: #ffffff; font-weight: 700; letter-spacing: 0.1px; line-height: 1; }
+        .coin-count { font-size: 0.56rem; color: #ffffff; font-weight: 800; letter-spacing: 0.1px; line-height: 1; }
 
-        /* BADGE KANAN ATAS (JIKA ADA BADGE/PET) */
+        /* BADGE KANAN ATAS (SEPERTI ANJING / SHIBA DI KOTAK KEDUA) */
         .slot-top-badge {
-            position: absolute; top: 5px; right: 5px; z-index: 8;
-            font-size: 0.65rem; display: none;
+            position: absolute; top: 5px; right: 6px; z-index: 6;
+            width: 16px; height: 16px; display: none;
+            object-fit: contain;
         }
 
-        /* 5. PILL NAMA DI KIRI BAWAH: nama... + (LINGKARAN PLUS SEPERTI FOTO ASLI) */
+        /* 5. PILL NAMA DI KIRI BAWAH: nama... (+) */
         .slot-name-pill { 
-            position: absolute; bottom: 5px; left: 5px; 
-            max-width: calc(100% - 32px); 
-            display: flex; align-items: center; gap: 3px; z-index: 8; 
-            background: rgba(18, 18, 22, 0.65); 
+            position: absolute; bottom: 6px; left: 6px; 
+            max-width: calc(100% - 34px); 
+            display: flex; align-items: center; gap: 3.5px; z-index: 6; 
+            background: rgba(0, 0, 0, 0.65); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             padding: 2.5px 3.5px 2.5px 7px; border-radius: 999px; 
             border: 0.5px solid rgba(255, 255, 255, 0.15);
@@ -147,29 +148,25 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44px; 
             line-height: 1.1;
         }
+        /* LINGKARAN PLUS PERSIS FOTO */
         .slot-plus-circle { 
             width: 13px; height: 13px; 
             border-radius: 50%; 
-            background: rgba(255, 255, 255, 0.25); 
+            background: rgba(255, 255, 255, 0.28); 
             display: flex; align-items: center; justify-content: center; 
             color: #ffffff; font-size: 0.60rem; font-weight: 900; 
-            line-height: 1; flex-shrink: 0; margin-left: 1px;
+            line-height: 1; flex-shrink: 0;
         }
 
-        /* 6. MIC BULAT DI KANAN BAWAH */
+        /* 6. TOMBOL MIC BULAT KANAN BAWAH (PUTIH BERSIH TANPA CORET MERAH) */
         .mic-container { 
-            position: absolute; bottom: 5px; right: 5px; z-index: 8; 
-            width: 19px; height: 19px; display: flex; align-items: center; justify-content: center; 
-            background: rgba(18, 18, 22, 0.65); 
+            position: absolute; bottom: 6px; right: 6px; z-index: 6; 
+            width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; 
+            background: rgba(0, 0, 0, 0.65); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             border-radius: 50%; border: 0.5px solid rgba(255, 255, 255, 0.15);
         }
-        .mic-icon-svg { width: 9.5px; height: 9.5px; fill: #ffffff; }
-        .mic-mute-line { 
-            position: absolute; width: 12px; height: 1.5px; 
-            background-color: #ef4444; transform: rotate(-45deg); display: block; 
-            border-radius: 1px;
-        }
+        .mic-icon-svg { width: 11px; height: 11px; fill: #ffffff; }
 
         /* ===== AREA VIDEO GIFT ===== */
         .gift-overlay { 
@@ -208,11 +205,11 @@
                     for(let i = 1; i <= 8; i++) {
                         document.write(`
                             <div class="slot-box" id="slot-${i}">
-                                <!-- LATAR BELAKANG FOTO BLUR PENUH -->
+                                <!-- LATAR BELAKANG BLUR -->
                                 <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
                                 <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
-                                <!-- BADGE KOIN CYAN DIAMOND GLOWING -->
+                                <!-- BADGE KOIN CYAN NEON -->
                                 <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none;">
                                     <div class="cyan-diamond-circle">
                                         <svg class="diamond-svg" viewBox="0 0 24 24"><path d="M12 2L4 9l8 13 8-13-8-7z"/></svg>
@@ -220,26 +217,28 @@
                                     <span class="coin-count" id="coincount-slot-${i}">0</span>
                                 </div>
 
-                                <!-- BADGE KANAN ATAS (OPTIONAL) -->
-                                <div class="slot-top-badge" id="topbadge-slot-${i}"></div>
+                                <!-- BADGE KANAN ATAS (MISAL ICON ANJING/SHIBA) -->
+                                <img class="slot-top-badge" id="topbadge-slot-${i}">
 
-                                <!-- KOTAK KOSONG: + DAN Permintaan -->
+                                <!-- KOTAK KOSONG -->
                                 <span class="slot-icon" id="icon-${i}">+</span>
                                 <span class="slot-req" id="req-${i}">Permintaan</span>
                                 
                                 <!-- FOTO PROFIL BULAT DI TENGAH -->
                                 <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
                                 
-                                <!-- PILL NAMA DI KIRI BAWAH: nama... + (PERSIS GAMBAR) -->
+                                <!-- PILL NAMA DI KIRI BAWAH: nama... (+) -->
                                 <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                                     <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
                                     <div class="slot-plus-circle">+</div>
                                 </div>
 
-                                <!-- MIC BULAT DI KANAN BAWAH -->
+                                <!-- MIC BULAT KANAN BAWAH (PUTIH BERSIH) -->
                                 <div class="mic-container" id="mic-slot-${i}" style="display:none;">
-                                    <svg class="mic-icon-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg>
-                                    <div class="mic-mute-line"></div>
+                                    <svg class="mic-icon-svg" viewBox="0 0 24 24">
+                                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                    </svg>
                                 </div>
                             </div>
                         `);
@@ -264,6 +263,78 @@
             const hVid = document.getElementById('hostVideo');
             if(hVid.paused && hVid.src) hVid.play().catch(()=>{});
         }, { once: true });
+
+        // FUNGSI UNTUK MENGISI DATA KE KOTAK
+        function updateSlotDisplay(data) {
+            const { slotNum, nameInput, initialPoin, profileImg, action, badgeImg } = data;
+            const slotBox = document.getElementById(`slot-${slotNum}`);
+            const coinBadge = document.getElementById(`coin-badge-${slotNum}`);
+            const coincountElem = document.getElementById(`coincount-slot-${slotNum}`);
+            const namePill = document.getElementById(`namepill-slot-${slotNum}`);
+            const nameText = document.getElementById(`nametext-slot-${slotNum}`);
+            const micContainer = document.getElementById(`mic-slot-${slotNum}`);
+            const imgElem = document.getElementById(`img-slot-${slotNum}`);
+            const bgElem = document.getElementById(`bg-slot-${slotNum}`);
+            const bgOverlay = document.getElementById(`overlay-slot-${slotNum}`);
+            const iconElem = document.getElementById(`icon-${slotNum}`);
+            const reqElem = document.getElementById(`req-${slotNum}`);
+            const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
+
+            // KOSONGKAN SLOT
+            if (action === 'clear_slot') {
+                imgElem.style.display = 'none';
+                imgElem.removeAttribute('src');
+                if (bgElem) {
+                    bgElem.style.display = 'none';
+                    bgElem.removeAttribute('src');
+                }
+                if (bgOverlay) bgOverlay.style.display = 'none';
+                if (slotBox) slotBox.style.background = '#202127';
+
+                iconElem.style.display = 'inline-block';
+                reqElem.style.display = 'inline-block';
+                namePill.style.display = 'none';
+                micContainer.style.display = 'none';
+                coinBadge.style.display = 'none';
+                if (topBadge) topBadge.style.display = 'none';
+                slotPoints[slotNum] = 0;
+                return;
+            }
+
+            // ISI SLOT PERSIS FOTO
+            if (initialPoin !== undefined) {
+                slotPoints[slotNum] = initialPoin;
+            }
+            coincountElem.innerText = formatPoin(slotPoints[slotNum]);
+            coinBadge.style.display = 'flex';
+
+            if (nameInput) {
+                nameText.innerText = nameInput;
+                namePill.style.display = 'flex';
+                micContainer.style.display = 'flex';
+            }
+
+            if (badgeImg && topBadge) {
+                topBadge.src = badgeImg;
+                topBadge.style.display = 'block';
+            } else if (topBadge) {
+                topBadge.style.display = 'none';
+            }
+
+            if (profileImg) {
+                iconElem.style.display = 'none';
+                reqElem.style.display = 'none';
+
+                imgElem.src = profileImg;
+                imgElem.style.display = 'block';
+
+                if (bgElem) {
+                    bgElem.src = profileImg;
+                    bgElem.style.display = 'block';
+                }
+                if (bgOverlay) bgOverlay.style.display = 'block';
+            }
+        }
 
         channel.onmessage = (event) => {
             const data = event.data;
@@ -302,74 +373,7 @@
                 placeholder.style.display = 'block';
             }
             else if (data.type === 'UPDATE_SLOT') {
-                const { slotNum, nameInput, initialPoin, profileImg, action, badgeIcon } = data;
-                const slotBox = document.getElementById(`slot-${slotNum}`);
-                const coinBadge = document.getElementById(`coin-badge-${slotNum}`);
-                const coincountElem = document.getElementById(`coincount-slot-${slotNum}`);
-                const namePill = document.getElementById(`namepill-slot-${slotNum}`);
-                const nameText = document.getElementById(`nametext-slot-${slotNum}`);
-                const micContainer = document.getElementById(`mic-slot-${slotNum}`);
-                const imgElem = document.getElementById(`img-slot-${slotNum}`);
-                const bgElem = document.getElementById(`bg-slot-${slotNum}`);
-                const bgOverlay = document.getElementById(`overlay-slot-${slotNum}`);
-                const iconElem = document.getElementById(`icon-${slotNum}`);
-                const reqElem = document.getElementById(`req-${slotNum}`);
-                const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
-
-                // JIKA SLOT DIKOSONGKAN
-                if (action === 'clear_slot') {
-                    imgElem.style.display = 'none';
-                    imgElem.removeAttribute('src');
-                    if (bgElem) {
-                        bgElem.style.display = 'none';
-                        bgElem.removeAttribute('src');
-                    }
-                    if (bgOverlay) bgOverlay.style.display = 'none';
-                    if (slotBox) slotBox.style.background = '#1e1e24';
-
-                    iconElem.style.display = 'inline-block';
-                    reqElem.style.display = 'inline-block';
-                    namePill.style.display = 'none';
-                    micContainer.style.display = 'none';
-                    coinBadge.style.display = 'none';
-                    if (topBadge) topBadge.style.display = 'none';
-                    slotPoints[slotNum] = 0;
-                    return;
-                }
-
-                // JIKA NAIK KE KOTAK
-                if (initialPoin !== undefined) {
-                    slotPoints[slotNum] = initialPoin;
-                }
-                coincountElem.innerText = formatPoin(slotPoints[slotNum]);
-                coinBadge.style.display = 'flex';
-
-                if (nameInput) {
-                    nameText.innerText = nameInput;
-                    namePill.style.display = 'flex';
-                    micContainer.style.display = 'flex';
-                }
-
-                if (badgeIcon && topBadge) {
-                    topBadge.innerText = badgeIcon;
-                    topBadge.style.display = 'block';
-                }
-
-                if (profileImg) {
-                    iconElem.style.display = 'none';
-                    reqElem.style.display = 'none';
-
-                    // 1. Tampilkan foto profil bulat di tengah
-                    imgElem.src = profileImg;
-                    imgElem.style.display = 'block';
-
-                    // 2. Tampilkan blur foto pada latar belakang kotak
-                    if (bgElem) {
-                        bgElem.src = profileImg;
-                        bgElem.style.display = 'block';
-                    }
-                    if (bgOverlay) bgOverlay.style.display = 'block';
-                }
+                updateSlotDisplay(data);
             }
             else if (data.type === 'PLAY_GIFT') {
                 const targetSlot = data.targetSlot;
@@ -392,7 +396,7 @@
             return val.toLocaleString('id-ID');
         }
 
-        // CHROMA KEY GANDA (HAPUS HIJAU & HITAM TOTAL)
+        // CHROMA KEY GANDA
         function playGiftVideo(src) {
             const overlayContainer = document.getElementById('giftOverlayContainer');
             const giftVideo = document.getElementById('giftVideo');
@@ -436,7 +440,6 @@
                                 let g = pixels[i + 1];
                                 let b = pixels[i + 2];
 
-                                // 1. HAPUS BACKGROUND HIJAU
                                 let maxRB = Math.max(r, b);
                                 let greenDiff = g - maxRB;
 
@@ -448,7 +451,6 @@
                                     pixels[i + 1] = Math.floor((r + b) / 2);
                                 }
 
-                                // 2. HAPUS BACKGROUND HITAM (BLACK SCREEN REMOVER)
                                 let brightness = Math.max(r, Math.max(g, b));
                                 if (brightness < 42) {
                                     let blackAlpha = Math.max(0, (brightness - 10) / 32);
@@ -465,6 +467,21 @@
                 overlayContainer.style.display = 'none';
             });
         }
+
+        // CONTOH DATA AWAL AGAR LANGSUNG MUNCUL PERSIS GAMBAR CONTOH
+        updateSlotDisplay({
+            slotNum: 1,
+            nameInput: "panggi...",
+            initialPoin: 126400,
+            profileImg: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
+        });
+
+        updateSlotDisplay({
+            slotNum: 2,
+            nameInput: "hiseyra",
+            initialPoin: 34900,
+            profileImg: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=150&q=80"
+        });
     </script>
 </body>
 </html>
