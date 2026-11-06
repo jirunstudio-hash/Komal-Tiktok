@@ -42,7 +42,7 @@
             cursor: pointer;
         }
         .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
-        #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
+        #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; }
         .host-placeholder { color: #888; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
         .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
@@ -129,7 +129,7 @@
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            z-index: 50; /* Di DEPAN kotak komal */
+            z-index: 50; 
             pointer-events: none; 
             display: none; 
             background: transparent; 
@@ -152,7 +152,7 @@
     <!-- AREA ATAS (HOST & KOTAK 1 - 8) DI BELAKANG VIDEO -->
     <div class="live-layout">
         <!-- Kotak Host bisa diklik langsung untuk menyalakan kamera lokal -->
-        <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
+        <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
             <div class="host-top-pill"><span class="gold-host-badge">Host</span></div>
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
@@ -174,7 +174,6 @@
                                 <span class="coin-count" id="coincount-slot-${i}">0</span>
                             </div>
 
-                            <!-- FOTO GIFT DI KANAN ATAS -->
                             <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
                             <span class="slot-icon" id="icon-${i}">+</span>
@@ -202,7 +201,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT (DI DEPAN KOTAK) DENGAN SUARA + CANVAS TRANSPARAN -->
+    <!-- AREA VIDEO GIFT (DI DEPAN KOTAK) -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -215,26 +214,50 @@
     const badgeTimers = {};
     let animFrameId = null;
     let displayCamStream = null;
+    
+    // WATCHDOG UNTUK DETEKSI JIKA KONTROL PUTUS / KAMERA KONTROL MATI
+    let controlWatchdogTimer = null;
+    let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (JIKA CONTROL KETUTUP)
+    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (FALLBACK)
     async function startDisplayDirectCamera() {
         try {
-            if (displayCamStream) return;
-            displayCamStream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' },
-                audio: false
-            });
             const hVid = document.getElementById('hostVideo');
+            const camImg = document.getElementById('hostCameraImg');
+            
+            camImg.style.display = 'none';
+            camImg.src = '';
+
+            if (!displayCamStream) {
+                displayCamStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' },
+                    audio: false
+                });
+            }
             hVid.srcObject = displayCamStream;
             hVid.style.display = 'block';
-            document.getElementById('hostCameraImg').style.display = 'none';
             document.getElementById('hostPlaceholder').style.display = 'none';
-            hVid.play().catch(()=>{});
+            await hVid.play().catch(()=>{});
         } catch(err) {
-            console.log("Kamera lokal display aktif:", err);
+            console.log("Kamera lokal display aktif/error:", err);
         }
+    }
+
+    // RESET WATCHDOG SETIAP FRAME DITERIMA DARI CONTROL
+    function feedWatchdog() {
+        isUsingControlStream = true;
+        if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
+        
+        // Jika dalam 1.2 detik tidak ada frame baru dari kontrol, otomatis nyalakan webcam Display
+        controlWatchdogTimer = setTimeout(() => {
+            if (isUsingControlStream) {
+                console.log("Stream kontrol terhenti, beralih ke kamera lokal display...");
+                isUsingControlStream = false;
+                startDisplayDirectCamera();
+            }
+        }, 1200);
     }
 
     // DATABASE INDEXEDDB
@@ -320,7 +343,6 @@
         }
     }
 
-    // FOTO GIFT MUNCUL 5 DETIK LALU HILANG
     function showGiftBadgeTemporarily(slotNum, badgeSrc) {
         if (!badgeSrc || !slotNum) return;
         const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
@@ -375,19 +397,30 @@
             }
         }
         else if (data.type === 'HOST_CAM_FRAME') {
+            // Sinyal frame dari kontrol masuk:
+            feedWatchdog();
+            
             const camImg = document.getElementById('hostCameraImg');
             document.getElementById('hostPlaceholder').style.display = 'none';
             camImg.src = data.frame;
             camImg.style.display = 'block';
+
+            // Matikan tampilan video lokal jika sedang aktif menerima gambar dari kontrol
+            const hVid = document.getElementById('hostVideo');
+            if (hVid.style.display !== 'none') {
+                hVid.style.display = 'none';
+            }
         }
         else if (data.type === 'HOST_CAM_STOP') {
-            const camImg = document.getElementById('hostCameraImg');
-            camImg.style.display = 'none';
-            camImg.src = "";
-            document.getElementById('hostPlaceholder').style.display = 'block';
+            // BILA KONTROL MENUTUP KAMERA: Langsung ambil alih dengan kamera lokal Display
+            isUsingControlStream = false;
+            if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
+            startDisplayDirectCamera();
         }
         else if (data.type === 'CONTROL_CLOSED') {
-            // Jika control tertutup silang, display otomatis menyalakan kamera langsung
+            // BILA JENDELA KONTROL DITUTUP
+            isUsingControlStream = false;
+            if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
             startDisplayDirectCamera();
         }
     };
@@ -399,7 +432,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO TRANSPARAN DI DEPAN KOTAK (AUDIO AKTIF OTOMATIS)
+    // PEMUTAR VIDEO TRANSPARAN DI DEPAN KOTAK
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -411,7 +444,7 @@
         overlayContainer.style.display = 'block';
         giftVideo.src = src;
         giftVideo.currentTime = 0;
-        giftVideo.muted = false; // Audio Aktif Langsung
+        giftVideo.muted = false;
         giftVideo.volume = 1.0;
 
         giftVideo.onloadedmetadata = () => {
@@ -433,7 +466,7 @@
                 for (let i = 0; i < len; i += 4) {
                     const r = d[i], g = d[i + 1], b = d[i + 2];
 
-                    // 1. FILTER GREEN SCREEN
+                    // Green screen
                     const maxRB = r > b ? r : b;
                     const greenDiff = g - maxRB;
                     if (greenDiff > 16 && g > 55) {
@@ -443,7 +476,7 @@
                         continue;
                     }
 
-                    // 2. FILTER LATAR HITAM (KOTAK DI BELAKANG TERLIHAT JELAS)
+                    // Background hitam
                     const lum = (r * 77 + g * 150 + b * 29) >> 8;
                     if (lum <= 18) {
                         d[i + 3] = 0;
