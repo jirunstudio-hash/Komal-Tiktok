@@ -71,7 +71,7 @@
         .star-svg { width: 7.5px; height: 7.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
         .coin-count { font-size: 0.58rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
-        /* FOTO GIFT DI KANAN ATAS */
+        /* FOTO GIFT DI KANAN ATAS (POP-UP 5 DETIK) */
         @keyframes popGiftBadge {
             0% { transform: scale(0.3); opacity: 0; }
             70% { transform: scale(1.2); opacity: 1; }
@@ -111,7 +111,7 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* AREA VIDEO GIFT JERNIH HD (HARDWARE GPU) */
+        /* AREA PEMUTAR VIDEO GIFT JERNIH HD (HARDWARE GPU) */
         .gift-overlay { 
             position: absolute; 
             top: 0; left: 0; 
@@ -139,7 +139,7 @@
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
             <img id="hostCameraImg" alt="Host Cam">
-            <!-- NAMA HOST SUDAH DIHILANGKAN -->
+            <!-- NAMA HOST SUDAH BERSIH DIHILANGKAN -->
         </div>
 
         <div class="komal-grid" id="komalGrid">
@@ -157,6 +157,7 @@
                                 <span class="coin-count" id="coincount-slot-${i}">0</span>
                             </div>
 
+                            <!-- FOTO GIFT DI KANAN ATAS -->
                             <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
                             <span class="slot-icon" id="icon-${i}">+</span>
@@ -184,7 +185,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT -->
+    <!-- AREA VIDEO GIFT JERNIH HD -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline muted></video>
     </div>
@@ -195,6 +196,31 @@
     const slotPoints = {};
     const badgeTimers = {};
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
+
+    // Akses Database IndexedDB untuk mengambil file video permanen
+    const DB_NAME = "TikTokStudioStorageDB";
+    const STORE_NAME = "permanent_assets";
+
+    function openDB() {
+        return new Promise((resolve) => {
+            const req = indexedDB.open(DB_NAME, 1);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+        });
+    }
+
+    async function getSavedVideo(id) {
+        try {
+            const db = await openDB();
+            if (!db) return null;
+            return new Promise((resolve) => {
+                const tx = db.transaction(STORE_NAME, "readonly");
+                const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        } catch(e) { return null; }
+    }
 
     function updateSlotDisplay(data) {
         const { slotNum, nameInput, initialPoin, profileImg, action } = data;
@@ -244,6 +270,7 @@
             micContainer.style.display = 'flex';
         }
 
+        // FOTO PROFIL BULAT DI TENGAH & BACKGROUND BLUR
         if (profileImg) {
             iconElem.style.display = 'none';
             reqElem.style.display = 'none';
@@ -254,6 +281,7 @@
         }
     }
 
+    // FOTO GIFT MUNCUL PAS DITEKAN & HILANG SETELAH 5 DETIK
     function showGiftBadgeTemporarily(slotNum, badgeSrc) {
         if (!badgeSrc || !slotNum) return;
         const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
@@ -272,7 +300,7 @@
         }, 5000);
     }
 
-    channel.onmessage = (event) => {
+    channel.onmessage = async (event) => {
         const data = event.data;
 
         if (data.type === 'UPDATE_SLOT') {
@@ -281,6 +309,7 @@
         else if (data.type === 'PLAY_GIFT') {
             const targetSlot = data.targetSlot;
             
+            // 1. Tambah Poin Otomatis
             if (targetSlot && slotPoints[targetSlot] !== undefined) {
                 slotPoints[targetSlot] += (data.increment || 0);
                 const countElem = document.getElementById(`coincount-slot-${targetSlot}`);
@@ -289,13 +318,18 @@
                 if (badge) badge.style.display = 'flex';
             }
 
+            // 2. Munculkan Foto Gift Selama Tepat 5 Detik
             if (data.badgeImg) {
                 showGiftBadgeTemporarily(targetSlot, data.badgeImg);
             }
 
+            // 3. Putar Video Asli HD Tanpa Burik
             let videoUrl = null;
             if (data.videoBlob) {
                 videoUrl = URL.createObjectURL(data.videoBlob);
+            } else if (data.giftId) {
+                const blob = await getSavedVideo(data.giftId);
+                if (blob) videoUrl = URL.createObjectURL(blob);
             } else if (data.src) {
                 videoUrl = data.src;
             }
@@ -325,6 +359,7 @@
         return val.toLocaleString('id-ID');
     }
 
+    // PEMUTAR VIDEO ASLI (HD, JERNIH, HARDWARE ACCELERATED)
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
