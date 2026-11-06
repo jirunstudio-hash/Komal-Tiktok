@@ -8,31 +8,31 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA LAYAR HP / TIKTOK LIVE STUDIO (GARIS BAWAH NAIK, SUDUT AGAK BULAT) */
+        /* KOTAK UTAMA LAYAR HP / TIKTOK LIVE STUDIO (KOTAK SIKU PRESISI / TIDAK BULAT) */
         .phone-screen { 
             height: calc(100vh - 40px); 
             width: 100vw; 
             max-width: 440px; 
             background: #000; 
             position: relative; 
-            overflow: hidden; /* Mengunci video agar pas dan tidak meluber keluar garis */
+            overflow: hidden; /* Mengunci video & elemen agar pas dengan garis */
             display: flex; 
             flex-direction: column; 
             justify-content: flex-start; 
             align-items: center; 
-            padding: 6px 6px 0 6px; /* Jarak kotak dirapatkan ke garis website */
+            padding: 6px 6px 0 6px; 
             box-shadow: 0 0 40px rgba(0,0,0,0.8); 
             border: 2px solid #222; 
-            border-radius: 12px; /* Garis agak bulat sedikit */
-            margin-bottom: 30px; /* Garis bawah dinaikkan */
+            border-radius: 0; /* KOTAK PENUH (TIDAK ADA LENGKUNGAN / BULAT) */
+            margin-bottom: 30px; 
         }
 
-        /* ===== AREA KOTAK KOMAL & HOST (RAPAT KE GARIS WEBSITE) ===== */
+        /* ===== AREA KOTAK KOMAL & HOST ===== */
         .live-layout { 
             display: flex; 
             gap: 6px; 
             width: 100%; 
-            max-width: 100%; /* Melebar rapat mendekati garis batas website */
+            max-width: 100%; 
             position: relative; 
             z-index: 10; 
             align-items: stretch; 
@@ -44,11 +44,11 @@
             50% { border-color: rgba(0, 150, 255, 0.3); box-shadow: 0 0 4px rgba(0, 150, 255, 0.2), inset 0 0 0px rgba(0, 0, 0, 0); }
         }
 
-        /* KOTAK HOST (AGAK BULAT) */
+        /* KOTAK HOST */
         .host-box { 
             flex: 1; height: auto; min-height: 380px; 
             background: #16161c; 
-            border-radius: 10px; /* Sudut agak bulat */
+            border-radius: 8px; 
             overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; 
             border: 2px solid #00d2ff; 
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
@@ -68,11 +68,11 @@
             grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; position: relative; z-index: 10; 
         }
 
-        /* KOTAK SLOT KOMAL (AGAK BULAT) */
+        /* KOTAK SLOT KOMAL */
         .slot-box { 
             width: 100%; aspect-ratio: 1 / 1; 
             background: #202127; 
-            border-radius: 8px; /* Sudut agak bulat */
+            border-radius: 6px; 
             position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
             border: 1.5px solid rgba(255, 255, 255, 0.22); 
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
@@ -138,12 +138,12 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* ===== AREA VIDEO GIFT: PAS PERSIS DENGAN GARIS WEBSITE UTAMA ===== */
+        /* ===== AREA VIDEO GIFT: FULL LAYAR RAPAT KE GARIS BATAS KANAN-KIRI ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; 
             left: 0; 
-            width: 100%; /* Pas sejajar dengan garis website */
+            width: 100%; 
             height: 100%; 
             z-index: 50; /* Di depan kotak */
             pointer-events: none; 
@@ -156,8 +156,8 @@
         #giftCanvas { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; 
-            object-position: center 30%; /* Setengah kotak tetap kelihatan dan setengahnya video di depan */
+            object-fit: cover; /* Video full memenuhi batas kanan kiri dan atas bawah layar */
+            object-position: center; 
             display: block; 
             pointer-events: none; 
         }
@@ -166,9 +166,8 @@
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA ATAS (HOST & KOTAK 1 - 8) RAPAT DENGAN GARIS WEBSITE -->
+    <!-- AREA ATAS (HOST & KOTAK 1 - 8) -->
     <div class="live-layout">
-        <!-- Kotak Host bisa diklik langsung untuk menyalakan kamera lokal -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
             <div class="host-top-pill"><span class="gold-host-badge">Host</span></div>
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
@@ -218,7 +217,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT: PAS PERSIS DI BATAS GARIS WEBSITE UTAMA -->
+    <!-- AREA VIDEO GIFT: FULL SCREEN MENEMPEL TEPAT DI BATAS GARIS KANAN KIRI -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -232,13 +231,11 @@
     let animFrameId = null;
     let displayCamStream = null;
     
-    // WATCHDOG UNTUK DETEKSI JIKA KONTROL PUTUS / KAMERA KONTROL MATI
     let controlWatchdogTimer = null;
     let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (FALLBACK)
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -262,7 +259,6 @@
         }
     }
 
-    // RESET WATCHDOG SETIAP FRAME DITERIMA DARI KONTROL
     function feedWatchdog() {
         isUsingControlStream = true;
         if (controlWatchdogTimer) clearTimeout(controlWatchdogTimer);
@@ -276,7 +272,6 @@
         }, 1200);
     }
 
-    // DATABASE INDEXEDDB
     const DB_NAME = "TikTokStudioStorageDB";
     const STORE_NAME = "permanent_assets";
 
@@ -444,7 +439,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO DENGAN GREEN SCREEN OTOMATIS & POSISI PAS DI DALAM GARIS WEBSITE
+    // PEMUTAR VIDEO GIFT DENGAN FORMAT FULL RATIO EDGE-TO-EDGE
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -460,8 +455,8 @@
         giftVideo.volume = 1.0;
 
         giftVideo.onloadedmetadata = () => {
-            canvas.width = Math.min(540, giftVideo.videoWidth || 540);
-            canvas.height = Math.round(canvas.width * (giftVideo.videoHeight / giftVideo.videoWidth)) || 960;
+            canvas.width = giftVideo.videoWidth || 720;
+            canvas.height = giftVideo.videoHeight || 1280;
 
             function renderFrame() {
                 if (giftVideo.paused || giftVideo.ended) {
@@ -484,7 +479,7 @@
                     if (greenDiff > 14 && g > 45) {
                         const alpha = greenDiff > 38 ? 0 : (1 - (greenDiff - 14) / 24);
                         d[i + 3] = (alpha * 255) | 0;
-                        d[i + 1] = maxRB; // Bersihkan pantulan hijau di tepi objek
+                        d[i + 1] = maxRB;
                         continue;
                     }
 
