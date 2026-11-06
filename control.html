@@ -117,7 +117,7 @@
 
             <!-- CARI USERNAME TIKTOK HOST -->
             <div class="form-group" style="margin-bottom: 8px;">
-                <label>Ketik Username TikTok Host (Otomatis Pasang Nama & Profil):</label>
+                <label>Ketik Username TikTok Host (Foto & Nama Otomatis Jadi Pengirim Gift):</label>
                 <div style="display:flex; gap:6px;">
                     <input type="text" id="hostUsernameInput" placeholder="Contoh: atjunior atau @username" style="flex:1;">
                     <button id="btnDetectHost" class="btn-tiktok" onclick="detectHostTikTokUser()">🔍 Cari Akun Host</button>
@@ -183,20 +183,14 @@
                 <span style="font-size:0.65rem; color:#10b981; font-weight:normal;">💾 Auto-Saved IndexedDB</span>
             </h3>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
-                <div class="form-group">
-                    <label style="color:#fcd34d;">Nama Pengirim Gift (Gifter):</label>
-                    <input type="text" id="gifterNameInput" value="ALFY GAMAL" placeholder="Contoh: ALFY GAMAL" style="border-color:#f59e0b; background:#221d17; font-weight:bold;">
-                </div>
-                <div class="form-group">
-                    <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
-                    <select id="targetSlotGift" style="border-color:#f59e0b; background:#29221b; font-weight:bold; font-size:0.95rem;">
-                        <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
-                        <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
-                        <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
-                        <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
-                    </select>
-                </div>
+            <div class="form-group" style="margin-bottom:10px;">
+                <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
+                <select id="targetSlotGift" style="border-color:#f59e0b; background:#29221b; font-weight:bold; font-size:0.95rem;">
+                    <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+                    <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+                    <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+                    <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
+                </select>
             </div>
 
             <div class="gift-grid" id="giftCatalogGrid"></div>
@@ -217,6 +211,13 @@
 
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
+
+        // PENYIMPAN IDENTITAS PROFIL HOST (HASIL DETEKSI TIKTOK)
+        let currentHostProfile = {
+            nickname: localStorage.getItem('saved_host_name') || 'Host',
+            avatar: localStorage.getItem('saved_host_avatar') || 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg',
+            username: localStorage.getItem('saved_host_user') || ''
+        };
 
         // ================= DATABASE 9 GIFT RESMI =================
         const GIFTS_DATABASE = [
@@ -301,14 +302,13 @@
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
         }
 
-        // TRIGGER GIFT: MENGIRIM DATA NAMA PENGIRIM + JUDUL GIFT + SLOT KE DISPLAY
+        // TRIGGER GIFT: MENGGUNAKAN NAMA DAN FOTO PROFIL HOST HASIL DETEKSI SECARA OTOMATIS
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
 
             const targetSlot = parseInt(document.getElementById('targetSlotGift').value);
             const savedVideo = await getAsset(`video_${id}`);
-            const gifterName = document.getElementById('gifterNameInput').value.trim() || 'ALFY GAMAL';
 
             channel.postMessage({
                 type: 'PLAY_GIFT',
@@ -317,8 +317,8 @@
                 targetSlot: targetSlot,
                 increment: gift.coins,
                 badgeImg: gift.icon,
-                senderName: gifterName,
-                senderAvatar: 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg',
+                senderName: currentHostProfile.nickname || 'Host',
+                senderAvatar: currentHostProfile.avatar || '',
                 videoBlob: savedVideo || null
             });
         }
@@ -462,12 +462,18 @@
             try {
                 var data = await requestTikwmUser(cleanUser);
 
+                currentHostProfile = {
+                    username: data.username,
+                    nickname: data.nickname,
+                    avatar: data.avatar
+                };
+
                 document.getElementById('hostPrevImg').src = data.avatar;
                 document.getElementById('hostPrevNick').innerText = data.nickname;
                 document.getElementById('hostPrevUser').innerText = '@' + data.username;
                 document.getElementById('hostProfilePreviewBox').style.display = 'flex';
 
-                // Langsung kirim nama host ke layar display
+                // Langsung kirim nama & foto profil host ke layar display
                 channel.postMessage({
                     type: 'UPDATE_HOST',
                     hostName: data.nickname,
@@ -475,6 +481,7 @@
                 });
 
                 localStorage.setItem('saved_host_name', data.nickname);
+                localStorage.setItem('saved_host_avatar', data.avatar);
                 localStorage.setItem('saved_host_user', data.username);
 
             } catch (err) {
@@ -560,17 +567,14 @@
 
             renderSlotList();
 
-            // 1. Kosongkan input & reset
             usernameInput.value = '';
             currentDetectedProfile = null;
             document.getElementById('profilePreviewBox').style.display = 'none';
 
-            // 2. Otomatis naik ke slot berikutnya
             let nextSlot = slotNum + 1;
             if (nextSlot > 8) nextSlot = 1;
             slotSelect.value = nextSlot.toString();
 
-            // 3. Otomatis fokus siap ketik berikutnya
             usernameInput.focus();
 
             const btn = document.getElementById('btnPlaceSlot');
@@ -620,11 +624,24 @@
         window.onload = () => {
             const savedHostName = localStorage.getItem('saved_host_name');
             const savedHostUser = localStorage.getItem('saved_host_user');
+            const savedHostAvatar = localStorage.getItem('saved_host_avatar');
+
             if (savedHostUser) {
                 document.getElementById('hostUsernameInput').value = savedHostUser;
             }
-            if (savedHostName) {
-                channel.postMessage({ type: 'UPDATE_HOST', hostName: savedHostName });
+            if (savedHostAvatar) {
+                document.getElementById('hostPrevImg').src = savedHostAvatar;
+                document.getElementById('hostPrevNick').innerText = savedHostName || 'Host';
+                document.getElementById('hostPrevUser').innerText = '@' + (savedHostUser || '');
+                document.getElementById('hostProfilePreviewBox').style.display = 'flex';
+                currentHostProfile = { nickname: savedHostName, avatar: savedHostAvatar, username: savedHostUser };
+            }
+            if (savedHostName || savedHostAvatar) {
+                channel.postMessage({ 
+                    type: 'UPDATE_HOST', 
+                    hostName: savedHostName || 'Host',
+                    hostAvatar: savedHostAvatar || ''
+                });
             }
             renderGiftsUI();
             renderSlotList();
