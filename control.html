@@ -20,6 +20,7 @@
         button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
         .btn-green { background: #10b981; } .btn-green:hover { background: #059669; }
         .btn-red { background: #ef4444; } .btn-red:hover { background: #dc2626; }
+        .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; }
 
@@ -27,7 +28,7 @@
         #camPreviewVideo { width: 100%; height: 100%; object-fit: cover; display: none; }
 
         .profile-preview { display: none; align-items: center; gap: 12px; background: #222230; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border: 1px solid #38384a; }
-        .profile-preview img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
+        .profile-preview img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
         .profile-meta { display: flex; flex-direction: column; font-size: 0.85rem; }
 
         .slot-manager-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
@@ -133,15 +134,21 @@
                 </div>
             </div>
 
+            <!-- Preview Data Terdeteksi -->
             <div id="profilePreviewBox" class="profile-preview">
                 <img id="prevImg" src="" alt="Avatar" referrerpolicy="no-referrer">
                 <div class="profile-meta">
-                    <b id="prevNick">Nama</b>
+                    <b id="prevNick">Nama Profil</b>
                     <span id="prevUser">@username</span>
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+            <div class="form-group" style="margin-top:8px;">
+                <label style="color:#aaa;">Atau Upload Foto Profil Manual (Cadangan jika offline):</label>
+                <input type="file" id="manualAvatarInput" accept="image/*" onchange="handleManualAvatar(event)" style="font-size:0.75rem; padding:6px;">
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
                 <div class="form-group">
                     <label>Pilih Kotak Tujuan (1 - 8):</label>
                     <select id="targetSlotSelect">
@@ -160,7 +167,7 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG 7 GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
+        <!-- 3. KATALOG 7 GIFT PERMANEN -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
                 <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
@@ -177,7 +184,6 @@
                 </select>
             </div>
 
-            <!-- Grid 7 Gift Sesuai Link yang Anda Berikan -->
             <div class="gift-grid" id="giftCatalogGrid"></div>
         </div>
 
@@ -197,53 +203,18 @@
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
 
-        // ================= DATABASE 7 GIFT DENGAN LINK IKON ANDA =================
+        // ================= DATABASE 7 GIFT RESMI DENGAN LINK IKON ANDA =================
         const GIFTS_DATABASE = [
-            { 
-                id: 'gift_1', 
-                title: 'TikTok Universe', 
-                coins: 44999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_2', 
-                title: 'Paus Antariksa', 
-                coins: 6000, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_3', 
-                title: 'Singa (Lion)', 
-                coins: 29999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_4', 
-                title: 'Fire Phoenix', 
-                coins: 41999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_5', 
-                title: 'Robot Mecha', 
-                coins: 39999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_6', 
-                title: 'Naga Api', 
-                coins: 26999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_7', 
-                title: 'Elang Petir', 
-                coins: 18999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' 
-            }
+            { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
+            { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
+            { id: 'gift_3', title: 'Singa (Lion)', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
+            { id: 'gift_4', title: 'Fire Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
+            { id: 'gift_5', title: 'Robot Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
+            { id: 'gift_6', title: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
+            { id: 'gift_7', title: 'Elang Petir', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' }
         ];
 
-        // IndexedDB untuk menyimpan file video secara permanen (tidak hilang saat di-refresh)
+        // IndexedDB: Video tersimpan permanen di memori browser
         const DB_NAME = "TikTokStudioStorageDB";
         const STORE_NAME = "permanent_assets";
 
@@ -273,7 +244,6 @@
             });
         }
 
-        // Render Katalog Gift
         async function renderGiftsUI() {
             const container = document.getElementById('giftCatalogGrid');
             container.innerHTML = '';
@@ -301,7 +271,6 @@
             }
         }
 
-        // Upload & Simpan Video Permanen
         async function uploadGiftVideo(id, e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -315,7 +284,6 @@
             alert(`✅ Video untuk gift ${id} berhasil disimpan permanen! Halaman di-refresh tidak akan hilang.`);
         }
 
-        // Kirim Gift: Video berputar, koin otomatis bertambah, dan foto gift muncul 5 detik lalu hilang
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
@@ -335,6 +303,113 @@
                 badgeImg: gift.icon,
                 videoBlob: savedVideo || null
             });
+        }
+
+        // ================= 2. DETEKSI USER TIKTOK (DUAL PROXY ANTI-GAGAL) =================
+        let currentDetectedProfile = null;
+        let manualAvatarBase64 = null;
+
+        function handleManualAvatar(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                manualAvatarBase64 = ev.target.result;
+                document.getElementById('prevImg').src = manualAvatarBase64;
+                document.getElementById('prevNick').innerText = "Avatar Manual";
+                document.getElementById('prevUser').innerText = "@manual";
+                document.getElementById('profilePreviewBox').style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function extractUserInfo(raw) {
+            const root = raw.data || raw;
+            const userInfo = root.userInfo || root.user_info || {};
+            const u = userInfo.user || root.user || userInfo || root;
+            const username = u.uniqueId || u.unique_id || u.username || '';
+            const nickname = u.nickname || u.name || username;
+            const avatar = u.avatarLarger || u.avatarMedium || u.avatarThumb || u.avatar || '';
+            if (!username && !nickname) throw new Error("Data user kosong");
+            return { username, nickname, avatar };
+        }
+
+        async function detectTikTokUser() {
+            const inputVal = document.getElementById('tiktokUsernameInput').value.trim();
+            if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
+
+            const cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '').replace(/^@/, '').split(/[/?#]/)[0].trim();
+            const btn = document.getElementById('btnDetectTikTok');
+            btn.innerText = "⏳ Mencari Data Asli...";
+            btn.disabled = true;
+
+            try {
+                let userObj = null;
+
+                // Jalur 1: Direct API
+                try {
+                    const res = await fetch('https://www.tikwm.com/api/user/info/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'unique_id=' + encodeURIComponent(cleanUser)
+                    });
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json.code === 0 && (json.data || json.userInfo)) {
+                            userObj = extractUserInfo(json);
+                        }
+                    }
+                } catch(e) {}
+
+                // Jalur 2: Proxy AllOrigins jika Jalur 1 kena blokir CORS browser
+                if (!userObj) {
+                    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.tikwm.com/api/user/info/?unique_id=' + cleanUser);
+                    const resProxy = await fetch(proxyUrl);
+                    if (resProxy.ok) {
+                        const jsonProxy = await resProxy.json();
+                        const parsed = JSON.parse(jsonProxy.contents);
+                        userObj = extractUserInfo(parsed);
+                    }
+                }
+
+                if (!userObj) throw new Error("Akun tidak ditemukan atau dibatasi");
+
+                currentDetectedProfile = userObj;
+                manualAvatarBase64 = null;
+                document.getElementById('prevImg').src = userObj.avatar;
+                document.getElementById('prevNick').innerText = userObj.nickname;
+                document.getElementById('prevUser').innerText = '@' + userObj.username;
+                document.getElementById('profilePreviewBox').style.display = 'flex';
+
+            } catch (err) {
+                alert(`Gagal mendeteksi @${cleanUser}. Anda bisa mengupload foto profil secara manual di bawah.`);
+            } finally {
+                btn.innerText = "🔍 Cari di TikTok";
+                btn.disabled = false;
+            }
+        }
+
+        function placeUserToSlot() {
+            const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
+            const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
+            const rawUser = document.getElementById('tiktokUsernameInput').value.trim();
+
+            const displayName = currentDetectedProfile ? currentDetectedProfile.nickname : (rawUser || `Slot ${slotNum}`);
+            const avatarUrl = manualAvatarBase64 || (currentDetectedProfile ? currentDetectedProfile.avatar : null);
+
+            slotData[slotNum] = { name: displayName };
+
+            // TERUSKAN FOTO PROFIL KE DISPLAY TANPA NULL
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slotNum: slotNum,
+                nameInput: displayName,
+                initialPoin: coin,
+                profileImg: avatarUrl
+            });
+
+            renderSlotList();
+            alert(`✅ Kotak ${slotNum} berhasil dipasang beserta foto profilnya!`);
         }
 
         // Slot Manager
@@ -401,25 +476,6 @@
             document.getElementById('btnStartCam').style.display = 'inline-block';
             document.getElementById('btnStopCam').style.display = 'none';
             channel.postMessage({ type: 'HOST_CAM_STOP' });
-        }
-
-        // Deteksi & Pasang User
-        function placeUserToSlot() {
-            const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
-            const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
-            const rawUser = document.getElementById('tiktokUsernameInput').value.trim();
-            const displayName = rawUser || `Slot ${slotNum}`;
-
-            slotData[slotNum] = { name: displayName };
-            channel.postMessage({
-                type: 'UPDATE_SLOT',
-                slotNum: slotNum,
-                nameInput: displayName,
-                initialPoin: coin,
-                profileImg: null
-            });
-            renderSlotList();
-            alert(`✅ Kotak ${slotNum} berhasil dipasang!`);
         }
 
         window.onload = () => {
