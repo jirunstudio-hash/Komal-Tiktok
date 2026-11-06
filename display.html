@@ -22,8 +22,11 @@
             align-items: stretch; 
         }
 
+        /* KOTAK HOST (KOTAK SIKU TANPA LENGKUNGAN) */
         .host-box { 
-            flex: 1; height: auto; min-height: 380px; background: #16161c; border-radius: 20px; overflow: hidden; 
+            flex: 1; height: auto; min-height: 380px; background: #16161c; 
+            border-radius: 0; /* TANPA LENGKUNGAN */
+            overflow: hidden; 
             position: relative; display: flex; justify-content: center; align-items: center; 
             border: 1.5px solid rgba(255, 255, 255, 0.18); box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
@@ -36,14 +39,14 @@
         .gold-host-badge { 
             background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); 
             color: #fff; font-size: 0.55rem; font-weight: 800; padding: 2px 7px; 
-            border-radius: 5px; display: flex; align-items: center; gap: 3px;
+            border-radius: 3px; display: flex; align-items: center; gap: 3px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.6);
         }
 
         .host-bottom-pill { 
             position: absolute; bottom: 8px; left: 8px; max-width: calc(100% - 16px);
             background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); 
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; z-index: 12; 
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 10px; z-index: 12; 
         }
         .host-bottom-text { font-size: 0.55rem; color: #fff; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -54,11 +57,11 @@
             position: relative; z-index: 10; 
         }
 
-        /* ===== KOTAK SLOT IDENTIK PERSIS TIKTOK ===== */
+        /* KOTAK SLOT KOMAL 1 - 8 (KOTAK SIKU TANPA LENGKUNGAN) */
         .slot-box { 
             width: 100%; aspect-ratio: 1 / 1; 
             background: #202127; 
-            border-radius: 20px; 
+            border-radius: 0; /* TANPA LENGKUNGAN */
             position: relative; 
             overflow: hidden; 
             display: flex; flex-direction: column; 
@@ -94,7 +97,7 @@
         .slot-icon { color: #6b6f7d; font-size: 1.25rem; margin-bottom: 2px; font-weight: 300; z-index: 3; line-height: 1; }
         .slot-req { color: #767a89; font-size: 0.52rem; font-weight: 500; letter-spacing: 0.1px; z-index: 3; }
 
-        /* 3. FOTO PROFIL BULAT DI TENGAH (BERSIH MENYATU DENGAN BLUR) */
+        /* 3. FOTO PROFIL BULAT DI TENGAH */
         .slot-circle-img { 
             width: 44px; height: 44px; 
             border-radius: 50%; object-fit: cover; 
@@ -204,7 +207,7 @@
                     for(let i = 1; i <= 8; i++) {
                         document.write(`
                             <div class="slot-box" id="slot-${i}">
-                                <!-- LATAR BELAKANG BLUR (TERSEMBUNYI SAAT KOSONG) -->
+                                <!-- LATAR BELAKANG BLUR (MUNCUL OTOMATIS SAAT ADA FOTO) -->
                                 <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
                                 <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
@@ -321,15 +324,12 @@
             }
 
             if (profileImg) {
-                // Sembunyikan tanda "+" dan "Permintaan"
                 iconElem.style.display = 'none';
                 reqElem.style.display = 'none';
 
-                // Tampilkan foto bulat di tengah
                 imgElem.src = profileImg;
                 imgElem.style.display = 'block';
 
-                // Tampilkan latar belakang blur menyeluruh
                 if (bgElem) {
                     bgElem.src = profileImg;
                     bgElem.style.display = 'block';
@@ -387,7 +387,7 @@
             }
         };
 
-        // FORMAT KOIN PERSIS FOTO: 126,4K dan 34,9K
+        // FORMAT KOIN: 126,4K dan 34,9K
         function formatPoin(val) {
             if (!val || val === 0) return '0';
             if (val >= 1000000) {
