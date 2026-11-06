@@ -3,37 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Studio - TikTok Live HD</title>
+    <title>Display Studio - TikTok Live HD (Model 2)</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA DIPOTONG PAS MENGIKUTI GARIS BAWAH KOTAK LIVE */
+        /* KOTAK UTAMA LAYAR HP - DIPOTONG PAS DI BAWAH AREA VIDEO */
         .phone-screen { 
             width: 100vw; 
             max-width: 390px; 
-            height: auto; /* Mengikuti tinggi konten secara pas */
+            height: auto; /* Pas mengikuti batas bawah area video */
             background: #000; 
             position: relative; 
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
-            justify-content: flex-start; 
             align-items: center; 
-            padding: 8px; /* Jarak pas di sekeliling kotak */
+            padding: 8px; 
             box-shadow: 0 0 35px rgba(0,0,0,0.85); 
             border: 2px solid #222; 
-            border-radius: 8px;
+            border-radius: 12px;
         }
 
-        /* ===== AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) ===== */
+        /* ===== 1. BAGIAN ATAS: AREA KOTAK HOST & KOMAL ===== */
         .live-layout { 
             display: flex; 
             gap: 6px; 
             width: 100%; 
+            height: 330px; /* Tinggi proporsional untuk host & 8 komal */
             position: relative; 
-            z-index: 10; 
-            align-items: stretch; /* Membuat kotak host tingginya rata dengan komal */
+            align-items: stretch; 
         }
 
         /* ANIMASI GARIS BIRU HOST */
@@ -45,16 +44,16 @@
         /* KOTAK HOST */
         .host-box { 
             flex: 1; 
-            height: 100%;
+            height: 100%; 
             background: #16161c; 
-            border-radius: 0; 
+            border-radius: 6px; 
             overflow: hidden; 
             position: relative; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             border: 2px solid #00d2ff; 
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
             animation: hostBluePulse 1.2s infinite ease-in-out;
             cursor: pointer;
         }
@@ -67,14 +66,12 @@
 
         /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
-            width: 172px; 
+            width: 170px; 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
             grid-template-rows: repeat(4, 1fr); 
             gap: 5px; 
             flex-shrink: 0; 
-            position: relative; 
-            z-index: 10; 
         }
 
         /* KOTAK SLOT KOMAL */
@@ -82,15 +79,15 @@
             width: 100%; 
             aspect-ratio: 1 / 1; 
             background: #202127; 
-            border-radius: 0; 
+            border-radius: 4px; 
             position: relative; 
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.22); 
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             transition: all 0.25s ease;
         }
 
@@ -153,25 +150,53 @@
         }
         .mic-icon-svg { width: 10px; height: 10px; display: block; }
 
-        /* ===== AREA VIDEO GIFT (TEPAT DI DEPAN KOTAK, KOTAK JADI LATAR BELAKANG) ===== */
-        .gift-overlay { 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            z-index: 50; /* Di atas kotak host dan komal */
-            pointer-events: none; 
-            display: none; 
-            background: transparent; 
+        /* ===== 2. GARIS PEMBATAS TENGAH ===== */
+        .divider-line {
+            width: 100%;
+            height: 2px;
+            margin: 8px 0;
+            background: linear-gradient(90deg, rgba(0, 210, 255, 0.05) 0%, rgba(0, 210, 255, 0.85) 50%, rgba(0, 210, 255, 0.05) 100%);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+            border-radius: 2px;
+            flex-shrink: 0;
         }
+
+        /* ===== 3. BAGIAN BAWAH: AREA VIDEO GIFT (MODEL 2) ===== */
+        .bottom-video-area {
+            width: 100%;
+            height: 220px; /* Area khusus tempat video muncul di bawah */
+            position: relative;
+            background: #101015;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-placeholder-text {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
         #giftVideo { 
             display: none; 
         }
+
         #giftCanvas { 
+            position: absolute;
+            top: 0; left: 0;
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            object-position: center center; /* Video pas berada di tengah depan kotak */
-            display: block;
+            object-position: center center;
+            display: none;
             pointer-events: none;
         }
     </style>
@@ -179,7 +204,7 @@
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) -->
+    <!-- 1. BAGIAN ATAS (KOTAK HOST & KOMAL 1-8) -->
     <div class="live-layout">
         <!-- Kotak Host -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
@@ -189,6 +214,7 @@
             <img id="hostCameraImg" alt="Host Cam">
         </div>
 
+        <!-- Grid 8 Komal -->
         <div class="komal-grid" id="komalGrid">
             <script>
                 for(let i = 1; i <= 8; i++) {
@@ -231,11 +257,16 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT (MUNCUL TRANSPARAN DI DEPAN LAYAR KOTAK) -->
-    <div class="gift-overlay" id="giftOverlayContainer">
+    <!-- 2. GARIS PEMBATAS TENGAH -->
+    <div class="divider-line"></div>
+
+    <!-- 3. BAGIAN BAWAH (AREA VIDEO MUNCUL DI BAWAH GARIS) -->
+    <div class="bottom-video-area" id="bottomVideoArea">
+        <div class="video-placeholder-text" id="videoPlaceholder">Area Gift Video</div>
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
     </div>
+
 </div>
 
 <script>
@@ -245,13 +276,12 @@
     let animFrameId = null;
     let displayCamStream = null;
     
-    // WATCHDOG UNTUK DETEKSI JIKA KONTROL PUTUS / KAMERA KONTROL MATI
     let controlWatchdogTimer = null;
     let isUsingControlStream = false;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
-    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (FALLBACK)
+    // FUNGSI AKTIFKAN KAMERA LOKAL HOST
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -451,29 +481,30 @@
         return val.toLocaleString('id-ID');
     }
 
-    // SISTEM AUTO GREEN SCREEN & BLACK SCREEN (MENGUBAH OTOMATIS)
+    // SISTEM AUTO GREEN SCREEN & BLACK SCREEN (MUNCUL DI AREA BAWAH)
     function playGiftVideo(src) {
-        const overlayContainer = document.getElementById('giftOverlayContainer');
+        const placeholder = document.getElementById('videoPlaceholder');
         const giftVideo = document.getElementById('giftVideo');
         const canvas = document.getElementById('giftCanvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
         if (animFrameId) cancelAnimationFrame(animFrameId);
 
-        overlayContainer.style.display = 'block';
+        placeholder.style.display = 'none';
+        canvas.style.display = 'block';
         giftVideo.src = src;
         giftVideo.currentTime = 0;
         giftVideo.muted = false;
         giftVideo.volume = 1.0;
 
         giftVideo.onloadedmetadata = () => {
-            // Sesuaikan resolusi canvas
             canvas.width = Math.min(540, giftVideo.videoWidth || 540);
-            canvas.height = Math.round(canvas.width * (giftVideo.videoHeight / giftVideo.videoWidth)) || 960;
+            canvas.height = Math.round(canvas.width * (giftVideo.videoHeight / giftVideo.videoWidth)) || 400;
 
             function renderFrame() {
                 if (giftVideo.paused || giftVideo.ended) {
-                    overlayContainer.style.display = 'none';
+                    canvas.style.display = 'none';
+                    placeholder.style.display = 'block';
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     return;
                 }
@@ -486,17 +517,17 @@
                 for (let i = 0; i < len; i += 4) {
                     const r = d[i], g = d[i + 1], b = d[i + 2];
 
-                    // 1. OTOMATIS DETEKSI GREEN SCREEN & HILANGKAN LATAR HIJAU
+                    // 1. OTOMATIS FILTER GREEN SCREEN
                     const maxRB = r > b ? r : b;
                     const greenDiff = g - maxRB;
                     if (greenDiff > 14 && g > 45) {
                         const alpha = greenDiff > 40 ? 0 : (1 - (greenDiff - 14) / 26);
                         d[i + 3] = (alpha * 255) | 0;
-                        d[i + 1] = maxRB; // Menghilangkan sisa kilap hijau (spill removal)
+                        d[i + 1] = maxRB; // hilangkan sisa hijau (spill removal)
                         continue;
                     }
 
-                    // 2. OTOMATIS DETEKSI BLACK SCREEN (LATAR GELAP/HITAM)
+                    // 2. OTOMATIS FILTER BLACK SCREEN
                     const lum = (r * 77 + g * 150 + b * 29) >> 8;
                     if (lum <= 18) {
                         d[i + 3] = 0;
@@ -514,12 +545,16 @@
                 renderFrame();
             }).catch(() => {
                 giftVideo.muted = true;
-                giftVideo.play().then(() => { renderFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
+                giftVideo.play().then(() => { renderFrame(); }).catch(() => { 
+                    canvas.style.display = 'none'; 
+                    placeholder.style.display = 'block';
+                });
             });
         };
 
         giftVideo.onended = () => {
-            overlayContainer.style.display = 'none';
+            canvas.style.display = 'none';
+            placeholder.style.display = 'block';
             if (animFrameId) cancelAnimationFrame(animFrameId);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             giftVideo.src = '';
