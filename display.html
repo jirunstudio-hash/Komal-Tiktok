@@ -104,12 +104,13 @@
         .star-svg { width: 7.5px; height: 7.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
         .coin-count { font-size: 0.58rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
-        /* FOTO / ICON GIFT KANAN ATAS */
+        /* FOTO / ICON GIFT KANAN ATAS (LEBIH TEGAS & TIDAK TERPOTONG) */
         .slot-top-badge {
-            position: absolute; top: 4px; right: 4px; z-index: 6;
-            width: 19px; height: 19px; display: none; object-fit: contain;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9));
+            position: absolute; top: 4px; right: 4px; z-index: 8;
+            width: 22px; height: 22px; display: none; object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.95));
             pointer-events: none;
+            border-radius: 4px;
         }
 
         /* PILL NAMA KIRI BAWAH */
@@ -170,8 +171,8 @@
                                 <span class="coin-count" id="coincount-slot-${i}">0</span>
                             </div>
 
-                            <!-- ICON GIFT KANAN ATAS -->
-                            <img class="slot-top-badge" id="topbadge-slot-${i}" alt="Gift Icon">
+                            <!-- FOTO / IKON GIFT KANAN ATAS (DIJAMIN TIDAK ERROR / 403) -->
+                            <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" alt="Gift">
 
                             <span class="slot-icon" id="icon-${i}">+</span>
                             <span class="slot-req" id="req-${i}">Permintaan</span>
@@ -237,7 +238,10 @@
             namePill.style.display = 'none';
             micContainer.style.display = 'none';
             coinBadge.style.display = 'none';
-            if (topBadge) { topBadge.style.display = 'none'; topBadge.removeAttribute('src'); }
+            if (topBadge) { 
+                topBadge.style.display = 'none'; 
+                topBadge.removeAttribute('src'); 
+            }
             slotPoints[slotNum] = 0;
             return;
         }
@@ -256,9 +260,9 @@
             micContainer.style.display = 'flex';
         }
 
-        // TAMPILKAN FOTO GIFT KANAN ATAS
+        // TAMPILKAN IKON GIFT TANPA RESIKO TERHAPUS OLEH UPDATE LAIN
         if (badgeImg !== undefined && topBadge) {
-            if (badgeImg) {
+            if (badgeImg && badgeImg.trim() !== "") {
                 topBadge.src = badgeImg;
                 topBadge.style.display = 'block';
             } else {
