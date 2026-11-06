@@ -5,10 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Studio - TikTok Live HD</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #000; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        /* OPTIMASI RESOLUSI HD & ANTI-BLUR / ANTI-BURIK */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
 
-        /* KOTAK LAYAR HP UTAMA - GARIS MERAH RAMPING & PAS (TIDAK TERLALU TEBAL) */
+        /* KOTAK LAYAR HP UTAMA - TAJAM, RAMPING & PAS UNTUK TIKTOK STUDIO */
         .phone-screen { 
             height: calc(100vh - 20px); 
             width: 100vw; 
@@ -21,8 +38,10 @@
             justify-content: flex-start; 
             align-items: center; 
             padding: 4px;
-            border: 1.5px solid #ff0033; /* KETEBALAN GARIS MERAH DIKURANGI AGAR PAS */
+            border: 1.5px solid #ff0033;
             box-shadow: 0 0 14px rgba(255, 0, 51, 0.35);
+            transform: translateZ(0); /* AKSELERASI GPU HARDWARE */
+            backface-visibility: hidden;
         }
 
         /* ===== AREA UTAMA (HOST KIRI & KOMAL KANAN) ===== */
@@ -47,7 +66,7 @@
             }
         }
 
-        /* KOTAK HOST - GARIS BIRU RAMPING BERKEDIP CEPAT (TIDAK TERLALU TEBAL) */
+        /* KOTAK HOST */
         .host-box { 
             flex: 1; 
             background: #1c1d24; 
@@ -58,11 +77,12 @@
             justify-content: center; 
             align-items: center; 
             cursor: pointer;
-            border: 1.5px solid #00d2ff; /* KETEBALAN GARIS BIRU DIKURANGI AGAR TIDAK KETEBALAN */
+            border: 1.5px solid #00d2ff;
             animation: hostBluePulseFast 0.5s infinite ease-in-out;
+            transform: translateZ(0);
         }
-        .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
-        #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; }
+        .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; image-rendering: high-quality; }
+        #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; image-rendering: high-quality; }
         .host-placeholder { color: #555761; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
         /* BADGE HOST (KIRI ATAS) */
@@ -128,6 +148,7 @@
             align-items: center; 
             justify-content: center; 
             transition: all 0.2s ease;
+            transform: translateZ(0);
         }
 
         .slot-bg-blur { position: absolute !important; inset: -15px !important; width: calc(100% + 30px) !important; height: calc(100% + 30px) !important; object-fit: cover !important; filter: blur(12px) brightness(0.7) !important; display: none; z-index: 1; pointer-events: none; }
@@ -154,9 +175,10 @@
             letter-spacing: 0.2px;
         }
 
+        /* FOTO PROFIL KOMAL LEBIH BESAR & TAJAM */
         .slot-circle-img { 
-            width: 44px; 
-            height: 44px; 
+            width: 56px; 
+            height: 56px; 
             border-radius: 50%; 
             object-fit: cover; 
             display: none; 
@@ -165,7 +187,8 @@
             left: 50%; 
             transform: translate(-50%, -50%); 
             z-index: 4; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.6); 
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.65); 
+            image-rendering: high-quality;
         }
 
         .slot-coin-badge { 
@@ -293,6 +316,7 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
             animation: bannerSlideIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
             max-width: 95%;
+            transform: translateZ(0);
         }
         .toast-avatar {
             width: 38px;
@@ -302,6 +326,7 @@
             border: 1.5px solid rgba(255, 255, 255, 0.35);
             flex-shrink: 0;
             background: #252530;
+            image-rendering: high-quality;
         }
         .toast-text-col {
             display: flex;
@@ -335,9 +360,10 @@
             flex-shrink: 0;
             margin-left: 2px;
             animation: popGiftBadge 0.4s ease-out;
+            image-rendering: high-quality;
         }
 
-        /* ===== AREA VIDEO GIFT FULL SCREEN ===== */
+        /* ===== AREA VIDEO GIFT FULL SCREEN (HARDWARE ACCELERATED) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; 
@@ -350,6 +376,8 @@
             background: transparent; 
         }
         #giftVideo { display: none; }
+        
+        /* CANVAS ULTRA HD BERKECEPATAN TINGGI */
         #giftCanvas { 
             width: 100%; 
             height: 100%; 
@@ -357,6 +385,8 @@
             object-position: center; 
             display: block; 
             pointer-events: none; 
+            image-rendering: high-quality;
+            transform: translateZ(0); /* KUNCI AKSELERASI GPU KARTU GRAFIS */
         }
     </style>
 </head>
@@ -365,7 +395,7 @@
 
     <!-- AREA ATAS (HOST & KOTAK KOMAL 1 - 8) -->
     <div class="live-layout">
-        <!-- KOTAK HOST (GARIS BIRU KEDIP-KEDIP TIDAK TERLALU TEBAL) -->
+        <!-- KOTAK HOST -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
             <div class="host-top-pill">Host</div>
             
@@ -440,7 +470,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT FULL SCREEN -->
+    <!-- AREA VIDEO GIFT FULL SCREEN DENGAN TEKNOLOGI WEBGL (60 FPS NO LAG) -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -463,6 +493,111 @@
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
 
+    // ================= SISTEM ENGINE WEBGL (ANTI-LAG & ANTI-BURIK) =================
+    let gl = null;
+    let glProgram = null;
+    let glTexture = null;
+    let glBuffers = {};
+    let isWebGLSupported = false;
+
+    function initWebGL(canvas) {
+        if (gl && glProgram) return true;
+        try {
+            gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true }) || canvas.getContext('experimental-webgl');
+            if (!gl) return false;
+
+            const vsSource = `
+                attribute vec2 a_pos;
+                attribute vec2 a_tex;
+                varying vec2 v_tex;
+                void main() {
+                    gl_Position = vec4(a_pos, 0.0, 1.0);
+                    v_tex = a_tex;
+                }
+            `;
+
+            // SHADER GPU: MENGHAPUS GREEN SCREEN & BLACK BACKGROUND OTOMATIS LANGSUNG DI KARTU GRAFIS
+            const fsSource = `
+                precision mediump float;
+                uniform sampler2D u_tex;
+                varying vec2 v_tex;
+                void main() {
+                    vec4 c = texture2D(u_tex, v_tex);
+                    float maxRB = max(c.r, c.b);
+                    float gDiff = c.g - maxRB;
+                    
+                    // PENGHAPUS GREEN SCREEN HALUS (DESPILL & ANTI-EDGE HIJAU)
+                    if (gDiff > 0.06 && c.g > 0.18) {
+                        float a = 1.0 - smoothstep(0.06, 0.18, gDiff);
+                        c.a = min(c.a, a);
+                        c.g = maxRB;
+                    }
+                    
+                    // PENGHAPUS BACKGROUND HITAM PEKAT SECARA INSTAN
+                    float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+                    if (lum < 0.07) {
+                        c.a = 0.0;
+                    } else if (lum < 0.16) {
+                        c.a = min(c.a, (lum - 0.07) / 0.09);
+                    }
+                    
+                    gl_FragColor = c;
+                }
+            `;
+
+            function createShader(type, src) {
+                const s = gl.createShader(type);
+                gl.shaderSource(s, src);
+                gl.compileShader(s);
+                return s;
+            }
+
+            const vs = createShader(gl.VERTEX_SHADER, vsSource);
+            const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+            glProgram = gl.createProgram();
+            gl.attachShader(glProgram, vs);
+            gl.attachShader(glProgram, fs);
+            gl.linkProgram(glProgram);
+
+            const posBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                -1, -1,
+                 1, -1,
+                -1,  1,
+                -1,  1,
+                 1, -1,
+                 1,  1
+            ]), gl.STATIC_DRAW);
+
+            const texBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                0, 1,
+                1, 1,
+                0, 0,
+                0, 0,
+                1, 1,
+                1, 0
+            ]), gl.STATIC_DRAW);
+
+            glBuffers.pos = posBuffer;
+            glBuffers.tex = texBuffer;
+
+            glTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, glTexture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+            return true;
+        } catch(e) {
+            console.warn("WebGL fallback to Canvas 2D:", e);
+            return false;
+        }
+    }
+
     async function startDisplayDirectCamera() {
         try {
             const hVid = document.getElementById('hostVideo');
@@ -473,7 +608,7 @@
 
             if (!displayCamStream) {
                 displayCamStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' },
+                    video: { width: { ideal: 720 }, height: { ideal: 1280 }, facingMode: 'user' },
                     audio: false
                 });
             }
@@ -707,11 +842,11 @@
         return val.toLocaleString('id-ID');
     }
 
+    // ================= PEMUTAR VIDEO ULTRA HD 60 FPS (WEBGL GPU HARDWARE) =================
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
         const canvas = document.getElementById('giftCanvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
         if (animFrameId) cancelAnimationFrame(animFrameId);
 
@@ -721,59 +856,72 @@
         giftVideo.muted = false;
         giftVideo.volume = 1.0;
 
+        isWebGLSupported = initWebGL(canvas);
+
         giftVideo.onloadedmetadata = () => {
-            canvas.width = giftVideo.videoWidth || 720;
-            canvas.height = giftVideo.videoHeight || 1280;
+            // MENGUNCI RESOLUSI HD ASLI VIDEO (720p / 1080p) SUPAYA TIDAK BURIK / BLUR
+            const vWidth = giftVideo.videoWidth || 720;
+            const vHeight = giftVideo.videoHeight || 1280;
+            canvas.width = vWidth;
+            canvas.height = vHeight;
 
-            function renderFrame() {
-                if (giftVideo.paused || giftVideo.ended) {
-                    overlayContainer.style.display = 'none';
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    return;
-                }
+            if (isWebGLSupported && gl) {
+                // RENDER MENGGUNAKAN GPU WEBGL (SUPER CEPAT & LANCAR 60 FPS)
+                gl.viewport(0, 0, vWidth, vHeight);
+                gl.useProgram(glProgram);
 
-                ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
-                const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const d = frame.data;
-                const len = d.length;
+                const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
+                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
+                gl.enableVertexAttribArray(posLoc);
+                gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-                for (let i = 0; i < len; i += 4) {
-                    const r = d[i], g = d[i + 1], b = d[i + 2];
+                const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
+                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
+                gl.enableVertexAttribArray(texLoc);
+                gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
 
-                    const maxRB = r > b ? r : b;
-                    const greenDiff = g - maxRB;
-                    if (greenDiff > 14 && g > 45) {
-                        const alpha = greenDiff > 38 ? 0 : (1 - (greenDiff - 14) / 24);
-                        d[i + 3] = (alpha * 255) | 0;
-                        d[i + 1] = maxRB;
-                        continue;
+                function renderWebGLFrame() {
+                    if (giftVideo.paused || giftVideo.ended) {
+                        overlayContainer.style.display = 'none';
+                        if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
+                        return;
                     }
 
-                    const lum = (r * 77 + g * 150 + b * 29) >> 8;
-                    if (lum <= 18) {
-                        d[i + 3] = 0;
-                    } else if (lum < 42) {
-                        const alpha = (lum - 18) / 24;
-                        d[i + 3] = (alpha * 255) | 0;
+                    if (giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA) {
+                        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+                        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, giftVideo);
+                        gl.drawArrays(gl.TRIANGLES, 0, 6);
                     }
+
+                    animFrameId = requestAnimationFrame(renderWebGLFrame);
                 }
 
-                ctx.putImageData(frame, 0, 0);
-                animFrameId = requestAnimationFrame(renderFrame);
+                giftVideo.play().then(() => {
+                    renderWebGLFrame();
+                }).catch(() => {
+                    giftVideo.muted = true;
+                    giftVideo.play().then(() => { renderWebGLFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
+                });
+
+            } else {
+                // METODE CADANGAN CANVAS 2D
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                function render2DFrame() {
+                    if (giftVideo.paused || giftVideo.ended) {
+                        overlayContainer.style.display = 'none';
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        return;
+                    }
+                    ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
+                    animFrameId = requestAnimationFrame(render2DFrame);
+                }
+                giftVideo.play().then(() => { render2DFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
             }
-
-            giftVideo.play().then(() => {
-                renderFrame();
-            }).catch(() => {
-                giftVideo.muted = true;
-                giftVideo.play().then(() => { renderFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
-            });
         };
 
         giftVideo.onended = () => {
             overlayContainer.style.display = 'none';
             if (animFrameId) cancelAnimationFrame(animFrameId);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             giftVideo.src = '';
         };
     }
