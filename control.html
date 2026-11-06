@@ -403,23 +403,130 @@
             channel.postMessage({ type: 'HOST_CAM_STOP' });
         }
 
-        // Deteksi & Pasang User
+        // ================= 2. FUNGSI DETEKSI USER TIKTOK ASLI (DIPERBAIKI) =================
+        let currentDetectedProfile = null;
+
+        function pickNested(obj, keys) {
+            if (!obj) return null;
+            for (var i = 0; i < keys.length; i++) {
+                var parts = keys[i].split('.');
+                var curr = obj;
+                var found = true;
+                for (var j = 0; j < parts.length; j++) {
+                    if (curr && typeof curr === 'object' && parts[j] in curr) {
+                        curr = curr[parts[j]];
+                    } else {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found && curr !== undefined && curr !== null && curr !== '') {
+                    return curr;
+                }
+            }
+            return null;
+        }
+
+        function extractTikwmUser(raw) {
+            if (!raw || typeof raw !== 'object') throw new Error('Respons API kosong');
+            var root = raw.data || raw;
+            var userInfo = root.userInfo || root.user_info || {};
+            var u = userInfo.user || root.user || userInfo || root;
+
+            var username = String(pickNested(u, ['uniqueId', 'unique_id', 'username', 'secUid']) || '').replace(/^@/,'').trim();
+            if (!username) throw new Error('Username tidak ditemukan');
+
+            return {
+                username: username,
+                nickname: String(pickNested(u, ['nickname', 'name', 'display_name']) || username),
+                avatar: String(pickNested(u, ['avatarLarger', 'avatarMedium', 'avatarThumb', 'avatar', 'avatar_url']) || '')
+            };
+        }
+
+        async function requestTikwmUser(username) {
+            var clean = encodeURIComponent(username);
+            var api = 'https://www.tikwm.com/api/user/info/';
+            
+            // Coba akses langsung
+            try {
+                var r = await fetch(api, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: 'unique_id=' + clean
+                });
+                if (r.ok) {
+                    var j = await r.json();
+                    if (j.code === 0 && (j.data || j.userInfo)) return extractTikwmUser(j);
+                }
+            } catch(e) {}
+
+            // Cadangan proxy jika diblokir oleh browser
+            var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(api + '?unique_id=' + clean);
+            var resP = await fetch(proxy);
+            var jsonP = await resP.json();
+            return extractTikwmUser(JSON.parse(jsonP.contents));
+        }
+
+        async function detectTikTokUser() {
+            var inputVal = document.getElementById('tiktokUsernameInput').value.trim();
+            if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
+
+            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
+                                    .replace(/^@/, '')
+                                    .split(/[/?#]/)[0].trim();
+
+            var btn = document.getElementById('btnDetectTikTok');
+            btn.innerText = "⏳ Mencari Data Asli...";
+            btn.disabled = true;
+
+            try {
+                var data = await requestTikwmUser(cleanUser);
+
+                currentDetectedProfile = {
+                    username: data.username,
+                    nickname: data.nickname,
+                    avatar: data.avatar
+                };
+
+                var prevImg = document.getElementById('prevImg');
+                prevImg.src = data.avatar;
+                prevImg.referrerPolicy = "no-referrer";
+
+                document.getElementById('prevNick').innerText = data.nickname;
+                document.getElementById('prevUser').innerText = '@' + data.username;
+                document.getElementById('profilePreviewBox').style.display = 'flex';
+
+            } catch (err) {
+                alert("Gagal mendeteksi akun @" + cleanUser + ": Periksa koneksi atau username Anda.");
+                currentDetectedProfile = null;
+                document.getElementById('profilePreviewBox').style.display = 'none';
+            } finally {
+                btn.innerText = "🔍 Cari di TikTok";
+                btn.disabled = false;
+            }
+        }
+
+        // Pasang User ke Kotak (Foto Profil Dikirim ke Display)
         function placeUserToSlot() {
             const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
             const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
-            const rawUser = document.getElementById('tiktokUsernameInput').value.trim();
-            const displayName = rawUser || `Slot ${slotNum}`;
+            const rawUser = document.getElementById('tiktokUsernameInput').value.trim().replace(/^@+/, '');
 
-            slotData[slotNum] = { name: displayName };
+            const displayName = currentDetectedProfile ? currentDetectedProfile.nickname : (rawUser || `Slot ${slotNum}`);
+            const avatarUrl = currentDetectedProfile ? currentDetectedProfile.avatar : null;
+
+            slotData[slotNum] = { name: displayName, username: rawUser };
+
             channel.postMessage({
                 type: 'UPDATE_SLOT',
                 slotNum: slotNum,
                 nameInput: displayName,
                 initialPoin: coin,
-                profileImg: null
+                profileImg: avatarUrl
             });
+
             renderSlotList();
-            alert(`✅ Kotak ${slotNum} berhasil dipasang!`);
+            alert(`✅ Kotak ${slotNum} berhasil dipasang beserta foto profilnya!`);
         }
 
         window.onload = () => {
