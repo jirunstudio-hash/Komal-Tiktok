@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { background: #0f0f13; color: #fff; padding: 15px; display: flex; justify-content: center; }
-        .dashboard { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 14px; }
+        .dashboard { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 14px; }
         
         .card { background: #181820; border: 1px solid #2a2a38; border-radius: 12px; padding: 15px; }
         h3 { font-size: 0.95rem; font-weight: 700; color: #4facfe; margin-bottom: 12px; border-bottom: 1px solid #262635; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -23,7 +23,6 @@
         .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; font-size: 0.95rem; padding: 12px; }
-        .btn-gold:hover { filter: brightness(1.1); }
 
         .cam-preview-box { width: 100%; height: 140px; background: #000; border-radius: 8px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 8px; }
         #camPreviewVideo { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -37,6 +36,51 @@
         .slot-manager-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
         .slot-item { background: #20202c; border: 1px solid #2d2d3f; border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .slot-item-info { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px; }
+
+        /* GRID KATALOG GIFT OTOMATIS */
+        .gift-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .gift-card-btn {
+            background: #20202c;
+            border: 1px solid #353549;
+            border-radius: 10px;
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .gift-card-btn:hover {
+            background: #2a2a3c;
+            border-color: #f59e0b;
+            transform: translateY(-2px);
+        }
+        .gift-card-btn img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+        }
+        .gift-card-btn .g-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+        .gift-card-btn .g-coins {
+            font-size: 0.65rem;
+            color: #f59e0b;
+            font-weight: 800;
+            background: rgba(245, 158, 11, 0.15);
+            padding: 2px 6px;
+            border-radius: 999px;
+        }
     </style>
 </head>
 <body>
@@ -96,44 +140,53 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KELOLA & TURUNKAN KOTAK 1-8 -->
+        <!-- 3. KATALOG GIFT RESMI TIKTOK (KLIK LANGSUNG JALAN + OTOMATIS POIN & ICON) -->
+        <div class="card" style="border: 1px solid #f59e0b;">
+            <h3 style="color:#f59e0b;">
+                <span>🎁 3. Katalog Gift TikTok (1-Klik Otomatis Animasi, Poin & Badge)</span>
+            </h3>
+
+            <div class="form-group">
+                <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
+                <select id="quickGiftTargetSlot" style="border-color:#f59e0b; background:#29221b;">
+                    <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+                    <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+                    <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+                    <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
+                </select>
+            </div>
+
+            <!-- Grid 8 Gift Resmi dari Video Anda -->
+            <div class="gift-catalog-grid" id="giftCatalogContainer"></div>
+        </div>
+
+        <!-- 4. KELOLA & TURUNKAN KOTAK 1-8 -->
         <div class="card">
             <h3>
-                <span>3. Kelola & Turunkan Kotak (1 - 8)</span>
+                <span>4. Kelola & Turunkan Kotak (1 - 8)</span>
                 <button class="btn-red" style="font-size:0.75rem; padding: 4px 10px;" onclick="clearAllSlots()">⚠️ TURUNKAN SEMUA KOTAK</button>
             </h3>
             
             <div class="slot-manager-grid" id="slotManagerContainer"></div>
         </div>
 
-        <!-- 4 & 5. VIDEO ANIMASI GALERI & POIN MANUAL -->
-        <div class="card" style="border: 1px solid #f59e0b;">
-            <h3 style="color:#f59e0b;">4 & 5. Video Animasi Galeri & Poin Manual</h3>
-
+        <!-- 5. OPSI VIDEO MANUAL GALERI / LINK -->
+        <div class="card">
+            <h3 style="color:#aaa;">5. Opsi Tambahan: Video Manual Galeri (.mp4)</h3>
             <div class="form-group">
-                <label>Pilih Video Animasi dari Galeri HP/Laptop (.mp4 Green Screen):</label>
                 <input type="file" id="giftGalleryFile" accept="video/mp4,video/*" onchange="handleGalleryVideo(event)">
                 <span id="galleryFileStatus" style="font-size:0.7rem; color:#10b981; margin-top:2px;"></span>
                 <input type="text" id="giftUrlInput" placeholder="Atau paste link URL video animasi..." style="margin-top:4px;">
             </div>
-
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div class="form-group">
-                    <label>Target Kotak Penerima Koin:</label>
-                    <select id="giftTargetSlot">
-                        <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
-                        <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
-                        <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
-                        <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
-                    </select>
+                    <label>Poin Koin:</label>
+                    <input type="number" id="manualPointInput" value="10000">
                 </div>
-                <div class="form-group">
-                    <label>Poin Koin Gift (Manual):</label>
-                    <input type="number" id="manualPointInput" value="44999">
+                <div class="form-group" style="display:flex; justify-content:flex-end; align-items:flex-end;">
+                    <button class="btn-gold" style="width:100%; padding:9px;" onclick="sendCustomGift()">Kirim Video Manual</button>
                 </div>
             </div>
-
-            <button class="btn-gold" style="width:100%; margin-top:8px;" onclick="sendGiftAnimation()">🎁 KIRIM ANIMASI KE DISPLAY</button>
         </div>
 
     </div>
@@ -150,6 +203,106 @@
 
         let currentDetectedProfile = null;
         let selectedGiftBase64 = "";
+
+        // ================= DATABASE GIFT DARI VIDEO ANDA =================
+        const TIKTOK_GIFTS = [
+            {
+                id: 'universe',
+                title: 'TikTok Universe',
+                coins: 44999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/tiktok_universe.png~tplv-obj.png',
+                video: 'https://assets.mixkit.co/videos/preview/mixkit-flying-through-a-starfield-in-space-32943-large.mp4' // Ganti URL video universe Anda
+            },
+            {
+                id: 'lion',
+                title: 'Singa (Lion)',
+                coins: 29999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/lion.png~tplv-obj.png',
+                video: '' 
+            },
+            {
+                id: 'dragon',
+                title: 'Naga Api (Dragon)',
+                coins: 26999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/dragon_flame.png~tplv-obj.png',
+                video: ''
+            },
+            {
+                id: 'falcon',
+                title: 'Elang Petir (Falcon)',
+                coins: 19999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/thunder_falcon.png~tplv-obj.png',
+                video: ''
+            },
+            {
+                id: 'phoenix',
+                title: 'Burung Phoenix',
+                coins: 25999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/phoenix.png~tplv-obj.png',
+                video: ''
+            },
+            {
+                id: 'mecha',
+                title: 'Robot Mecha',
+                coins: 29999,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/mecha.png~tplv-obj.png',
+                video: ''
+            },
+            {
+                id: 'whale',
+                title: 'Paus Antariksa',
+                coins: 2150,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/diving_whale.png~tplv-obj.png',
+                video: ''
+            },
+            {
+                id: 'rose',
+                title: 'Mawar (Rose)',
+                coins: 1,
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/rose.png~tplv-obj.png',
+                video: ''
+            }
+        ];
+
+        // RENDER KATALOG GIFT KE PANEL
+        function renderGiftCatalog() {
+            const container = document.getElementById('giftCatalogContainer');
+            container.innerHTML = '';
+            TIKTOK_GIFTS.forEach(g => {
+                container.innerHTML += `
+                    <div class="gift-card-btn" onclick="sendBuiltInGift('${g.id}')">
+                        <img src="${g.icon}" alt="${g.title}" onerror="this.src='https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/gift/rose.png~tplv-obj.png'">
+                        <span class="g-title">${g.title}</span>
+                        <span class="g-coins">🪙 ${g.coins.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+            });
+        }
+        renderGiftCatalog();
+
+        // 1-KLIK TRIGGER GIFT KE DISPLAY
+        function sendBuiltInGift(giftId) {
+            const gift = TIKTOK_GIFTS.find(g => g.id === giftId);
+            if (!gift) return;
+
+            const target = parseInt(document.getElementById('quickGiftTargetSlot').value);
+
+            // 1. Kirim Animasi Video & Penambahan Koin Otomatis
+            channel.postMessage({
+                type: 'PLAY_GIFT',
+                src: gift.video || selectedGiftBase64 || document.getElementById('giftUrlInput').value.trim(),
+                targetSlot: target,
+                increment: gift.coins,
+                giftId: gift.id
+            });
+
+            // 2. Pasang Foto/Icon Gift di Pojok Kanan Atas Kotak Penerima
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slotNum: target,
+                badgeImg: gift.icon
+            });
+        }
 
         function renderSlotList() {
             const container = document.getElementById('slotManagerContainer');
@@ -218,7 +371,7 @@
             channel.postMessage({ type: 'HOST_CAM_STOP' });
         }
 
-        // ================= 2. API TIKWM ASLI =================
+        // ================= 2. DETEKSI USER TIKWM =================
         function pickNested(obj, keys) {
             if (!obj) return null;
             for (var i = 0; i < keys.length; i++) {
@@ -233,85 +386,49 @@
                         break;
                     }
                 }
-                if (found && curr !== undefined && curr !== null && curr !== '') {
-                    return curr;
-                }
+                if (found && curr !== undefined && curr !== null && curr !== '') return curr;
             }
             return null;
         }
 
         function extractTikwmUser(raw) {
             if (!raw || typeof raw !== 'object') throw new Error('Respons API kosong');
-            if (raw.code !== undefined && Number(raw.code) !== 0) throw new Error(raw.msg || ('API code ' + raw.code));
             var root = raw.data || raw;
             var userInfo = root.userInfo || root.user_info || {};
             var u = userInfo.user || root.user || userInfo || root;
-
             var username = String(pickNested(u, ['uniqueId', 'unique_id', 'username', 'secUid']) || '').replace(/^@/,'').trim();
-            if (!username) throw new Error('Username tidak ada pada respons API');
-
             return {
                 username: username,
                 nickname: String(pickNested(u, ['nickname', 'name', 'display_name']) || username),
-                avatar: String(pickNested(u, ['avatarLarger', 'avatarMedium', 'avatarThumb', 'avatar', 'avatar_url']) || '')
+                avatar: String(pickNested(u, ['avatarLarger', 'avatarMedium', 'avatarThumb', 'avatar']) || '')
             };
-        }
-
-        function requestTikwmUser(username) {
-            var api = 'https://www.tikwm.com/api/user/info/';
-            var body = 'unique_id=' + encodeURIComponent(username);
-            return fetch(api, {
-                method: 'POST',
-                cache: 'no-store',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                    'Accept': 'application/json, text/plain, */*'
-                },
-                body: body
-            }).then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.text();
-            }).then(function(t) {
-                var j;
-                try { j = JSON.parse(t); } catch (_) { throw new Error('Bukan JSON'); }
-                return extractTikwmUser(j);
-            });
         }
 
         async function detectTikTokUser() {
             var inputVal = document.getElementById('tiktokUsernameInput').value.trim();
             if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
 
-            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
-                                    .replace(/^@/, '')
-                                    .split(/[/?#]/)[0].trim();
-
+            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '').replace(/^@/, '').split(/[/?#]/)[0].trim();
             var btn = document.getElementById('btnDetectTikTok');
             btn.innerText = "⏳ Mencari Data Asli...";
             btn.disabled = true;
 
             try {
-                var data = await requestTikwmUser(cleanUser);
+                var res = await fetch('https://www.tikwm.com/api/user/info/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'unique_id=' + encodeURIComponent(cleanUser)
+                });
+                var j = await res.json();
+                var data = extractTikwmUser(j);
 
-                currentDetectedProfile = {
-                    username: data.username,
-                    nickname: data.nickname,
-                    avatar: data.avatar
-                };
-
-                var prevImg = document.getElementById('prevImg');
-                prevImg.src = data.avatar;
-                prevImg.referrerPolicy = "no-referrer";
-
+                currentDetectedProfile = data;
+                document.getElementById('prevImg').src = data.avatar;
                 document.getElementById('prevNick').innerText = data.nickname;
                 document.getElementById('prevUser').innerText = '@' + data.username;
                 document.getElementById('profilePreviewBox').style.display = 'flex';
-
             } catch (err) {
-                console.warn("Gagal TikWM asli:", err);
-                alert("Gagal mendeteksi akun @" + cleanUser + ": " + (err.message || "Periksa kembali username Anda."));
-                currentDetectedProfile = null;
-                document.getElementById('profilePreviewBox').style.display = 'none';
+                alert("Gagal mendeteksi @" + cleanUser);
             } finally {
                 btn.innerText = "🔍 Cari di TikTok";
                 btn.disabled = false;
@@ -322,7 +439,6 @@
             const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
             const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
             const rawUser = document.getElementById('tiktokUsernameInput').value.trim().replace(/^@+/, '');
-
             const displayName = currentDetectedProfile ? currentDetectedProfile.nickname : (rawUser || `Slot ${slotNum}`);
             const avatarUrl = currentDetectedProfile ? currentDetectedProfile.avatar : null;
 
@@ -337,7 +453,7 @@
             });
 
             renderSlotList();
-            alert(`✅ Berhasil dipasang ke Kotak ${slotNum}!`);
+            alert(`✅ Kotak ${slotNum} berhasil dipasang!`);
         }
 
         // ================= 3. TURUNKAN KOTAK =================
@@ -362,34 +478,26 @@
                 });
             }
             renderSlotList();
-            alert("✅ Kotak 1 - 8 telah bersih.");
         }
 
-        // ================= 4 & 5. VIDEO ANIMASI GALERI & POIN MANUAL =================
+        // ================= 4. VIDEO MANUAL =================
         function handleGalleryVideo(e) {
             const file = e.target.files[0];
             if (!file) return;
-
-            document.getElementById('galleryFileStatus').innerText = `⏳ Memproses: ${file.name}...`;
-
             const reader = new FileReader();
             reader.onload = (ev) => {
                 selectedGiftBase64 = ev.target.result;
-                document.getElementById('giftUrlInput').value = "";
-                document.getElementById('galleryFileStatus').innerText = `✅ Video galeri siap: ${file.name}`;
+                document.getElementById('galleryFileStatus').innerText = `✅ Siap: ${file.name}`;
             };
             reader.readAsDataURL(file);
         }
 
-        function sendGiftAnimation() {
+        function sendCustomGift() {
             const src = selectedGiftBase64 || document.getElementById('giftUrlInput').value.trim();
-            const target = parseInt(document.getElementById('giftTargetSlot').value);
+            const target = parseInt(document.getElementById('quickGiftTargetSlot').value);
             const point = parseInt(document.getElementById('manualPointInput').value) || 0;
 
-            if (!src) {
-                alert("Pilih file video animasi dari galeri atau masukkan link video terlebih dahulu!");
-                return;
-            }
+            if (!src) return alert("Pilih video dari galeri / link URL terlebih dahulu!");
 
             channel.postMessage({
                 type: 'PLAY_GIFT',
