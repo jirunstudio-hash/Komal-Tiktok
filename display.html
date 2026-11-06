@@ -6,22 +6,34 @@
     <title>Display Studio - TikTok Live HD</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA (SUDAH SIKU / KOTAK SEMPURNA TANPA LENGKUNGAN) */
+        /* BINGKAI UTAMA: SIKU KOTAK & TINGGINYA PAS DENGAN KOTAK HOST & KOMAL */
         .phone-screen { 
-            height: 100vh; width: 100vw; max-width: 420px; max-height: 840px;
-            background: #000; position: relative; overflow: hidden; display: flex; 
-            flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px 10px 0 10px; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.8); border: 2px solid #222; 
+            width: 396px; 
+            max-width: 100vw;
+            height: auto; /* Otomatis pas sesuai tinggi kotak */
+            background: #000; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
+            padding: 0; /* Pas rapat tanpa ruang kosong di bawah/samping */
+            box-shadow: 0 0 40px rgba(0,0,0,0.8); 
+            border: 2px solid #222; 
             border-radius: 0; /* TANPA LENGKUNGAN */
         }
 
         /* ===== AREA ATAS: HOST & KOTAK 1 - 8 ===== */
         .live-layout { 
-            display: flex; gap: 8px; width: 100%; max-width: 400px; 
-            position: relative; z-index: 10; 
-            align-items: stretch; 
+            display: flex; 
+            gap: 6px; 
+            width: 100%; 
+            position: relative; 
+            z-index: 10; 
+            align-items: stretch; /* Memastikan tinggi host & grid selalu sejajar */
         }
 
         /* ANIMASI GARIS BIRU KEDAP-KEDIP PADA HOST */
@@ -36,12 +48,18 @@
             }
         }
 
-        /* KOTAK HOST (KOTAK SIKU DENGAN GARIS BIRU KEDAP-KEDIP) */
+        /* KOTAK HOST */
         .host-box { 
-            flex: 1; height: auto; min-height: 380px; background: #16161c; 
-            border-radius: 0; /* TANPA LENGKUNGAN */
+            flex: 1; 
+            height: auto; 
+            min-height: 0; /* Mengikuti tinggi komal grid secara presisi */
+            background: #16161c; 
+            border-radius: 0; 
             overflow: hidden; 
-            position: relative; display: flex; justify-content: center; align-items: center; 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
             border: 2px solid #00d2ff; 
             box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
             animation: hostBluePulse 1.2s infinite ease-in-out;
@@ -68,20 +86,28 @@
 
         /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
-            width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
-            grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; 
-            position: relative; z-index: 10; 
+            width: 192px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            gap: 6px; 
+            flex-shrink: 0; 
+            position: relative; 
+            z-index: 10; 
         }
 
-        /* KOTAK SLOT KOMAL 1 - 8 (KOTAK SIKU TANPA LENGKUNGAN) */
+        /* KOTAK SLOT KOMAL 1 - 8 */
         .slot-box { 
-            width: 100%; aspect-ratio: 1 / 1; 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
             background: #202127; 
-            border-radius: 0; /* TANPA LENGKUNGAN */
+            border-radius: 0; 
             position: relative; 
             overflow: hidden; 
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
             border: 1.5px solid rgba(255, 255, 255, 0.22); 
             box-shadow: 0 4px 12px rgba(0,0,0,0.6);
             transition: all 0.25s ease;
