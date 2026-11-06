@@ -34,7 +34,7 @@
         .slot-item { background: #20202c; border: 1px solid #2d2d3f; border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .slot-item-info { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px; }
 
-        /* GRID 7 GIFT RESMI */
+        /* GRID 9 GIFT RESMI */
         .gift-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -160,7 +160,7 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG 7 GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
+        <!-- 3. KATALOG GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
                 <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
@@ -177,7 +177,7 @@
                 </select>
             </div>
 
-            <!-- Grid 7 Gift Sesuai Link yang Anda Berikan -->
+            <!-- Grid 9 Gift Sesuai Link yang Anda Berikan -->
             <div class="gift-grid" id="giftCatalogGrid"></div>
         </div>
 
@@ -197,7 +197,7 @@
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
 
-        // ================= DATABASE 7 GIFT DENGAN LINK IKON ANDA =================
+        // ================= DATABASE 9 GIFT RESMI =================
         const GIFTS_DATABASE = [
             { 
                 id: 'gift_1', 
@@ -240,6 +240,18 @@
                 title: 'Elang Petir', 
                 coins: 18999, 
                 icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' 
+            },
+            { 
+                id: 'gift_8', 
+                title: 'Pegasus', 
+                coins: 42999, 
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp' 
+            },
+            { 
+                id: 'gift_9', 
+                title: 'Falcon / Lightning', 
+                coins: 12000, 
+                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp' 
             }
         ];
 
@@ -312,7 +324,7 @@
 
             await saveAsset(`video_${id}`, file);
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
-            alert(`✅ Video untuk gift ${id} berhasil disimpan permanen! Halaman di-refresh tidak akan hilang.`);
+            alert(`✅ Video untuk gift berhasil disimpan permanen! Halaman di-refresh tidak akan hilang.`);
         }
 
         // Kirim Gift: Video berputar, koin otomatis bertambah, dan foto gift muncul 5 detik lalu hilang
@@ -403,7 +415,7 @@
             channel.postMessage({ type: 'HOST_CAM_STOP' });
         }
 
-        // ================= 2. FUNGSI DETEKSI USER TIKTOK ASLI (DIPERBAIKI) =================
+        // ================= 2. FUNGSI DETEKSI USER TIKTOK ASLI =================
         let currentDetectedProfile = null;
 
         function pickNested(obj, keys) {
