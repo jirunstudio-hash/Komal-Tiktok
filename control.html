@@ -108,19 +108,28 @@
 
     <div class="dashboard">
 
-        <!-- 1. IDENTITAS & KAMERA HOST REALTIME -->
+        <!-- 1. IDENTITAS HOST (INPUT USERNAME TIKTOK) & KAMERA -->
         <div class="card">
             <h3>
-                <span>1. Kamera & Identitas Host</span>
+                <span>1. Kamera & Identitas Host (Cari Akun TikTok)</span>
                 <span id="camStatusBadge" style="font-size:0.65rem; color:#10b981; font-weight:normal;"></span>
             </h3>
 
-            <!-- PENGATURAN NAMA HOST -->
-            <div class="form-group" style="margin-bottom: 12px;">
-                <label>Nama Host (Muncul di Kiri Bawah Kotak Host):</label>
+            <!-- CARI USERNAME TIKTOK HOST -->
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label>Ketik Username TikTok Host (Otomatis Pasang Nama & Profil):</label>
                 <div style="display:flex; gap:6px;">
-                    <input type="text" id="hostNameInput" placeholder="Contoh: AT junior 🏃" value="AT junior 🏃" style="flex:1;">
-                    <button class="btn-green" style="padding: 0 16px;" onclick="saveAndSendHostName()">💾 Simpan Nama Host</button>
+                    <input type="text" id="hostUsernameInput" placeholder="Contoh: atjunior atau @username" style="flex:1;">
+                    <button id="btnDetectHost" class="btn-tiktok" onclick="detectHostTikTokUser()">🔍 Cari Akun Host</button>
+                </div>
+            </div>
+
+            <!-- PREVIEW PROFIL HOST -->
+            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom:10px;">
+                <img id="hostPrevImg" src="" alt="Avatar Host" referrerpolicy="no-referrer">
+                <div class="profile-meta">
+                    <b id="hostPrevNick">Nama Host</b>
+                    <span id="hostPrevUser">@username</span>
                 </div>
             </div>
 
@@ -170,18 +179,24 @@
         <!-- 3. KATALOG 9 GIFT PERMANEN -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
-                <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
+                <span>🎁 3. Katalog Gift TikTok (Notifikasi 3 Detik + Video Full)</span>
                 <span style="font-size:0.65rem; color:#10b981; font-weight:normal;">💾 Auto-Saved IndexedDB</span>
             </h3>
 
-            <div class="form-group">
-                <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
-                <select id="targetSlotGift" style="border-color:#f59e0b; background:#29221b; font-weight:bold; font-size:0.95rem;">
-                    <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
-                    <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
-                    <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
-                    <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
-                </select>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                <div class="form-group">
+                    <label style="color:#fcd34d;">Nama Pengirim Gift (Gifter):</label>
+                    <input type="text" id="gifterNameInput" value="ALFY GAMAL" placeholder="Contoh: ALFY GAMAL" style="border-color:#f59e0b; background:#221d17; font-weight:bold;">
+                </div>
+                <div class="form-group">
+                    <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
+                    <select id="targetSlotGift" style="border-color:#f59e0b; background:#29221b; font-weight:bold; font-size:0.95rem;">
+                        <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+                        <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+                        <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+                        <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
+                    </select>
+                </div>
             </div>
 
             <div class="gift-grid" id="giftCatalogGrid"></div>
@@ -202,26 +217,6 @@
 
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
-
-        // ================= FITUR UBAH NAMA HOST =================
-        function saveAndSendHostName() {
-            const hostInput = document.getElementById('hostNameInput');
-            const newName = hostInput.value.trim() || 'Host';
-
-            channel.postMessage({
-                type: 'UPDATE_HOST',
-                hostName: newName
-            });
-
-            localStorage.setItem('saved_host_name', newName);
-
-            const btn = event ? event.target : null;
-            if (btn) {
-                const oriText = btn.innerText;
-                btn.innerText = "✅ Tersimpan!";
-                setTimeout(() => { btn.innerText = oriText; }, 1000);
-            }
-        }
 
         // ================= DATABASE 9 GIFT RESMI =================
         const GIFTS_DATABASE = [
@@ -306,19 +301,24 @@
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
         }
 
+        // TRIGGER GIFT: MENGIRIM DATA NAMA PENGIRIM + JUDUL GIFT + SLOT KE DISPLAY
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
 
             const targetSlot = parseInt(document.getElementById('targetSlotGift').value);
             const savedVideo = await getAsset(`video_${id}`);
+            const gifterName = document.getElementById('gifterNameInput').value.trim() || 'ALFY GAMAL';
 
             channel.postMessage({
                 type: 'PLAY_GIFT',
                 giftId: id,
+                giftTitle: gift.title,
                 targetSlot: targetSlot,
                 increment: gift.coins,
                 badgeImg: gift.icon,
+                senderName: gifterName,
+                senderAvatar: 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg',
                 videoBlob: savedVideo || null
             });
         }
@@ -388,9 +388,7 @@
             channel.postMessage({ type: 'CONTROL_CLOSED' });
         });
 
-        // ================= 2. FUNGSI DETEKSI USER TIKTOK ASLI =================
-        let currentDetectedProfile = null;
-
+        // ================= 2. API DETEKSI TIKTOK (HOST & KOMAL) =================
         function pickNested(obj, keys) {
             if (!obj) return null;
             for (var i = 0; i < keys.length; i++) {
@@ -448,6 +446,49 @@
             return extractTikwmUser(JSON.parse(jsonP.contents));
         }
 
+        // CARI DAN DETEKSI AKUN TIKTOK HOST
+        async function detectHostTikTokUser() {
+            var inputVal = document.getElementById('hostUsernameInput').value.trim();
+            if (!inputVal) return;
+
+            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
+                                    .replace(/^@/, '')
+                                    .split(/[/?#]/)[0].trim();
+
+            var btn = document.getElementById('btnDetectHost');
+            btn.innerText = "⏳ Mencari...";
+            btn.disabled = true;
+
+            try {
+                var data = await requestTikwmUser(cleanUser);
+
+                document.getElementById('hostPrevImg').src = data.avatar;
+                document.getElementById('hostPrevNick').innerText = data.nickname;
+                document.getElementById('hostPrevUser').innerText = '@' + data.username;
+                document.getElementById('hostProfilePreviewBox').style.display = 'flex';
+
+                // Langsung kirim nama host ke layar display
+                channel.postMessage({
+                    type: 'UPDATE_HOST',
+                    hostName: data.nickname,
+                    hostAvatar: data.avatar
+                });
+
+                localStorage.setItem('saved_host_name', data.nickname);
+                localStorage.setItem('saved_host_user', data.username);
+
+            } catch (err) {
+                alert("Akun TikTok Host tidak ditemukan!");
+                document.getElementById('hostProfilePreviewBox').style.display = 'none';
+            } finally {
+                btn.innerText = "🔍 Cari Akun Host";
+                btn.disabled = false;
+            }
+        }
+
+        // CARI DAN DETEKSI AKUN KOMAL
+        let currentDetectedProfile = null;
+
         async function detectTikTokUser() {
             var inputVal = document.getElementById('tiktokUsernameInput').value.trim();
             if (!inputVal) return;
@@ -486,7 +527,6 @@
             }
         }
 
-        // DUKUNGAN TOMBOL ENTER
         document.getElementById('tiktokUsernameInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -498,7 +538,7 @@
             }
         });
 
-        // ================= 3. PASANG KE KOTAK SECARA OTOMATIS =================
+        // PASANG KE KOTAK (RESET & GESER KE KOTAK BERIKUTNYA)
         function placeUserToSlot() {
             const slotSelect = document.getElementById('targetSlotSelect');
             const slotNum = parseInt(slotSelect.value);
@@ -510,7 +550,6 @@
 
             slotData[slotNum] = { name: displayName, username: rawUser };
 
-            // Kirim broadcast update ke layar display (poin awal default 0)
             channel.postMessage({
                 type: 'UPDATE_SLOT',
                 slotNum: slotNum,
@@ -521,17 +560,17 @@
 
             renderSlotList();
 
-            // 1. KOSONGKAN INPUT USERNAME & RESET PREVIEW
+            // 1. Kosongkan input & reset
             usernameInput.value = '';
             currentDetectedProfile = null;
             document.getElementById('profilePreviewBox').style.display = 'none';
 
-            // 2. OTOMATIS PINDAH KE KOTAK BERIKUTNYA
+            // 2. Otomatis naik ke slot berikutnya
             let nextSlot = slotNum + 1;
             if (nextSlot > 8) nextSlot = 1;
             slotSelect.value = nextSlot.toString();
 
-            // 3. KURSOR OTOMATIS FOKUS SIAP KETIK AKUN BERIKUTNYA
+            // 3. Otomatis fokus siap ketik berikutnya
             usernameInput.focus();
 
             const btn = document.getElementById('btnPlaceSlot');
@@ -579,10 +618,13 @@
         }
 
         window.onload = () => {
-            const savedHost = localStorage.getItem('saved_host_name');
-            if (savedHost) {
-                document.getElementById('hostNameInput').value = savedHost;
-                channel.postMessage({ type: 'UPDATE_HOST', hostName: savedHost });
+            const savedHostName = localStorage.getItem('saved_host_name');
+            const savedHostUser = localStorage.getItem('saved_host_user');
+            if (savedHostUser) {
+                document.getElementById('hostUsernameInput').value = savedHostUser;
+            }
+            if (savedHostName) {
+                channel.postMessage({ type: 'UPDATE_HOST', hostName: savedHostName });
             }
             renderGiftsUI();
             renderSlotList();
