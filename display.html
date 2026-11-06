@@ -17,11 +17,11 @@
             border-radius: 0;
         }
 
-        /* ===== AREA KOTAK KOMAL & HOST (LAYER DI BELAKANG VIDEO) ===== */
+        /* ===== AREA KOTAK KOMAL & HOST (DI BELAKANG VIDEO GIFT) ===== */
         .live-layout { 
             display: flex; gap: 8px; width: 100%; max-width: 400px; 
             position: relative; 
-            z-index: 10; /* Berada di belakang video gift */
+            z-index: 10; /* Di belakang animasi gift */
             align-items: stretch; 
         }
 
@@ -123,7 +123,7 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* ===== AREA VIDEO GIFT (DI DEPAN KOTAK DENGAN BACKGROUND TRANSPARAN) ===== */
+        /* ===== AREA VIDEO GIFT (DI DEPAN KOTAK, TRANSPARAN PENUH) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; left: 0; 
@@ -134,17 +134,14 @@
             background: transparent; 
         }
         #giftVideo { 
-            width: 100%; height: 100%; 
-            object-fit: contain; 
-            object-position: center bottom;
-            display: none;
-            mix-blend-mode: screen; /* Untuk video berlatar hitam */
+            display: none; /* Video berjalan di background memory */
         }
         #giftCanvas { 
             width: 100%; height: 100%; 
             object-fit: contain; 
             object-position: center bottom;
-            display: none; /* Untuk video berlatar hijau (Chroma Key) */
+            display: block;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -203,11 +200,9 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT (DI DEPAN KOTAK) DENGAN SUARA OTOMATIS -->
+    <!-- AREA VIDEO GIFT DENGAN AUDIO + CANVAS TRANSPARAN ANTI-BURIK -->
     <div class="gift-overlay" id="giftOverlayContainer">
-        <!-- Video Pemutar Asli Bersuara -->
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
-        <!-- Canvas Pemroses Green Screen -->
         <canvas id="giftCanvas"></canvas>
     </div>
 </div>
@@ -378,7 +373,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO DENGAN SUARA OTOMATIS + DETEKSI BACKGROUND
+    // PEMUTAR VIDEO DENGAN PENGHAPUS LATAR BELAKANG HITAM & HIJAU
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -390,72 +385,69 @@
         overlayContainer.style.display = 'block';
         giftVideo.src = src;
         giftVideo.currentTime = 0;
-        giftVideo.muted = false; // Suara Aktif Otomatis
+        giftVideo.muted = false; // Suara Otomatis Aktif
         giftVideo.volume = 1.0;
 
-        giftVideo.onloadeddata = () => {
-            // DETEKSI OTOMATIS: Cek apakah video berlatar hijau atau hitam
-            const testCanvas = document.createElement('canvas');
-            testCanvas.width = 16;
-            testCanvas.height = 16;
-            const testCtx = testCanvas.getContext('2d');
-            testCtx.drawImage(giftVideo, 0, 0, 16, 16);
-            const p = testCtx.getImageData(0, 0, 16, 16).data;
+        giftVideo.onloadedmetadata = () => {
+            // Resolusi optimal layar hp agar ringan 60fps & tajam
+            canvas.width = Math.min(540, giftVideo.videoWidth || 540);
+            canvas.height = Math.round(canvas.width * (giftVideo.videoHeight / giftVideo.videoWidth)) || 960;
 
-            let greenCount = 0;
-            for (let i = 0; i < p.length; i += 4) {
-                let r = p[i], g = p[i+1], b = p[i+2];
-                if (g > 65 && g > r * 1.3 && g > b * 1.3) greenCount++;
-            }
-
-            const isGreenScreen = (greenCount / (16 * 16)) > 0.18;
-
-            if (isGreenScreen) {
-                // MODE GREEN SCREEN: Canvas Chroma Key Presisi Halus
-                giftVideo.style.display = 'none';
-                canvas.style.display = 'block';
-                canvas.width = giftVideo.videoWidth || 720;
-                canvas.height = giftVideo.videoHeight || 1280;
-
-                function renderChroma() {
-                    if (giftVideo.paused || giftVideo.ended) {
-                        overlayContainer.style.display = 'none';
-                        return;
-                    }
-                    ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
-                    const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const d = frame.data;
-                    const len = d.length;
-
-                    for (let i = 0; i < len; i += 4) {
-                        const r = d[i], g = d[i+1], b = d[i+2];
-                        const maxRB = r > b ? r : b;
-                        const diff = g - maxRB;
-
-                        if (diff > 16 && g > 55) {
-                            const alpha = diff > 42 ? 0 : (1 - (diff - 16) / 26);
-                            d[i + 3] = (alpha * 255) | 0;
-                            d[i + 1] = maxRB; // Despill
-                        }
-                    }
-                    ctx.putImageData(frame, 0, 0);
-                    animFrameId = requestAnimationFrame(renderChroma);
+            function renderFrame() {
+                if (giftVideo.paused || giftVideo.ended) {
+                    overlayContainer.style.display = 'none';
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    return;
                 }
-                renderChroma();
 
-            } else {
-                // MODE LATAR HITAM: GPU Screen Blend Jernih HD
-                canvas.style.display = 'none';
-                giftVideo.style.display = 'block';
-                giftVideo.style.mixBlendMode = 'screen';
+                ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
+                const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const d = frame.data;
+                const len = d.length;
+
+                for (let i = 0; i < len; i += 4) {
+                    const r = d[i], g = d[i + 1], b = d[i + 2];
+
+                    // 1. FILTER GREEN SCREEN
+                    const maxRB = r > b ? r : b;
+                    const greenDiff = g - maxRB;
+                    if (greenDiff > 16 && g > 55) {
+                        const alpha = greenDiff > 42 ? 0 : (1 - (greenDiff - 16) / 26);
+                        d[i + 3] = (alpha * 255) | 0;
+                        d[i + 1] = maxRB; // Despill hijau
+                        continue;
+                    }
+
+                    // 2. FILTER LATAR HITAM (DIJADIKAN TRANSPARAN TANPA MERUSAK WARNA)
+                    const lum = (r * 77 + g * 150 + b * 29) >> 8;
+                    if (lum <= 18) {
+                        // Hitam pekat dijadikan 100% transparan agar kotak di belakang kelihatan
+                        d[i + 3] = 0;
+                    } else if (lum < 42) {
+                        // Transisi tepi halus agar tidak ada garis patah-patah
+                        const alpha = (lum - 18) / 24;
+                        d[i + 3] = (alpha * 255) | 0;
+                    }
+                    // Jika lum >= 42, objek gift (singa, naga, robot, galaxy) 100% solid & jernih
+                }
+
+                ctx.putImageData(frame, 0, 0);
+                animFrameId = requestAnimationFrame(renderFrame);
             }
 
-            giftVideo.play().catch(() => {});
+            giftVideo.play().then(() => {
+                renderFrame();
+            }).catch(() => {
+                // Fallback jika browser membatasi audio tanpa interaksi
+                giftVideo.muted = true;
+                giftVideo.play().then(() => { renderFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
+            });
         };
 
         giftVideo.onended = () => {
             overlayContainer.style.display = 'none';
             if (animFrameId) cancelAnimationFrame(animFrameId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             giftVideo.src = '';
         };
     }
