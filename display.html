@@ -21,7 +21,7 @@
         .live-layout { 
             display: flex; gap: 8px; width: 100%; max-width: 400px; 
             position: relative; 
-            z-index: 10; /* Di belakang animasi gift */
+            z-index: 10; 
             align-items: stretch; 
         }
 
@@ -39,8 +39,9 @@
             border: 2px solid #00d2ff; 
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
             animation: hostBluePulse 1.2s infinite ease-in-out;
+            cursor: pointer;
         }
-        .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+        .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
         .host-placeholder { color: #888; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
@@ -134,7 +135,7 @@
             background: transparent; 
         }
         #giftVideo { 
-            display: none; /* Video berjalan di background memory */
+            display: none; 
         }
         #giftCanvas { 
             width: 100%; height: 100%; 
@@ -150,7 +151,8 @@
 
     <!-- AREA ATAS (HOST & KOTAK 1 - 8) DI BELAKANG VIDEO -->
     <div class="live-layout">
-        <div class="host-box" id="hostBox">
+        <!-- Kotak Host bisa diklik langsung untuk menyalakan kamera lokal -->
+        <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
             <div class="host-top-pill"><span class="gold-host-badge">Host</span></div>
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
@@ -200,7 +202,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT DENGAN AUDIO + CANVAS TRANSPARAN ANTI-BURIK -->
+    <!-- AREA VIDEO GIFT (DI DEPAN KOTAK) DENGAN SUARA + CANVAS TRANSPARAN -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -212,8 +214,28 @@
     const slotPoints = {};
     const badgeTimers = {};
     let animFrameId = null;
+    let displayCamStream = null;
 
     for(let i=1; i<=8; i++) slotPoints[i] = 0;
+
+    // FUNGSI AKTIFKAN KAMERA LANGSUNG DI DISPLAY (JIKA CONTROL KETUTUP)
+    async function startDisplayDirectCamera() {
+        try {
+            if (displayCamStream) return;
+            displayCamStream = await navigator.mediaDevices.getUserMedia({
+                video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' },
+                audio: false
+            });
+            const hVid = document.getElementById('hostVideo');
+            hVid.srcObject = displayCamStream;
+            hVid.style.display = 'block';
+            document.getElementById('hostCameraImg').style.display = 'none';
+            document.getElementById('hostPlaceholder').style.display = 'none';
+            hVid.play().catch(()=>{});
+        } catch(err) {
+            console.log("Kamera lokal display aktif:", err);
+        }
+    }
 
     // DATABASE INDEXEDDB
     const DB_NAME = "TikTokStudioStorageDB";
@@ -364,6 +386,10 @@
             camImg.src = "";
             document.getElementById('hostPlaceholder').style.display = 'block';
         }
+        else if (data.type === 'CONTROL_CLOSED') {
+            // Jika control tertutup silang, display otomatis menyalakan kamera langsung
+            startDisplayDirectCamera();
+        }
     };
 
     function formatPoin(val) {
@@ -373,7 +399,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO DENGAN PENGHAPUS LATAR BELAKANG HITAM & HIJAU
+    // PEMUTAR VIDEO TRANSPARAN DI DEPAN KOTAK (AUDIO AKTIF OTOMATIS)
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -385,11 +411,10 @@
         overlayContainer.style.display = 'block';
         giftVideo.src = src;
         giftVideo.currentTime = 0;
-        giftVideo.muted = false; // Suara Otomatis Aktif
+        giftVideo.muted = false; // Audio Aktif Langsung
         giftVideo.volume = 1.0;
 
         giftVideo.onloadedmetadata = () => {
-            // Resolusi optimal layar hp agar ringan 60fps & tajam
             canvas.width = Math.min(540, giftVideo.videoWidth || 540);
             canvas.height = Math.round(canvas.width * (giftVideo.videoHeight / giftVideo.videoWidth)) || 960;
 
@@ -414,21 +439,18 @@
                     if (greenDiff > 16 && g > 55) {
                         const alpha = greenDiff > 42 ? 0 : (1 - (greenDiff - 16) / 26);
                         d[i + 3] = (alpha * 255) | 0;
-                        d[i + 1] = maxRB; // Despill hijau
+                        d[i + 1] = maxRB;
                         continue;
                     }
 
-                    // 2. FILTER LATAR HITAM (DIJADIKAN TRANSPARAN TANPA MERUSAK WARNA)
+                    // 2. FILTER LATAR HITAM (KOTAK DI BELAKANG TERLIHAT JELAS)
                     const lum = (r * 77 + g * 150 + b * 29) >> 8;
                     if (lum <= 18) {
-                        // Hitam pekat dijadikan 100% transparan agar kotak di belakang kelihatan
                         d[i + 3] = 0;
                     } else if (lum < 42) {
-                        // Transisi tepi halus agar tidak ada garis patah-patah
                         const alpha = (lum - 18) / 24;
                         d[i + 3] = (alpha * 255) | 0;
                     }
-                    // Jika lum >= 42, objek gift (singa, naga, robot, galaxy) 100% solid & jernih
                 }
 
                 ctx.putImageData(frame, 0, 0);
@@ -438,7 +460,6 @@
             giftVideo.play().then(() => {
                 renderFrame();
             }).catch(() => {
-                // Fallback jika browser membatasi audio tanpa interaksi
                 giftVideo.muted = true;
                 giftVideo.play().then(() => { renderFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
             });
