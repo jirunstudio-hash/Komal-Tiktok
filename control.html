@@ -108,9 +108,12 @@
 
     <div class="dashboard">
 
-        <!-- 1. KAMERA HOST -->
+        <!-- 1. KAMERA HOST (DILENGKAPI BACKGROUND WORKER ANTI-FREEZE) -->
         <div class="card">
-            <h3>1. Kamera Host Realtime</h3>
+            <h3>
+                <span>1. Kamera Host Realtime</span>
+                <span id="camStatusBadge" style="font-size:0.65rem; color:#10b981; font-weight:normal;"></span>
+            </h3>
             <div style="display:flex; gap: 8px;">
                 <button id="btnStartCam" class="btn-green" style="flex:1;" onclick="startCamera()">🔴 Aktifkan Kamera Host</button>
                 <button id="btnStopCam" class="btn-red" style="flex:1; display:none;" onclick="stopCamera()">⏹ Matikan Kamera</button>
@@ -160,7 +163,7 @@
             <button id="btnPlaceSlot" class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG 9 GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
+        <!-- 3. KATALOG 9 GIFT PERMANEN -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
                 <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
@@ -177,7 +180,6 @@
                 </select>
             </div>
 
-            <!-- Grid 9 Gift Sesuai Link yang Anda Berikan -->
             <div class="gift-grid" id="giftCatalogGrid"></div>
         </div>
 
@@ -199,68 +201,23 @@
 
         // ================= DATABASE 9 GIFT RESMI =================
         const GIFTS_DATABASE = [
-            { 
-                id: 'gift_1', 
-                title: 'TikTok Universe', 
-                coins: 44999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_2', 
-                title: 'Paus Antariksa', 
-                coins: 6000, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_3', 
-                title: 'Singa (Lion)', 
-                coins: 29999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_4', 
-                title: 'Fire Phoenix', 
-                coins: 41999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_5', 
-                title: 'Robot Mecha', 
-                coins: 39999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_6', 
-                title: 'Naga Api', 
-                coins: 26999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_7', 
-                title: 'Elang Petir', 
-                coins: 18999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_8', 
-                title: 'Pegasus', 
-                coins: 42999, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp' 
-            },
-            { 
-                id: 'gift_9', 
-                title: 'Falcon / Lightning', 
-                coins: 12000, 
-                icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp' 
-            }
+            { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
+            { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
+            { id: 'gift_3', title: 'Singa (Lion)', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
+            { id: 'gift_4', title: 'Fire Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
+            { id: 'gift_5', title: 'Robot Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
+            { id: 'gift_6', title: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
+            { id: 'gift_7', title: 'Elang Petir', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' },
+            { id: 'gift_8', title: 'Pegasus', coins: 42999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp' },
+            { id: 'gift_9', title: 'Falcon / Lightning', coins: 12000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp' }
         ];
 
-        // IndexedDB untuk menyimpan file video secara permanen (tidak hilang saat di-refresh)
+        // IndexedDB untuk menyimpan file video secara permanen
         const DB_NAME = "TikTokStudioStorageDB";
         const STORE_NAME = "permanent_assets";
 
         function openDB() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const req = indexedDB.open(DB_NAME, 1);
                 req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
                 req.onsuccess = () => resolve(req.result);
@@ -315,7 +272,6 @@
             }
         }
 
-        // Upload & Simpan Video Permanen (Tanpa Popup Alert)
         async function uploadGiftVideo(id, e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -328,7 +284,6 @@
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
         }
 
-        // Kirim Gift Langsung Tanpa Popup Alert
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
@@ -346,72 +301,72 @@
             });
         }
 
-        // Slot Manager
-        const slotData = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null };
+        // ================= 1. KAMERA HOST (WEB WORKER ANTI-FREEZE / ANTI-SLEEP) =================
+        let camStream = null;
+        let camWorker = null;
 
-        function renderSlotList() {
-            const container = document.getElementById('slotManagerContainer');
-            container.innerHTML = '';
-            for (let i = 1; i <= 8; i++) {
-                const s = slotData[i];
-                const name = s ? s.name : '<span style="color:#666;">(Kosong)</span>';
-                container.innerHTML += `
-                    <div class="slot-item">
-                        <div class="slot-item-info"><b>Kotak ${i}:</b> ${name}</div>
-                        <button class="btn-red" style="font-size:0.7rem; padding: 4px 8px;" onclick="clearSingleSlot(${i})">Turunkan</button>
-                    </div>
-                `;
-            }
-        }
+        // Worker timer independen agar kamera tetap streaming meski jendela control ditutup/minimize
+        const workerBlob = new Blob([`
+            let timer = null;
+            self.onmessage = function(e) {
+                if (e.data === 'start') {
+                    timer = setInterval(() => self.postMessage('tick'), 40);
+                } else if (e.data === 'stop') {
+                    if (timer) clearInterval(timer);
+                }
+            };
+        `], { type: 'application/javascript' });
 
-        function clearSingleSlot(slotNum) {
-            slotData[slotNum] = null;
-            channel.postMessage({ type: 'UPDATE_SLOT', slotNum: slotNum, action: 'clear_slot' });
-            renderSlotList();
-        }
-
-        function clearAllSlots() {
-            for (let i = 1; i <= 8; i++) {
-                slotData[i] = null;
-                channel.postMessage({ type: 'UPDATE_SLOT', slotNum: i, action: 'clear_slot' });
-            }
-            renderSlotList();
-        }
-
-        // Kamera Host
-        let camStream = null, camInterval = null;
         async function startCamera() {
             try {
-                camStream = await navigator.mediaDevices.getUserMedia({ video: { width: 480, height: 640 }, audio: false });
-                const prev = document.getElementById('camPreviewVideo');
-                prev.srcObject = camStream;
-                prev.style.display = 'block';
+                camStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' }, 
+                    audio: false 
+                });
+
+                const preview = document.getElementById('camPreviewVideo');
+                preview.srcObject = camStream;
+                preview.style.display = 'block';
                 document.getElementById('camPlaceholder').style.display = 'none';
                 document.getElementById('btnStartCam').style.display = 'none';
                 document.getElementById('btnStopCam').style.display = 'inline-block';
+                document.getElementById('camStatusBadge').innerText = "🟢 Streaming Aktif";
 
                 const canvas = document.getElementById('camCanvas');
                 const ctx = canvas.getContext('2d');
-                camInterval = setInterval(() => {
-                    if (prev.readyState >= prev.HAVE_CURRENT_DATA) {
-                        ctx.drawImage(prev, 0, 0, canvas.width, canvas.height);
+
+                if (camWorker) camWorker.terminate();
+                camWorker = new Worker(URL.createObjectURL(workerBlob));
+                camWorker.onmessage = () => {
+                    if (preview.readyState >= preview.HAVE_CURRENT_DATA) {
+                        ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
                         channel.postMessage({ type: 'HOST_CAM_FRAME', frame: canvas.toDataURL('image/jpeg', 0.6) });
                     }
-                }, 33);
+                };
+                camWorker.postMessage('start');
+
+                channel.postMessage({ type: 'HOST_CAM_STARTED' });
+
             } catch (e) {
                 console.warn("Izin kamera gagal:", e);
             }
         }
 
         function stopCamera() {
-            if (camInterval) clearInterval(camInterval);
-            if (camStream) camStream.getTracks().forEach(t => t.stop());
+            if (camWorker) { camWorker.postMessage('stop'); camWorker.terminate(); camWorker = null; }
+            if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
             document.getElementById('camPreviewVideo').style.display = 'none';
             document.getElementById('camPlaceholder').style.display = 'block';
             document.getElementById('btnStartCam').style.display = 'inline-block';
             document.getElementById('btnStopCam').style.display = 'none';
+            document.getElementById('camStatusBadge').innerText = "";
             channel.postMessage({ type: 'HOST_CAM_STOP' });
         }
+
+        // Jika tab control tertutup silang, beri sinyal ke display agar langsung ambil alih kamera
+        window.addEventListener('beforeunload', () => {
+            channel.postMessage({ type: 'CONTROL_CLOSED' });
+        });
 
         // ================= 2. FUNGSI DETEKSI USER TIKTOK ASLI =================
         let currentDetectedProfile = null;
@@ -430,9 +385,7 @@
                         break;
                     }
                 }
-                if (found && curr !== undefined && curr !== null && curr !== '') {
-                    return curr;
-                }
+                if (found && curr !== undefined && curr !== null && curr !== '') return curr;
             }
             return null;
         }
@@ -513,7 +466,6 @@
             }
         }
 
-        // Pasang User ke Kotak (TANPA POPUP ALERT BROWSER)
         function placeUserToSlot() {
             const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
             const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
@@ -534,7 +486,6 @@
 
             renderSlotList();
 
-            // Animasi halus pada tombol tanpa memunculkan popup "Oke"
             const btn = document.getElementById('btnPlaceSlot');
             if (btn) {
                 const originalText = btn.innerHTML;
@@ -545,6 +496,38 @@
                     btn.style.background = '';
                 }, 1200);
             }
+        }
+
+        // Slot Manager
+        const slotData = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null };
+
+        function renderSlotList() {
+            const container = document.getElementById('slotManagerContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= 8; i++) {
+                const s = slotData[i];
+                const name = s ? s.name : '<span style="color:#666;">(Kosong)</span>';
+                container.innerHTML += `
+                    <div class="slot-item">
+                        <div class="slot-item-info"><b>Kotak ${i}:</b> ${name}</div>
+                        <button class="btn-red" style="font-size:0.7rem; padding: 4px 8px;" onclick="clearSingleSlot(${i})">Turunkan</button>
+                    </div>
+                `;
+            }
+        }
+
+        function clearSingleSlot(slotNum) {
+            slotData[slotNum] = null;
+            channel.postMessage({ type: 'UPDATE_SLOT', slotNum: slotNum, action: 'clear_slot' });
+            renderSlotList();
+        }
+
+        function clearAllSlots() {
+            for (let i = 1; i <= 8; i++) {
+                slotData[i] = null;
+                channel.postMessage({ type: 'UPDATE_SLOT', slotNum: i, action: 'clear_slot' });
+            }
+            renderSlotList();
         }
 
         window.onload = () => {
