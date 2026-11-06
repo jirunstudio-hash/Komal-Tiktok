@@ -108,7 +108,7 @@
 
     <div class="dashboard">
 
-        <!-- 1. KAMERA HOST (TANPA INPUT NAMA HOST) -->
+        <!-- 1. KAMERA HOST -->
         <div class="card">
             <h3>1. Kamera Host Realtime</h3>
             <div style="display:flex; gap: 8px;">
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
+            <button id="btnPlaceSlot" class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
         <!-- 3. KATALOG 9 GIFT PERMANEN (DATA DISIMPAN DI BROWSER / TIDAK HILANG SAAT REFRESH) -->
@@ -255,7 +255,7 @@
             }
         ];
 
-        // IndexedDB: Video disimpan permanen di browser
+        // IndexedDB untuk menyimpan file video secara permanen (tidak hilang saat di-refresh)
         const DB_NAME = "TikTokStudioStorageDB";
         const STORE_NAME = "permanent_assets";
 
@@ -264,12 +264,13 @@
                 const req = indexedDB.open(DB_NAME, 1);
                 req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
                 req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
+                req.onerror = () => resolve(null);
             });
         }
 
         async function saveAsset(key, val) {
             const db = await openDB();
+            if (!db) return;
             const tx = db.transaction(STORE_NAME, "readwrite");
             tx.objectStore(STORE_NAME).put(val, key);
             return tx.complete;
@@ -277,6 +278,7 @@
 
         async function getAsset(key) {
             const db = await openDB();
+            if (!db) return null;
             return new Promise((resolve) => {
                 const tx = db.transaction(STORE_NAME, "readonly");
                 const req = tx.objectStore(STORE_NAME).get(key);
@@ -313,31 +315,26 @@
             }
         }
 
-        // Upload & Simpan Video Permanen
+        // Upload & Simpan Video Permanen (Tanpa Popup Alert)
         async function uploadGiftVideo(id, e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const statusElem = document.getElementById(`status_${id}`);
             statusElem.className = "video-status status-ready";
-            statusElem.innerText = "⏳ Menyimpan ke memori...";
+            statusElem.innerText = "⏳ Menyimpan...";
 
             await saveAsset(`video_${id}`, file);
             statusElem.innerText = "✅ Video Siap (Tersimpan)";
-            alert(`✅ Video untuk gift berhasil disimpan permanen! Halaman di-refresh tidak akan hilang.`);
         }
 
-        // Kirim Gift: Video berputar, koin otomatis bertambah, dan foto gift muncul 5 detik lalu hilang
+        // Kirim Gift Langsung Tanpa Popup Alert
         async function triggerGift(id) {
             const gift = GIFTS_DATABASE.find(g => g.id === id);
             if (!gift) return;
 
             const targetSlot = parseInt(document.getElementById('targetSlotGift').value);
             const savedVideo = await getAsset(`video_${id}`);
-
-            if (!savedVideo) {
-                alert(`⚠️ Video untuk ${gift.title} belum dimasukkan! Silakan klik "Pasang Video (.mp4)" pada kotaknya terlebih dahulu.`);
-            }
 
             channel.postMessage({
                 type: 'PLAY_GIFT',
@@ -374,7 +371,6 @@
         }
 
         function clearAllSlots() {
-            if (!confirm("Turunkan semua orang dari Kotak 1 sampai 8?")) return;
             for (let i = 1; i <= 8; i++) {
                 slotData[i] = null;
                 channel.postMessage({ type: 'UPDATE_SLOT', slotNum: i, action: 'clear_slot' });
@@ -402,7 +398,9 @@
                         channel.postMessage({ type: 'HOST_CAM_FRAME', frame: canvas.toDataURL('image/jpeg', 0.6) });
                     }
                 }, 33);
-            } catch (e) { alert("Izin kamera gagal: " + e.message); }
+            } catch (e) {
+                console.warn("Izin kamera gagal:", e);
+            }
         }
 
         function stopCamera() {
@@ -479,14 +477,14 @@
 
         async function detectTikTokUser() {
             var inputVal = document.getElementById('tiktokUsernameInput').value.trim();
-            if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
+            if (!inputVal) return;
 
             var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
                                     .replace(/^@/, '')
                                     .split(/[/?#]/)[0].trim();
 
             var btn = document.getElementById('btnDetectTikTok');
-            btn.innerText = "⏳ Mencari Data Asli...";
+            btn.innerText = "⏳ Mencari...";
             btn.disabled = true;
 
             try {
@@ -507,7 +505,6 @@
                 document.getElementById('profilePreviewBox').style.display = 'flex';
 
             } catch (err) {
-                alert("Gagal mendeteksi akun @" + cleanUser + ": Periksa koneksi atau username Anda.");
                 currentDetectedProfile = null;
                 document.getElementById('profilePreviewBox').style.display = 'none';
             } finally {
@@ -516,7 +513,7 @@
             }
         }
 
-        // Pasang User ke Kotak (Foto Profil Dikirim ke Display)
+        // Pasang User ke Kotak (TANPA POPUP ALERT BROWSER)
         function placeUserToSlot() {
             const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
             const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
@@ -536,7 +533,18 @@
             });
 
             renderSlotList();
-            alert(`✅ Kotak ${slotNum} berhasil dipasang beserta foto profilnya!`);
+
+            // Animasi halus pada tombol tanpa memunculkan popup "Oke"
+            const btn = document.getElementById('btnPlaceSlot');
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `✅ Kotak ${slotNum} Terpasang!`;
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 1200);
+            }
         }
 
         window.onload = () => {
