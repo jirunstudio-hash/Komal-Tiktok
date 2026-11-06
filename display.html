@@ -246,7 +246,7 @@
         }
         .mic-icon-svg { width: 11px; height: 11px; display: block; }
 
-        /* ===== BANNER NOTIFIKASI GIFT (PERSIS FOTO TIKTOK DI BAWAH HOST) ===== */
+        /* ===== BANNER NOTIFIKASI GIFT DI BAWAH HOST ===== */
         .gift-banner-wrapper {
             width: 100%;
             display: flex;
@@ -356,7 +356,7 @@
 
             <!-- PILL NAMA HOST -->
             <div class="host-bottom-pill" id="hostBottomPill">
-                <span class="host-name-text" id="hostNameText">AT junior 🏃</span>
+                <span class="host-name-text" id="hostNameText">Host</span>
             </div>
         </div>
 
@@ -392,7 +392,7 @@
                                 <svg class="mic-icon-svg" viewBox="0 0 24 24">
                                     <path fill="#ffffff" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
                                     <path fill="#ffffff" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
-                                    <line x1="3.5" y1="3.5" x2="20.5" y2="20.5" stroke="#0e0e10" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="3.5" y1="3.5" x2="20.5" y2="20.5" stroke="#0e0e10" stroke-width="3.5" stroke-linecap="round"/>
                                     <line x1="3.5" y1="3.5" x2="20.5" y2="20.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
                                 </svg>
                             </div>
@@ -403,13 +403,13 @@
         </div>
     </div>
 
-    <!-- BANNER NOTIFIKASI GIFT MUNCUL DI BAWAH HOST (PERSIS SEPERTI DI FOTO) -->
+    <!-- BANNER NOTIFIKASI GIFT MUNCUL DI BAWAH HOST -->
     <div class="gift-banner-wrapper">
         <div class="gift-banner-toast" id="giftBannerToast">
             <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
             <div class="toast-text-col">
-                <div class="toast-name" id="toastGifterName">ALFY GAMAL</div>
-                <div class="toast-desc" id="toastGiftDesc">mengirim Mawar</div>
+                <div class="toast-name" id="toastGifterName">Host</div>
+                <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
             </div>
             <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
         </div>
@@ -429,6 +429,10 @@
     let animFrameId = null;
     let displayCamStream = null;
     let toastTimeout = null;
+
+    // VARIABEL PENYIMPAN IDENTITAS PROFIL HOST DARI DETEKSI TIKTOK
+    let detectedHostName = 'Host';
+    let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
     
     let controlWatchdogTimer = null;
     let isUsingControlStream = false;
@@ -570,7 +574,7 @@
         }, 5000);
     }
 
-    // FUNGSI MENAMPILKAN BANNER NOTIFIKASI GIFT SELAMA 3 DETIK
+    // FUNGSI NOTIFIKASI GIFT PERSIS TIKTOK (FOTO PROFIL HOST & FORMAT "mengirim [Nama Gift]")
     function showGiftToast(data, callbackAfter3Sec) {
         const toast = document.getElementById('giftBannerToast');
         const avatar = document.getElementById('toastGifterAvatar');
@@ -578,15 +582,17 @@
         const descElem = document.getElementById('toastGiftDesc');
         const iconElem = document.getElementById('toastGiftIcon');
 
-        const senderName = data.senderName || 'ALFY GAMAL';
-        const senderAvatar = data.senderAvatar || 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
-        const giftTitle = data.giftTitle || 'Mawar';
-        const giftIcon = data.badgeImg || 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp';
-        const targetSlot = data.targetSlot;
+        // Gunakan nama & foto profil host yang terdeteksi
+        const hostName = data.senderName || detectedHostName || 'Host';
+        const hostAvatar = data.senderAvatar || detectedHostAvatar;
+        const giftTitle = data.giftTitle || 'Gift';
+        const giftIcon = data.badgeImg || '';
 
-        avatar.src = senderAvatar;
-        nameElem.innerText = senderName;
-        descElem.innerText = `mengirim ${giftTitle}${targetSlot ? ` ke Kotak ${targetSlot}` : ''}`;
+        avatar.src = hostAvatar;
+        nameElem.innerText = hostName;
+        
+        // HANYA "mengirim [Nama Gift]" (Tanpa teks "ke Kotak 1", dll)
+        descElem.innerText = `mengirim ${giftTitle}`;
         iconElem.src = giftIcon;
 
         if (toastTimeout) clearTimeout(toastTimeout);
@@ -594,7 +600,7 @@
         toast.style.animation = 'bannerSlideIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards';
         toast.style.display = 'inline-flex';
 
-        // TAMPILKAN BANNER 3 DETIK BARU JALANKAN VIDEO
+        // TAMPILKAN 3 DETIK LALU PUTAR VIDEO
         toastTimeout = setTimeout(() => {
             toast.style.animation = 'bannerSlideOut 0.3s ease-in forwards';
             setTimeout(() => {
@@ -608,11 +614,14 @@
     channel.onmessage = async (event) => {
         const data = event.data;
 
-        // UPDATE IDENTITAS NAMA HOST
+        // SIMPAN IDENTITAS PROFIL & NAMA HOST DARI DETEKSI
         if (data.type === 'UPDATE_HOST' || data.type === 'UPDATE_HOST_NAME') {
-            const hostName = data.hostName || data.name;
-            if (hostName !== undefined) {
-                document.getElementById('hostNameText').innerText = hostName;
+            if (data.hostName) {
+                detectedHostName = data.hostName;
+                document.getElementById('hostNameText').innerText = data.hostName;
+            }
+            if (data.hostAvatar) {
+                detectedHostAvatar = data.hostAvatar;
             }
         }
         else if (data.type === 'UPDATE_SLOT') {
@@ -621,7 +630,6 @@
         else if (data.type === 'PLAY_GIFT') {
             const targetSlot = data.targetSlot;
             
-            // Tambahkan poin ke slot tujuan
             if (targetSlot && slotPoints[targetSlot] !== undefined) {
                 slotPoints[targetSlot] += (data.increment || 0);
                 const countElem = document.getElementById(`coincount-slot-${targetSlot}`);
@@ -630,12 +638,10 @@
                 if (badge) badge.style.display = 'flex';
             }
 
-            // Tampilkan icon gift di pojok slot
             if (data.badgeImg) {
                 showGiftBadgeTemporarily(targetSlot, data.badgeImg);
             }
 
-            // Siapkan URL video
             let videoUrl = null;
             if (data.videoBlob) {
                 videoUrl = URL.createObjectURL(data.videoBlob);
@@ -646,7 +652,7 @@
                 videoUrl = data.src;
             }
 
-            // MUNCULKAN BANNER NOTIFIKASI LEBIH DULU SELAMA 3 DETIK BARU PUTAR VIDIO
+            // TAMPILKAN NOTIFIKASI SELAMA 3 DETIK BARU PUTAR VIDIO
             showGiftToast(data, () => {
                 if (videoUrl) {
                     playGiftVideo(videoUrl);
