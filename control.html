@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { background: #0f0f13; color: #fff; padding: 15px; display: flex; justify-content: center; }
-        .dashboard { width: 100%; max-width: 740px; display: flex; flex-direction: column; gap: 14px; }
+        .dashboard { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 14px; }
         
         .card { background: #181820; border: 1px solid #2a2a38; border-radius: 12px; padding: 15px; }
         h3 { font-size: 0.95rem; font-weight: 700; color: #4facfe; margin-bottom: 12px; border-bottom: 1px solid #262635; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -22,87 +22,62 @@
         .btn-red { background: #ef4444; } .btn-red:hover { background: #dc2626; }
         .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
-        .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; }
+        .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; font-size: 0.95rem; padding: 12px; }
+        .btn-gold:hover { filter: brightness(1.1); }
 
         .cam-preview-box { width: 100%; height: 140px; background: #000; border-radius: 8px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 8px; }
         #camPreviewVideo { width: 100%; height: 100%; object-fit: cover; display: none; }
 
         .profile-preview { display: none; align-items: center; gap: 12px; background: #222230; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border: 1px solid #38384a; }
-        .profile-preview img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
+        .profile-preview img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
         .profile-meta { display: flex; flex-direction: column; font-size: 0.85rem; }
+        .profile-meta b { color: #fff; font-size: 0.9rem; }
+        .profile-meta span { color: #aaa; font-size: 0.75rem; margin-top: 2px; }
 
         .slot-manager-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
         .slot-item { background: #20202c; border: 1px solid #2d2d3f; border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .slot-item-info { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px; }
 
-        /* GRID 7 GIFT RESMI */
-        .gift-grid {
+        /* PRESET 7 GIFT */
+        .preset-gift-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 6px;
+            margin-top: 8px;
+            margin-bottom: 10px;
         }
-        @media(min-width: 550px) {
-            .gift-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media(min-width: 700px) {
-            .gift-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-
-        .gift-box {
-            background: #20202d;
-            border: 1.5px solid #323246;
-            border-radius: 12px;
-            padding: 10px;
+        .preset-gift-btn {
+            background: #252536;
+            border: 1px solid #3d3d52;
+            border-radius: 8px;
+            padding: 6px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
-            position: relative;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .gift-box img {
-            width: 58px;
-            height: 58px;
+        .preset-gift-btn:hover {
+            border-color: #f59e0b;
+            background: #313146;
+            transform: translateY(-2px);
+        }
+        .preset-gift-btn.active {
+            border-color: #f59e0b;
+            background: #3b3224;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+        .preset-gift-btn img {
+            width: 38px;
+            height: 38px;
             object-fit: contain;
-            border-radius: 8px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
-            background: rgba(0,0,0,0.25);
         }
-        .gift-title { font-size: 0.78rem; font-weight: 700; color: #fff; text-align: center; }
-        .gift-coin { font-size: 0.68rem; color: #fcd34d; font-weight: 800; background: rgba(245, 158, 11, 0.2); padding: 2px 8px; border-radius: 999px; }
-
-        .video-status {
+        .preset-gift-btn span {
             font-size: 0.65rem;
             font-weight: 700;
-            padding: 3px 6px;
-            border-radius: 4px;
-            text-align: center;
-            width: 100%;
+            color: #fcd34d;
         }
-        .status-ready { background: #064e3b; color: #34d399; }
-        .status-empty { background: #451a1a; color: #f87171; }
-
-        .file-label {
-            font-size: 0.68rem;
-            color: #93c5fd;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 2px;
-        }
-        .file-label:hover { color: #bfdbfe; }
-        .hidden-file { display: none; }
-
-        .btn-fire-gift {
-            width: 100%;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000;
-            font-size: 0.75rem;
-            font-weight: 800;
-            padding: 7px 4px;
-            border-radius: 6px;
-            margin-top: 4px;
-        }
-        .btn-fire-gift:hover { filter: brightness(1.15); }
     </style>
 </head>
 <body>
@@ -134,21 +109,16 @@
                 </div>
             </div>
 
-            <!-- Preview Data Terdeteksi -->
+            <!-- Preview Data Asli -->
             <div id="profilePreviewBox" class="profile-preview">
                 <img id="prevImg" src="" alt="Avatar" referrerpolicy="no-referrer">
                 <div class="profile-meta">
-                    <b id="prevNick">Nama Profil</b>
+                    <b id="prevNick">Nama</b>
                     <span id="prevUser">@username</span>
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top:8px;">
-                <label style="color:#aaa;">Atau Upload Foto Profil Manual (Cadangan jika offline):</label>
-                <input type="file" id="manualAvatarInput" accept="image/*" onchange="handleManualAvatar(event)" style="font-size:0.75rem; padding:6px;">
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
                 <div class="form-group">
                     <label>Pilih Kotak Tujuan (1 - 8):</label>
                     <select id="targetSlotSelect">
@@ -167,33 +137,51 @@
             <button class="btn-green" style="width:100%; margin-top:4px;" onclick="placeUserToSlot()">➕ Pasang ke Kotak Terpilih</button>
         </div>
 
-        <!-- 3. KATALOG 7 GIFT PERMANEN -->
-        <div class="card" style="border: 1.5px solid #f59e0b;">
-            <h3 style="color:#f59e0b;">
-                <span>🎁 3. Katalog Gift TikTok (Simpan Permanen & Otomatis Poin)</span>
-                <span style="font-size:0.65rem; color:#10b981; font-weight:normal;">💾 Auto-Saved IndexedDB</span>
-            </h3>
-
-            <div class="form-group">
-                <label style="color:#fcd34d;">Pilih Kotak Penerima Gift:</label>
-                <select id="targetSlotGift" style="border-color:#f59e0b; background:#29221b; font-weight:bold; font-size:0.95rem;">
-                    <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
-                    <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
-                    <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
-                    <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
-                </select>
-            </div>
-
-            <div class="gift-grid" id="giftCatalogGrid"></div>
-        </div>
-
-        <!-- 4. KELOLA & TURUNKAN KOTAK 1-8 -->
+        <!-- 3. KELOLA & TURUNKAN KOTAK 1-8 -->
         <div class="card">
             <h3>
-                <span>4. Kelola & Turunkan Kotak (1 - 8)</span>
+                <span>3. Kelola & Turunkan Kotak (1 - 8)</span>
                 <button class="btn-red" style="font-size:0.75rem; padding: 4px 10px;" onclick="clearAllSlots()">⚠️ TURUNKAN SEMUA KOTAK</button>
             </h3>
+            
             <div class="slot-manager-grid" id="slotManagerContainer"></div>
+        </div>
+
+        <!-- 4 & 5. VIDEO ANIMASI GALERI & POIN MANUAL -->
+        <div class="card" style="border: 1px solid #f59e0b;">
+            <h3 style="color:#f59e0b;">
+                <span>4 & 5. Video Animasi Galeri & Poin Manual</span>
+                <span style="font-size:0.68rem; color:#10b981; font-weight:normal;" id="storageStatus">💾 Video Tersimpan Permanen</span>
+            </h3>
+
+            <!-- 7 Pilihan Cepat Gift Asli TikTok Sesuai Link Anda -->
+            <label style="font-size:0.75rem; color:#fcd34d; font-weight:600;">Pilih Cepat Gift (Foto & Poin Otomatis):</label>
+            <div class="preset-gift-container" id="presetGiftContainer"></div>
+
+            <div class="form-group">
+                <label>Pilih Video Animasi dari Galeri HP/Laptop (.mp4):</label>
+                <input type="file" id="giftGalleryFile" accept="video/mp4,video/*" onchange="handleGalleryVideo(event)">
+                <span id="galleryFileStatus" style="font-size:0.7rem; color:#10b981; margin-top:2px;"></span>
+                <input type="text" id="giftUrlInput" placeholder="Atau paste link URL video animasi..." style="margin-top:4px;">
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="form-group">
+                    <label>Target Kotak Penerima Koin:</label>
+                    <select id="giftTargetSlot">
+                        <option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+                        <option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+                        <option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+                        <option value="7">Kotak 7</option><option value="8">Kotak 8</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Poin Koin Gift (Manual / Otomatis):</label>
+                    <input type="number" id="manualPointInput" value="44999">
+                </div>
+            </div>
+
+            <button class="btn-gold" style="width:100%; margin-top:8px;" onclick="sendGiftAnimation()">🎁 KIRIM ANIMASI KE DISPLAY</button>
         </div>
 
     </div>
@@ -203,217 +191,85 @@
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
 
-        // ================= DATABASE 7 GIFT RESMI DENGAN LINK IKON ANDA =================
-        const GIFTS_DATABASE = [
-            { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
-            { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
-            { id: 'gift_3', title: 'Singa (Lion)', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
-            { id: 'gift_4', title: 'Fire Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
-            { id: 'gift_5', title: 'Robot Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
-            { id: 'gift_6', title: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
-            { id: 'gift_7', title: 'Elang Petir', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' }
+        // ================= 7 PRESET GIFT DENGAN LINK RESMI ANDA =================
+        const PRESET_GIFTS = [
+            { id: 1, name: 'Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
+            { id: 2, name: 'Paus', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
+            { id: 3, name: 'Singa', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
+            { id: 4, name: 'Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
+            { id: 5, name: 'Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
+            { id: 6, name: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
+            { id: 7, name: 'Elang', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' }
         ];
 
-        // IndexedDB: Video tersimpan permanen di memori browser
-        const DB_NAME = "TikTokStudioStorageDB";
-        const STORE_NAME = "permanent_assets";
+        let selectedPresetIcon = PRESET_GIFTS[0].icon;
 
-        function openDB() {
-            return new Promise((resolve, reject) => {
-                const req = indexedDB.open(DB_NAME, 1);
-                req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
+        function renderPresetGifts() {
+            const container = document.getElementById('presetGiftContainer');
+            container.innerHTML = '';
+            PRESET_GIFTS.forEach((g, idx) => {
+                const isActive = idx === 0 ? 'active' : '';
+                container.innerHTML += `
+                    <div class="preset-gift-btn ${isActive}" id="preset_btn_${g.id}" onclick="selectPresetGift(${g.id})">
+                        <img src="${g.icon}" referrerpolicy="no-referrer" alt="${g.name}">
+                        <span>${g.coins.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
             });
         }
+        renderPresetGifts();
 
-        async function saveAsset(key, val) {
-            const db = await openDB();
-            const tx = db.transaction(STORE_NAME, "readwrite");
-            tx.objectStore(STORE_NAME).put(val, key);
-            return tx.complete;
+        function selectPresetGift(id) {
+            const gift = PRESET_GIFTS.find(g => g.id === id);
+            if (!gift) return;
+
+            document.querySelectorAll('.preset-gift-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`preset_btn_${id}`).classList.add('active');
+
+            document.getElementById('manualPointInput').value = gift.coins;
+            selectedPresetIcon = gift.icon;
         }
 
-        async function getAsset(key) {
-            const db = await openDB();
+        // ================= SISTEM PENYIMPANAN VIDEO PERMANEN (INDEXEDDB) =================
+        const DB_NAME = "TikTokStudioStorageDB";
+        const STORE_NAME = "permanent_assets";
+        let savedVideoBlob = null;
+
+        function openDB() {
             return new Promise((resolve) => {
-                const tx = db.transaction(STORE_NAME, "readonly");
-                const req = tx.objectStore(STORE_NAME).get(key);
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
                 req.onsuccess = () => resolve(req.result);
                 req.onerror = () => resolve(null);
             });
         }
 
-        async function renderGiftsUI() {
-            const container = document.getElementById('giftCatalogGrid');
-            container.innerHTML = '';
-
-            for (const g of GIFTS_DATABASE) {
-                const savedVideo = await getAsset(`video_${g.id}`);
-                const hasVideo = !!savedVideo;
-
-                container.innerHTML += `
-                    <div class="gift-box" id="box_${g.id}">
-                        <img src="${g.icon}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="${g.title}">
-                        <span class="gift-title">${g.title}</span>
-                        <span class="gift-coin">🪙 ${g.coins.toLocaleString('id-ID')}</span>
-
-                        <span class="video-status ${hasVideo ? 'status-ready' : 'status-empty'}" id="status_${g.id}">
-                            ${hasVideo ? '✅ Video Siap' : '⚠️ Belum Ada Video'}
-                        </span>
-
-                        <label class="file-label" for="vid_file_${g.id}">📁 Pasang Video (.mp4)</label>
-                        <input type="file" id="vid_file_${g.id}" class="hidden-file" accept="video/mp4,video/*" onchange="uploadGiftVideo('${g.id}', event)">
-
-                        <button class="btn-fire-gift" onclick="triggerGift('${g.id}')">🚀 KIRIM GIFT</button>
-                    </div>
-                `;
-            }
+        async function saveVideoToDB(blob) {
+            const db = await openDB();
+            if (!db) return;
+            const tx = db.transaction(STORE_NAME, "readwrite");
+            tx.objectStore(STORE_NAME).put(blob, "main_gift_video");
         }
 
-        async function uploadGiftVideo(id, e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const statusElem = document.getElementById(`status_${id}`);
-            statusElem.className = "video-status status-ready";
-            statusElem.innerText = "⏳ Menyimpan ke memori...";
-
-            await saveAsset(`video_${id}`, file);
-            statusElem.innerText = "✅ Video Siap (Tersimpan)";
-            alert(`✅ Video untuk gift ${id} berhasil disimpan permanen! Halaman di-refresh tidak akan hilang.`);
-        }
-
-        async function triggerGift(id) {
-            const gift = GIFTS_DATABASE.find(g => g.id === id);
-            if (!gift) return;
-
-            const targetSlot = parseInt(document.getElementById('targetSlotGift').value);
-            const savedVideo = await getAsset(`video_${id}`);
-
-            if (!savedVideo) {
-                alert(`⚠️ Video untuk ${gift.title} belum dimasukkan! Silakan klik "Pasang Video (.mp4)" pada kotaknya terlebih dahulu.`);
-            }
-
-            channel.postMessage({
-                type: 'PLAY_GIFT',
-                giftId: id,
-                targetSlot: targetSlot,
-                increment: gift.coins,
-                badgeImg: gift.icon,
-                videoBlob: savedVideo || null
-            });
-        }
-
-        // ================= 2. DETEKSI USER TIKTOK (DUAL PROXY ANTI-GAGAL) =================
-        let currentDetectedProfile = null;
-        let manualAvatarBase64 = null;
-
-        function handleManualAvatar(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                manualAvatarBase64 = ev.target.result;
-                document.getElementById('prevImg').src = manualAvatarBase64;
-                document.getElementById('prevNick').innerText = "Avatar Manual";
-                document.getElementById('prevUser').innerText = "@manual";
-                document.getElementById('profilePreviewBox').style.display = 'flex';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function extractUserInfo(raw) {
-            const root = raw.data || raw;
-            const userInfo = root.userInfo || root.user_info || {};
-            const u = userInfo.user || root.user || userInfo || root;
-            const username = u.uniqueId || u.unique_id || u.username || '';
-            const nickname = u.nickname || u.name || username;
-            const avatar = u.avatarLarger || u.avatarMedium || u.avatarThumb || u.avatar || '';
-            if (!username && !nickname) throw new Error("Data user kosong");
-            return { username, nickname, avatar };
-        }
-
-        async function detectTikTokUser() {
-            const inputVal = document.getElementById('tiktokUsernameInput').value.trim();
-            if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
-
-            const cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '').replace(/^@/, '').split(/[/?#]/)[0].trim();
-            const btn = document.getElementById('btnDetectTikTok');
-            btn.innerText = "⏳ Mencari Data Asli...";
-            btn.disabled = true;
-
-            try {
-                let userObj = null;
-
-                // Jalur 1: Direct API
-                try {
-                    const res = await fetch('https://www.tikwm.com/api/user/info/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'unique_id=' + encodeURIComponent(cleanUser)
-                    });
-                    if (res.ok) {
-                        const json = await res.json();
-                        if (json.code === 0 && (json.data || json.userInfo)) {
-                            userObj = extractUserInfo(json);
-                        }
-                    }
-                } catch(e) {}
-
-                // Jalur 2: Proxy AllOrigins jika Jalur 1 kena blokir CORS browser
-                if (!userObj) {
-                    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.tikwm.com/api/user/info/?unique_id=' + cleanUser);
-                    const resProxy = await fetch(proxyUrl);
-                    if (resProxy.ok) {
-                        const jsonProxy = await resProxy.json();
-                        const parsed = JSON.parse(jsonProxy.contents);
-                        userObj = extractUserInfo(parsed);
-                    }
+        async function loadSavedVideo() {
+            const db = await openDB();
+            if (!db) return;
+            const tx = db.transaction(STORE_NAME, "readonly");
+            const req = tx.objectStore(STORE_NAME).get("main_gift_video");
+            req.onsuccess = () => {
+                if (req.result) {
+                    savedVideoBlob = req.result;
+                    document.getElementById('galleryFileStatus').innerText = "✅ Video tersimpan di memori (tidak hilang saat di-refresh)";
                 }
-
-                if (!userObj) throw new Error("Akun tidak ditemukan atau dibatasi");
-
-                currentDetectedProfile = userObj;
-                manualAvatarBase64 = null;
-                document.getElementById('prevImg').src = userObj.avatar;
-                document.getElementById('prevNick').innerText = userObj.nickname;
-                document.getElementById('prevUser').innerText = '@' + userObj.username;
-                document.getElementById('profilePreviewBox').style.display = 'flex';
-
-            } catch (err) {
-                alert(`Gagal mendeteksi @${cleanUser}. Anda bisa mengupload foto profil secara manual di bawah.`);
-            } finally {
-                btn.innerText = "🔍 Cari di TikTok";
-                btn.disabled = false;
-            }
+            };
         }
 
-        function placeUserToSlot() {
-            const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
-            const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
-            const rawUser = document.getElementById('tiktokUsernameInput').value.trim();
+        const slotData = {
+            1: null, 2: null, 3: null, 4: null,
+            5: null, 6: null, 7: null, 8: null
+        };
 
-            const displayName = currentDetectedProfile ? currentDetectedProfile.nickname : (rawUser || `Slot ${slotNum}`);
-            const avatarUrl = manualAvatarBase64 || (currentDetectedProfile ? currentDetectedProfile.avatar : null);
-
-            slotData[slotNum] = { name: displayName };
-
-            // TERUSKAN FOTO PROFIL KE DISPLAY TANPA NULL
-            channel.postMessage({
-                type: 'UPDATE_SLOT',
-                slotNum: slotNum,
-                nameInput: displayName,
-                initialPoin: coin,
-                profileImg: avatarUrl
-            });
-
-            renderSlotList();
-            alert(`✅ Kotak ${slotNum} berhasil dipasang beserta foto profilnya!`);
-        }
-
-        // Slot Manager
-        const slotData = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null };
+        let currentDetectedProfile = null;
 
         function renderSlotList() {
             const container = document.getElementById('slotManagerContainer');
@@ -429,10 +285,190 @@
                 `;
             }
         }
+        renderSlotList();
 
+        // ================= 1. KAMERA REALTIME =================
+        let camStream = null;
+        let camInterval = null;
+
+        async function startCamera() {
+            try {
+                camStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 480 }, height: { ideal: 640 }, facingMode: 'user' },
+                    audio: false
+                });
+
+                const preview = document.getElementById('camPreviewVideo');
+                preview.srcObject = camStream;
+                preview.style.display = 'block';
+                document.getElementById('camPlaceholder').style.display = 'none';
+
+                document.getElementById('btnStartCam').style.display = 'none';
+                document.getElementById('btnStopCam').style.display = 'inline-block';
+
+                const canvas = document.getElementById('camCanvas');
+                const ctx = canvas.getContext('2d');
+
+                camInterval = setInterval(() => {
+                    if (preview.readyState >= preview.HAVE_CURRENT_DATA) {
+                        ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+                        const frameData = canvas.toDataURL('image/jpeg', 0.6);
+                        channel.postMessage({ type: 'HOST_CAM_FRAME', frame: frameData });
+                    }
+                }, 33);
+            } catch (err) {
+                alert("Izin kamera ditolak atau tidak ditemukan: " + err.message);
+            }
+        }
+
+        function stopCamera() {
+            if (camInterval) { clearInterval(camInterval); camInterval = null; }
+            if (camStream) {
+                camStream.getTracks().forEach(t => t.stop());
+                camStream = null;
+            }
+            const preview = document.getElementById('camPreviewVideo');
+            preview.srcObject = null;
+            preview.style.display = 'none';
+            document.getElementById('camPlaceholder').style.display = 'block';
+
+            document.getElementById('btnStartCam').style.display = 'inline-block';
+            document.getElementById('btnStopCam').style.display = 'none';
+
+            channel.postMessage({ type: 'HOST_CAM_STOP' });
+        }
+
+        // ================= 2. API DETEKSI USER TIKTOK ASLI (ANTI-GAGAL) =================
+        function pickNested(obj, keys) {
+            if (!obj) return null;
+            for (var i = 0; i < keys.length; i++) {
+                var parts = keys[i].split('.');
+                var curr = obj;
+                var found = true;
+                for (var j = 0; j < parts.length; j++) {
+                    if (curr && typeof curr === 'object' && parts[j] in curr) {
+                        curr = curr[parts[j]];
+                    } else {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found && curr !== undefined && curr !== null && curr !== '') {
+                    return curr;
+                }
+            }
+            return null;
+        }
+
+        function extractTikwmUser(raw) {
+            if (!raw || typeof raw !== 'object') throw new Error('Respons API kosong');
+            var root = raw.data || raw;
+            var userInfo = root.userInfo || root.user_info || {};
+            var u = userInfo.user || root.user || userInfo || root;
+
+            var username = String(pickNested(u, ['uniqueId', 'unique_id', 'username', 'secUid']) || '').replace(/^@/,'').trim();
+            if (!username) throw new Error('Username tidak ada pada respons API');
+
+            return {
+                username: username,
+                nickname: String(pickNested(u, ['nickname', 'name', 'display_name']) || username),
+                avatar: String(pickNested(u, ['avatarLarger', 'avatarMedium', 'avatarThumb', 'avatar', 'avatar_url']) || '')
+            };
+        }
+
+        async function requestTikwmUser(username) {
+            var clean = encodeURIComponent(username);
+            var api = 'https://www.tikwm.com/api/user/info/';
+            
+            // Coba akses langsung
+            try {
+                var r = await fetch(api, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: 'unique_id=' + clean
+                });
+                if (r.ok) {
+                    var j = await r.json();
+                    if (j.code === 0 && (j.data || j.userInfo)) return extractTikwmUser(j);
+                }
+            } catch(e) {}
+
+            // Cadangan proxy jika diblokir oleh browser
+            var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(api + '?unique_id=' + clean);
+            var resP = await fetch(proxy);
+            var jsonP = await resP.json();
+            return extractTikwmUser(JSON.parse(jsonP.contents));
+        }
+
+        async function detectTikTokUser() {
+            var inputVal = document.getElementById('tiktokUsernameInput').value.trim();
+            if (!inputVal) return alert("Ketik username TikTok terlebih dahulu!");
+
+            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
+                                    .replace(/^@/, '')
+                                    .split(/[/?#]/)[0].trim();
+
+            var btn = document.getElementById('btnDetectTikTok');
+            btn.innerText = "⏳ Mencari Data Asli...";
+            btn.disabled = true;
+
+            try {
+                var data = await requestTikwmUser(cleanUser);
+
+                currentDetectedProfile = {
+                    username: data.username,
+                    nickname: data.nickname,
+                    avatar: data.avatar
+                };
+
+                var prevImg = document.getElementById('prevImg');
+                prevImg.src = data.avatar;
+                prevImg.referrerPolicy = "no-referrer";
+
+                document.getElementById('prevNick').innerText = data.nickname;
+                document.getElementById('prevUser').innerText = '@' + data.username;
+                document.getElementById('profilePreviewBox').style.display = 'flex';
+
+            } catch (err) {
+                alert("Gagal mendeteksi akun @" + cleanUser + ": Periksa koneksi atau username Anda.");
+                currentDetectedProfile = null;
+                document.getElementById('profilePreviewBox').style.display = 'none';
+            } finally {
+                btn.innerText = "🔍 Cari di TikTok";
+                btn.disabled = false;
+            }
+        }
+
+        function placeUserToSlot() {
+            const slotNum = parseInt(document.getElementById('targetSlotSelect').value);
+            const coin = parseInt(document.getElementById('initCoinInput').value) || 0;
+            const rawUser = document.getElementById('tiktokUsernameInput').value.trim().replace(/^@+/, '');
+
+            const displayName = currentDetectedProfile ? currentDetectedProfile.nickname : (rawUser || `Slot ${slotNum}`);
+            const avatarUrl = currentDetectedProfile ? currentDetectedProfile.avatar : null;
+
+            slotData[slotNum] = { name: displayName, username: rawUser };
+
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slotNum: slotNum,
+                nameInput: displayName,
+                initialPoin: coin,
+                profileImg: avatarUrl
+            });
+
+            renderSlotList();
+            alert(`✅ Berhasil dipasang ke Kotak ${slotNum}!`);
+        }
+
+        // ================= 3. TURUNKAN KOTAK =================
         function clearSingleSlot(slotNum) {
             slotData[slotNum] = null;
-            channel.postMessage({ type: 'UPDATE_SLOT', slotNum: slotNum, action: 'clear_slot' });
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slotNum: slotNum,
+                action: 'clear_slot'
+            });
             renderSlotList();
         }
 
@@ -440,47 +476,52 @@
             if (!confirm("Turunkan semua orang dari Kotak 1 sampai 8?")) return;
             for (let i = 1; i <= 8; i++) {
                 slotData[i] = null;
-                channel.postMessage({ type: 'UPDATE_SLOT', slotNum: i, action: 'clear_slot' });
+                channel.postMessage({
+                    type: 'UPDATE_SLOT',
+                    slotNum: i,
+                    action: 'clear_slot'
+                });
             }
             renderSlotList();
+            alert("✅ Kotak 1 - 8 telah bersih.");
         }
 
-        // Kamera Host
-        let camStream = null, camInterval = null;
-        async function startCamera() {
-            try {
-                camStream = await navigator.mediaDevices.getUserMedia({ video: { width: 480, height: 640 }, audio: false });
-                const prev = document.getElementById('camPreviewVideo');
-                prev.srcObject = camStream;
-                prev.style.display = 'block';
-                document.getElementById('camPlaceholder').style.display = 'none';
-                document.getElementById('btnStartCam').style.display = 'none';
-                document.getElementById('btnStopCam').style.display = 'inline-block';
+        // ================= 4 & 5. VIDEO ANIMASI GALERI & POIN MANUAL =================
+        function handleGalleryVideo(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-                const canvas = document.getElementById('camCanvas');
-                const ctx = canvas.getContext('2d');
-                camInterval = setInterval(() => {
-                    if (prev.readyState >= prev.HAVE_CURRENT_DATA) {
-                        ctx.drawImage(prev, 0, 0, canvas.width, canvas.height);
-                        channel.postMessage({ type: 'HOST_CAM_FRAME', frame: canvas.toDataURL('image/jpeg', 0.6) });
-                    }
-                }, 33);
-            } catch (e) { alert("Izin kamera gagal: " + e.message); }
+            document.getElementById('galleryFileStatus').innerText = `⏳ Menyimpan permanen: ${file.name}...`;
+
+            savedVideoBlob = file;
+            saveVideoToDB(file); // Tersimpan permanen, tidak hilang saat di-refresh!
+
+            document.getElementById('giftUrlInput').value = "";
+            document.getElementById('galleryFileStatus').innerText = `✅ Tersimpan permanen: ${file.name}`;
         }
 
-        function stopCamera() {
-            if (camInterval) clearInterval(camInterval);
-            if (camStream) camStream.getTracks().forEach(t => t.stop());
-            document.getElementById('camPreviewVideo').style.display = 'none';
-            document.getElementById('camPlaceholder').style.display = 'block';
-            document.getElementById('btnStartCam').style.display = 'inline-block';
-            document.getElementById('btnStopCam').style.display = 'none';
-            channel.postMessage({ type: 'HOST_CAM_STOP' });
+        function sendGiftAnimation() {
+            const target = parseInt(document.getElementById('giftTargetSlot').value);
+            const point = parseInt(document.getElementById('manualPointInput').value) || 0;
+            const urlSrc = document.getElementById('giftUrlInput').value.trim();
+
+            if (!savedVideoBlob && !urlSrc) {
+                alert("Pilih file video dari galeri terlebih dahulu!");
+                return;
+            }
+
+            channel.postMessage({
+                type: 'PLAY_GIFT',
+                targetSlot: target,
+                increment: point,
+                badgeImg: selectedPresetIcon, // Foto ikon gift yang dipilih
+                videoBlob: savedVideoBlob || null,
+                src: urlSrc || null
+            });
         }
 
         window.onload = () => {
-            renderGiftsUI();
-            renderSlotList();
+            loadSavedVideo();
         };
     </script>
 </body>
