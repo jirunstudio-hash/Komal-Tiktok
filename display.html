@@ -225,20 +225,22 @@
             animation: popGiftBadge 0.3s ease-out; 
         }
 
-        /* PILL NAMA KIRI BAWAH */
+        /* PILL NAMA DI SUDUT KIRI BAWAH */
         .slot-name-pill { 
             position: absolute; 
             bottom: 5px; 
             left: 5px; 
-            max-width: calc(100% - 30px); 
+            max-width: calc(100% - 32px); 
             display: flex; 
             align-items: center; 
             gap: 4px; 
             z-index: 6; 
-            background: rgba(0, 0, 0, 0.55); 
+            background: rgba(0, 0, 0, 0.60); 
             backdrop-filter: blur(6px);
-            padding: 2.5px 5px 2.5px 6px; 
+            padding: 2px 4px 2px 7px; 
             border-radius: 999px; 
+            height: 18px;
+            box-sizing: border-box;
         }
         .slot-name-text { 
             color: #ffffff; 
@@ -251,48 +253,48 @@
             line-height: 1;
         }
 
-        /* LINGKARAN IKON + DI UJUNG NAMA: PAS PERSIS DI TENGAH-TENGAH */
+        /* LINGKARAN IKON + DI UJUNG NAMA: PAS PERSIS DI TENGAH-TENGAH (DEAD-CENTER) */
         .slot-plus-circle { 
-            width: 13px; 
-            height: 13px; 
+            width: 14px; 
+            height: 14px; 
             border-radius: 50%; 
-            background: rgba(255, 255, 255, 0.25); 
+            background: rgba(255, 255, 255, 0.28); 
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             padding: 0;
             margin: 0;
+            box-sizing: border-box;
         }
         .slot-pill-plus-svg {
-            width: 7.5px;
-            height: 7.5px;
-            stroke: #ffffff;
-            stroke-width: 2;
-            stroke-linecap: round;
+            width: 8px;
+            height: 8px;
             display: block;
+            flex-shrink: 0;
         }
 
-        /* WADAH MIKROFON KANAN BAWAH: PAS PERSIS DI TENGAH-TENGAH */
+        /* WADAH MIKROFON: PAS PERSIS DI TENGAH-TENGAH (DEAD-CENTER) */
         .mic-container { 
             position: absolute; 
             bottom: 5px; 
             right: 5px; 
             z-index: 6; 
-            width: 19px; 
-            height: 19px; 
+            width: 20px; 
+            height: 20px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            background: rgba(0, 0, 0, 0.55); 
+            background: rgba(0, 0, 0, 0.60); 
             backdrop-filter: blur(6px);
             border-radius: 50%; 
             padding: 0;
             margin: 0;
+            box-sizing: border-box;
         }
         .mic-icon-svg { 
-            width: 11.5px; 
-            height: 11.5px; 
+            width: 12px; 
+            height: 12px; 
             display: block; 
             flex-shrink: 0;
         }
@@ -441,24 +443,24 @@
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
                             
-                            <!-- PILL NAMA DENGAN IKON + PAS PERSIS DI TENGAH -->
+                            <!-- PILL NAMA: IKON + DIJAMIN 100% PAS DI TENGAH LINGKARAN -->
                             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                                 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
                                 <div class="slot-plus-circle">
-                                    <svg class="slot-pill-plus-svg" viewBox="0 0 10 10" fill="none">
-                                        <line x1="5" y1="2" x2="5" y2="8"></line>
-                                        <line x1="2" y1="5" x2="8" y2="5"></line>
+                                    <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
+                                        <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
+                                        <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
                                     </svg>
                                 </div>
                             </div>
 
-                            <!-- WADAH MIKROFON PAS PERSIS DI TENGAH -->
+                            <!-- WADAH MIKROFON: DIJAMIN 100% PAS DI TENGAH LINGKARAN -->
                             <div class="mic-container" id="mic-slot-${i}" style="display:none;">
-                                <svg class="mic-icon-svg" viewBox="0 0 24 24">
-                                    <path fill="#ffffff" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-                                    <path fill="#ffffff" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
-                                    <line x1="3.5" y1="3.5" x2="20.5" y2="20.5" stroke="#0e0e10" stroke-width="3.5" stroke-linecap="round"/>
-                                    <line x1="3.5" y1="3.5" x2="20.5" y2="20.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                                <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="#ffffff"/>
+                                    <path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z" fill="#ffffff"/>
+                                    <line x1="3" y1="3" x2="21" y2="21" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+                                    <line x1="3" y1="3" x2="21" y2="21" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
                                 </svg>
                             </div>
                         </div>
