@@ -8,31 +8,31 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA LAYAR POTRET TIKTOK LIVE STUDIO (GARIS BAWAH DIATASKAN & SUDUT AGAK BULAT) */
+        /* KOTAK UTAMA LAYAR HP / TIKTOK LIVE STUDIO (GARIS BAWAH NAIK, SUDUT AGAK BULAT) */
         .phone-screen { 
             height: calc(100vh - 40px); 
             width: 100vw; 
             max-width: 440px; 
             background: #000; 
             position: relative; 
-            overflow: visible; /* Diubah ke visible agar video bisa keluar dari garis website */
+            overflow: hidden; /* Mengunci video agar pas dan tidak meluber keluar garis */
             display: flex; 
             flex-direction: column; 
             justify-content: flex-start; 
             align-items: center; 
-            padding: 6px 6px 0 6px; /* Kotak didekatkan ke tepi garis website */
+            padding: 6px 6px 0 6px; /* Jarak kotak dirapatkan ke garis website */
             box-shadow: 0 0 40px rgba(0,0,0,0.8); 
             border: 2px solid #222; 
-            border-radius: 12px; /* Dibuat agak bulat */
-            margin-bottom: 30px; 
+            border-radius: 12px; /* Garis agak bulat sedikit */
+            margin-bottom: 30px; /* Garis bawah dinaikkan */
         }
 
-        /* ===== AREA KOTAK KOMAL & HOST (DIRAPATKAN DENGAN GARIS WEBSITE) ===== */
+        /* ===== AREA KOTAK KOMAL & HOST (RAPAT KE GARIS WEBSITE) ===== */
         .live-layout { 
             display: flex; 
             gap: 6px; 
             width: 100%; 
-            max-width: 100%; /* Melebar penuh mendekati garis website */
+            max-width: 100%; /* Melebar rapat mendekati garis batas website */
             position: relative; 
             z-index: 10; 
             align-items: stretch; 
@@ -44,11 +44,11 @@
             50% { border-color: rgba(0, 150, 255, 0.3); box-shadow: 0 0 4px rgba(0, 150, 255, 0.2), inset 0 0 0px rgba(0, 0, 0, 0); }
         }
 
-        /* KOTAK HOST (AGAK BULAT SEDIKIT) */
+        /* KOTAK HOST (AGAK BULAT) */
         .host-box { 
             flex: 1; height: auto; min-height: 380px; 
             background: #16161c; 
-            border-radius: 10px; /* Agak bulat sedikit */
+            border-radius: 10px; /* Sudut agak bulat */
             overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; 
             border: 2px solid #00d2ff; 
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
@@ -68,11 +68,11 @@
             grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; position: relative; z-index: 10; 
         }
 
-        /* KOTAK SLOT KOMAL (AGAK BULAT SEDIKIT) */
+        /* KOTAK SLOT KOMAL (AGAK BULAT) */
         .slot-box { 
             width: 100%; aspect-ratio: 1 / 1; 
             background: #202127; 
-            border-radius: 8px; /* Agak bulat sedikit */
+            border-radius: 8px; /* Sudut agak bulat */
             position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
             border: 1.5px solid rgba(255, 255, 255, 0.22); 
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
@@ -98,7 +98,7 @@
         .star-svg { width: 7.5px; height: 7.5px; fill: #ffffff; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
         .coin-count { font-size: 0.58rem; color: #ffffff; font-weight: 800; line-height: 1; }
 
-        /* FOTO GIFT DI KANAN ATAS (POP-UP 5 DETIK) */
+        /* FOTO GIFT DI KANAN ATAS */
         @keyframes popGiftBadge {
             0% { transform: scale(0.3); opacity: 0; }
             70% { transform: scale(1.2); opacity: 1; }
@@ -138,14 +138,14 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* ===== AREA VIDEO GIFT: FULL KELUAR DARI GARIS WEBSITE & MUNCUL DI DEPAN KOTAK ===== */
+        /* ===== AREA VIDEO GIFT: PAS PERSIS DENGAN GARIS WEBSITE UTAMA ===== */
         .gift-overlay { 
             position: absolute; 
-            top: -20px; 
-            left: -10%; /* Video keluar melebar dari garis website */
-            width: 120%; /* Full keluar dari garis website */
-            height: 108%; 
-            z-index: 50; 
+            top: 0; 
+            left: 0; 
+            width: 100%; /* Pas sejajar dengan garis website */
+            height: 100%; 
+            z-index: 50; /* Di depan kotak */
             pointer-events: none; 
             display: none; 
             background: transparent; 
@@ -157,7 +157,7 @@
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            object-position: center 36%; /* Posisinya membuat setengah kotak terlihat dan setengah video di depannya */
+            object-position: center 30%; /* Setengah kotak tetap kelihatan dan setengahnya video di depan */
             display: block; 
             pointer-events: none; 
         }
@@ -166,7 +166,7 @@
 <body>
 <div class="phone-screen" id="displayContainer">
 
-    <!-- AREA ATAS (HOST & KOTAK 1 - 8) DIRAPATKAN DENGAN GARIS WEBSITE UTAMA -->
+    <!-- AREA ATAS (HOST & KOTAK 1 - 8) RAPAT DENGAN GARIS WEBSITE -->
     <div class="live-layout">
         <!-- Kotak Host bisa diklik langsung untuk menyalakan kamera lokal -->
         <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera lokal display">
@@ -218,7 +218,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT (FULL KELUAR DARI GARIS WEBSITE & TRANSPARAN OTOMATIS) -->
+    <!-- AREA VIDEO GIFT: PAS PERSIS DI BATAS GARIS WEBSITE UTAMA -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -444,7 +444,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO: GREEN SCREEN OTOMATIS & MUNCUL DI DEPAN KOTAK SECARA PENUH
+    // PEMUTAR VIDEO DENGAN GREEN SCREEN OTOMATIS & POSISI PAS DI DALAM GARIS WEBSITE
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
@@ -484,7 +484,7 @@
                     if (greenDiff > 14 && g > 45) {
                         const alpha = greenDiff > 38 ? 0 : (1 - (greenDiff - 14) / 24);
                         d[i + 3] = (alpha * 255) | 0;
-                        d[i + 1] = maxRB; // Despill pantulan hijau di tepi objek
+                        d[i + 1] = maxRB; // Bersihkan pantulan hijau di tepi objek
                         continue;
                     }
 
