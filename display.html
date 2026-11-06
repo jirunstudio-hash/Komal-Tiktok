@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0b0e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* KOTAK UTAMA */
+        /* KOTAK UTAMA LAYAR HP */
         .phone-screen { 
             height: 100vh; width: 100vw; max-width: 420px; max-height: 840px;
             background: #000; position: relative; overflow: hidden; display: flex; 
@@ -17,38 +17,53 @@
             border-radius: 0;
         }
 
+        /* ===== AREA KOTAK KOMAL & HOST (MENGAMBANG DI ATAS VIDEO) ===== */
         .live-layout { 
             display: flex; gap: 8px; width: 100%; max-width: 400px; 
-            position: relative; z-index: 10; align-items: stretch; 
+            position: relative; 
+            z-index: 20; /* Layer di atas video (kotak mengambang) */
+            align-items: stretch; 
+            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.85)); /* Bayangan efek mengambang */
         }
 
+        /* ANIMASI GARIS BIRU HOST */
         @keyframes hostBluePulse {
-            0%, 100% { border-color: #00d2ff; box-shadow: 0 0 12px rgba(0, 210, 255, 0.75), inset 0 0 8px rgba(0, 210, 255, 0.35); }
-            50% { border-color: rgba(0, 150, 255, 0.25); box-shadow: 0 0 2px rgba(0, 150, 255, 0.1), inset 0 0 0px rgba(0, 0, 0, 0); }
+            0%, 100% { border-color: #00d2ff; box-shadow: 0 0 14px rgba(0, 210, 255, 0.8), inset 0 0 8px rgba(0, 210, 255, 0.35); }
+            50% { border-color: rgba(0, 150, 255, 0.3); box-shadow: 0 0 4px rgba(0, 150, 255, 0.2), inset 0 0 0px rgba(0, 0, 0, 0); }
         }
 
+        /* KOTAK HOST MENGAMBANG */
         .host-box { 
-            flex: 1; height: auto; min-height: 380px; background: #16161c; 
+            flex: 1; height: auto; min-height: 380px; 
+            background: rgba(22, 22, 28, 0.94); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-radius: 0; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; 
-            border: 2px solid #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+            border: 2px solid #00d2ff; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
             animation: hostBluePulse 1.2s infinite ease-in-out;
         }
         .host-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
         #hostCameraImg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
-        .host-placeholder { color: #666; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
+        .host-placeholder { color: #888; font-size: 0.8rem; font-weight: 500; text-align: center; z-index: 1; }
 
         .host-top-pill { position: absolute; top: 8px; left: 8px; z-index: 12; }
         .gold-host-badge { background: linear-gradient(135deg, #e5a93c 0%, #d48b17 100%); color: #fff; font-size: 0.55rem; font-weight: 800; padding: 2px 7px; border-radius: 3px; }
 
+        /* GRID KOMAL (KOTAK 1 - 8) */
         .komal-grid { 
             width: 192px; display: grid; grid-template-columns: repeat(2, 1fr); 
             grid-template-rows: repeat(4, 1fr); gap: 6px; flex-shrink: 0; position: relative; z-index: 10; 
         }
 
+        /* KOTAK SLOT KOMAL MENGAMBANG */
         .slot-box { 
-            width: 100%; aspect-ratio: 1 / 1; background: #202127; border-radius: 0; 
+            width: 100%; aspect-ratio: 1 / 1; 
+            background: rgba(32, 33, 39, 0.90); /* Sedikit transparan agar video di belakang tetap hidup */
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 0; 
             position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.22); box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.22); 
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
             transition: all 0.25s ease;
         }
 
@@ -111,12 +126,12 @@
         }
         .mic-icon-svg { width: 12px; height: 12px; display: block; }
 
-        /* AREA PEMUTAR VIDEO GIFT JERNIH HD (HARDWARE GPU) */
+        /* ===== AREA VIDEO GIFT (DI BAWAH KOTAK / LAYER BELAKANG) ===== */
         .gift-overlay { 
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            z-index: 50; 
+            z-index: 5; /* Di bawah kotak komal (z-index: 20), video dan kotak kelihatan jelas */
             pointer-events: none; 
             display: none; 
             background: transparent; 
@@ -126,20 +141,19 @@
             object-fit: contain; 
             object-position: center bottom;
             display: block;
-            mix-blend-mode: screen; 
+            mix-blend-mode: screen; /* Latar hitam hilang otomatis, video jernih HD 60fps */
         }
     </style>
 </head>
 <body>
 <div class="phone-screen" id="displayContainer">
-    <!-- AREA ATAS (HOST & KOTAK 1 - 8) -->
+    <!-- AREA ATAS (HOST & KOTAK 1 - 8) MENGAMBANG DI ATAS -->
     <div class="live-layout">
         <div class="host-box" id="hostBox">
             <div class="host-top-pill"><span class="gold-host-badge">Host</span></div>
             <div id="hostPlaceholder" class="host-placeholder">Host Video / Kamera</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
             <img id="hostCameraImg" alt="Host Cam">
-            <!-- NAMA HOST SUDAH BERSIH DIHILANGKAN -->
         </div>
 
         <div class="komal-grid" id="komalGrid">
@@ -185,7 +199,7 @@
         </div>
     </div>
 
-    <!-- AREA VIDEO GIFT JERNIH HD -->
+    <!-- AREA VIDEO GIFT DI BAWAH (LAYER BELAKANG) -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline muted></video>
     </div>
@@ -242,7 +256,7 @@
             imgElem.removeAttribute('src');
             if (bgElem) { bgElem.style.display = 'none'; bgElem.removeAttribute('src'); }
             if (bgOverlay) bgOverlay.style.display = 'none';
-            if (slotBox) slotBox.style.background = '#202127';
+            if (slotBox) slotBox.style.background = 'rgba(32, 33, 39, 0.90)';
 
             iconElem.style.display = 'inline-block';
             reqElem.style.display = 'inline-block';
@@ -281,7 +295,7 @@
         }
     }
 
-    // FOTO GIFT MUNCUL PAS DITEKAN & HILANG SETELAH 5 DETIK
+    // FOTO GIFT MUNCUL 5 DETIK LALU HILANG
     function showGiftBadgeTemporarily(slotNum, badgeSrc) {
         if (!badgeSrc || !slotNum) return;
         const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
@@ -323,7 +337,7 @@
                 showGiftBadgeTemporarily(targetSlot, data.badgeImg);
             }
 
-            // 3. Putar Video Asli HD Tanpa Burik
+            // 3. Putar Video Asli HD di Bawah Kotak
             let videoUrl = null;
             if (data.videoBlob) {
                 videoUrl = URL.createObjectURL(data.videoBlob);
@@ -359,7 +373,7 @@
         return val.toLocaleString('id-ID');
     }
 
-    // PEMUTAR VIDEO ASLI (HD, JERNIH, HARDWARE ACCELERATED)
+    // PEMUTAR VIDEO DI LAYER BAWAH (HD, BEBAS BURIK)
     function playGiftVideo(src) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
