@@ -297,7 +297,7 @@
             flex-shrink: 0;
         }
 
-        /* ===== BANNER NOTIFIKASI GIFT MIRIP PERSIS TIKTOK LIVE ASLI ===== */
+        /* ===== BANNER NOTIFIKASI GIFT PERSIS TIKTOK LIVE ASLI ===== */
         .gift-banner-wrapper {
             width: 100%;
             display: flex;
@@ -308,14 +308,14 @@
             pointer-events: none;
         }
 
-        /* Animasi meluncur dari samping kiri dengan sedikit membal (spring) khas TikTok */
+        /* Animasi meluncur dari samping kiri dengan sedikit pantulan membal khas TikTok */
         @keyframes tiktokBannerSlideIn {
             0% { 
-                transform: translateX(-110%); 
+                transform: translateX(-115%); 
                 opacity: 0; 
             }
-            80% {
-                transform: translateX(4px);
+            75% {
+                transform: translateX(5px);
                 opacity: 1;
             }
             100% { 
@@ -329,39 +329,39 @@
                 opacity: 1; 
             }
             100% { 
-                transform: translateX(-110%) scale(0.9); 
+                transform: translateX(-115%) scale(0.9); 
                 opacity: 0; 
             }
         }
 
-        /* Pop icon gift saat banner tiba */
+        /* Animasi pop membal ikon gift saat muncul */
         @keyframes tiktokGiftIconBounce {
-            0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
-            65% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+            0% { transform: scale(0.2) rotate(-12deg); opacity: 0; }
+            65% { transform: scale(1.25) rotate(4deg); opacity: 1; }
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
         .gift-banner-toast {
             display: none;
             align-items: center;
-            /* Latar gelap transparan blur khas TikTok */
-            background: rgba(18, 18, 24, 0.72);
+            background: rgba(18, 18, 24, 0.75);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 0.5px solid rgba(255, 255, 255, 0.15);
             border-radius: 999px;
-            padding: 2px 2px 2px 2px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+            padding: 2.5px 6px 2.5px 2.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             animation: tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
             max-width: 82%;
             transform: translateZ(0);
+            overflow: visible; /* Biarkan ikon gift menonjol keluar 3D */
             position: relative;
         }
 
-        /* Avatar bulat kecil persis TikTok (~24px) */
+        /* Avatar pas di ujung kiri kapsul */
         .toast-avatar {
-            width: 24px;
-            height: 24px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -370,7 +370,7 @@
             image-rendering: high-quality;
         }
 
-        /* Kolom teks 2 baris rapat */
+        /* Kolom teks nama & aksi */
         .toast-text-col {
             display: flex;
             flex-direction: column;
@@ -381,39 +381,39 @@
             line-height: 1.15;
         }
 
-        /* Nama pengirim kecil tebal */
         .toast-name {
-            font-size: 0.58rem;
+            font-size: 0.62rem;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 95px;
+            max-width: 90px;
             letter-spacing: 0.1px;
         }
 
-        /* Keterangan gift warna kuning khas TikTok */
         .toast-desc {
-            font-size: 0.48rem;
+            font-size: 0.50rem;
             font-weight: 500;
-            color: #ffe66d;
+            color: #ffe66d; /* Kuning emas khas TikTok */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100px;
+            max-width: 95px;
         }
 
-        /* Ikon gift mini tapi timbul keluar dari pill */
+        /* Ikon gift menonjol keluar kapsul (Efek 3D Pop TikTok) */
         .toast-gift-img {
-            width: 28px;
-            height: 28px;
+            width: 34px;
+            height: 34px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.7));
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
             flex-shrink: 0;
-            margin-left: 1px;
-            margin-right: 2px;
-            animation: tiktokGiftIconBounce 0.4s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            margin-left: 2px;
+            margin-right: -4px;
+            margin-top: -3px;
+            margin-bottom: -3px;
+            animation: tiktokGiftIconBounce 0.4s 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
             image-rendering: high-quality;
         }
 
@@ -797,9 +797,9 @@
 
         if (toastTimeout) clearTimeout(toastTimeout);
 
-        // Reset dan jalankan animasi meluncur dari kiri dengan pantulan TikTok
+        // Reset dan trigger animasi meluncur dari kiri dengan pantulan TikTok
         toast.style.animation = 'none';
-        void toast.offsetWidth; // Trigger reflow
+        void toast.offsetWidth; // Force reflow
         toast.style.animation = 'tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards';
         toast.style.display = 'inline-flex';
 
