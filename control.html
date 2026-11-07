@@ -20,12 +20,42 @@
         button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
         .btn-green { background: #10b981; } .btn-green:hover { background: #059669; }
         .btn-red { background: #ef4444; } .btn-red:hover { background: #dc2626; }
+        .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; }
 
         .profile-preview { display: none; align-items: center; gap: 12px; background: #222230; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border: 1px solid #38384a; }
         .profile-preview img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fe2c55; background: #333; }
         .profile-meta { display: flex; flex-direction: column; font-size: 0.85rem; }
+
+        .host-media-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #2e2e40;
+        }
+        @media(max-width: 500px) {
+            .host-media-container { grid-template-columns: 1fr; }
+        }
+        .host-media-box {
+            background: #20202c;
+            border: 1px solid #2f2f42;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .host-media-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
         .slot-manager-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
         .slot-item { background: #20202c; border: 1px solid #2d2d3f; border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
@@ -105,11 +135,11 @@
 
     <div class="dashboard">
 
-        <!-- 1. IDENTITAS & KONTROL KAMERA DISPLAY -->
+        <!-- 1. IDENTITAS & MEDIA HOST (ONCAM ATAU VIDEO) -->
         <div class="card">
             <h3>
-                <span>1. Identitas Host & Remote Kamera Display</span>
-                <span id="remoteCamStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Kamera Standby</span>
+                <span>1. Identitas Host & Tampilan Layar Host</span>
+                <span id="remoteHostStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Host Standby</span>
             </h3>
 
             <!-- CARI USERNAME TIKTOK HOST -->
@@ -122,7 +152,7 @@
             </div>
 
             <!-- PREVIEW PROFIL HOST -->
-            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom: 12px;">
+            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom: 10px;">
                 <img id="hostPrevImg" src="" alt="Avatar Host" referrerpolicy="no-referrer">
                 <div class="profile-meta">
                     <b id="hostPrevNick">Nama Host</b>
@@ -130,11 +160,30 @@
                 </div>
             </div>
 
-            <!-- TOMBOL REMOTE UNTUK MENYALAKAN KAMERA DI DISPLAY SECARA OTOMATIS -->
-            <div style="display:flex; gap: 8px;">
-                <button id="btnRemoteStartCam" class="btn-green" style="flex:1;" onclick="controlDisplayCamera('start')">🔴 Nyalakan Kamera di Display</button>
-                <button id="btnRemoteStopCam" class="btn-red" style="flex:1; display:none;" onclick="controlDisplayCamera('stop')">⏹ Matikan Kamera di Display</button>
+            <!-- PILIHAN MEDIA HOST: ON-CAM ATAU VIA VIDEO -->
+            <div class="host-media-container">
+                <!-- OPSI A: ONCAM LANGSUNG -->
+                <div class="host-media-box">
+                    <div class="host-media-title">📷 Opsi A: Kamera Langsung (On-Cam)</div>
+                    <button id="btnRemoteStartCam" class="btn-green" onclick="controlDisplayCamera('start')">🔴 Nyalakan On-Cam</button>
+                    <button id="btnRemoteStopCam" class="btn-red" style="display:none;" onclick="controlDisplayCamera('stop')">⏹ Matikan On-Cam</button>
+                </div>
+
+                <!-- OPSI B: PASANG VIDEO HOST (.MP4) -->
+                <div class="host-media-box">
+                    <div class="host-media-title">🎬 Opsi B: Video Host (.mp4 / Loop)</div>
+                    
+                    <span class="video-status status-empty" id="hostVideoStatus">⚠️ Belum Ada Video Host</span>
+
+                    <label class="file-label" for="hostVideoFileInput" style="text-align:center; font-size:0.75rem;">📁 Pilih File Video Host (.mp4)</label>
+                    <input type="file" id="hostVideoFileInput" class="hidden-file" accept="video/mp4,video/*" onchange="uploadHostVideo(event)">
+
+                    <button id="btnPlayHostVideo" class="btn-blue" onclick="playHostVideoOnDisplay()">▶️ Putar Video di Host</button>
+                </div>
             </div>
+
+            <!-- RESET STANDBY -->
+            <button class="btn-red" style="width:100%; margin-top:10px; font-size:0.72rem; padding: 6px;" onclick="resetHostMediaStandby()">⏹ Reset Kotak Host (Standby)</button>
         </div>
 
         <!-- 2. DETEKSI USERNAME TIKTOK & PASANG KOTAK 1-8 -->
@@ -211,43 +260,7 @@
             username: localStorage.getItem('saved_host_user') || ''
         };
 
-        // REMOTE KONTROL KAMERA DISPLAY (TIDAK MEMBEBANI KOMPUTER)
-        function controlDisplayCamera(action) {
-            channel.postMessage({
-                type: 'TRIGGER_DISPLAY_CAMERA',
-                action: action
-            });
-
-            const btnStart = document.getElementById('btnRemoteStartCam');
-            const btnStop = document.getElementById('btnRemoteStopCam');
-            const statusLabel = document.getElementById('remoteCamStatus');
-
-            if (action === 'start') {
-                btnStart.style.display = 'none';
-                btnStop.style.display = 'inline-block';
-                statusLabel.innerText = "🟢 Kamera Aktif di Display";
-                statusLabel.style.color = "#10b981";
-            } else {
-                btnStart.style.display = 'inline-block';
-                btnStop.style.display = 'none';
-                statusLabel.innerText = "Kamera Standby";
-                statusLabel.style.color = "#aaa";
-            }
-        }
-
-        // ================= DATABASE 9 GIFT RESMI =================
-        const GIFTS_DATABASE = [
-            { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
-            { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
-            { id: 'gift_3', title: 'Singa (Lion)', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
-            { id: 'gift_4', title: 'Fire Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
-            { id: 'gift_5', title: 'Robot Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
-            { id: 'gift_6', title: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
-            { id: 'gift_7', title: 'Elang Petir', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' },
-            { id: 'gift_8', title: 'Pegasus', coins: 42999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp' },
-            { id: 'gift_9', title: 'Falcon / Lightning', coins: 12000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp' }
-        ];
-
+        // ================= INDEXEDDB (PERMANENT STORAGE) =================
         const DB_NAME = "TikTokStudioStorageDB";
         const STORE_NAME = "permanent_assets";
 
@@ -278,6 +291,100 @@
                 req.onerror = () => resolve(null);
             });
         }
+
+        // ================= MEDIA HOST: ON-CAM & VIDEO =================
+        function controlDisplayCamera(action) {
+            channel.postMessage({
+                type: 'TRIGGER_DISPLAY_CAMERA',
+                action: action
+            });
+
+            const btnStart = document.getElementById('btnRemoteStartCam');
+            const btnStop = document.getElementById('btnRemoteStopCam');
+            const statusLabel = document.getElementById('remoteHostStatus');
+
+            if (action === 'start') {
+                btnStart.style.display = 'none';
+                btnStop.style.display = 'block';
+                statusLabel.innerText = "🟢 On-Cam Aktif";
+                statusLabel.style.color = "#10b981";
+            } else {
+                btnStart.style.display = 'block';
+                btnStop.style.display = 'none';
+                statusLabel.innerText = "Host Standby";
+                statusLabel.style.color = "#aaa";
+            }
+        }
+
+        async function uploadHostVideo(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusElem = document.getElementById('hostVideoStatus');
+            statusElem.className = "video-status status-ready";
+            statusElem.innerText = "⏳ Menyimpan Video Host...";
+
+            await saveAsset('host_loop_video', file);
+            statusElem.innerText = "✅ Video Host Siap";
+        }
+
+        async function playHostVideoOnDisplay() {
+            const videoFile = await getAsset('host_loop_video');
+            if (!videoFile) {
+                alert("Silakan pilih file video host (.mp4) terlebih dahulu!");
+                return;
+            }
+
+            document.getElementById('btnRemoteStartCam').style.display = 'block';
+            document.getElementById('btnRemoteStopCam').style.display = 'none';
+
+            channel.postMessage({
+                type: 'SET_HOST_VIDEO',
+                videoBlob: videoFile
+            });
+
+            const statusLabel = document.getElementById('remoteHostStatus');
+            statusLabel.innerText = "🎬 Video Host Diputar";
+            statusLabel.style.color = "#38bdf8";
+        }
+
+        function resetHostMediaStandby() {
+            document.getElementById('btnRemoteStartCam').style.display = 'block';
+            document.getElementById('btnRemoteStopCam').style.display = 'none';
+
+            const statusLabel = document.getElementById('remoteHostStatus');
+            statusLabel.innerText = "Host Standby";
+            statusLabel.style.color = "#aaa";
+
+            channel.postMessage({
+                type: 'RESET_HOST_MEDIA'
+            });
+        }
+
+        async function checkHostVideoStatus() {
+            const savedVid = await getAsset('host_loop_video');
+            const statusElem = document.getElementById('hostVideoStatus');
+            if (savedVid) {
+                statusElem.className = "video-status status-ready";
+                statusElem.innerText = "✅ Video Host Siap";
+            } else {
+                statusElem.className = "video-status status-empty";
+                statusElem.innerText = "⚠️ Belum Ada Video Host";
+            }
+        }
+
+        // ================= DATABASE 9 GIFT RESMI =================
+        const GIFTS_DATABASE = [
+            { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
+            { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
+            { id: 'gift_3', title: 'Singa (Lion)', coins: 29999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp' },
+            { id: 'gift_4', title: 'Fire Phoenix', coins: 41999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/bfb8425a7e8fa03f9fec05a973a4a506.png~tplv-obj.webp' },
+            { id: 'gift_5', title: 'Robot Mecha', coins: 39999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/491bbbd84842fa1089c29d6e61211bb3.png~tplv-obj.webp' },
+            { id: 'gift_6', title: 'Naga Api', coins: 26999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp' },
+            { id: 'gift_7', title: 'Elang Petir', coins: 18999, icon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp' },
+            { id: 'gift_8', title: 'Pegasus', coins: 42999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp' },
+            { id: 'gift_9', title: 'Falcon / Lightning', coins: 12000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp' }
+        ];
 
         async function renderGiftsUI() {
             const container = document.getElementById('giftCatalogGrid');
@@ -592,6 +699,7 @@
                     hostAvatar: savedHostAvatar || ''
                 });
             }
+            checkHostVideoStatus();
             renderGiftsUI();
             renderSlotList();
         };
