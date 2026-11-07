@@ -253,7 +253,6 @@
             line-height: 1;
         }
 
-        /* LINGKARAN IKON + DI UJUNG NAMA: PAS PERSIS DI TENGAH-TENGAH (DEAD-CENTER) */
         .slot-plus-circle { 
             width: 14px; 
             height: 14px; 
@@ -274,7 +273,6 @@
             flex-shrink: 0;
         }
 
-        /* WADAH MIKROFON: PAS PERSIS DI TENGAH-TENGAH (DEAD-CENTER) */
         .mic-container { 
             position: absolute; 
             bottom: 5px; 
@@ -299,12 +297,12 @@
             flex-shrink: 0;
         }
 
-        /* ===== BANNER NOTIFIKASI GIFT DI BAWAH HOST ===== */
+        /* ===== BANNER NOTIFIKASI GIFT DI BAWAH HOST (UKURAN DIPERKECIL / COMPACT) ===== */
         .gift-banner-wrapper {
             width: 100%;
             display: flex;
             justify-content: flex-start;
-            padding: 8px 4px 0 4px;
+            padding: 6px 4px 0 4px;
             position: relative;
             z-index: 30;
         }
@@ -323,18 +321,18 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 999px;
-            padding: 3px 12px 3px 3px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+            padding: 2px 8px 2px 2px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
             animation: bannerSlideIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
-            max-width: 95%;
+            max-width: 85%;
             transform: translateZ(0);
         }
         .toast-avatar {
-            width: 38px;
-            height: 38px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             flex-shrink: 0;
             background: #252530;
             image-rendering: high-quality;
@@ -342,21 +340,22 @@
         .toast-text-col {
             display: flex;
             flex-direction: column;
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 6px;
+            margin-right: 6px;
             overflow: hidden;
+            line-height: 1.15;
         }
         .toast-name {
-            font-size: 0.78rem;
+            font-size: 0.64rem;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
         }
         .toast-desc {
-            font-size: 0.63rem;
+            font-size: 0.52rem;
             font-weight: 500;
             color: #a4a4b2;
             white-space: nowrap;
@@ -364,13 +363,13 @@
             text-overflow: ellipsis;
         }
         .toast-gift-img {
-            width: 40px;
-            height: 40px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
             flex-shrink: 0;
             margin-left: 2px;
-            animation: popGiftBadge 0.4s ease-out;
+            animation: popGiftBadge 0.35s ease-out;
             image-rendering: high-quality;
         }
 
@@ -443,7 +442,6 @@
                             
                             <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
                             
-                            <!-- PILL NAMA: IKON + DIJAMIN 100% PAS DI TENGAH LINGKARAN -->
                             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                                 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
                                 <div class="slot-plus-circle">
@@ -454,7 +452,6 @@
                                 </div>
                             </div>
 
-                            <!-- WADAH MIKROFON: DIJAMIN 100% PAS DI TENGAH LINGKARAN -->
                             <div class="mic-container" id="mic-slot-${i}" style="display:none;">
                                 <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="#ffffff"/>
