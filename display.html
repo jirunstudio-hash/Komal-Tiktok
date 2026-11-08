@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live HD</title>
+<title>TikTok Live Display Studio</title>
 
 <style>
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -22,171 +22,143 @@ html, body {
     color: #fff;
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .phone-screen {
-    width: 100vw;
-    height: 100vh;
-    max-width: 440px;
+    width: 100%;
+    height: 100%;
     position: relative;
+    background: #000;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 4px;
-    background: #000;
-    transform: translateZ(0);
+    justify-content: center;
+    padding: 12px;
 }
 
 .live-layout {
-    display: flex;
-    gap: 4px;
     width: 100%;
-    position: relative;
-    z-index: 10;
+    max-width: 900px;
+    height: min(43vh, 680px);
+    min-height: 240px;
+    display: flex;
+    gap: 5px;
     align-items: stretch;
 }
 
-@keyframes hostBluePulse {
-    0%, 100% {
-        border-color: #00d2ff;
-        box-shadow: 0 0 5px rgba(0,210,255,.5);
-    }
-    50% {
-        border-color: rgba(0,150,255,.45);
-        box-shadow: 0 0 2px rgba(0,150,255,.1);
-    }
-}
+/* ================= HOST ================= */
 
 .host-box {
-    flex: 1;
+    width: 50%;
     min-width: 0;
-    background: #1c1d24;
-    border-radius: 12px;
-    overflow: hidden;
+    height: 100%;
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: 1.5px solid #00d2ff;
-    animation: hostBluePulse 1.5s infinite ease-in-out;
-    transform: translateZ(0);
-    contain: layout paint;
+    overflow: hidden;
+    background: #17191d;
+    border: 3px solid #20eaff;
+    border-radius: 17px;
+    box-shadow: 0 0 8px rgba(0,220,255,.35);
+    flex-shrink: 0;
+    isolation: isolate;
 }
 
-.host-video, #hostCameraImg {
-    position: absolute;
-    inset: 0;
+#hostVideo,
+#hostCameraImg {
     width: 100%;
     height: 100%;
+    position: absolute;
+    inset: 0;
     object-fit: cover;
-    z-index: 2;
     display: none;
-    backface-visibility: hidden;
-    filter: none;
-}
-
-#hostCameraImg {
-    z-index: 3;
-}
-
-.host-placeholder {
-    color: #555761;
-    font-size: .8rem;
-    font-weight: 500;
-    text-align: center;
     z-index: 1;
 }
 
-/* HOST LABEL DI BAGIAN ATAS */
+.host-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #777;
+    font-size: 13px;
+}
+
+/* Label HOST di atas */
+
 .host-top-pill {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    z-index: 12;
-    display: inline-flex;
+    top: 9px;
+    left: 9px;
+    z-index: 5;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    min-height: 27px;
-    max-width: calc(100% - 16px);
-    padding: 4px 10px 4px 7px;
-    border-radius: 8px;
-    background: rgba(245,248,255,.94);
-    color: #26364a;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(235,242,248,.95);
+    color: #263344;
     font-size: 12px;
     font-weight: 800;
-    line-height: 1;
-    box-shadow: 0 2px 8px rgba(0,0,0,.28);
+    box-shadow: 0 2px 6px #0005;
 }
 
-.host-pill-icon {
-    width: 16px;
-    height: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 16px;
-}
-
-.host-pill-icon svg {
+.host-top-pill svg {
     width: 15px;
     height: 15px;
-    fill: #26364a;
 }
 
-.host-bottom-pill {
-    display: none;
-}
+/* Nama host di bawah */
 
-.host-name-text {
-    color: #fff;
-    font-size: 13px;
+.host-name-label {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 6;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: rgba(0,0,0,.38);
+    color: white;
+    font-size: 14px;
     font-weight: 800;
-    white-space: nowrap;
+    text-shadow: 0 1px 4px #000;
+    max-width: 90%;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+/* ================= GRID PESERTA ================= */
 
 .komal-grid {
     flex: 1;
     min-width: 0;
+    height: 100%;
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-rows: repeat(4,1fr);
-    gap: 4px;
-    position: relative;
-    z-index: 10;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    grid-template-rows: repeat(4,minmax(0,1fr));
+    gap: 5px;
 }
 
 .slot-box {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #1c1d24;
-    border-radius: 12px;
     position: relative;
+    min-width: 0;
+    min-height: 0;
     overflow: hidden;
+    background: #11191c;
+    border-radius: 13px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    contain: layout paint;
+    isolation: isolate;
 }
 
 .slot-bg-blur {
-    position: absolute !important;
-    inset: -8px !important;
-    width: calc(100% + 16px) !important;
-    height: calc(100% + 16px) !important;
-    object-fit: cover !important;
-    filter: blur(7px) brightness(.7) !important;
+    position: absolute;
+    inset: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    object-fit: cover;
+    filter: blur(8px) brightness(.65);
     display: none;
-    z-index: 1;
-    pointer-events: none;
+    z-index: -1;
 }
 
 .slot-bg-overlay {
@@ -194,313 +166,316 @@ body {
     inset: 0;
     background: rgba(0,0,0,.25);
     display: none;
-    z-index: 2;
-    pointer-events: none;
+    z-index: 0;
 }
 
-.slot-plus-svg {
-    width: 28px;
-    height: 28px;
-    stroke: #8e95a3;
-    stroke-width: 4;
-    stroke-linecap: round;
-    z-index: 3;
-    margin-bottom: 2px;
-}
-
-.slot-req {
-    color: #8e95a3;
-    font-size: .66rem;
-    font-weight: 700;
-    z-index: 3;
-}
+/* Foto profil bulat */
 
 .slot-circle-img {
-    width: 56px;
-    height: 56px;
+    position: absolute;
+    width: min(49%, 78px);
+    aspect-ratio: 1;
+    height: auto;
     border-radius: 50%;
     object-fit: cover;
-    display: none;
-    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
-    z-index: 4;
-    box-shadow: 0 3px 8px rgba(0,0,0,.5);
-    filter: none;
+    z-index: 2;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 2px 10px #0008;
+    display: none;
 }
 
-/* BADGE POIN DENGAN BINTANG */
+/* Poin dan bintang */
+
 .slot-coin-badge {
     position: absolute;
     top: 5px;
     left: 5px;
-    display: flex;
+    z-index: 5;
+    display: none;
     align-items: center;
-    gap: 4px;
-    background: rgba(0,0,0,.78);
-    padding: 3px 8px 3px 4px;
-    border-radius: 999px;
-    z-index: 8;
-    min-height: 23px;
+    gap: 5px;
+    padding: 3px 9px 3px 4px;
+    border-radius: 20px;
+    background: rgba(0,0,0,.85);
     border: 1px solid rgba(255,255,255,.12);
 }
 
 .cyan-diamond-circle {
-    width: 16px;
-    height: 16px;
-    background: radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
+    width: 17px;
+    height: 17px;
     border-radius: 50%;
+    background: radial-gradient(circle,#fff 5%,#58eaff 40%,#078bff 85%);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 5px #00cfff;
     flex-shrink: 0;
-    box-shadow: 0 0 5px rgba(0,190,255,.55);
 }
 
 .star-svg {
-    width: 9px;
-    height: 9px;
-    fill: #fff;
+    width: 10px;
+    height: 10px;
+    fill: white;
 }
 
 .coin-count {
+    color: white;
     font-size: 11px;
-    color: #fff;
-    font-weight: 800;
+    font-weight: 900;
     white-space: nowrap;
 }
 
-@keyframes popGiftBadge {
-    0% { transform: scale(.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
+/* Nama peserta */
 
-.slot-top-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 8;
-    width: 28px;
-    height: 28px;
-    display: none;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
-    pointer-events: none;
-    animation: popGiftBadge .3s ease-out;
-}
-
-/* NAMA PESERTA LEBIH JELAS */
 .slot-name-pill {
     position: absolute;
     bottom: 5px;
     left: 5px;
+    z-index: 6;
     max-width: calc(100% - 34px);
-    display: flex;
+    min-height: 25px;
+    display: none;
     align-items: center;
-    gap: 5px;
-    z-index: 9;
-    background: rgba(12,14,18,.92);
-    border: 1px solid rgba(255,255,255,.18);
-    padding: 3px 6px 3px 8px;
+    gap: 4px;
+    padding: 3px 5px 3px 8px;
     border-radius: 7px;
-    min-height: 23px;
-    box-shadow: 0 2px 7px rgba(0,0,0,.45);
+    background: rgba(0,0,0,.88);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 2px 5px #0006;
 }
 
 .slot-name-text {
     color: #fff;
-    font-size: 10px;
-    font-weight: 800;
+    font-size: clamp(9px,1.2vw,13px);
+    font-weight: 900;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 85px;
-    text-shadow: 0 1px 2px #000;
-    line-height: 1.2;
+    max-width: 90px;
 }
 
-/* ICON TAMBAH BULAT DI SAMPING NAMA */
+/* Plus bulat */
+
 .slot-plus-circle {
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.30);
-    border: 1px solid rgba(255,255,255,.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 19px;
+    height: 19px;
     flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,.27);
+    border: 1px solid rgba(255,255,255,.3);
 }
 
-.slot-pill-plus-svg {
-    width: 10px;
-    height: 10px;
+.slot-plus-circle svg {
+    width: 11px;
+    height: 11px;
 }
 
-/* ICON MIKROFON KOTAK */
+/* Mikrofon mute */
+
 .mic-container {
     position: absolute;
-    bottom: 5px;
     right: 5px;
-    z-index: 10;
-    width: 23px;
-    height: 23px;
-    display: flex;
-    align-items: center;
+    bottom: 5px;
+    z-index: 7;
+    width: 24px;
+    height: 24px;
+    display: none;
     justify-content: center;
+    align-items: center;
     border-radius: 6px;
-    background: rgba(0,0,0,.82);
-    border: 1px solid rgba(255,255,255,.2);
-    box-shadow: 0 2px 5px rgba(0,0,0,.4);
+    background: rgba(0,0,0,.9);
+    border: 1px solid rgba(255,255,255,.15);
 }
 
-.mic-icon-svg {
-    width: 14px;
-    height: 14px;
+.mic-container svg {
+    width: 15px;
+    height: 15px;
 }
+
+/* Badge gift */
+
+.slot-top-badge {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 29px;
+    height: 29px;
+    object-fit: contain;
+    display: none;
+    z-index: 8;
+    filter: drop-shadow(0 2px 3px #000);
+}
+
+/* Kotak kosong */
+
+.slot-plus-svg {
+    width: 32px;
+    height: 32px;
+    stroke: #dce3e7;
+    stroke-width: 2.5;
+    z-index: 2;
+}
+
+.slot-req {
+    position: absolute;
+    top: 66%;
+    color: #dce3e7;
+    font-size: clamp(9px,1.2vw,13px);
+    font-weight: 700;
+    z-index: 2;
+}
+
+/* ================= JUDUL ================= */
+
+.display-title {
+    position: absolute;
+    top: calc(50% - min(43vh,680px) / 2 - 38px);
+    right: max(12px, calc((100% - 900px) / 2 + 12px));
+    font-size: clamp(13px,2.5vw,25px);
+    font-weight: 500;
+    color: white;
+    text-align: right;
+    letter-spacing: .5px;
+}
+
+/* ================= GIFT NOTIFICATION ================= */
 
 .gift-banner-wrapper {
     position: absolute;
-    bottom: 34px;
-    left: 6px;
-    right: 6px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    bottom: 43px;
+    left: 7px;
     z-index: 20;
     pointer-events: none;
-}
-
-@keyframes tiktokBannerSlideIn {
-    0% { transform: translateX(-115%); opacity: 0; }
-    75% { transform: translateX(4px); opacity: 1; }
-    100% { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes tiktokBannerSlideOut {
-    0% { transform: translateX(0); opacity: 1; }
-    100% { transform: translateX(-115%); opacity: 0; }
-}
-
-@keyframes tiktokGiftIconBounce {
-    0% { transform: scale(.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    max-width: 90%;
 }
 
 .gift-banner-toast {
     display: none;
     align-items: center;
-    height: 30px;
-    background: linear-gradient(90deg,rgba(15,15,20,.92),rgba(20,20,28,.82));
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 999px;
-    padding: 3px 6px 3px 3px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.5);
-    animation: tiktokBannerSlideIn .35s ease-out forwards;
-    max-width: 75%;
-    overflow: visible;
+    padding: 4px 8px 4px 4px;
+    border-radius: 30px;
+    background: rgba(15,16,23,.91);
+    border: 1px solid rgba(255,255,255,.15);
+    box-shadow: 0 2px 8px #0008;
+    max-width: 100%;
 }
 
 .toast-avatar {
-    width: 24px;
-    height: 24px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid rgba(255,255,255,.5);
     flex-shrink: 0;
-    background: #252530;
 }
 
 .toast-text-col {
+    margin: 0 7px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin: 0 6px;
-    overflow: hidden;
-    line-height: 1.15;
 }
 
 .toast-name {
+    color: white;
     font-size: 11px;
     font-weight: 800;
-    color: #fff;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100px;
 }
 
 .toast-desc {
+    color: #ccc;
     font-size: 9px;
-    font-weight: 500;
-    color: rgba(255,255,255,.85);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 110px;
 }
 
 .toast-gift-img {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
-    flex-shrink: 0;
-    margin: -2px -3px -2px 1px;
-    animation: tiktokGiftIconBounce .38s ease-out both;
 }
 
 .toast-combo-count {
     display: none;
     margin-left: 5px;
-    color: #fff;
     font-size: 17px;
-    line-height: 1;
     font-weight: 900;
     font-style: italic;
-    white-space: nowrap;
-    text-shadow: 0 2px 5px rgba(0,0,0,.95);
-    flex-shrink: 0;
+    text-shadow: 0 2px 4px #000;
 }
+
+@keyframes slideIn {
+    from { transform: translateX(-110%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    to { transform: translateX(-110%); opacity: 0; }
+}
+
+/* ================= GIFT VIDEO ================= */
 
 .gift-overlay {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
     z-index: 50;
     pointer-events: none;
-    display: none;
-    background: transparent;
-}
-
-#giftVideo {
     display: none;
 }
 
 #giftCanvas {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    pointer-events: none;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    object-fit: contain;
 }
 
-/* RESPONSIVE */
-@media (max-width: 380px) {
+#giftVideo {
+    display: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
+
+    .phone-screen {
+        padding: 5px;
+    }
+
+    .live-layout {
+        height: min(43vh,520px);
+        gap: 4px;
+    }
+
+    .host-box {
+        width: 50%;
+        border-radius: 12px;
+        border-width: 2px;
+    }
+
+    .komal-grid {
+        gap: 4px;
+    }
+
+    .slot-box {
+        border-radius: 9px;
+    }
+
     .slot-name-pill {
+        bottom: 4px;
+        left: 3px;
+        min-height: 20px;
+        padding: 2px 3px 2px 5px;
         gap: 3px;
-        padding: 2px 4px 2px 6px;
-        min-height: 21px;
     }
 
     .slot-name-text {
+        max-width: 62px;
         font-size: 9px;
-        max-width: 65px;
     }
 
     .slot-plus-circle {
@@ -508,22 +483,54 @@ body {
         height: 15px;
     }
 
+    .slot-plus-circle svg {
+        width: 9px;
+        height: 9px;
+    }
+
     .mic-container {
-        width: 21px;
-        height: 21px;
-        right: 4px;
+        width: 20px;
+        height: 20px;
+        right: 3px;
         bottom: 4px;
     }
 
+    .mic-container svg {
+        width: 12px;
+        height: 12px;
+    }
+
     .slot-coin-badge {
-        top: 4px;
-        left: 4px;
-        min-height: 20px;
-        padding: 2px 6px 2px 3px;
+        top: 3px;
+        left: 3px;
+        padding: 2px 5px 2px 3px;
+        gap: 3px;
+    }
+
+    .cyan-diamond-circle {
+        width: 14px;
+        height: 14px;
     }
 
     .coin-count {
+        font-size: 9px;
+    }
+
+    .host-name-label {
+        font-size: 12px;
+        bottom: 7px;
+        left: 6px;
+    }
+
+    .host-top-pill {
+        top: 6px;
+        left: 6px;
         font-size: 10px;
+        padding: 3px 7px;
+    }
+
+    .display-title {
+        top: calc(50% - min(43vh,520px) / 2 - 27px);
     }
 }
 
@@ -534,54 +541,57 @@ body {
 
 <div class="phone-screen" id="displayContainer">
 
+    <div class="display-title">SUPPORT TEP SH3RE</div>
+
     <div class="live-layout">
 
-        <div class="host-box" id="hostBox"
-             onclick="startDisplayDirectCamera()"
-             title="Klik untuk aktifkan kamera host">
+        <!-- HOST -->
+        <div class="host-box" id="hostBox">
 
             <div class="host-top-pill">
-                <span class="host-pill-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/>
-                        <path d="M12 14c-5 0-8 2.5-8 5.5V21h16v-1.5c0-3-3-5.5-8-5.5Z"/>
-                    </svg>
-                </span>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 12a7 7 0 0 1-5.6-2.8 6.5 6.5 0 0 1 11.2 0A7 7 0 0 1 12 18z"/>
+                </svg>
                 <span>Host</span>
             </div>
 
-            <div id="hostPlaceholder" class="host-placeholder">
-                Kamera Host (Standby)
+            <div class="host-placeholder" id="hostPlaceholder">
+                Kamera Host
             </div>
 
-            <video id="hostVideo" class="host-video"
-                   autoplay playsinline muted></video>
+            <video id="hostVideo" autoplay playsinline muted></video>
 
-            <img id="hostCameraImg" alt="Host Cam">
+            <img id="hostCameraImg" alt="Host">
+
+            <div class="host-name-label" id="hostNameLabel">
+                Host
+            </div>
 
             <div class="gift-banner-wrapper">
                 <div class="gift-banner-toast" id="giftBannerToast">
-                    <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar">
+
+                    <img class="toast-avatar" id="toastGifterAvatar" src="" alt="">
 
                     <div class="toast-text-col">
                         <div class="toast-name" id="toastGifterName">Host</div>
                         <div class="toast-desc" id="toastGiftDesc">Gift</div>
                     </div>
 
-                    <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift">
+                    <img class="toast-gift-img" id="toastGiftIcon" src="" alt="">
+
                 </div>
 
-                <span id="toastComboCount" class="toast-combo-count">x 1</span>
+                <span class="toast-combo-count" id="toastComboCount">x 1</span>
             </div>
 
-            <div class="host-bottom-pill" id="hostBottomPill">
-                <span class="host-name-text" id="hostNameText">Host</span>
-            </div>
         </div>
 
+        <!-- PESERTA -->
         <div class="komal-grid" id="komalGrid"></div>
+
     </div>
 
+    <!-- GIFT VIDEO OVERLAY -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
@@ -592,18 +602,24 @@ body {
 <script>
 'use strict';
 
-/* ================= CHANNEL ================= */
+/* ==========================================
+   PENGATURAN DASAR
+========================================== */
 
 const channel = new BroadcastChannel('tiktok_live_channel');
+
+const $ = id => document.getElementById(id);
 
 const slotPoints = {};
 const badgeTimers = {};
 
+let detectedHostName = 'Host';
+let detectedHostAvatar = '';
+
 let displayCamStream = null;
 let cameraStarting = false;
-let hostMediaObjectURL = null;
 
-let toastTimeout = null;
+let toastTimer = null;
 let toastHideTimer = null;
 
 const giftComboGroups = new Map();
@@ -611,336 +627,343 @@ const giftVideoQueue = [];
 
 let giftVideoQueueBusy = false;
 
-let detectedHostName = 'Host';
-let detectedHostAvatar =
-'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
-
-const $ = id => document.getElementById(id);
-
-/* ================= SLOT GENERATOR ================= */
+/* ==========================================
+   MEMBUAT 8 KOTAK PESERTA
+========================================== */
 
 const grid = $('komalGrid');
 
 for (let i = 1; i <= 8; i++) {
+
     slotPoints[i] = 0;
 
     grid.insertAdjacentHTML('beforeend', `
+
         <div class="slot-box" id="slot-${i}">
 
-            <img id="bg-slot-${i}" class="slot-bg-blur"
-                 referrerpolicy="no-referrer">
+            <img class="slot-bg-blur"
+                 id="bg-slot-${i}">
 
-            <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
+            <div class="slot-bg-overlay"
+                 id="overlay-slot-${i}"></div>
 
-            <div class="slot-coin-badge" id="coin-badge-${i}"
-                 style="display:none;">
+            <div class="slot-coin-badge"
+                 id="coin-badge-${i}">
 
                 <div class="cyan-diamond-circle">
+
                     <svg class="star-svg" viewBox="0 0 24 24">
                         <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
                     </svg>
+
                 </div>
 
-                <span class="coin-count" id="coincount-slot-${i}">0</span>
+                <span class="coin-count"
+                      id="coincount-slot-${i}">0</span>
+
             </div>
 
             <img class="slot-top-badge"
                  id="topbadge-slot-${i}"
-                 referrerpolicy="no-referrer"
-                 crossorigin="anonymous"
                  alt="Gift">
 
-            <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
+            <svg class="slot-plus-svg"
+                 id="icon-${i}"
+                 viewBox="0 0 24 24"
+                 fill="none">
+
+                <path d="M12 4V20M4 12H20"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"/>
+
             </svg>
 
-            <span class="slot-req" id="req-${i}">Permintaan</span>
+            <span class="slot-req" id="req-${i}">
+                Permintaan
+            </span>
 
-            <img id="img-slot-${i}" class="slot-circle-img"
-                 referrerpolicy="no-referrer">
+            <img class="slot-circle-img"
+                 id="img-slot-${i}"
+                 alt="Peserta">
 
-            <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
-                <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
+            <div class="slot-name-pill"
+                 id="namepill-slot-${i}">
+
+                <span class="slot-name-text"
+                      id="nametext-slot-${i}">Peserta</span>
 
                 <div class="slot-plus-circle">
-                    <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
-                        <line x1="8" y1="2.5" x2="8" y2="13.5"
-                              stroke="#ffffff" stroke-width="2.2"
-                              stroke-linecap="round"></line>
-                        <line x1="2.5" y1="8" x2="13.5" y2="8"
-                              stroke="#ffffff" stroke-width="2.2"
-                              stroke-linecap="round"></line>
+
+                    <svg viewBox="0 0 16 16">
+                        <path d="M8 2V14M2 8H14"
+                              stroke="white"
+                              stroke-width="2"
+                              stroke-linecap="round"/>
                     </svg>
+
                 </div>
+
             </div>
 
-            <div class="mic-container" id="mic-slot-${i}" style="display:none;">
-                <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"
-                          fill="#ffffff"/>
-                    <path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"
-                          fill="#ffffff"/>
-                    <line x1="3" y1="3" x2="21" y2="21"
-                          stroke="#000000" stroke-width="3.5"
+            <div class="mic-container"
+                 id="mic-slot-${i}">
+
+                <svg viewBox="0 0 24 24" fill="none">
+
+                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
+                          fill="white"/>
+
+                    <path d="M19 10v1a7 7 0 0 1-14 0v-1h2v1a5 5 0 0 0 10 0v-1h2Z"
+                          fill="white"/>
+
+                    <path d="M4 4L20 20"
+                          stroke="white"
+                          stroke-width="2.5"
                           stroke-linecap="round"/>
-                    <line x1="3" y1="3" x2="21" y2="21"
-                          stroke="#ffffff" stroke-width="1.8"
-                          stroke-linecap="round"/>
+
                 </svg>
+
             </div>
 
         </div>
+
     `);
 }
 
-/* ================= KAMERA HOST AUTO ================= */
+/* ==========================================
+   FORMAT POIN
+========================================== */
 
-async function startDisplayDirectCamera() {
+function formatPoin(value) {
 
-    if (cameraStarting) return;
+    value = Number(value) || 0;
 
-    const hVid = $('hostVideo');
-    const placeholder = $('hostPlaceholder');
-    const camImg = $('hostCameraImg');
+    if (value >= 1000000) {
+        return (value / 1000000).toFixed(1).replace('.', ',') + 'M';
+    }
 
-    if (displayCamStream &&
-        displayCamStream.getVideoTracks().some(t => t.readyState === 'live')) {
+    if (value >= 1000) {
+        return (value / 1000).toFixed(1).replace('.', ',') + 'K';
+    }
 
-        hVid.srcObject = displayCamStream;
-        hVid.style.display = 'block';
-        placeholder.style.display = 'none';
+    return value.toLocaleString('id-ID');
+}
 
-        if (hVid.paused) {
-            await hVid.play().catch(() => {});
-        }
+/* ==========================================
+   UPDATE NAMA HOST
+   KOMPATIBEL CONTROL LAMA
+========================================== */
+
+function updateHostName(data) {
+
+    const name =
+        data.hostName ||
+        data.name ||
+        data.nickname ||
+        data.username;
+
+    if (name) {
+
+        detectedHostName = String(name);
+
+        $('hostNameLabel').textContent = detectedHostName;
+    }
+
+    if (data.hostAvatar) {
+        detectedHostAvatar = data.hostAvatar;
+    }
+
+    if (data.avatar) {
+        detectedHostAvatar = data.avatar;
+    }
+}
+
+/* ==========================================
+   UPDATE SLOT PESERTA
+========================================== */
+
+function updateSlotDisplay(data) {
+
+    const slotNum = Number(data.slotNum);
+
+    if (!slotNum || slotNum < 1 || slotNum > 8) return;
+
+    const img = $(`img-slot-${slotNum}`);
+    const bg = $(`bg-slot-${slotNum}`);
+
+    const overlay = $(`overlay-slot-${slotNum}`);
+
+    const coin = $(`coin-badge-${slotNum}`);
+    const count = $(`coincount-slot-${slotNum}`);
+
+    const namePill = $(`namepill-slot-${slotNum}`);
+    const nameText = $(`nametext-slot-${slotNum}`);
+
+    const mic = $(`mic-slot-${slotNum}`);
+
+    const icon = $(`icon-${slotNum}`);
+    const req = $(`req-${slotNum}`);
+
+    const topBadge = $(`topbadge-slot-${slotNum}`);
+
+    if (
+        data.action === 'clear_slot' ||
+        data.action === 'clear'
+    ) {
+
+        img.style.display = 'none';
+        img.removeAttribute('src');
+
+        bg.style.display = 'none';
+        bg.removeAttribute('src');
+
+        overlay.style.display = 'none';
+
+        icon.style.display = 'block';
+        req.style.display = 'block';
+
+        coin.style.display = 'none';
+
+        namePill.style.display = 'none';
+        mic.style.display = 'none';
+
+        topBadge.style.display = 'none';
+        topBadge.removeAttribute('src');
+
+        slotPoints[slotNum] = 0;
+
+        clearTimeout(badgeTimers[slotNum]);
+
         return;
     }
 
-    cameraStarting = true;
+    if (data.initialPoin !== undefined) {
 
-    try {
-
-        if (!navigator.mediaDevices?.getUserMedia) {
-            throw new Error('Kamera membutuhkan HTTPS atau localhost.');
-        }
-
-        camImg.style.display = 'none';
-
-        const constraints = {
-            audio: false,
-            video: {
-                width: { ideal: 720 },
-                height: { ideal: 1280 },
-                frameRate: { ideal: 30, max: 30 },
-                facingMode: 'user'
-            }
-        };
-
-        displayCamStream =
-            await navigator.mediaDevices.getUserMedia(constraints);
-
-        hVid.srcObject = displayCamStream;
-        hVid.style.display = 'block';
-        placeholder.style.display = 'none';
-
-        await hVid.play();
-
-        const track = displayCamStream.getVideoTracks()[0];
-
-        if (track) {
-            console.log('Kamera aktif:', track.getSettings());
-        }
-
-    } catch (err) {
-
-        console.error('Kamera error:', err);
-
-        placeholder.style.display = 'block';
-        placeholder.textContent = 'Kamera gagal aktif';
-
-    } finally {
-        cameraStarting = false;
-    }
-}
-
-function stopDisplayDirectCamera() {
-
-    if (displayCamStream) {
-        displayCamStream.getTracks().forEach(track => track.stop());
-        displayCamStream = null;
+        slotPoints[slotNum] =
+            Number(data.initialPoin) || 0;
     }
 
-    const hVid = $('hostVideo');
+    if (data.nameInput !== undefined) {
 
-    hVid.pause();
-    hVid.srcObject = null;
-    hVid.style.display = 'none';
+        nameText.textContent = data.nameInput;
 
-    $('hostPlaceholder').style.display = 'block';
-}
-
-function releaseHostObjectURL() {
-
-    if (hostMediaObjectURL) {
-        URL.revokeObjectURL(hostMediaObjectURL);
-        hostMediaObjectURL = null;
+        namePill.style.display = 'flex';
+        mic.style.display = 'flex';
     }
-}
 
-/* ================= WEBGL ================= */
+    if (data.profileImg) {
 
-let gl = null;
-let glProgram = null;
-let glTexture = null;
-let glBuffers = {};
-let isWebGLSupported = false;
+        img.src = data.profileImg;
+        img.style.display = 'block';
 
-function initWebGL(canvas) {
+        bg.src = data.profileImg;
+        bg.style.display = 'block';
 
-    if (gl && glProgram && glTexture) return true;
+        overlay.style.display = 'block';
 
-    try {
-
-        gl = canvas.getContext('webgl', {
-            alpha: true,
-            premultipliedAlpha: false,
-            antialias: false,
-            depth: false,
-            stencil: false,
-            preserveDrawingBuffer: false,
-            powerPreference: 'low-power'
-        });
-
-        if (!gl) return false;
-
-        const vsSource = `
-            attribute vec2 a_pos;
-            attribute vec2 a_tex;
-            varying vec2 v_tex;
-
-            void main() {
-                gl_Position = vec4(a_pos, 0.0, 1.0);
-                v_tex = a_tex;
-            }
-        `;
-
-        const fsSource = `
-            precision mediump float;
-
-            uniform sampler2D u_tex;
-            varying vec2 v_tex;
-
-            void main() {
-                vec4 c = texture2D(u_tex, v_tex);
-
-                float maxRB = max(c.r, c.b);
-                float gDiff = c.g - maxRB;
-
-                if (gDiff > 0.06 && c.g > 0.18) {
-                    float a = 1.0 - smoothstep(0.06, 0.18, gDiff);
-                    c.a = min(c.a, a);
-                    c.g = maxRB;
-                }
-
-                float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
-
-                if (lum < 0.07) {
-                    c.a = 0.0;
-                } else if (lum < 0.16) {
-                    c.a = min(c.a, (lum - 0.07) / 0.09);
-                }
-
-                gl_FragColor = c;
-            }
-        `;
-
-        function createShader(type, src) {
-
-            const shader = gl.createShader(type);
-
-            gl.shaderSource(shader, src);
-            gl.compileShader(shader);
-
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error(gl.getShaderInfoLog(shader));
-                gl.deleteShader(shader);
-                return null;
-            }
-
-            return shader;
-        }
-
-        const vs = createShader(gl.VERTEX_SHADER, vsSource);
-        const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
-
-        if (!vs || !fs) return false;
-
-        glProgram = gl.createProgram();
-
-        gl.attachShader(glProgram, vs);
-        gl.attachShader(glProgram, fs);
-        gl.linkProgram(glProgram);
-
-        gl.deleteShader(vs);
-        gl.deleteShader(fs);
-
-        if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
-            console.error(gl.getProgramInfoLog(glProgram));
-            return false;
-        }
-
-        const posBuffer = gl.createBuffer();
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            -1,-1, 1,-1, -1,1,
-            -1,1, 1,-1, 1,1
-        ]), gl.STATIC_DRAW);
-
-        const texBuffer = gl.createBuffer();
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
-
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            0,1, 1,1, 0,0,
-            0,0, 1,1, 1,0
-        ]), gl.STATIC_DRAW);
-
-        glBuffers.pos = posBuffer;
-        glBuffers.tex = texBuffer;
-
-        glTexture = gl.createTexture();
-
-        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-        gl.useProgram(glProgram);
-
-        gl.uniform1i(
-            gl.getUniformLocation(glProgram, 'u_tex'),
-            0
-        );
-
-        isWebGLSupported = true;
-
-        return true;
-
-    } catch (e) {
-        console.error('WebGL init error:', e);
-        return false;
+        icon.style.display = 'none';
+        req.style.display = 'none';
     }
+
+    count.textContent = formatPoin(slotPoints[slotNum]);
+
+    coin.style.display = 'flex';
 }
 
-/* ================= DATABASE VIDEO ================= */
+/* ==========================================
+   GIFT BADGE DI KOTAK PESERTA
+========================================== */
 
-const DB_NAME = "TikTokStudioStorageDB";
-const STORE_NAME = "permanent_assets";
+function showGiftBadgeTemporarily(slotNum, src) {
+
+    if (!slotNum || !src) return;
+
+    const badge = $(`topbadge-slot-${slotNum}`);
+
+    if (!badge) return;
+
+    clearTimeout(badgeTimers[slotNum]);
+
+    badge.src = src;
+    badge.style.display = 'block';
+
+    badgeTimers[slotNum] = setTimeout(() => {
+
+        badge.style.display = 'none';
+        badge.removeAttribute('src');
+
+    }, 5000);
+}
+
+/* ==========================================
+   NOTIFIKASI GIFT
+========================================== */
+
+function showGiftToast(data, comboCount = 1) {
+
+    const toast = $('giftBannerToast');
+
+    const avatar = $('toastGifterAvatar');
+    const name = $('toastGifterName');
+    const desc = $('toastGiftDesc');
+    const giftIcon = $('toastGiftIcon');
+
+    const combo = $('toastComboCount');
+
+    avatar.src =
+        data.senderAvatar ||
+        detectedHostAvatar ||
+        '';
+
+    name.textContent =
+        data.senderName ||
+        data.username ||
+        'User';
+
+    desc.textContent =
+        data.giftTitle ||
+        'Gift';
+
+    if (data.badgeImg) {
+
+        giftIcon.src = data.badgeImg;
+        giftIcon.style.display = 'block';
+
+    } else {
+
+        giftIcon.style.display = 'none';
+    }
+
+    combo.textContent = 'x ' + comboCount;
+    combo.style.display = 'inline-block';
+
+    clearTimeout(toastTimer);
+    clearTimeout(toastHideTimer);
+
+    toast.style.display = 'flex';
+    toast.style.animation = 'slideIn .35s ease forwards';
+
+    toastTimer = setTimeout(() => {
+
+        toast.style.animation = 'slideOut .3s ease forwards';
+
+        toastHideTimer = setTimeout(() => {
+
+            toast.style.display = 'none';
+            combo.style.display = 'none';
+
+        }, 300);
+
+    }, 3000);
+}
+
+/* ==========================================
+   INDEXEDDB GIFT VIDEO
+========================================== */
+
+const DB_NAME = 'TikTokStudioStorageDB';
+const STORE_NAME = 'permanent_assets';
 
 let dbPromise = null;
 
@@ -950,16 +973,11 @@ function openDB() {
 
     dbPromise = new Promise(resolve => {
 
-        const req = indexedDB.open(DB_NAME, 1);
+        const request = indexedDB.open(DB_NAME, 1);
 
-        req.onsuccess = () => resolve(req.result);
+        request.onsuccess = () => resolve(request.result);
 
-        req.onerror = () => {
-            dbPromise = null;
-            resolve(null);
-        };
-
-        req.onblocked = () => {
+        request.onerror = () => {
             dbPromise = null;
             resolve(null);
         };
@@ -978,264 +996,43 @@ async function getSavedVideo(id) {
 
         return await new Promise(resolve => {
 
-            const tx = db.transaction(STORE_NAME, "readonly");
-            const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
+            const tx = db.transaction(STORE_NAME, 'readonly');
 
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
+            const request =
+                tx.objectStore(STORE_NAME).get(`video_${id}`);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => resolve(null);
+
         });
 
-    } catch (e) {
+    } catch (error) {
+
         return null;
     }
 }
 
-/* ================= FORMAT POIN ================= */
+/* ==========================================
+   SISTEM COMBO GIFT
+========================================== */
 
-function formatPoin(val) {
+function getComboKey(data) {
 
-    if (!val || val === 0) return '0';
+    const sender =
+        String(data.senderName || data.username || 'user')
+        .toLowerCase();
 
-    if (val >= 1000000) {
-        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
-    }
+    const gift =
+        String(data.giftId || data.giftTitle || 'gift')
+        .toLowerCase();
 
-    if (val >= 1000) {
-        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
-    }
-
-    return val.toLocaleString('id-ID');
-}
-
-/* ================= SLOT ================= */
-
-function updateSlotDisplay(data) {
-
-    const {
-        slotNum,
-        nameInput,
-        initialPoin,
-        profileImg,
-        action
-    } = data;
-
-    const slotBox = $(`slot-${slotNum}`);
-
-    if (!slotBox) return;
-
-    const coinBadge = $(`coin-badge-${slotNum}`);
-    const countElem = $(`coincount-slot-${slotNum}`);
-    const namePill = $(`namepill-slot-${slotNum}`);
-    const nameText = $(`nametext-slot-${slotNum}`);
-    const mic = $(`mic-slot-${slotNum}`);
-    const img = $(`img-slot-${slotNum}`);
-    const bg = $(`bg-slot-${slotNum}`);
-    const bgOverlay = $(`overlay-slot-${slotNum}`);
-    const icon = $(`icon-${slotNum}`);
-    const req = $(`req-${slotNum}`);
-    const topBadge = $(`topbadge-slot-${slotNum}`);
-
-    if (action === 'clear_slot') {
-
-        img.style.display = 'none';
-        img.removeAttribute('src');
-
-        bg.style.display = 'none';
-        bg.removeAttribute('src');
-
-        bgOverlay.style.display = 'none';
-
-        slotBox.style.background = '#1c1d24';
-
-        icon.style.display = 'block';
-        req.style.display = 'inline-block';
-        namePill.style.display = 'none';
-        mic.style.display = 'none';
-        coinBadge.style.display = 'none';
-
-        if (topBadge) {
-            topBadge.style.display = 'none';
-            topBadge.removeAttribute('src');
-        }
-
-        if (badgeTimers[slotNum]) {
-            clearTimeout(badgeTimers[slotNum]);
-            delete badgeTimers[slotNum];
-        }
-
-        slotPoints[slotNum] = 0;
-        return;
-    }
-
-    if (initialPoin !== undefined) {
-        slotPoints[slotNum] = initialPoin;
-    }
-
-    countElem.innerText = formatPoin(slotPoints[slotNum]);
-    coinBadge.style.display = 'flex';
-
-    if (nameInput) {
-        nameText.innerText = nameInput;
-        namePill.style.display = 'flex';
-        mic.style.display = 'flex';
-    }
-
-    if (profileImg) {
-
-        icon.style.display = 'none';
-        req.style.display = 'none';
-
-        img.src = profileImg;
-        img.style.display = 'block';
-
-        bg.src = profileImg;
-        bg.style.display = 'block';
-
-        bgOverlay.style.display = 'block';
-    }
-}
-
-function showGiftBadgeTemporarily(slotNum, badgeSrc) {
-
-    if (!badgeSrc || !slotNum) return;
-
-    const topBadge = $(`topbadge-slot-${slotNum}`);
-
-    if (!topBadge) return;
-
-    if (badgeTimers[slotNum]) {
-        clearTimeout(badgeTimers[slotNum]);
-    }
-
-    topBadge.src = badgeSrc;
-    topBadge.style.display = 'block';
-
-    badgeTimers[slotNum] = setTimeout(() => {
-        topBadge.style.display = 'none';
-        topBadge.removeAttribute('src');
-        delete badgeTimers[slotNum];
-    }, 5000);
-}
-
-/* ================= NOTIFIKASI GIFT ================= */
-
-function showGiftToast(data, comboCount = 1) {
-
-    const toast = $('giftBannerToast');
-    const avatar = $('toastGifterAvatar');
-    const nameElem = $('toastGifterName');
-    const descElem = $('toastGiftDesc');
-    const iconElem = $('toastGiftIcon');
-    const comboElem = $('toastComboCount');
-
-    const hostName = detectedHostName || 'Host';
-    const hostAvatar = data.senderAvatar || detectedHostAvatar;
-
-    avatar.src = hostAvatar;
-    nameElem.innerText = hostName;
-    descElem.innerText = data.giftTitle || 'Gift';
-
-    if (data.badgeImg) {
-        iconElem.src = data.badgeImg;
-        iconElem.style.display = 'block';
-    } else {
-        iconElem.style.display = 'none';
-    }
-
-    comboElem.textContent = 'x ' + Math.max(1, Number(comboCount) || 1);
-    comboElem.style.display = 'inline-block';
-
-    clearTimeout(toastTimeout);
-    clearTimeout(toastHideTimer);
-
-    if (toast.style.display !== 'inline-flex') {
-
-        toast.style.animation = 'none';
-        void toast.offsetWidth;
-
-        toast.style.animation =
-            'tiktokBannerSlideIn .35s ease-out forwards';
-
-        toast.style.display = 'inline-flex';
-    }
-
-    toastTimeout = setTimeout(() => {
-
-        toast.style.animation =
-            'tiktokBannerSlideOut .28s ease-in forwards';
-
-        toastHideTimer = setTimeout(() => {
-            toast.style.display = 'none';
-            comboElem.style.display = 'none';
-        }, 280);
-
-    }, 3000);
-}
-
-/* ================= ANTRIAN VIDEO GIFT ================= */
-
-function queueGiftVideo(src, repeatCount = 1) {
-
-    if (!src) return;
-
-    const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
-
-    giftVideoQueue.push({
-        src,
-        remaining: count,
-        isBlob: src.startsWith('blob:')
-    });
-
-    playNextGiftVideo();
-}
-
-function playNextGiftVideo() {
-
-    if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
-
-    giftVideoQueueBusy = true;
-
-    const item = giftVideoQueue[0];
-
-    playGiftVideo(item.src, () => {
-
-        item.remaining--;
-
-        if (item.remaining > 0) {
-            giftVideoQueueBusy = false;
-            playNextGiftVideo();
-        } else {
-
-            giftVideoQueue.shift();
-
-            if (item.isBlob) {
-                URL.revokeObjectURL(item.src);
-            }
-
-            giftVideoQueueBusy = false;
-            playNextGiftVideo();
-        }
-    });
-}
-
-/* ================= SISTEM COMBO GIFT ================= */
-
-function getGiftComboKey(data) {
-
-    const sender = String(
-        data.senderName || data.username || 'user'
-    ).toLowerCase();
-
-    const gift = String(
-        data.giftId || data.giftTitle || 'gift'
-    ).toLowerCase();
-
-    return `${sender}::${gift}`;
+    return sender + '::' + gift;
 }
 
 async function resolveGiftVideo(data) {
 
     if (data.videoBlob) {
+
         return URL.createObjectURL(data.videoBlob);
     }
 
@@ -1248,91 +1045,89 @@ async function resolveGiftVideo(data) {
         }
     }
 
-    if (data.src) return data.src;
-
-    return null;
+    return data.src || null;
 }
 
 function receiveGiftForCombo(data) {
 
-    const key = getGiftComboKey(data);
-
-    const rawCumulative =
-        data.repeatCount ??
-        data.comboCount ??
-        data.repeat_count ??
-        data.combo_count;
-
-    const cumulativeCount = Number(rawCumulative);
+    const key = getComboKey(data);
 
     let group = giftComboGroups.get(key);
 
     if (!group) {
 
         group = {
-            data: { ...data },
+            data: {...data},
             count: 0,
             src: null,
             timer: null,
             revision: 0,
-            videoPromise: Promise.resolve()
+            promise: Promise.resolve()
         };
 
         giftComboGroups.set(key, group);
     }
 
-    group.revision++;
-    group.data = { ...group.data, ...data };
+    group.data = {...group.data, ...data};
 
-    if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
+    group.revision++;
+
+    const cumulative = Number(
+        data.repeatCount ??
+        data.repeat_count ??
+        data.comboCount ??
+        data.combo_count
+    );
+
+    if (Number.isFinite(cumulative) && cumulative > 0) {
 
         group.count = Math.max(
             group.count,
-            Math.floor(cumulativeCount)
+            Math.floor(cumulative)
         );
 
     } else {
 
         group.count += Math.max(
             1,
-            Math.floor(Number(data.giftCount) || 1)
+            Number(data.giftCount) || 1
         );
     }
 
     showGiftToast(group.data, group.count);
 
-    clearTimeout(group.timer);
+    group.promise = group.promise.then(async () => {
 
-    group.videoPromise = group.videoPromise.then(async () => {
+        const src = await resolveGiftVideo(data);
 
-        const resolvedSrc = await resolveGiftVideo(data);
+        if (src) {
 
-        if (resolvedSrc) {
-
-            if (
-                group.src &&
-                group.src.startsWith('blob:') &&
-                group.src !== resolvedSrc
-            ) {
+            if (group.src && group.src.startsWith('blob:')) {
                 URL.revokeObjectURL(group.src);
             }
 
-            group.src = resolvedSrc;
+            group.src = src;
         }
 
-    }).catch(err => {
-        console.error('Gagal memuat video gift:', err);
-    });
+    }).catch(console.error);
 
-    const finishCombo = async () => {
+    clearTimeout(group.timer);
 
-        const finishingRevision = group.revision;
+    const end =
+        data.repeatEnd === true ||
+        data.repeat_end === true ||
+        data.comboEnd === true ||
+        data.combo_end === true;
 
-        await group.videoPromise;
+    const revision = group.revision;
+
+    group.timer = setTimeout(async () => {
+
+        await group.promise;
 
         if (
             giftComboGroups.get(key) !== group ||
-            group.revision !== finishingRevision
+            group.revision !== revision
         ) {
             return;
         }
@@ -1340,141 +1135,117 @@ function receiveGiftForCombo(data) {
         giftComboGroups.delete(key);
 
         if (group.src) {
-            queueGiftVideo(group.src, Math.max(1, group.count));
+
+            queueGiftVideo(group.src, group.count);
         }
-    };
 
-    const comboEnded =
-        data.repeatEnd === true ||
-        data.repeat_end === true ||
-        data.comboEnd === true ||
-        data.combo_end === true;
-
-    group.timer = setTimeout(
-        finishCombo,
-        comboEnded ? 0 : 900
-    );
+    }, end ? 0 : 900);
 }
 
-/* ================= PESAN MASUK ================= */
+/* ==========================================
+   PESAN MASUK BROADCAST
+========================================== */
 
 function handleIncomingMessage(data) {
 
     if (!data) return;
 
-    if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
+    switch (data.type) {
 
-        if (data.action === 'start') {
-            startDisplayDirectCamera();
-        } else if (data.action === 'stop') {
-            stopDisplayDirectCamera();
-        }
-    }
+        case 'UPDATE_HOST':
+        case 'UPDATE_HOST_NAME':
+        case 'UPDATE_HOST_LABEL':
 
-    else if (data.type === 'SET_HOST_VIDEO') {
+            updateHostName(data);
 
-        stopDisplayDirectCamera();
+            break;
 
-        const hVid = $('hostVideo');
-        const camImg = $('hostCameraImg');
+        case 'UPDATE_SLOT':
 
-        camImg.style.display = 'none';
+            updateSlotDisplay(data);
 
-        releaseHostObjectURL();
+            break;
 
-        if (data.videoBlob) {
+        case 'PLAY_GIFT': {
 
-            hVid.srcObject = null;
+            const targetSlot = Number(data.targetSlot);
 
-            hostMediaObjectURL = URL.createObjectURL(data.videoBlob);
+            if (
+                targetSlot >= 1 &&
+                targetSlot <= 8
+            ) {
 
-            hVid.src = hostMediaObjectURL;
-            hVid.style.display = 'block';
+                slotPoints[targetSlot] +=
+                    Number(data.increment) || 0;
 
-            $('hostPlaceholder').style.display = 'none';
+                $(`coincount-slot-${targetSlot}`)
+                    .textContent = formatPoin(slotPoints[targetSlot]);
 
-            hVid.play().catch(() => {});
-        }
-    }
-
-    else if (data.type === 'RESET_HOST_MEDIA') {
-
-        stopDisplayDirectCamera();
-
-        const hVid = $('hostVideo');
-        const camImg = $('hostCameraImg');
-
-        releaseHostObjectURL();
-
-        camImg.style.display = 'none';
-
-        hVid.pause();
-        hVid.srcObject = null;
-        hVid.removeAttribute('src');
-        hVid.style.display = 'none';
-        hVid.load();
-
-        $('hostPlaceholder').style.display = 'block';
-    }
-
-    else if (
-        data.type === 'UPDATE_HOST' ||
-        data.type === 'UPDATE_HOST_NAME'
-    ) {
-
-        if (data.hostName) {
-
-            detectedHostName = data.hostName;
-
-            $('hostNameText').innerText = data.hostName;
-        }
-
-        if (data.hostAvatar) {
-            detectedHostAvatar = data.hostAvatar;
-        }
-    }
-
-    else if (data.type === 'UPDATE_SLOT') {
-
-        updateSlotDisplay(data);
-    }
-
-    else if (data.type === 'PLAY_GIFT') {
-
-        const targetSlot = Number(data.targetSlot);
-
-        if (targetSlot && slotPoints[targetSlot] !== undefined) {
-
-            slotPoints[targetSlot] += Number(data.increment || 0);
-
-            const countElem =
-                $(`coincount-slot-${targetSlot}`);
-
-            if (countElem) {
-                countElem.innerText = formatPoin(slotPoints[targetSlot]);
+                $(`coin-badge-${targetSlot}`)
+                    .style.display = 'flex';
             }
 
-            const badge =
-                $(`coin-badge-${targetSlot}`);
+            if (data.badgeImg && targetSlot) {
 
-            if (badge) badge.style.display = 'flex';
+                showGiftBadgeTemporarily(
+                    targetSlot,
+                    data.badgeImg
+                );
+            }
+
+            receiveGiftForCombo(data);
+
+            break;
         }
 
-        if (data.badgeImg) {
-            showGiftBadgeTemporarily(targetSlot, data.badgeImg);
-        }
+        case 'RESET_HOST_MEDIA':
 
-        receiveGiftForCombo(data);
+            stopHostCamera();
+
+            break;
+
+        case 'TRIGGER_DISPLAY_CAMERA':
+
+            if (data.action === 'start') {
+                startHostCamera();
+            }
+
+            if (data.action === 'stop') {
+                stopHostCamera();
+            }
+
+            break;
+
+        case 'SET_HOST_VIDEO':
+
+            if (data.videoBlob) {
+
+                stopHostCamera();
+
+                const video = $('hostVideo');
+
+                video.srcObject = null;
+                video.src = URL.createObjectURL(data.videoBlob);
+
+                video.style.display = 'block';
+
+                $('hostPlaceholder').style.display = 'none';
+
+                video.play().catch(() => {});
+            }
+
+            break;
     }
 }
 
-/* ================= BROADCAST CHANNEL ================= */
-
 channel.onmessage = event => {
+
     handleIncomingMessage(event.data);
 };
 
-/* ================= WEBSOCKET ================= */
+/* ==========================================
+   WEBSOCKET TIKTOK
+========================================== */
 
 let ws = null;
 let reconnectTimer = null;
@@ -1487,8 +1258,10 @@ function connectWebSocket() {
 
     if (
         ws &&
-        (ws.readyState === WebSocket.CONNECTING ||
-         ws.readyState === WebSocket.OPEN)
+        (
+            ws.readyState === WebSocket.OPEN ||
+            ws.readyState === WebSocket.CONNECTING
+        )
     ) {
         return;
     }
@@ -1498,13 +1271,16 @@ function connectWebSocket() {
         const protocol =
             location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-        ws = new WebSocket(
-            `${protocol}//${location.host || 'localhost:8081'}`
-        );
+        const socketUrl =
+            `${protocol}//${location.host || 'localhost:8081'}`;
+
+        ws = new WebSocket(socketUrl);
 
         ws.onopen = () => {
+
+            console.log('TikTok WebSocket terhubung.');
+
             reconnectDelay = 1000;
-            console.log('WebSocket terhubung.');
         };
 
         ws.onmessage = event => {
@@ -1519,14 +1295,18 @@ function connectWebSocket() {
 
                         type: 'PLAY_GIFT',
 
-                        targetSlot: 1,
-                        increment: Number(d.coins || 1),
+                        targetSlot: Number(d.targetSlot) || 1,
+
+                        increment: Number(d.coins) || 1,
 
                         badgeImg: d.giftImage || '',
+
                         giftTitle: d.giftName || 'Gift',
 
                         senderName:
-                            d.nickname || d.username || 'User',
+                            d.nickname ||
+                            d.username ||
+                            'User',
 
                         senderAvatar: d.avatar || '',
 
@@ -1562,13 +1342,15 @@ function connectWebSocket() {
                     });
                 }
 
-            } catch (err) {
-                console.error('WebSocket message error:', err);
+            } catch (error) {
+
+                console.error('Pesan WebSocket tidak valid:', error);
             }
         };
 
-        ws.onerror = err => {
-            console.log('WebSocket error:', err);
+        ws.onerror = error => {
+
+            console.log('WebSocket error:', error);
         };
 
         ws.onclose = () => {
@@ -1579,149 +1361,184 @@ function connectWebSocket() {
 
             clearTimeout(reconnectTimer);
 
-            reconnectTimer = setTimeout(() => {
-                connectWebSocket();
-            }, reconnectDelay);
+            reconnectTimer = setTimeout(
+                connectWebSocket,
+                reconnectDelay
+            );
 
-            reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+            reconnectDelay = Math.min(
+                reconnectDelay * 1.5,
+                10000
+            );
         };
 
-    } catch (err) {
+    } catch (error) {
 
-        console.log('WebSocket connection error:', err);
+        console.error(error);
 
-        clearTimeout(reconnectTimer);
-
-        reconnectTimer = setTimeout(() => {
-            connectWebSocket();
-        }, reconnectDelay);
-
-        reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+        reconnectTimer = setTimeout(
+            connectWebSocket,
+            reconnectDelay
+        );
     }
 }
 
 connectWebSocket();
 
-/* ================= PEMUTAR VIDEO GIFT ================= */
+/* ==========================================
+   KAMERA HOST
+========================================== */
 
-let glReady = false;
-let renderActive = false;
-let renderFrameId = null;
-let videoFrameCallbackId = null;
-let lastVideoTime = -1;
-let giftVideoGeneration = 0;
+async function startHostCamera() {
 
-const giftCanvas = $('giftCanvas');
+    if (cameraStarting) return;
+
+    const video = $('hostVideo');
+
+    try {
+
+        if (
+            displayCamStream &&
+            displayCamStream.getVideoTracks().some(
+                track => track.readyState === 'live'
+            )
+        ) {
+
+            video.srcObject = displayCamStream;
+            video.style.display = 'block';
+
+            $('hostPlaceholder').style.display = 'none';
+
+            await video.play().catch(() => {});
+
+            return;
+        }
+
+        if (!navigator.mediaDevices?.getUserMedia) {
+
+            throw new Error('Gunakan HTTPS atau localhost.');
+        }
+
+        cameraStarting = true;
+
+        displayCamStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                audio: false,
+
+                video: {
+
+                    width: {ideal: 720},
+                    height: {ideal: 1280},
+
+                    frameRate: {
+                        ideal: 30,
+                        max: 30
+                    },
+
+                    facingMode: 'user'
+                }
+            });
+
+        video.srcObject = displayCamStream;
+
+        video.style.display = 'block';
+
+        $('hostPlaceholder').style.display = 'none';
+
+        await video.play();
+
+    } catch (error) {
+
+        console.error('Kamera:', error);
+
+        $('hostPlaceholder').textContent =
+            'Kamera tidak tersedia';
+
+    } finally {
+
+        cameraStarting = false;
+    }
+}
+
+function stopHostCamera() {
+
+    if (displayCamStream) {
+
+        displayCamStream.getTracks().forEach(
+            track => track.stop()
+        );
+
+        displayCamStream = null;
+    }
+
+    const video = $('hostVideo');
+
+    video.pause();
+    video.srcObject = null;
+    video.style.display = 'none';
+
+    $('hostPlaceholder').style.display = 'flex';
+}
+
+/* ==========================================
+   SISTEM VIDEO GIFT
+========================================== */
+
 const giftVideo = $('giftVideo');
+const giftCanvas = $('giftCanvas');
 const giftOverlay = $('giftOverlayContainer');
 
-let canvas2D = null;
+let canvasContext = null;
+let renderFrame = null;
+let renderActive = false;
 
 function stopGiftRenderer() {
 
     renderActive = false;
 
-    if (renderFrameId !== null) {
-        cancelAnimationFrame(renderFrameId);
-        renderFrameId = null;
-    }
+    if (renderFrame !== null) {
 
-    if (
-        videoFrameCallbackId !== null &&
-        giftVideo.cancelVideoFrameCallback
-    ) {
-        giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
-    }
+        cancelAnimationFrame(renderFrame);
 
-    videoFrameCallbackId = null;
+        renderFrame = null;
+    }
 }
 
 function renderGiftFrame() {
 
     if (!renderActive) return;
 
-    const video = giftVideo;
-
     if (
-        video.ended ||
-        video.readyState < video.HAVE_CURRENT_DATA
+        giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA &&
+        !giftVideo.paused
     ) {
-        scheduleGiftFrame();
-        return;
-    }
 
-    if (video.currentTime !== lastVideoTime) {
+        if (canvasContext) {
 
-        lastVideoTime = video.currentTime;
+            canvasContext.clearRect(
+                0,
+                0,
+                giftCanvas.width,
+                giftCanvas.height
+            );
 
-        if (glReady && gl) {
-
-            try {
-
-                gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
-                gl.texImage2D(
-                    gl.TEXTURE_2D,
-                    0,
-                    gl.RGBA,
-                    gl.RGBA,
-                    gl.UNSIGNED_BYTE,
-                    video
-                );
-
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-            } catch (e) {
-                console.error('WebGL rendering error:', e);
-            }
-
-        } else {
-
-            if (canvas2D) {
-                canvas2D.drawImage(
-                    video,
-                    0,
-                    0,
-                    giftCanvas.width,
-                    giftCanvas.height
-                );
-            }
+            canvasContext.drawImage(
+                giftVideo,
+                0,
+                0,
+                giftCanvas.width,
+                giftCanvas.height
+            );
         }
     }
 
-    scheduleGiftFrame();
+    renderFrame = requestAnimationFrame(renderGiftFrame);
 }
 
-function scheduleGiftFrame() {
-
-    if (!renderActive) return;
-
-    if (giftVideo.requestVideoFrameCallback) {
-
-        videoFrameCallbackId =
-            giftVideo.requestVideoFrameCallback(() => {
-
-                videoFrameCallbackId = null;
-                renderGiftFrame();
-            });
-
-    } else {
-
-        renderFrameId = requestAnimationFrame(() => {
-
-            renderFrameId = null;
-            renderGiftFrame();
-        });
-    }
-}
-
-function playGiftVideo(src, onFinished) {
+function playGiftVideo(src, callback) {
 
     const video = giftVideo;
-    const canvas = giftCanvas;
-    const overlay = giftOverlay;
-
-    const generation = ++giftVideoGeneration;
 
     let finished = false;
 
@@ -1733,137 +1550,74 @@ function playGiftVideo(src, onFinished) {
 
         finished = true;
 
-        if (generation !== giftVideoGeneration) return;
-
         stopGiftRenderer();
 
-        overlay.style.display = 'none';
+        giftOverlay.style.display = 'none';
+
+        video.pause();
 
         video.onended = null;
         video.onerror = null;
-        video.onloadedmetadata = null;
 
-        video.pause();
         video.removeAttribute('src');
         video.load();
 
-        if (gl) {
-            gl.clear(gl.COLOR_BUFFER_BIT);
+        if (canvasContext) {
+
+            canvasContext.clearRect(
+                0,
+                0,
+                giftCanvas.width,
+                giftCanvas.height
+            );
         }
 
-        if (canvas2D) {
-            canvas2D.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        if (typeof onFinished === 'function') {
-            onFinished();
-        }
+        if (callback) callback();
     }
 
-    overlay.style.display = 'block';
+    giftOverlay.style.display = 'block';
 
     video.pause();
+
     video.removeAttribute('src');
-    video.load();
 
     video.src = src;
+
     video.muted = false;
     video.volume = 1;
 
     video.onended = finish;
     video.onerror = finish;
 
-    glReady = initWebGL(canvas);
-
-    canvas2D = null;
-
-    if (!glReady) {
-        try {
-            canvas2D = canvas.getContext('2d');
-        } catch (e) {
-            console.warn('Canvas 2D tidak tersedia:', e);
-        }
-    }
-
     video.onloadedmetadata = async () => {
 
-        if (finished || generation !== giftVideoGeneration) return;
-
-        const originalWidth = video.videoWidth || 720;
-        const originalHeight = video.videoHeight || 1280;
-
-        const maxWidth = 720;
-        const maxHeight = 1280;
+        const width = video.videoWidth || 720;
+        const height = video.videoHeight || 1280;
 
         const scale = Math.min(
             1,
-            maxWidth / originalWidth,
-            maxHeight / originalHeight
+            720 / width,
+            1280 / height
         );
 
-        const renderWidth = Math.max(
-            1,
-            Math.round(originalWidth * scale)
-        );
+        giftCanvas.width = Math.round(width * scale);
+        giftCanvas.height = Math.round(height * scale);
 
-        const renderHeight = Math.max(
-            1,
-            Math.round(originalHeight * scale)
-        );
-
-        canvas.width = renderWidth;
-        canvas.height = renderHeight;
-
-        if (glReady && gl) {
-
-            gl.viewport(0, 0, renderWidth, renderHeight);
-            gl.useProgram(glProgram);
-
-            const posLoc =
-                gl.getAttribLocation(glProgram, 'a_pos');
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
-            gl.enableVertexAttribArray(posLoc);
-
-            gl.vertexAttribPointer(
-                posLoc, 2, gl.FLOAT, false, 0, 0
-            );
-
-            const texLoc =
-                gl.getAttribLocation(glProgram, 'a_tex');
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
-            gl.enableVertexAttribArray(texLoc);
-
-            gl.vertexAttribPointer(
-                texLoc, 2, gl.FLOAT, false, 0, 0
-            );
-
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
-            gl.clearColor(0, 0, 0, 0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-
-        } else if (canvas2D) {
-
-            canvas2D.clearRect(0, 0, renderWidth, renderHeight);
-        }
-
-        lastVideoTime = -1;
+        canvasContext = giftCanvas.getContext('2d', {
+            alpha: true
+        });
 
         try {
 
             await video.play();
 
-            if (finished || generation !== giftVideoGeneration) return;
-
             renderActive = true;
+
             renderGiftFrame();
 
-        } catch (err) {
+        } catch (error) {
 
-            console.warn('Gift video autoplay error:', err);
+            console.error('Gift video gagal diputar:', error);
 
             video.muted = true;
 
@@ -1871,13 +1625,12 @@ function playGiftVideo(src, onFinished) {
 
                 await video.play();
 
-                if (finished || generation !== giftVideoGeneration) return;
-
                 renderActive = true;
+
                 renderGiftFrame();
 
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+
                 finish();
             }
         }
@@ -1886,36 +1639,102 @@ function playGiftVideo(src, onFinished) {
     video.load();
 }
 
-/* ================= CLEANUP ================= */
+/* ==========================================
+   ANTRIAN GIFT
+========================================== */
+
+function queueGiftVideo(src, count = 1) {
+
+    if (!src) return;
+
+    giftVideoQueue.push({
+
+        src,
+
+        remaining: Math.max(
+            1,
+            Math.min(999, Number(count) || 1)
+        ),
+
+        isBlob: src.startsWith('blob:')
+    });
+
+    playNextGiftVideo();
+}
+
+function playNextGiftVideo() {
+
+    if (
+        giftVideoQueueBusy ||
+        giftVideoQueue.length === 0
+    ) {
+        return;
+    }
+
+    giftVideoQueueBusy = true;
+
+    const item = giftVideoQueue[0];
+
+    playGiftVideo(item.src, () => {
+
+        item.remaining--;
+
+        if (item.remaining > 0) {
+
+            giftVideoQueueBusy = false;
+
+            playNextGiftVideo();
+
+        } else {
+
+            giftVideoQueue.shift();
+
+            if (item.isBlob) {
+
+                URL.revokeObjectURL(item.src);
+            }
+
+            giftVideoQueueBusy = false;
+
+            playNextGiftVideo();
+        }
+    });
+}
+
+/* ==========================================
+   CLEANUP
+========================================== */
 
 window.addEventListener('pagehide', () => {
 
     manuallyClosed = true;
 
+    stopHostCamera();
+
     stopGiftRenderer();
 
-    if (displayCamStream) {
-        displayCamStream.getTracks().forEach(track => track.stop());
-        displayCamStream = null;
-    }
+    clearTimeout(reconnectTimer);
+    clearTimeout(toastTimer);
+    clearTimeout(toastHideTimer);
 
     if (ws) {
+
         ws.close();
+
         ws = null;
     }
 
-    clearTimeout(reconnectTimer);
-    clearTimeout(toastTimeout);
-    clearTimeout(toastHideTimer);
-
     for (const timer of Object.values(badgeTimers)) {
+
         clearTimeout(timer);
     }
 
     for (const group of giftComboGroups.values()) {
+
         clearTimeout(group.timer);
 
-        if (group.src?.startsWith('blob:')) {
+        if (group.src && group.src.startsWith('blob:')) {
+
             URL.revokeObjectURL(group.src);
         }
     }
@@ -1923,48 +1742,19 @@ window.addEventListener('pagehide', () => {
     giftComboGroups.clear();
 
     giftVideoQueue.forEach(item => {
+
         if (item.isBlob) {
+
             URL.revokeObjectURL(item.src);
         }
     });
 
     giftVideoQueue.length = 0;
 
-    releaseHostObjectURL();
-
     channel.close();
 });
 
-document.addEventListener('visibilitychange', () => {
-
-    if (document.hidden) {
-        console.log('Display berada di background.');
-    }
-});
-
-/* ================= WEBGL RECOVERY ================= */
-
-giftCanvas.addEventListener('webglcontextlost', event => {
-
-    event.preventDefault();
-
-    stopGiftRenderer();
-    glReady = false;
-
-    console.warn('WebGL context lost.');
-});
-
-giftCanvas.addEventListener('webglcontextrestored', () => {
-
-    gl = null;
-    glProgram = null;
-    glTexture = null;
-    glBuffers = {};
-
-    glReady = initWebGL(giftCanvas);
-
-    console.log('WebGL context restored:', glReady);
-});
+console.log('TikTok Live Display siap digunakan.');
 
 </script>
 
