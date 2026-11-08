@@ -39,12 +39,61 @@ body{display:flex;justify-content:center;align-items:center}
 .coin-count{font-size:.58rem;color:#fff;font-weight:700}
 @keyframes popGiftBadge{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 .slot-top-badge{position:absolute;top:5px;right:5px;z-index:8;width:24px;height:24px;display:none;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));pointer-events:none;animation:popGiftBadge .3s ease-out}
-.slot-name-pill{position:absolute;bottom:5px;left:5px;max-width:calc(100% - 32px);display:flex;align-items:center;gap:4px;z-index:6;background:rgba(0,0,0,.65);padding:2px 4px 2px 7px;border-radius:999px;height:18px}
-.slot-name-text{color:#fff;font-size:.52rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46px}
+
+/* NAMA TIKTOK LEBIH JELAS */
+.slot-name-pill{
+position:absolute;
+bottom:5px;
+left:5px;
+max-width:calc(100% - 34px);
+display:flex;
+align-items:center;
+gap:5px;
+z-index:6;
+background:rgba(0,0,0,.88);
+border:1px solid rgba(255,255,255,.65);
+padding:3px 7px;
+border-radius:999px;
+min-height:23px;
+box-shadow:0 2px 7px rgba(0,0,0,.8);
+}
+.slot-name-text{
+color:#fff;
+font-size:clamp(9px,2.6vw,11px);
+font-weight:900;
+letter-spacing:.1px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+max-width:85px;
+text-shadow:0 1px 3px #000,0 0 5px rgba(255,255,255,.3);
+}
 .slot-plus-circle{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .slot-pill-plus-svg{width:8px;height:8px}
-.mic-container{position:absolute;bottom:5px;right:5px;z-index:6;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
-.mic-icon-svg{width:12px;height:12px}
+
+/* IKON MIKROFON */
+.mic-container{
+position:absolute;
+bottom:5px;
+right:5px;
+z-index:7;
+width:23px;
+height:23px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.82);
+border:1px solid rgba(255,255,255,.55);
+border-radius:50%;
+box-shadow:0 2px 5px rgba(0,0,0,.65);
+}
+.mic-icon-svg{width:15px;height:15px;display:block}
+.mic-icon-svg .mic-body{fill:#fff}
+.mic-icon-svg .mic-line{stroke:#fff}
+.mic-icon-svg .mic-slash{display:none;stroke:#ff3030;stroke-width:3.5}
+.mic-container.is-muted .mic-icon-svg .mic-slash{display:block}
+.mic-container.is-muted{background:rgba(100,0,0,.9);border-color:#ff3030}
+.mic-container.is-muted .mic-icon-svg .mic-body{fill:#ffb4b4}
 .gift-banner-wrapper{position:absolute;bottom:34px;left:6px;right:6px;display:flex;justify-content:flex-start;align-items:center;z-index:20;pointer-events:none}
 @keyframes tiktokBannerSlideIn{0%{transform:translateX(-115%);opacity:0}75%{transform:translateX(4px);opacity:1}100%{transform:translateX(0);opacity:1}}
 @keyframes tiktokBannerSlideOut{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-115%);opacity:0}}
@@ -98,6 +147,7 @@ body{display:flex;justify-content:center;align-items:center}
 const channel = new BroadcastChannel('tiktok_live_channel');
 const slotPoints = {};
 const badgeTimers = {};
+const slotMuteStates = {};
 let displayCamStream = null;
 let cameraStarting = false;
 let hostMediaObjectURL = null;
@@ -130,14 +180,36 @@ grid.insertAdjacentHTML('beforeend',`
 <div class="slot-plus-circle"><svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none"><line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line><line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line></svg></div>
 </div>
 <div class="mic-container" id="mic-slot-${i}" style="display:none">
-<svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
-<path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="#ffffff"/>
-<path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z" fill="#ffffff"/>
-<line x1="3" y1="3" x2="21" y2="21" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="3" y1="3" x2="21" y2="21" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+<svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
+<path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+<path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
+<line class="mic-slash" x1="3" y1="3" x2="21" y2="21" stroke-linecap="round"/>
 </svg>
 </div>
 </div>`);
+}
+
+/* Terima beberapa kemungkinan format status mute dari sumber data */
+function getMuteStatus(data){
+const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
+for(const key of keys){
+if(Object.prototype.hasOwnProperty.call(data,key)){
+const value=data[key];
+if(typeof value==='boolean')return value;
+if(value===1||value==='1'||value==='true'||value==='muted')return true;
+if(value===0||value==='0'||value==='false'||value==='unmuted')return false;
+}
+}
+return null;
+}
+
+function updateMicStatus(slotNum,status){
+const mic=$(`mic-slot-${slotNum}`);
+if(!mic)return;
+if(status===null||status===undefined)return;
+slotMuteStates[slotNum]=Boolean(status);
+mic.classList.toggle('is-muted',Boolean(status));
+mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 }
 
 async function startDisplayDirectCamera(){
@@ -221,14 +293,21 @@ const{slotNum,nameInput,initialPoin,profileImg,action}=data;
 const slotBox=$(`slot-${slotNum}`);if(!slotBox)return;
 const coinBadge=$(`coin-badge-${slotNum}`),countElem=$(`coincount-slot-${slotNum}`),namePill=$(`namepill-slot-${slotNum}`),nameText=$(`nametext-slot-${slotNum}`),mic=$(`mic-slot-${slotNum}`),img=$(`img-slot-${slotNum}`),bg=$(`bg-slot-${slotNum}`),bgOverlay=$(`overlay-slot-${slotNum}`),icon=$(`icon-${slotNum}`),req=$(`req-${slotNum}`),topBadge=$(`topbadge-slot-${slotNum}`);
 if(action==='clear_slot'){
-img.style.display='none';img.removeAttribute('src');bg.style.display='none';bg.removeAttribute('src');bgOverlay.style.display='none';slotBox.style.background='#1c1d24';icon.style.display='block';req.style.display='inline-block';namePill.style.display='none';mic.style.display='none';coinBadge.style.display='none';
+img.style.display='none';img.removeAttribute('src');bg.style.display='none';bg.removeAttribute('src');bgOverlay.style.display='none';slotBox.style.background='#1c1d24';icon.style.display='block';req.style.display='inline-block';namePill.style.display='none';mic.style.display='none';mic.classList.remove('is-muted');delete slotMuteStates[slotNum];coinBadge.style.display='none';
 if(topBadge){topBadge.style.display='none';topBadge.removeAttribute('src')}
 if(badgeTimers[slotNum]){clearTimeout(badgeTimers[slotNum]);delete badgeTimers[slotNum]}
 slotPoints[slotNum]=0;return;
 }
 if(initialPoin!==undefined)slotPoints[slotNum]=initialPoin;
 countElem.innerText=formatPoin(slotPoints[slotNum]);coinBadge.style.display='flex';
-if(nameInput){nameText.innerText=nameInput;namePill.style.display='flex';mic.style.display='flex'}
+if(nameInput){
+nameText.innerText=nameInput;
+namePill.style.display='flex';
+mic.style.display='flex';
+const muteStatus=getMuteStatus(data);
+if(muteStatus!==null)updateMicStatus(slotNum,muteStatus);
+else if(slotMuteStates[slotNum]!==undefined)updateMicStatus(slotNum,slotMuteStates[slotNum]);
+}
 if(profileImg){icon.style.display='none';req.style.display='none';img.src=profileImg;img.style.display='block';bg.src=profileImg;bg.style.display='block';bgOverlay.style.display='block'}
 }
 
@@ -321,6 +400,17 @@ if(data.hostName){detectedHostName=data.hostName;$('hostNameText').innerText=dat
 if(data.hostAvatar)detectedHostAvatar=data.hostAvatar;
 }
 else if(data.type==='UPDATE_SLOT'){updateSlotDisplay(data)}
+else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
+const slotNum=Number(data.slotNum);
+if(slotNum>=1&&slotNum<=8){
+const status=getMuteStatus(data);
+if(status!==null){
+slotMuteStates[slotNum]=status;
+const mic=$(`mic-slot-${slotNum}`);
+if(mic){mic.style.display='flex';updateMicStatus(slotNum,status)}
+}
+}
+}
 else if(data.type==='PLAY_GIFT'){
 const targetSlot=Number(data.targetSlot);
 if(targetSlot&&slotPoints[targetSlot]!==undefined){
