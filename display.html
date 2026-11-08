@@ -514,8 +514,8 @@
         <div class="gift-banner-toast" id="giftBannerToast">
             <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
             <div class="toast-text-col">
+                <div class="toast-desc" id="toastGiftDesc">Gift</div>
                 <div class="toast-name" id="toastGifterName">Host</div>
-                <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
             </div>
             <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
         </div>
@@ -801,7 +801,7 @@
 
         avatar.src = hostAvatar;
         nameElem.innerText = hostName;
-        descElem.innerText = `mengirim ${giftTitle}`;
+        descElem.innerText = giftTitle;
         iconElem.src = giftIcon;
         comboElem.textContent = `𝙭 ${styledCount}`;
         comboElem.style.display = 'inline-block';
@@ -856,19 +856,29 @@
 
     function receiveGiftForCombo(data) {
         const key = getGiftComboKey(data);
-        const explicitCount = Number(data.repeatCount || data.comboCount || data.giftCount || data.repeat_count || data.combo_count || 0);
+        // repeatCount/comboCount adalah angka kumulatif combo dari sumber.
+        // giftCount sengaja tidak dipakai karena pada beberapa server nilainya hanya 1 per event.
+        const rawCumulative = data.repeatCount ?? data.comboCount ?? data.repeat_count ?? data.combo_count;
+        const cumulativeCount = Number(rawCumulative);
         let group = giftComboGroups.get(key);
 
         if (!group) {
-            group = { data: { ...data }, count: 0, src: null, timer: null };
+            group = { data: { ...data }, count: 0, src: null, timer: null, videoPromise: Promise.resolve(), revision: 0 };
             giftComboGroups.set(key, group);
         }
 
+        group.revision += 1;
         group.data = { ...group.data, ...data };
-        group.count = explicitCount > 0 ? Math.max(group.count, explicitCount) : group.count + 1;
+        if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
+            // Sumber mengirim nilai berjalan (x1, x2, x3...), jangan ditambah lagi.
+            group.count = Math.max(group.count, Math.floor(cumulativeCount));
+        } else {
+            // Jika sumber tidak menyediakan angka combo, hitung satu per event.
+            group.count += Math.max(1, Math.floor(Number(data.giftCount) || 1));
+        }
+
         showGiftToast(group.data, group.count);
 
-        if (group.timer) clearTimeout(group.timer);
         if (group.timer) clearTimeout(group.timer);
         group.videoPromise = (async () => {
             let resolvedSrc = null;
@@ -880,6 +890,7 @@
             } else if (data.src) {
                 resolvedSrc = data.src;
             }
+
             if (resolvedSrc) {
                 if (group.src && group.src.startsWith('blob:') && group.src !== resolvedSrc) {
                     URL.revokeObjectURL(group.src);
@@ -888,16 +899,24 @@
             }
         })();
 
-        group.timer = setTimeout(async () => {
+        const finishCombo = async () => {
+            // Jika ada event baru saat pencarian video berlangsung, tunggu timer event terbaru.
+            const finishingRevision = group.revision;
             await group.videoPromise;
+            if (giftComboGroups.get(key) !== group || group.revision !== finishingRevision) return;
             giftComboGroups.delete(key);
+
             const finalData = { ...group.data };
-            const finalCount = group.count;
+            const finalCount = Math.max(1, group.count);
             const finalSrc = group.src;
             showGiftToast(finalData, finalCount, () => {
                 if (finalSrc) queueGiftVideo(finalSrc, finalCount);
             });
-        }, 850);
+        };
+
+        // repeatEnd=true menandakan combo resmi selesai; jika tidak, gunakan jeda antar-event.
+        const comboEnded = data.repeatEnd === true || data.repeat_end === true || data.comboEnd === true || data.combo_end === true;
+        group.timer = setTimeout(finishCombo, comboEnded ? 0 : 900);
     }
 
     // LISTENER DARI BROADCAST CHANNEL & WEBSOCKET
@@ -980,7 +999,13 @@
                         badgeImg: d.giftImage || '',
                         giftTitle: d.giftName || 'Gift',
                         senderName: d.nickname || d.username || 'User',
-                        senderAvatar: d.avatar || ''
+                        senderAvatar: d.avatar || '',
+                        giftId: d.giftId || d.gift_id || d.id || '',
+                        repeatCount: d.repeatCount ?? d.repeat_count ?? d.comboCount ?? d.combo_count,
+                        giftCount: d.giftCount ?? d.gift_count,
+                        repeatEnd: d.repeatEnd ?? d.repeat_end ?? d.comboEnd ?? d.combo_end,
+                        videoBlob: d.videoBlob,
+                        src: d.src || d.videoUrl || d.video_url || ''
                     });
                 }
             } catch(err) {}
