@@ -1,49 +1,46 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live HD</title>
+<title>Display Studio - TikTok Live Optimized</title>
 
 <style>
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
 }
 
 body {
-    background: #000;
-    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
 }
 
 .phone-screen {
-    height: 100vh;
     width: 100vw;
+    height: 100vh;
     max-width: 440px;
-    background: #000;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
     padding: 4px;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+    background: #000;
     transform: translateZ(0);
-    backface-visibility: hidden;
 }
 
 .live-layout {
@@ -55,19 +52,20 @@ body {
     align-items: stretch;
 }
 
-@keyframes hostBluePulseFast {
+@keyframes hostBluePulse {
     0%, 100% {
         border-color: #00d2ff;
-        box-shadow: 0 0 8px rgba(0,210,255,.8), inset 0 0 4px rgba(0,210,255,.25);
+        box-shadow: 0 0 5px rgba(0,210,255,.5);
     }
     50% {
-        border-color: rgba(0,150,255,.2);
-        box-shadow: 0 0 2px rgba(0,150,255,.15), inset 0 0 0 transparent;
+        border-color: rgba(0,150,255,.45);
+        box-shadow: 0 0 2px rgba(0,150,255,.1);
     }
 }
 
 .host-box {
     flex: 1;
+    min-width: 0;
     background: #1c1d24;
     border-radius: 12px;
     overflow: hidden;
@@ -77,11 +75,12 @@ body {
     align-items: center;
     cursor: pointer;
     border: 1.5px solid #00d2ff;
-    animation: hostBluePulseFast .5s infinite ease-in-out;
+    animation: hostBluePulse 1.5s infinite ease-in-out;
     transform: translateZ(0);
+    contain: layout paint;
 }
 
-.host-video {
+.host-video, #hostCameraImg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -89,22 +88,12 @@ body {
     object-fit: cover;
     z-index: 2;
     display: none;
-    image-rendering: auto;
     backface-visibility: hidden;
-    filter: contrast(1.06) saturate(1.04);
+    filter: none;
 }
 
 #hostCameraImg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     z-index: 3;
-    display: none;
-    image-rendering: auto;
-    backface-visibility: hidden;
-    filter: contrast(1.06) saturate(1.04);
 }
 
 .host-placeholder {
@@ -115,8 +104,6 @@ body {
     z-index: 1;
 }
 
-/* BADGE HOST */
-
 .host-top-pill {
     position: absolute;
     top: 6px;
@@ -124,7 +111,6 @@ body {
     z-index: 12;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 3px;
     height: 20px;
     padding: 2px 8px 2px 5px;
@@ -133,9 +119,6 @@ body {
     color: #26364a;
     font-size: 11px;
     font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-    box-shadow: 0 1px 4px rgba(0,0,0,.18);
 }
 
 .host-pill-icon {
@@ -144,13 +127,11 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
 }
 
 .host-pill-icon svg {
     width: 13px;
     height: 13px;
-    display: block;
     fill: #26364a;
 }
 
@@ -159,13 +140,11 @@ body {
     bottom: 6px;
     left: 6px;
     z-index: 12;
-    background: rgba(0,0,0,.55);
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,.65);
     padding: 3px 8px;
     border-radius: 999px;
     display: flex;
     align-items: center;
-    gap: 4px;
     max-width: calc(100% - 16px);
 }
 
@@ -180,6 +159,7 @@ body {
 
 .komal-grid {
     flex: 1;
+    min-width: 0;
     display: grid;
     grid-template-columns: repeat(2,1fr);
     grid-template-rows: repeat(4,1fr);
@@ -199,17 +179,16 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all .2s ease;
-    transform: translateZ(0);
+    contain: layout paint;
 }
 
 .slot-bg-blur {
     position: absolute !important;
-    inset: -15px !important;
-    width: calc(100% + 30px) !important;
-    height: calc(100% + 30px) !important;
+    inset: -8px !important;
+    width: calc(100% + 16px) !important;
+    height: calc(100% + 16px) !important;
     object-fit: cover !important;
-    filter: blur(12px) brightness(.7) !important;
+    filter: blur(7px) brightness(.7) !important;
     display: none;
     z-index: 1;
     pointer-events: none;
@@ -232,7 +211,6 @@ body {
     stroke-linecap: round;
     z-index: 3;
     margin-bottom: 2px;
-    display: block;
 }
 
 .slot-req {
@@ -240,7 +218,6 @@ body {
     font-size: .66rem;
     font-weight: 700;
     z-index: 3;
-    letter-spacing: .2px;
 }
 
 .slot-circle-img {
@@ -254,10 +231,8 @@ body {
     left: 50%;
     transform: translate(-50%,-50%);
     z-index: 4;
-    box-shadow: 0 3px 10px rgba(0,0,0,.65);
-    image-rendering: auto;
-    backface-visibility: hidden;
-    filter: contrast(1.06) saturate(1.04);
+    box-shadow: 0 3px 8px rgba(0,0,0,.5);
+    filter: none;
 }
 
 .slot-coin-badge {
@@ -267,8 +242,7 @@ body {
     display: flex;
     align-items: center;
     gap: 3.5px;
-    background: rgba(0,0,0,.55);
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,.65);
     padding: 2px 6px 2px 3px;
     border-radius: 999px;
     z-index: 6;
@@ -277,12 +251,11 @@ body {
 .cyan-diamond-circle {
     width: 13px;
     height: 13px;
-    background: radial-gradient(circle at center,#fff 15%,#38bdf8 52%,#0077ff 95%);
+    background: radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 6px rgba(0,210,255,.8);
     flex-shrink: 0;
 }
 
@@ -296,12 +269,10 @@ body {
     font-size: .58rem;
     color: #fff;
     font-weight: 700;
-    line-height: 1;
 }
 
 @keyframes popGiftBadge {
-    0% { transform: scale(.3); opacity: 0; }
-    70% { transform: scale(1.15); opacity: 1; }
+    0% { transform: scale(.5); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
@@ -314,7 +285,7 @@ body {
     height: 24px;
     display: none;
     object-fit: contain;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.8));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
     pointer-events: none;
     animation: popGiftBadge .3s ease-out;
 }
@@ -328,8 +299,7 @@ body {
     align-items: center;
     gap: 4px;
     z-index: 6;
-    background: rgba(0,0,0,.60);
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,.65);
     padding: 2px 4px 2px 7px;
     border-radius: 999px;
     height: 18px;
@@ -343,7 +313,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 46px;
-    line-height: 1;
 }
 
 .slot-plus-circle {
@@ -360,7 +329,6 @@ body {
 .slot-pill-plus-svg {
     width: 8px;
     height: 8px;
-    display: block;
 }
 
 .mic-container {
@@ -373,18 +341,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    backdrop-filter: none;
-    border-radius: 0;
 }
 
 .mic-icon-svg {
     width: 12px;
     height: 12px;
-    display: block;
 }
-
-/* NOTIFIKASI GIFT DI DALAM KOTAK HOST */
 
 .gift-banner-wrapper {
     position: absolute;
@@ -405,28 +367,25 @@ body {
 }
 
 @keyframes tiktokBannerSlideOut {
-    0% { transform: translateX(0) scale(1); opacity: 1; }
-    100% { transform: translateX(-115%) scale(.9); opacity: 0; }
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(-115%); opacity: 0; }
 }
 
 @keyframes tiktokGiftIconBounce {
-    0% { transform: scale(.2) rotate(-10deg); opacity: 0; }
-    65% { transform: scale(1.22) rotate(4deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0); opacity: 1; }
+    0% { transform: scale(.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .gift-banner-toast {
     display: none;
     align-items: center;
     height: 26px;
-    background: linear-gradient(90deg,rgba(15,15,20,.78),rgba(20,20,28,.65) 75%,rgba(25,25,35,.4));
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: linear-gradient(90deg,rgba(15,15,20,.85),rgba(20,20,28,.65));
     border: .5px solid rgba(255,255,255,.12);
     border-radius: 999px;
     padding: 2px 4px 2px 2px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.45);
-    animation: tiktokBannerSlideIn .35s cubic-bezier(.2,.9,.3,1.2) forwards;
+    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    animation: tiktokBannerSlideIn .35s ease-out forwards;
     max-width: 75%;
     overflow: visible;
 }
@@ -445,8 +404,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 0 5px;
     overflow: hidden;
     line-height: 1.1;
 }
@@ -475,10 +433,10 @@ body {
     width: 30px;
     height: 30px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,.7));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
     flex-shrink: 0;
     margin: -2px -3px -2px 1px;
-    animation: tiktokGiftIconBounce .38s .08s cubic-bezier(.175,.885,.32,1.275) both;
+    animation: tiktokGiftIconBounce .38s ease-out both;
 }
 
 .toast-combo-count {
@@ -516,7 +474,6 @@ body {
     object-position: center;
     display: block;
     pointer-events: none;
-    image-rendering: auto;
     transform: translateZ(0);
     backface-visibility: hidden;
 }
@@ -533,10 +490,9 @@ body {
              onclick="startDisplayDirectCamera()"
              title="Klik untuk aktifkan kamera host">
 
-            <!-- BADGE HOST -->
             <div class="host-top-pill">
                 <span class="host-pill-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
                         <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/>
                         <path d="M12 14c-5 0-8 2.5-8 5.5V21h16v-1.5c0-3-3-5.5-8-5.5Z"/>
                     </svg>
@@ -549,45 +505,31 @@ body {
             </div>
 
             <video id="hostVideo" class="host-video"
-                   loop autoplay playsinline muted></video>
+                   autoplay playsinline muted></video>
 
             <img id="hostCameraImg" alt="Host Cam">
 
-            <!-- NOTIFIKASI: NAMA HOST DI ATAS, NAMA GIFT DI BAWAH -->
             <div class="gift-banner-wrapper">
-
                 <div class="gift-banner-toast" id="giftBannerToast">
-
-                    <img id="toastGifterAvatar"
-                         class="toast-avatar"
-                         src=""
-                         alt="Avatar">
+                    <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar">
 
                     <div class="toast-text-col">
                         <div class="toast-name" id="toastGifterName">Host</div>
                         <div class="toast-desc" id="toastGiftDesc">Gift</div>
                     </div>
 
-                    <img id="toastGiftIcon"
-                         class="toast-gift-img"
-                         src=""
-                         alt="Gift">
-
+                    <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift">
                 </div>
 
-                <span id="toastComboCount"
-                      class="toast-combo-count">x 1</span>
-
+                <span id="toastComboCount" class="toast-combo-count">x 1</span>
             </div>
 
             <div class="host-bottom-pill" id="hostBottomPill">
                 <span class="host-name-text" id="hostNameText">Host</span>
             </div>
-
         </div>
 
         <div class="komal-grid" id="komalGrid"></div>
-
     </div>
 
     <div class="gift-overlay" id="giftOverlayContainer">
@@ -598,13 +540,18 @@ body {
 </div>
 
 <script>
+'use strict';
+
+/* ================= CHANNEL ================= */
+
 const channel = new BroadcastChannel('tiktok_live_channel');
 
 const slotPoints = {};
 const badgeTimers = {};
 
-let animFrameId = null;
 let displayCamStream = null;
+let cameraStarting = false;
+
 let toastTimeout = null;
 let toastHideTimer = null;
 
@@ -617,10 +564,14 @@ let detectedHostName = 'Host';
 let detectedHostAvatar =
 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
 
+/* ================= SLOT GENERATOR ================= */
+
+const grid = document.getElementById('komalGrid');
+
 for (let i = 1; i <= 8; i++) {
     slotPoints[i] = 0;
 
-    document.getElementById('komalGrid').insertAdjacentHTML('beforeend', `
+    grid.insertAdjacentHTML('beforeend', `
         <div class="slot-box" id="slot-${i}">
 
             <img id="bg-slot-${i}" class="slot-bg-blur"
@@ -646,8 +597,7 @@ for (let i = 1; i <= 8; i++) {
                  crossorigin="anonymous"
                  alt="Gift">
 
-            <svg class="slot-plus-svg" id="icon-${i}"
-                 viewBox="0 0 24 24" fill="none">
+            <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
@@ -657,16 +607,11 @@ for (let i = 1; i <= 8; i++) {
             <img id="img-slot-${i}" class="slot-circle-img"
                  referrerpolicy="no-referrer">
 
-            <div class="slot-name-pill"
-                 id="namepill-slot-${i}" style="display:none;">
-
-                <span class="slot-name-text" id="nametext-slot-${i}">
-                    Slot ${i}
-                </span>
+            <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
+                <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
 
                 <div class="slot-plus-circle">
-                    <svg class="slot-pill-plus-svg"
-                         viewBox="0 0 16 16" fill="none">
+                    <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
                         <line x1="8" y1="2.5" x2="8" y2="13.5"
                               stroke="#ffffff" stroke-width="2.2"
                               stroke-linecap="round"></line>
@@ -677,11 +622,8 @@ for (let i = 1; i <= 8; i++) {
                 </div>
             </div>
 
-            <div class="mic-container"
-                 id="mic-slot-${i}" style="display:none;">
-
-                <svg class="mic-icon-svg"
-                     viewBox="0 0 24 24" fill="none">
+            <div class="mic-container" id="mic-slot-${i}" style="display:none;">
+                <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"
                           fill="#ffffff"/>
                     <path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"
@@ -699,42 +641,80 @@ for (let i = 1; i <= 8; i++) {
     `);
 }
 
-
-/* ================= KAMERA HOST ================= */
+/* ================= KAMERA HOST OPTIMIZED ================= */
 
 async function startDisplayDirectCamera() {
+
+    if (cameraStarting) return;
+
+    const hVid = document.getElementById('hostVideo');
+    const camImg = document.getElementById('hostCameraImg');
+    const placeholder = document.getElementById('hostPlaceholder');
+
+    if (displayCamStream &&
+        displayCamStream.getVideoTracks().some(track => track.readyState === 'live')) {
+
+        hVid.srcObject = displayCamStream;
+        hVid.style.display = 'block';
+        placeholder.style.display = 'none';
+
+        if (hVid.paused) {
+            await hVid.play().catch(() => {});
+        }
+
+        return;
+    }
+
+    cameraStarting = true;
+
     try {
-        const hVid = document.getElementById('hostVideo');
-        const camImg = document.getElementById('hostCameraImg');
+
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+            throw new Error('Browser tidak mendukung kamera atau halaman belum HTTPS.');
+        }
 
         camImg.style.display = 'none';
-        camImg.src = '';
-        hVid.removeAttribute('src');
+        camImg.removeAttribute('src');
 
-        if (!displayCamStream) {
-            displayCamStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 720 },
-                    height: { ideal: 1280 },
-                    facingMode: 'user'
-                },
-                audio: false
-            });
-        }
+        const constraints = {
+            audio: false,
+            video: {
+                width: { ideal: 540 },
+                height: { ideal: 960 },
+                frameRate: { ideal: 30, max: 30 },
+                facingMode: 'user'
+            }
+        };
+
+        displayCamStream =
+            await navigator.mediaDevices.getUserMedia(constraints);
 
         hVid.srcObject = displayCamStream;
         hVid.style.display = 'block';
 
-        document.getElementById('hostPlaceholder').style.display = 'none';
+        placeholder.style.display = 'none';
 
-        await hVid.play().catch(() => {});
+        await hVid.play();
+
+        const track = displayCamStream.getVideoTracks()[0];
+
+        if (track) {
+            console.log('Kamera aktif:', track.getSettings());
+        }
 
     } catch (err) {
-        console.log("Kamera lokal display aktif/error:", err);
+        console.error('Kamera error:', err);
+
+        placeholder.style.display = 'block';
+        placeholder.textContent = 'Kamera gagal aktif';
+    } finally {
+        cameraStarting = false;
     }
 }
 
 function stopDisplayDirectCamera() {
+
     if (displayCamStream) {
         displayCamStream.getTracks().forEach(track => track.stop());
         displayCamStream = null;
@@ -742,12 +722,12 @@ function stopDisplayDirectCamera() {
 
     const hVid = document.getElementById('hostVideo');
 
+    hVid.pause();
     hVid.srcObject = null;
     hVid.style.display = 'none';
 
     document.getElementById('hostPlaceholder').style.display = 'block';
 }
-
 
 /* ================= WEBGL ================= */
 
@@ -758,14 +738,20 @@ let glBuffers = {};
 let isWebGLSupported = false;
 
 function initWebGL(canvas) {
+
     if (gl && glProgram) return true;
 
     try {
+
         gl = canvas.getContext('webgl', {
             alpha: true,
             premultipliedAlpha: false,
-            antialias: true
-        }) || canvas.getContext('experimental-webgl');
+            antialias: false,
+            depth: false,
+            stencil: false,
+            preserveDrawingBuffer: false,
+            powerPreference: 'low-power'
+        });
 
         if (!gl) return false;
 
@@ -811,7 +797,9 @@ function initWebGL(canvas) {
         `;
 
         function createShader(type, src) {
+
             const shader = gl.createShader(type);
+
             gl.shaderSource(shader, src);
             gl.compileShader(shader);
 
@@ -845,12 +833,8 @@ function initWebGL(canvas) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            -1,-1,
-             1,-1,
-            -1, 1,
-            -1, 1,
-             1,-1,
-             1, 1
+            -1,-1, 1,-1, -1,1,
+            -1,1, 1,-1, 1,1
         ]), gl.STATIC_DRAW);
 
         const texBuffer = gl.createBuffer();
@@ -858,12 +842,8 @@ function initWebGL(canvas) {
         gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            0,1,
-            1,1,
-            0,0,
-            0,0,
-            1,1,
-            1,0
+            0,1, 1,1, 0,0,
+            0,0, 1,1, 1,0
         ]), gl.STATIC_DRAW);
 
         glBuffers.pos = posBuffer;
@@ -878,14 +858,18 @@ function initWebGL(canvas) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
+        gl.uniform1i(
+            gl.getUniformLocation(glProgram, 'u_tex'),
+            0
+        );
+
         return true;
 
     } catch (e) {
-        console.error(e);
+        console.error('WebGL init error:', e);
         return false;
     }
 }
-
 
 /* ================= DATABASE VIDEO ================= */
 
@@ -893,7 +877,9 @@ const DB_NAME = "TikTokStudioStorageDB";
 const STORE_NAME = "permanent_assets";
 
 function openDB() {
+
     return new Promise(resolve => {
+
         const req = indexedDB.open(DB_NAME, 1);
 
         req.onsuccess = () => resolve(req.result);
@@ -902,12 +888,15 @@ function openDB() {
 }
 
 async function getSavedVideo(id) {
+
     try {
+
         const db = await openDB();
 
         if (!db) return null;
 
         return new Promise(resolve => {
+
             const tx = db.transaction(STORE_NAME, "readonly");
             const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
 
@@ -920,10 +909,27 @@ async function getSavedVideo(id) {
     }
 }
 
+/* ================= FORMAT POIN ================= */
+
+function formatPoin(val) {
+
+    if (!val || val === 0) return '0';
+
+    if (val >= 1000000) {
+        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
+    }
+
+    if (val >= 1000) {
+        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
+    }
+
+    return val.toLocaleString('id-ID');
+}
 
 /* ================= SLOT ================= */
 
 function updateSlotDisplay(data) {
+
     const {
         slotNum,
         nameInput,
@@ -933,37 +939,37 @@ function updateSlotDisplay(data) {
     } = data;
 
     const slotBox = document.getElementById(`slot-${slotNum}`);
-    const coinBadge = document.getElementById(`coin-badge-${slotNum}`);
-    const coincountElem = document.getElementById(`coincount-slot-${slotNum}`);
-    const namePill = document.getElementById(`namepill-slot-${slotNum}`);
-    const nameText = document.getElementById(`nametext-slot-${slotNum}`);
-    const micContainer = document.getElementById(`mic-slot-${slotNum}`);
-    const imgElem = document.getElementById(`img-slot-${slotNum}`);
-    const bgElem = document.getElementById(`bg-slot-${slotNum}`);
-    const bgOverlay = document.getElementById(`overlay-slot-${slotNum}`);
-    const iconElem = document.getElementById(`icon-${slotNum}`);
-    const reqElem = document.getElementById(`req-${slotNum}`);
-    const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
 
     if (!slotBox) return;
 
+    const coinBadge = document.getElementById(`coin-badge-${slotNum}`);
+    const countElem = document.getElementById(`coincount-slot-${slotNum}`);
+    const namePill = document.getElementById(`namepill-slot-${slotNum}`);
+    const nameText = document.getElementById(`nametext-slot-${slotNum}`);
+    const mic = document.getElementById(`mic-slot-${slotNum}`);
+    const img = document.getElementById(`img-slot-${slotNum}`);
+    const bg = document.getElementById(`bg-slot-${slotNum}`);
+    const bgOverlay = document.getElementById(`overlay-slot-${slotNum}`);
+    const icon = document.getElementById(`icon-${slotNum}`);
+    const req = document.getElementById(`req-${slotNum}`);
+    const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
+
     if (action === 'clear_slot') {
-        imgElem.style.display = 'none';
-        imgElem.removeAttribute('src');
 
-        if (bgElem) {
-            bgElem.style.display = 'none';
-            bgElem.removeAttribute('src');
-        }
+        img.style.display = 'none';
+        img.removeAttribute('src');
 
-        if (bgOverlay) bgOverlay.style.display = 'none';
+        bg.style.display = 'none';
+        bg.removeAttribute('src');
+
+        bgOverlay.style.display = 'none';
 
         slotBox.style.background = '#1c1d24';
 
-        iconElem.style.display = 'block';
-        reqElem.style.display = 'inline-block';
+        icon.style.display = 'block';
+        req.style.display = 'inline-block';
         namePill.style.display = 'none';
-        micContainer.style.display = 'none';
+        mic.style.display = 'none';
         coinBadge.style.display = 'none';
 
         if (topBadge) {
@@ -983,34 +989,32 @@ function updateSlotDisplay(data) {
         slotPoints[slotNum] = initialPoin;
     }
 
-    if (coincountElem) {
-        coincountElem.innerText = formatPoin(slotPoints[slotNum]);
-        coinBadge.style.display = 'flex';
-    }
+    countElem.innerText = formatPoin(slotPoints[slotNum]);
+    coinBadge.style.display = 'flex';
 
     if (nameInput) {
         nameText.innerText = nameInput;
         namePill.style.display = 'flex';
-        micContainer.style.display = 'flex';
+        mic.style.display = 'flex';
     }
 
     if (profileImg) {
-        iconElem.style.display = 'none';
-        reqElem.style.display = 'none';
 
-        imgElem.src = profileImg;
-        imgElem.style.display = 'block';
+        icon.style.display = 'none';
+        req.style.display = 'none';
 
-        if (bgElem) {
-            bgElem.src = profileImg;
-            bgElem.style.display = 'block';
-        }
+        img.src = profileImg;
+        img.style.display = 'block';
 
-        if (bgOverlay) bgOverlay.style.display = 'block';
+        bg.src = profileImg;
+        bg.style.display = 'block';
+
+        bgOverlay.style.display = 'block';
     }
 }
 
 function showGiftBadgeTemporarily(slotNum, badgeSrc) {
+
     if (!badgeSrc || !slotNum) return;
 
     const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
@@ -1030,10 +1034,10 @@ function showGiftBadgeTemporarily(slotNum, badgeSrc) {
     }, 5000);
 }
 
-
 /* ================= NOTIFIKASI GIFT ================= */
 
 function showGiftToast(data, comboCount = 1) {
+
     const toast = document.getElementById('giftBannerToast');
     const avatar = document.getElementById('toastGifterAvatar');
     const nameElem = document.getElementById('toastGifterName');
@@ -1044,40 +1048,38 @@ function showGiftToast(data, comboCount = 1) {
     const hostName = detectedHostName || 'Host';
     const hostAvatar = data.senderAvatar || detectedHostAvatar;
 
-    const giftTitle = data.giftTitle || 'Gift';
-    const giftIcon = data.badgeImg || '';
-
-    const count = Math.max(1, Number(comboCount) || 1);
-
     avatar.src = hostAvatar;
     nameElem.innerText = hostName;
-    descElem.innerText = giftTitle;
+    descElem.innerText = data.giftTitle || 'Gift';
 
-    if (giftIcon) {
-        iconElem.src = giftIcon;
+    if (data.badgeImg) {
+        iconElem.src = data.badgeImg;
         iconElem.style.display = 'block';
     } else {
         iconElem.style.display = 'none';
     }
 
-    comboElem.textContent = 'x ' + count;
+    comboElem.textContent = 'x ' + Math.max(1, Number(comboCount) || 1);
     comboElem.style.display = 'inline-block';
 
-    if (toastTimeout) clearTimeout(toastTimeout);
-    if (toastHideTimer) clearTimeout(toastHideTimer);
+    clearTimeout(toastTimeout);
+    clearTimeout(toastHideTimer);
 
     if (toast.style.display !== 'inline-flex') {
+
         toast.style.animation = 'none';
         void toast.offsetWidth;
 
         toast.style.animation =
-            'tiktokBannerSlideIn .35s cubic-bezier(.2,.9,.3,1.2) forwards';
+            'tiktokBannerSlideIn .35s ease-out forwards';
 
         toast.style.display = 'inline-flex';
     }
 
     toastTimeout = setTimeout(() => {
-        toast.style.animation = 'tiktokBannerSlideOut .28s ease-in forwards';
+
+        toast.style.animation =
+            'tiktokBannerSlideOut .28s ease-in forwards';
 
         toastHideTimer = setTimeout(() => {
             toast.style.display = 'none';
@@ -1087,10 +1089,10 @@ function showGiftToast(data, comboCount = 1) {
     }, 3000);
 }
 
-
 /* ================= ANTRIAN VIDEO GIFT ================= */
 
 function queueGiftVideo(src, repeatCount = 1) {
+
     if (!src) return;
 
     const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
@@ -1104,6 +1106,7 @@ function queueGiftVideo(src, repeatCount = 1) {
 }
 
 function playNextGiftVideo() {
+
     if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
 
     giftVideoQueueBusy = true;
@@ -1111,12 +1114,14 @@ function playNextGiftVideo() {
     const item = giftVideoQueue[0];
 
     playGiftVideo(item.src, () => {
+
         item.remaining--;
 
         if (item.remaining > 0) {
             giftVideoQueueBusy = false;
             playNextGiftVideo();
         } else {
+
             giftVideoQueue.shift();
 
             if (item.src.startsWith('blob:')) {
@@ -1129,10 +1134,10 @@ function playNextGiftVideo() {
     });
 }
 
-
 /* ================= SISTEM COMBO GIFT ================= */
 
 function getGiftComboKey(data) {
+
     const sender = String(
         data.senderName || data.username || 'user'
     ).toLowerCase();
@@ -1145,11 +1150,13 @@ function getGiftComboKey(data) {
 }
 
 async function resolveGiftVideo(data) {
+
     if (data.videoBlob) {
         return URL.createObjectURL(data.videoBlob);
     }
 
     if (data.giftId) {
+
         const blob = await getSavedVideo(data.giftId);
 
         if (blob) {
@@ -1157,14 +1164,13 @@ async function resolveGiftVideo(data) {
         }
     }
 
-    if (data.src) {
-        return data.src;
-    }
+    if (data.src) return data.src;
 
     return null;
 }
 
 function receiveGiftForCombo(data) {
+
     const key = getGiftComboKey(data);
 
     const rawCumulative =
@@ -1178,6 +1184,7 @@ function receiveGiftForCombo(data) {
     let group = giftComboGroups.get(key);
 
     if (!group) {
+
         group = {
             data: { ...data },
             count: 0,
@@ -1194,11 +1201,14 @@ function receiveGiftForCombo(data) {
     group.data = { ...group.data, ...data };
 
     if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
+
         group.count = Math.max(
             group.count,
             Math.floor(cumulativeCount)
         );
+
     } else {
+
         group.count += Math.max(
             1,
             Math.floor(Number(data.giftCount) || 1)
@@ -1207,14 +1217,14 @@ function receiveGiftForCombo(data) {
 
     showGiftToast(group.data, group.count);
 
-    if (group.timer) {
-        clearTimeout(group.timer);
-    }
+    clearTimeout(group.timer);
 
     group.videoPromise = group.videoPromise.then(async () => {
+
         const resolvedSrc = await resolveGiftVideo(data);
 
         if (resolvedSrc) {
+
             if (
                 group.src &&
                 group.src.startsWith('blob:') &&
@@ -1225,11 +1235,13 @@ function receiveGiftForCombo(data) {
 
             group.src = resolvedSrc;
         }
+
     }).catch(err => {
         console.error('Gagal memuat video gift:', err);
     });
 
     const finishCombo = async () => {
+
         const finishingRevision = group.revision;
 
         await group.videoPromise;
@@ -1243,11 +1255,8 @@ function receiveGiftForCombo(data) {
 
         giftComboGroups.delete(key);
 
-        const finalCount = Math.max(1, group.count);
-        const finalSrc = group.src;
-
-        if (finalSrc) {
-            queueGiftVideo(finalSrc, finalCount);
+        if (group.src) {
+            queueGiftVideo(group.src, Math.max(1, group.count));
         }
     };
 
@@ -1263,13 +1272,14 @@ function receiveGiftForCombo(data) {
     );
 }
 
-
 /* ================= PESAN MASUK ================= */
 
 function handleIncomingMessage(data) {
+
     if (!data) return;
 
     if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
+
         if (data.action === 'start') {
             startDisplayDirectCamera();
         } else if (data.action === 'stop') {
@@ -1278,6 +1288,7 @@ function handleIncomingMessage(data) {
     }
 
     else if (data.type === 'SET_HOST_VIDEO') {
+
         stopDisplayDirectCamera();
 
         const hVid = document.getElementById('hostVideo');
@@ -1286,6 +1297,7 @@ function handleIncomingMessage(data) {
         camImg.style.display = 'none';
 
         if (data.videoBlob) {
+
             hVid.srcObject = null;
 
             hVid.src = URL.createObjectURL(data.videoBlob);
@@ -1298,6 +1310,7 @@ function handleIncomingMessage(data) {
     }
 
     else if (data.type === 'RESET_HOST_MEDIA') {
+
         stopDisplayDirectCamera();
 
         const hVid = document.getElementById('hostVideo');
@@ -1305,6 +1318,7 @@ function handleIncomingMessage(data) {
 
         camImg.style.display = 'none';
 
+        hVid.pause();
         hVid.srcObject = null;
         hVid.removeAttribute('src');
         hVid.style.display = 'none';
@@ -1316,7 +1330,9 @@ function handleIncomingMessage(data) {
         data.type === 'UPDATE_HOST' ||
         data.type === 'UPDATE_HOST_NAME'
     ) {
+
         if (data.hostName) {
+
             detectedHostName = data.hostName;
 
             document.getElementById('hostNameText').innerText =
@@ -1329,13 +1345,16 @@ function handleIncomingMessage(data) {
     }
 
     else if (data.type === 'UPDATE_SLOT') {
+
         updateSlotDisplay(data);
     }
 
     else if (data.type === 'PLAY_GIFT') {
+
         const targetSlot = Number(data.targetSlot);
 
         if (targetSlot && slotPoints[targetSlot] !== undefined) {
+
             slotPoints[targetSlot] += Number(data.increment || 0);
 
             const countElem =
@@ -1359,20 +1378,21 @@ function handleIncomingMessage(data) {
     }
 }
 
-
 /* ================= BROADCAST CHANNEL ================= */
 
 channel.onmessage = event => {
     handleIncomingMessage(event.data);
 };
 
-
 /* ================= WEBSOCKET ================= */
 
 let ws = null;
+let reconnectTimer = null;
 
 function connectWebSocket() {
+
     try {
+
         const protocol =
             location.protocol === 'https:' ? 'wss:' : 'ws:';
 
@@ -1381,11 +1401,15 @@ function connectWebSocket() {
         );
 
         ws.onmessage = event => {
+
             try {
+
                 const d = JSON.parse(event.data);
 
                 if (d.type === 'gift') {
+
                     handleIncomingMessage({
+
                         type: 'PLAY_GIFT',
 
                         targetSlot: 1,
@@ -1440,40 +1464,154 @@ function connectWebSocket() {
             console.log('WebSocket error:', err);
         };
 
+        ws.onclose = () => {
+
+            clearTimeout(reconnectTimer);
+
+            reconnectTimer = setTimeout(() => {
+                connectWebSocket();
+            }, 3000);
+        };
+
     } catch (err) {
+
         console.log('WebSocket connection error:', err);
+
+        clearTimeout(reconnectTimer);
+
+        reconnectTimer = setTimeout(() => {
+            connectWebSocket();
+        }, 3000);
     }
 }
 
 connectWebSocket();
 
+/* ================= PEMUTAR VIDEO GIFT OPTIMIZED ================= */
 
-/* ================= FORMAT POIN ================= */
+let glReady = false;
+let renderActive = false;
+let renderFrameId = null;
+let videoFrameCallbackId = null;
+let lastVideoTime = -1;
 
-function formatPoin(val) {
-    if (!val || val === 0) return '0';
+function stopGiftRenderer() {
 
-    if (val >= 1000000) {
-        return (val / 1000000).toFixed(1)
-            .replace('.', ',') + 'M';
+    renderActive = false;
+
+    if (renderFrameId !== null) {
+        cancelAnimationFrame(renderFrameId);
+        renderFrameId = null;
     }
 
-    if (val >= 1000) {
-        return (val / 1000).toFixed(1)
-            .replace('.', ',') + 'K';
+    const video = document.getElementById('giftVideo');
+
+    if (
+        videoFrameCallbackId !== null &&
+        video.cancelVideoFrameCallback
+    ) {
+        video.cancelVideoFrameCallback(videoFrameCallbackId);
     }
 
-    return val.toLocaleString('id-ID');
+    videoFrameCallbackId = null;
 }
 
+function renderGiftFrame() {
 
-/* ================= PEMUTAR VIDEO GIFT ================= */
+    if (!renderActive) return;
+
+    const video = document.getElementById('giftVideo');
+
+    if (
+        video.ended ||
+        video.readyState < video.HAVE_CURRENT_DATA
+    ) {
+        scheduleGiftFrame();
+        return;
+    }
+
+    if (video.currentTime !== lastVideoTime) {
+
+        lastVideoTime = video.currentTime;
+
+        if (glReady && gl) {
+
+            try {
+
+                gl.bindTexture(gl.TEXTURE_2D, glTexture);
+
+                gl.texImage2D(
+                    gl.TEXTURE_2D,
+                    0,
+                    gl.RGBA,
+                    gl.RGBA,
+                    gl.UNSIGNED_BYTE,
+                    video
+                );
+
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+            } catch (e) {
+                console.error('WebGL rendering error:', e);
+            }
+
+        } else {
+
+            const canvas = document.getElementById('giftCanvas');
+            const ctx = canvas.getContext('2d');
+
+            if (ctx) {
+                ctx.drawImage(
+                    video,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+            }
+        }
+    }
+
+    scheduleGiftFrame();
+}
+
+/*
+ * Render hanya ketika video mempunyai frame baru.
+ * Ini mengurangi pekerjaan GPU dibanding requestAnimationFrame
+ * yang berjalan terus mengikuti refresh layar.
+ */
+
+function scheduleGiftFrame() {
+
+    if (!renderActive) return;
+
+    const video = document.getElementById('giftVideo');
+
+    if (video.requestVideoFrameCallback) {
+
+        videoFrameCallbackId =
+            video.requestVideoFrameCallback(() => {
+
+                videoFrameCallbackId = null;
+                renderGiftFrame();
+            });
+
+    } else {
+
+        renderFrameId = requestAnimationFrame(() => {
+
+            renderFrameId = null;
+            renderGiftFrame();
+        });
+    }
+}
 
 function playGiftVideo(src, onFinished) {
-    const overlayContainer =
+
+    const overlay =
         document.getElementById('giftOverlayContainer');
 
-    const giftVideo =
+    const video =
         document.getElementById('giftVideo');
 
     const canvas =
@@ -1481,176 +1619,177 @@ function playGiftVideo(src, onFinished) {
 
     let finished = false;
 
-    const finish = () => {
+    stopGiftRenderer();
+
+    function finish() {
+
         if (finished) return;
 
         finished = true;
 
-        if (animFrameId) {
-            cancelAnimationFrame(animFrameId);
-            animFrameId = null;
-        }
+        stopGiftRenderer();
 
-        overlayContainer.style.display = 'none';
+        overlay.style.display = 'none';
+
+        video.onended = null;
+        video.onerror = null;
+        video.onloadedmetadata = null;
+
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
 
         if (gl) {
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
-        giftVideo.onended = null;
-        giftVideo.onerror = null;
-        giftVideo.onloadedmetadata = null;
-
-        giftVideo.pause();
-        giftVideo.removeAttribute('src');
-        giftVideo.load();
-
         if (typeof onFinished === 'function') {
             onFinished();
         }
-    };
-
-    if (animFrameId) {
-        cancelAnimationFrame(animFrameId);
-        animFrameId = null;
     }
 
-    overlayContainer.style.display = 'block';
+    overlay.style.display = 'block';
 
-    giftVideo.pause();
-    giftVideo.removeAttribute('src');
-    giftVideo.load();
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
 
-    giftVideo.src = src;
-    giftVideo.muted = false;
-    giftVideo.volume = 1;
+    video.src = src;
+    video.muted = false;
+    video.volume = 1;
 
-    giftVideo.onended = finish;
-    giftVideo.onerror = finish;
+    video.onended = finish;
+    video.onerror = finish;
 
-    isWebGLSupported = initWebGL(canvas);
+    glReady = initWebGL(canvas);
 
-    giftVideo.onloadedmetadata = () => {
+    video.onloadedmetadata = async () => {
+
         if (finished) return;
 
-        const vWidth = giftVideo.videoWidth || 720;
-        const vHeight = giftVideo.videoHeight || 1280;
+        const originalWidth = video.videoWidth || 720;
+        const originalHeight = video.videoHeight || 1280;
 
-        canvas.width = vWidth;
-        canvas.height = vHeight;
+        /*
+         * Batasi ukuran canvas agar video gift tidak
+         * menggunakan resolusi terlalu besar.
+         */
 
-        const renderWebGLFrame = () => {
+        const maxWidth = 720;
+        const maxHeight = 1280;
+
+        const scale = Math.min(
+            1,
+            maxWidth / originalWidth,
+            maxHeight / originalHeight
+        );
+
+        const renderWidth = Math.max(
+            1,
+            Math.round(originalWidth * scale)
+        );
+
+        const renderHeight = Math.max(
+            1,
+            Math.round(originalHeight * scale)
+        );
+
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+
+        if (glReady && gl) {
+
+            gl.viewport(0, 0, renderWidth, renderHeight);
+            gl.useProgram(glProgram);
+
+            const posLoc =
+                gl.getAttribLocation(glProgram, 'a_pos');
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
+            gl.enableVertexAttribArray(posLoc);
+
+            gl.vertexAttribPointer(
+                posLoc, 2, gl.FLOAT, false, 0, 0
+            );
+
+            const texLoc =
+                gl.getAttribLocation(glProgram, 'a_tex');
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
+            gl.enableVertexAttribArray(texLoc);
+
+            gl.vertexAttribPointer(
+                texLoc, 2, gl.FLOAT, false, 0, 0
+            );
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, glTexture);
+
+        }
+
+        lastVideoTime = -1;
+
+        try {
+
+            await video.play();
+
             if (finished) return;
 
-            if (giftVideo.ended) {
+            renderActive = true;
+            renderGiftFrame();
+
+        } catch (err) {
+
+            console.warn('Gift video autoplay error:', err);
+
+            video.muted = true;
+
+            try {
+
+                await video.play();
+
+                if (finished) return;
+
+                renderActive = true;
+                renderGiftFrame();
+
+            } catch (error) {
+                console.error(error);
                 finish();
-                return;
             }
-
-            if (
-                giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA &&
-                gl
-            ) {
-                try {
-                    gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
-                    gl.texImage2D(
-                        gl.TEXTURE_2D,
-                        0,
-                        gl.RGBA,
-                        gl.RGBA,
-                        gl.UNSIGNED_BYTE,
-                        giftVideo
-                    );
-
-                    gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-                } catch (e) {
-                    console.error('WebGL rendering error:', e);
-                }
-            }
-
-            animFrameId = requestAnimationFrame(renderWebGLFrame);
-        };
-
-        const render2DFrame = () => {
-            if (finished) return;
-
-            if (giftVideo.ended) {
-                finish();
-                return;
-            }
-
-            const ctx = canvas.getContext('2d');
-
-            if (
-                ctx &&
-                giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA
-            ) {
-                ctx.drawImage(
-                    giftVideo,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-            }
-
-            animFrameId = requestAnimationFrame(render2DFrame);
-        };
-
-        const startRenderer = () => {
-            if (isWebGLSupported && gl) {
-                gl.viewport(0, 0, vWidth, vHeight);
-                gl.useProgram(glProgram);
-
-                const posLoc =
-                    gl.getAttribLocation(glProgram, 'a_pos');
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
-                gl.enableVertexAttribArray(posLoc);
-
-                gl.vertexAttribPointer(
-                    posLoc, 2, gl.FLOAT, false, 0, 0
-                );
-
-                const texLoc =
-                    gl.getAttribLocation(glProgram, 'a_tex');
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
-                gl.enableVertexAttribArray(texLoc);
-
-                gl.vertexAttribPointer(
-                    texLoc, 2, gl.FLOAT, false, 0, 0
-                );
-
-                renderWebGLFrame();
-
-            } else {
-                render2DFrame();
-            }
-        };
-
-        const playPromise = giftVideo.play();
-
-        if (playPromise && typeof playPromise.then === 'function') {
-            playPromise
-                .then(startRenderer)
-                .catch(() => {
-                    giftVideo.muted = true;
-
-                    giftVideo.play()
-                        .then(startRenderer)
-                        .catch(finish);
-                });
-
-        } else {
-            finish();
         }
     };
 
-    giftVideo.load();
+    video.load();
 }
+
+/* ================= CLEANUP ================= */
+
+window.addEventListener('pagehide', () => {
+
+    stopGiftRenderer();
+
+    if (displayCamStream) {
+        displayCamStream.getTracks().forEach(track => track.stop());
+        displayCamStream = null;
+    }
+
+    if (ws) {
+        ws.close();
+    }
+});
+
+document.addEventListener('visibilitychange', () => {
+
+    /*
+     * Jangan menghentikan kamera ketika halaman
+     * sedang tidak terlihat. TikTok Studio dapat
+     * mengambil halaman sebagai sumber overlay.
+     */
+    if (document.hidden) {
+        console.log('Display berada di background.');
+    }
+});
 
 </script>
 
