@@ -154,10 +154,13 @@ body {
     fill: #26364a;
 }
 
+/* NAMA HOST BAGIAN BAWAH - POSISI TENGAH */
+
 .host-bottom-pill {
     position: absolute;
     bottom: 6px;
     left: 6px;
+    right: 6px;
     z-index: 12;
     background: rgba(0,0,0,.55);
     backdrop-filter: blur(6px);
@@ -165,8 +168,9 @@ body {
     border-radius: 999px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    max-width: calc(100% - 16px);
+    justify-content: center;
+    text-align: center;
+    height: 22px;
 }
 
 .host-name-text {
@@ -176,6 +180,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
+    width: 100%;
 }
 
 .komal-grid {
@@ -363,6 +369,8 @@ body {
     display: block;
 }
 
+/* MIKROFON TANPA LINGKARAN */
+
 .mic-container {
     position: absolute;
     bottom: 5px;
@@ -533,7 +541,6 @@ body {
              onclick="startDisplayDirectCamera()"
              title="Klik untuk aktifkan kamera host">
 
-            <!-- BADGE HOST -->
             <div class="host-top-pill">
                 <span class="host-pill-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -553,9 +560,7 @@ body {
 
             <img id="hostCameraImg" alt="Host Cam">
 
-            <!-- NOTIFIKASI: NAMA HOST DI ATAS, NAMA GIFT DI BAWAH -->
             <div class="gift-banner-wrapper">
-
                 <div class="gift-banner-toast" id="giftBannerToast">
 
                     <img id="toastGifterAvatar"
@@ -572,12 +577,10 @@ body {
                          class="toast-gift-img"
                          src=""
                          alt="Gift">
-
                 </div>
 
                 <span id="toastComboCount"
                       class="toast-combo-count">x 1</span>
-
             </div>
 
             <div class="host-bottom-pill" id="hostBottomPill">
