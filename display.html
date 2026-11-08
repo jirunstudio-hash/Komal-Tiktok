@@ -94,6 +94,120 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
+        /* ===== BANNER & IKON NOTIFIKASI GIFT DI ATAS NAMA HOST ===== */
+        .host-gift-toast-container {
+            position: absolute;
+            bottom: 34px; /* Tepat di atas pill nama host */
+            left: 6px;
+            z-index: 25;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            max-width: calc(100% - 12px);
+        }
+
+        @keyframes tiktokBannerSlideIn {
+            0% { 
+                transform: translateY(12px) scale(0.85); 
+                opacity: 0; 
+            }
+            75% {
+                transform: translateY(-2px) scale(1.03);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+        }
+
+        @keyframes tiktokBannerSlideOut {
+            0% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(-8px) scale(0.85); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes tiktokGiftIconBounce {
+            0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+            65% { transform: scale(1.25) rotate(4deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .gift-banner-toast {
+            display: none;
+            align-items: center;
+            height: 26px;
+            background: linear-gradient(90deg, rgba(15, 15, 20, 0.88) 0%, rgba(20, 20, 28, 0.75) 75%, rgba(25, 25, 35, 0.5) 100%);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            padding: 2px 5px 2px 3px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            animation: tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            max-width: 100%;
+            transform: translateZ(0);
+            position: relative;
+        }
+
+        .toast-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 0.8px solid rgba(255, 255, 255, 0.6);
+            flex-shrink: 0;
+            background: #252530;
+            image-rendering: high-quality;
+        }
+
+        .toast-text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 4px;
+            margin-right: 4px;
+            overflow: hidden;
+            line-height: 1.1;
+        }
+
+        .toast-name {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 75px;
+            letter-spacing: -0.1px;
+        }
+
+        .toast-desc {
+            font-size: 8px;
+            font-weight: 500;
+            color: #ffe66d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+            letter-spacing: -0.1px;
+        }
+
+        .toast-gift-img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+            flex-shrink: 0;
+            animation: tiktokGiftIconBounce 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            image-rendering: high-quality;
+        }
+
         .host-bottom-pill {
             position: absolute;
             bottom: 6px;
@@ -296,123 +410,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== BANNER NOTIFIKASI GIFT PERSIS 100% TIKTOK LIVE ASLI ===== */
-        .gift-banner-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            padding: 4px 6px 0 6px;
-            position: relative;
-            z-index: 30;
-            pointer-events: none;
-        }
-
-        @keyframes tiktokBannerSlideIn {
-            0% { 
-                transform: translateX(-115%); 
-                opacity: 0; 
-            }
-            75% {
-                transform: translateX(4px);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateX(0); 
-                opacity: 1; 
-            }
-        }
-        @keyframes tiktokBannerSlideOut {
-            0% { 
-                transform: translateX(0) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translateX(-115%) scale(0.9); 
-                opacity: 0; 
-            }
-        }
-
-        @keyframes tiktokGiftIconBounce {
-            0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
-            65% { transform: scale(1.22) rotate(4deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        .gift-banner-toast {
-            display: none;
-            align-items: center;
-            height: 26px;
-            background: linear-gradient(90deg, rgba(15, 15, 20, 0.78) 0%, rgba(20, 20, 28, 0.65) 75%, rgba(25, 25, 35, 0.4) 100%);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            padding: 2px 4px 2px 2px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-            animation: tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
-            max-width: 80%;
-            transform: translateZ(0);
-            overflow: visible;
-            position: relative;
-        }
-
-        .toast-avatar {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 0.8px solid rgba(255, 255, 255, 0.4);
-            flex-shrink: 0;
-            background: #252530;
-            image-rendering: high-quality;
-        }
-
-        .toast-text-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-left: 5px;
-            margin-right: 5px;
-            overflow: hidden;
-            line-height: 1.1;
-        }
-
-        .toast-name {
-            font-size: 10px;
-            font-weight: 600;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 85px;
-            letter-spacing: -0.1px;
-        }
-
-        .toast-desc {
-            font-size: 8.5px;
-            font-weight: 500;
-            color: #ffe66d;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 90px;
-            letter-spacing: -0.1px;
-        }
-
-        .toast-gift-img {
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
-            flex-shrink: 0;
-            margin-left: 1px;
-            margin-right: -3px;
-            margin-top: -2px;
-            margin-bottom: -2px;
-            animation: tiktokGiftIconBounce 0.38s 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-            image-rendering: high-quality;
-        }
-
         .gift-overlay { 
             position: absolute; 
             top: 0; 
@@ -449,6 +446,18 @@
             <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
             <img id="hostCameraImg" alt="Host Cam">
+
+            <!-- BANNER NOTIFIKASI GIFT PERSIS DI ATAS NAMA HOST -->
+            <div class="host-gift-toast-container">
+                <div class="gift-banner-toast" id="giftBannerToast">
+                    <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
+                    <div class="toast-text-col">
+                        <div class="toast-name" id="toastGifterName">Host</div>
+                        <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
+                    </div>
+                    <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
+                </div>
+            </div>
 
             <div class="host-bottom-pill" id="hostBottomPill">
                 <span class="host-name-text" id="hostNameText">Host</span>
@@ -504,18 +513,6 @@
                     `);
                 }
             </script>
-        </div>
-    </div>
-
-    <!-- BANNER NOTIFIKASI GIFT DI BAWAH HOST (TIKTOK STYLE) -->
-    <div class="gift-banner-wrapper">
-        <div class="gift-banner-toast" id="giftBannerToast">
-            <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
-            <div class="toast-text-col">
-                <div class="toast-name" id="toastGifterName">Host</div>
-                <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
-            </div>
-            <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
         </div>
     </div>
 
@@ -796,7 +793,7 @@
 
         if (toastTimeout) clearTimeout(toastTimeout);
 
-        // Reset dan jalankan animasi meluncur khas TikTok
+        // Reset dan jalankan animasi meluncur ke atas nama host
         toast.style.animation = 'none';
         void toast.offsetWidth;
         toast.style.animation = 'tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards';
