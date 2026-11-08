@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - Performance Edition</title>
+<title>Display Studio - Performance Optimized</title>
 
 <style>
 * {
@@ -174,10 +174,7 @@ body {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-
-    /* Blur lebih ringan untuk GPU */
     filter: blur(3px) brightness(.7) !important;
-
     display: none;
     z-index: 1;
     pointer-events: none;
@@ -462,15 +459,7 @@ body {
     object-position: center;
     display: block;
     pointer-events: none;
-}
-
-/* Preferensi perangkat dengan resource terbatas */
-@media (prefers-reduced-motion: reduce) {
-    .slot-top-badge,
-    .gift-banner-toast,
-    .toast-gift-img {
-        animation-duration: .01ms !important;
-    }
+    background: transparent;
 }
 </style>
 </head>
@@ -655,10 +644,7 @@ async function startDisplayDirectCamera() {
         hVid.style.display = 'block';
         placeholder.style.display = 'none';
 
-        if (hVid.paused) {
-            await hVid.play().catch(() => {});
-        }
-
+        if (hVid.paused) await hVid.play().catch(() => {});
         return;
     }
 
@@ -677,8 +663,8 @@ async function startDisplayDirectCamera() {
         const constraints = {
             audio: false,
             video: {
-                width: { ideal: 720, max: 1280 },
-                height: { ideal: 1280, max: 720 },
+                width: { ideal: 540 },
+                height: { ideal: 960 },
                 frameRate: { ideal: 24, max: 30 },
                 facingMode: 'user'
             }
@@ -689,27 +675,16 @@ async function startDisplayDirectCamera() {
 
         hVid.srcObject = displayCamStream;
         hVid.style.display = 'block';
-
         placeholder.style.display = 'none';
 
         await hVid.play();
 
         const track = displayCamStream.getVideoTracks()[0];
 
-        if (track) {
-            console.log('Kamera aktif:', track.getSettings());
-
-            track.addEventListener('ended', () => {
-                displayCamStream = null;
-                hVid.style.display = 'none';
-                placeholder.style.display = 'block';
-                placeholder.textContent = 'Kamera terputus';
-            }, { once: true });
-        }
+        if (track) console.log('Kamera aktif:', track.getSettings());
 
     } catch (err) {
         console.error('Kamera error:', err);
-
         placeholder.style.display = 'block';
         placeholder.textContent = 'Kamera gagal aktif';
     } finally {
@@ -733,7 +708,7 @@ function stopDisplayDirectCamera() {
     document.getElementById('hostPlaceholder').style.display = 'block';
 }
 
-/* ================= WEBGL ================= */
+/* ================= WEBGL - SHADER ASLI ================= */
 
 let gl = null;
 let glProgram = null;
@@ -769,6 +744,8 @@ function initWebGL(canvas) {
                 v_tex = a_tex;
             }
         `;
+
+        /* Shader transparansi DIKEMBALIKAN seperti kode asli */
 
         const fsSource = `
             precision mediump float;
@@ -862,10 +839,8 @@ function initWebGL(canvas) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-        gl.uniform1i(
-            gl.getUniformLocation(glProgram, 'u_tex'),
-            0
-        );
+        gl.useProgram(glProgram);
+        gl.uniform1i(gl.getUniformLocation(glProgram, 'u_tex'), 0);
 
         isWebGLSupported = true;
 
@@ -1095,14 +1070,12 @@ function showGiftToast(data, comboCount = 1) {
 
         void toast.offsetWidth;
 
-        toast.style.animation =
-            'tiktokBannerSlideIn .35s ease-out forwards';
+        toast.style.animation = 'tiktokBannerSlideIn .35s ease-out forwards';
     }
 
     toastTimeout = setTimeout(() => {
 
-        toast.style.animation =
-            'tiktokBannerSlideOut .28s ease-in forwards';
+        toast.style.animation = 'tiktokBannerSlideOut .28s ease-in forwards';
 
         toastHideTimer = setTimeout(() => {
             toast.style.display = 'none';
@@ -1120,17 +1093,13 @@ function queueGiftVideo(src, repeatCount = 1) {
 
     const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
 
-    // Hindari antrean terlalu besar saat gift masuk bertubi-tubi.
     if (giftVideoQueue.length >= 30) {
         console.warn('Antrean video gift penuh.');
         if (src.startsWith('blob:')) URL.revokeObjectURL(src);
         return;
     }
 
-    giftVideoQueue.push({
-        src,
-        remaining: count
-    });
+    giftVideoQueue.push({ src, remaining: count });
 
     playNextGiftVideo();
 }
@@ -1189,9 +1158,7 @@ async function resolveGiftVideo(data) {
 
         const blob = await getSavedVideo(data.giftId);
 
-        if (blob) {
-            return URL.createObjectURL(blob);
-        }
+        if (blob) return URL.createObjectURL(blob);
     }
 
     if (data.src) return data.src;
@@ -1231,18 +1198,9 @@ function receiveGiftForCombo(data) {
     group.data = { ...group.data, ...data };
 
     if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
-
-        group.count = Math.max(
-            group.count,
-            Math.floor(cumulativeCount)
-        );
-
+        group.count = Math.max(group.count, Math.floor(cumulativeCount));
     } else {
-
-        group.count += Math.max(
-            1,
-            Math.floor(Number(data.giftCount) || 1)
-        );
+        group.count += Math.max(1, Math.floor(Number(data.giftCount) || 1));
     }
 
     showGiftToast(group.data, group.count);
@@ -1279,9 +1237,7 @@ function receiveGiftForCombo(data) {
         if (
             giftComboGroups.get(key) !== group ||
             group.revision !== finishingRevision
-        ) {
-            return;
-        }
+        ) return;
 
         giftComboGroups.delete(key);
 
@@ -1296,10 +1252,7 @@ function receiveGiftForCombo(data) {
         data.comboEnd === true ||
         data.combo_end === true;
 
-    group.timer = setTimeout(
-        finishCombo,
-        comboEnded ? 0 : 900
-    );
+    group.timer = setTimeout(finishCombo, comboEnded ? 0 : 900);
 }
 
 /* ================= PESAN MASUK ================= */
@@ -1310,11 +1263,8 @@ function handleIncomingMessage(data) {
 
     if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
 
-        if (data.action === 'start') {
-            startDisplayDirectCamera();
-        } else if (data.action === 'stop') {
-            stopDisplayDirectCamera();
-        }
+        if (data.action === 'start') startDisplayDirectCamera();
+        else if (data.action === 'stop') stopDisplayDirectCamera();
     }
 
     else if (data.type === 'SET_HOST_VIDEO') {
@@ -1334,7 +1284,6 @@ function handleIncomingMessage(data) {
         if (data.videoBlob) {
 
             hVid.srcObject = null;
-
             hostVideoObjectURL = URL.createObjectURL(data.videoBlob);
             hVid.src = hostVideoObjectURL;
             hVid.style.display = 'block';
@@ -1373,20 +1322,14 @@ function handleIncomingMessage(data) {
     ) {
 
         if (data.hostName) {
-
             detectedHostName = data.hostName;
-
-            document.getElementById('hostNameText').innerText =
-                data.hostName;
+            document.getElementById('hostNameText').innerText = data.hostName;
         }
 
-        if (data.hostAvatar) {
-            detectedHostAvatar = data.hostAvatar;
-        }
+        if (data.hostAvatar) detectedHostAvatar = data.hostAvatar;
     }
 
     else if (data.type === 'UPDATE_SLOT') {
-
         updateSlotDisplay(data);
     }
 
@@ -1398,15 +1341,11 @@ function handleIncomingMessage(data) {
 
             slotPoints[targetSlot] += Number(data.increment || 0);
 
-            const countElem =
-                document.getElementById(`coincount-slot-${targetSlot}`);
+            const countElem = document.getElementById(`coincount-slot-${targetSlot}`);
 
-            if (countElem) {
-                countElem.innerText = formatPoin(slotPoints[targetSlot]);
-            }
+            if (countElem) countElem.innerText = formatPoin(slotPoints[targetSlot]);
 
-            const badge =
-                document.getElementById(`coin-badge-${targetSlot}`);
+            const badge = document.getElementById(`coin-badge-${targetSlot}`);
 
             if (badge) badge.style.display = 'flex';
         }
@@ -1433,16 +1372,11 @@ let reconnectDelay = 3000;
 
 function connectWebSocket() {
 
-    if (document.visibilityState === 'unloaded') return;
-
     try {
 
-        const protocol =
-            location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-        ws = new WebSocket(
-            `${protocol}//${location.host || 'localhost:8081'}`
-        );
+        ws = new WebSocket(`${protocol}//${location.host || 'localhost:8081'}`);
 
         ws.onopen = () => {
             reconnectDelay = 3000;
@@ -1466,16 +1400,10 @@ function connectWebSocket() {
                         badgeImg: d.giftImage || '',
                         giftTitle: d.giftName || 'Gift',
 
-                        senderName:
-                            d.nickname || d.username || 'User',
-
+                        senderName: d.nickname || d.username || 'User',
                         senderAvatar: d.avatar || '',
 
-                        giftId:
-                            d.giftId ||
-                            d.gift_id ||
-                            d.id ||
-                            '',
+                        giftId: d.giftId || d.gift_id || d.id || '',
 
                         repeatCount:
                             d.repeatCount ??
@@ -1483,9 +1411,7 @@ function connectWebSocket() {
                             d.comboCount ??
                             d.combo_count,
 
-                        giftCount:
-                            d.giftCount ??
-                            d.gift_count,
+                        giftCount: d.giftCount ?? d.gift_count,
 
                         repeatEnd:
                             d.repeatEnd ??
@@ -1495,11 +1421,7 @@ function connectWebSocket() {
 
                         videoBlob: d.videoBlob,
 
-                        src:
-                            d.src ||
-                            d.videoUrl ||
-                            d.video_url ||
-                            ''
+                        src: d.src || d.videoUrl || d.video_url || ''
                     });
                 }
 
@@ -1508,9 +1430,7 @@ function connectWebSocket() {
             }
         };
 
-        ws.onerror = err => {
-            console.log('WebSocket error:', err);
-        };
+        ws.onerror = err => console.log('WebSocket error:', err);
 
         ws.onclose = () => {
 
@@ -1529,15 +1449,13 @@ function connectWebSocket() {
 
         clearTimeout(reconnectTimer);
 
-        reconnectTimer = setTimeout(() => {
-            connectWebSocket();
-        }, reconnectDelay);
+        reconnectTimer = setTimeout(connectWebSocket, reconnectDelay);
     }
 }
 
 connectWebSocket();
 
-/* ================= PEMUTAR VIDEO GIFT ================= */
+/* ================= RENDER VIDEO GIFT ================= */
 
 let glReady = false;
 let renderActive = false;
@@ -1551,10 +1469,7 @@ function stopGiftRenderer() {
 
     const video = document.getElementById('giftVideo');
 
-    if (
-        videoFrameCallbackId !== null &&
-        video.cancelVideoFrameCallback
-    ) {
+    if (videoFrameCallbackId !== null && video.cancelVideoFrameCallback) {
         video.cancelVideoFrameCallback(videoFrameCallbackId);
     }
 
@@ -1566,16 +1481,35 @@ function stopGiftRenderer() {
     }
 }
 
+function scheduleGiftFrame() {
+
+    if (!renderActive) return;
+
+    const video = document.getElementById('giftVideo');
+
+    if (video.requestVideoFrameCallback) {
+
+        videoFrameCallbackId = video.requestVideoFrameCallback(() => {
+            videoFrameCallbackId = null;
+            renderGiftFrame();
+        });
+
+    } else {
+
+        renderFrameId = requestAnimationFrame(() => {
+            renderFrameId = null;
+            renderGiftFrame();
+        });
+    }
+}
+
 function renderGiftFrame() {
 
     if (!renderActive) return;
 
     const video = document.getElementById('giftVideo');
 
-    if (
-        video.ended ||
-        video.readyState < video.HAVE_CURRENT_DATA
-    ) {
+    if (video.ended || video.readyState < video.HAVE_CURRENT_DATA) {
         scheduleGiftFrame();
         return;
     }
@@ -1603,21 +1537,8 @@ function renderGiftFrame() {
 
             } catch (e) {
                 console.error('WebGL rendering error:', e);
-                glReady = false;
-            }
-
-        } else {
-
-            const ctx = giftCanvasContext;
-
-            if (ctx) {
-                ctx.drawImage(
-                    video,
-                    0,
-                    0,
-                    document.getElementById('giftCanvas').width,
-                    document.getElementById('giftCanvas').height
-                );
+                finishGiftRenderer();
+                return;
             }
         }
     }
@@ -1625,46 +1546,23 @@ function renderGiftFrame() {
     scheduleGiftFrame();
 }
 
-function scheduleGiftFrame() {
-
-    if (!renderActive) return;
+function finishGiftRenderer() {
+    renderActive = false;
+    stopGiftRenderer();
 
     const video = document.getElementById('giftVideo');
+    video.pause();
 
-    if (video.requestVideoFrameCallback) {
+    document.getElementById('giftOverlayContainer').style.display = 'none';
 
-        videoFrameCallbackId =
-            video.requestVideoFrameCallback(() => {
-
-                videoFrameCallbackId = null;
-                renderGiftFrame();
-            });
-
-    } else {
-
-        renderFrameId = requestAnimationFrame(() => {
-
-            renderFrameId = null;
-            renderGiftFrame();
-        });
-    }
+    if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
 }
-
-const giftCanvas = document.getElementById('giftCanvas');
-const giftCanvasContext = giftCanvas.getContext('2d', {
-    alpha: true,
-    desynchronized: true
-});
 
 function playGiftVideo(src, onFinished) {
 
-    const overlay =
-        document.getElementById('giftOverlayContainer');
-
-    const video =
-        document.getElementById('giftVideo');
-
-    const canvas = giftCanvas;
+    const overlay = document.getElementById('giftOverlayContainer');
+    const video = document.getElementById('giftVideo');
+    const canvas = document.getElementById('giftCanvas');
 
     let finished = false;
 
@@ -1688,19 +1586,9 @@ function playGiftVideo(src, onFinished) {
         video.removeAttribute('src');
         video.load();
 
-        if (gl) {
-            gl.clear(gl.COLOR_BUFFER_BIT);
-        }
+        if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
 
-        if (giftCanvasContext) {
-            giftCanvasContext.clearRect(
-                0, 0, canvas.width, canvas.height
-            );
-        }
-
-        if (typeof onFinished === 'function') {
-            onFinished();
-        }
+        if (typeof onFinished === 'function') onFinished();
     }
 
     overlay.style.display = 'block';
@@ -1725,11 +1613,6 @@ function playGiftVideo(src, onFinished) {
         const originalWidth = video.videoWidth || 720;
         const originalHeight = video.videoHeight || 1280;
 
-        /*
-         * Resolusi tinggi dipertahankan untuk ketajaman.
-         * Video berukuran besar dibatasi untuk mengurangi beban GPU.
-         */
-
         const maxWidth = 720;
         const maxHeight = 1280;
 
@@ -1739,15 +1622,8 @@ function playGiftVideo(src, onFinished) {
             maxHeight / originalHeight
         );
 
-        const renderWidth = Math.max(
-            1,
-            Math.round(originalWidth * scale)
-        );
-
-        const renderHeight = Math.max(
-            1,
-            Math.round(originalHeight * scale)
-        );
+        const renderWidth = Math.max(1, Math.round(originalWidth * scale));
+        const renderHeight = Math.max(1, Math.round(originalHeight * scale));
 
         canvas.width = renderWidth;
         canvas.height = renderHeight;
@@ -1755,31 +1631,26 @@ function playGiftVideo(src, onFinished) {
         if (glReady && gl) {
 
             gl.viewport(0, 0, renderWidth, renderHeight);
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
             gl.useProgram(glProgram);
 
-            const posLoc =
-                gl.getAttribLocation(glProgram, 'a_pos');
+            const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
 
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
             gl.enableVertexAttribArray(posLoc);
+            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-            gl.vertexAttribPointer(
-                posLoc, 2, gl.FLOAT, false, 0, 0
-            );
-
-            const texLoc =
-                gl.getAttribLocation(glProgram, 'a_tex');
+            const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
 
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
             gl.enableVertexAttribArray(texLoc);
-
-            gl.vertexAttribPointer(
-                texLoc, 2, gl.FLOAT, false, 0, 0
-            );
+            gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
 
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, glTexture);
 
+            gl.disable(gl.BLEND);
         }
 
         lastVideoTime = -1;
@@ -1829,9 +1700,7 @@ window.addEventListener('pagehide', () => {
         displayCamStream = null;
     }
 
-    if (ws) {
-        ws.close();
-    }
+    if (ws) ws.close();
 
     clearTimeout(reconnectTimer);
     clearTimeout(toastTimeout);
@@ -1856,13 +1725,8 @@ window.addEventListener('pagehide', () => {
 });
 
 document.addEventListener('visibilitychange', () => {
-
-    /*
-     * Tidak menghentikan kamera atau koneksi hanya karena
-     * display menjadi background pada TikTok Studio.
-     */
     if (document.hidden) {
-        console.log('Display background: renderer gift tetap mengikuti video.');
+        console.log('Display background.');
     }
 });
 
