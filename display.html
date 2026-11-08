@@ -40,7 +40,7 @@ body{display:flex;justify-content:center;align-items:center}
 @keyframes popGiftBadge{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 .slot-top-badge{position:absolute;top:5px;right:5px;z-index:8;width:24px;height:24px;display:none;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));pointer-events:none;animation:popGiftBadge .3s ease-out}
 
-/* NAMA TIKTOK LEBIH JELAS */
+/* NAMA AKUN TIKTOK - TANPA GARIS PUTIH */
 .slot-name-pill{
 position:absolute;
 bottom:5px;
@@ -50,50 +50,59 @@ display:flex;
 align-items:center;
 gap:5px;
 z-index:6;
-background:rgba(0,0,0,.88);
-border:1px solid rgba(255,255,255,.65);
+background:rgba(0,0,0,.85);
+border:none;
 padding:3px 7px;
 border-radius:999px;
-min-height:23px;
-box-shadow:0 2px 7px rgba(0,0,0,.8);
+min-height:21px;
+box-shadow:none;
 }
 .slot-name-text{
 color:#fff;
 font-size:clamp(9px,2.6vw,11px);
-font-weight:900;
-letter-spacing:.1px;
+font-weight:800;
+letter-spacing:0;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
 max-width:85px;
-text-shadow:0 1px 3px #000,0 0 5px rgba(255,255,255,.3);
+text-shadow:none;
 }
 .slot-plus-circle{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .slot-pill-plus-svg{width:8px;height:8px}
 
-/* IKON MIKROFON */
+/* MIKROFON TANPA LINGKARAN DAN BACKGROUND */
 .mic-container{
 position:absolute;
 bottom:5px;
 right:5px;
 z-index:7;
-width:23px;
-height:23px;
+width:20px;
+height:20px;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,0,0,.82);
-border:1px solid rgba(255,255,255,.55);
-border-radius:50%;
-box-shadow:0 2px 5px rgba(0,0,0,.65);
+background:transparent;
+border:none;
+border-radius:0;
+box-shadow:none;
 }
-.mic-icon-svg{width:15px;height:15px;display:block}
+.mic-icon-svg{width:16px;height:16px;display:block}
 .mic-icon-svg .mic-body{fill:#fff}
-.mic-icon-svg .mic-line{stroke:#fff}
-.mic-icon-svg .mic-slash{display:none;stroke:#ff3030;stroke-width:3.5}
+.mic-icon-svg .mic-slash{
+display:none;
+stroke:#ff3030;
+stroke-width:3;
+stroke-linecap:round;
+}
 .mic-container.is-muted .mic-icon-svg .mic-slash{display:block}
-.mic-container.is-muted{background:rgba(100,0,0,.9);border-color:#ff3030}
-.mic-container.is-muted .mic-icon-svg .mic-body{fill:#ffb4b4}
+.mic-container.is-muted{
+background:transparent;
+border:none;
+box-shadow:none;
+}
+.mic-container.is-muted .mic-icon-svg .mic-body{fill:#fff}
+
 .gift-banner-wrapper{position:absolute;bottom:34px;left:6px;right:6px;display:flex;justify-content:flex-start;align-items:center;z-index:20;pointer-events:none}
 @keyframes tiktokBannerSlideIn{0%{transform:translateX(-115%);opacity:0}75%{transform:translateX(4px);opacity:1}100%{transform:translateX(0);opacity:1}}
 @keyframes tiktokBannerSlideOut{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-115%);opacity:0}}
@@ -189,7 +198,7 @@ grid.insertAdjacentHTML('beforeend',`
 </div>`);
 }
 
-/* Terima beberapa kemungkinan format status mute dari sumber data */
+/* Status mute dari data sumber */
 function getMuteStatus(data){
 const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
 for(const key of keys){
