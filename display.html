@@ -11,7 +11,7 @@ body{display:flex;justify-content:center;align-items:center}
 .phone-screen{width:100vw;height:100vh;max-width:440px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:4px;background:#000;transform:translateZ(0)}
 .live-layout{display:flex;gap:4px;width:100%;position:relative;z-index:10;align-items:stretch}
 
-/* ANIMASI HOST */
+/* HOST BLUE NEON PULSE */
 @keyframes hostBluePulse{
 0%,100%{border-color:#00d2ff;box-shadow:0 0 4px #00d2ff,0 0 9px rgba(0,210,255,.75),inset 0 0 3px rgba(0,210,255,.25)}
 50%{border-color:rgba(0,110,255,.25);box-shadow:0 0 1px rgba(0,150,255,.15),inset 0 0 1px rgba(0,150,255,.1)}
@@ -20,16 +20,17 @@ body{display:flex;justify-content:center;align-items:center}
 .host-video,#hostCameraImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;display:none;backface-visibility:hidden;filter:none}
 #hostCameraImg{z-index:3}
 .host-placeholder{color:#555761;font-size:.8rem;font-weight:500;text-align:center;z-index:1}
-.host-top-pill{position:absolute;top:6px;left:6px;z-index:12;display:inline-flex;align-items:center;gap:3px;height:20px;padding:2px 8px 2px 5px;border-radius:20px;background:#dceaff;color:#26364a;font-size:11px;font-weight:600}
-.host-pill-icon{width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center}
-.host-pill-icon svg{width:13px;height:13px;fill:#26364a}
+
+/* LABEL HOST ATAS DIHAPUS */
+.host-top-pill{display:none!important}
+
 .host-bottom-pill{position:absolute;bottom:6px;left:6px;z-index:12;background:rgba(0,0,0,.65);padding:3px 8px;border-radius:999px;display:flex;align-items:center;max-width:calc(100% - 16px)}
 .host-name-text{color:#fff;font-size:.62rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* GRID KOMAL */
 .komal-grid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:4px;position:relative;z-index:10}
 
-/* KOTAK SLOT NORMAL */
+/* SLOT NORMAL */
 .slot-box{
 width:100%;
 aspect-ratio:1/1;
@@ -45,22 +46,26 @@ justify-content:center;
 contain:layout paint;
 }
 
-/* KOTAK SLOT BERKEDIP BIRU HANYA SAAT FOTO MUNCUL */
+/* KEDIP BIRU LEBIH LAMBAT DAN TIDAK MENGGANGGU SLOT LAIN */
 @keyframes slotBluePulse{
 0%,100%{
 border-color:#00d2ff;
-box-shadow:0 0 4px #00d2ff,0 0 9px rgba(0,210,255,.75),inset 0 0 3px rgba(0,210,255,.25);
+box-shadow:
+inset 0 0 4px rgba(0,210,255,.45),
+inset 0 0 8px rgba(0,210,255,.18);
 }
 50%{
-border-color:rgba(0,110,255,.2);
-box-shadow:0 0 1px rgba(0,150,255,.1),inset 0 0 1px rgba(0,150,255,.05);
+border-color:rgba(0,110,255,.3);
+box-shadow:
+inset 0 0 1px rgba(0,150,255,.12);
 }
 }
 .slot-box.has-photo{
-border-color:#00d2ff;
-animation:slotBluePulse .65s infinite ease-in-out;
+border:1.5px solid #00d2ff;
+animation:slotBluePulse 1s infinite ease-in-out;
 }
 
+/* FOTO DAN ELEMEN SLOT */
 .slot-bg-blur{position:absolute!important;inset:-8px!important;width:calc(100% + 16px)!important;height:calc(100% + 16px)!important;object-fit:cover!important;filter:blur(7px) brightness(.7)!important;display:none;z-index:1;pointer-events:none}
 .slot-bg-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25);display:none;z-index:2;pointer-events:none}
 .slot-plus-svg{width:28px;height:28px;stroke:#8e95a3;stroke-width:4;stroke-linecap:round;z-index:3;margin-bottom:2px}
@@ -136,17 +141,29 @@ box-shadow:none;
 }
 .mic-container.is-muted .mic-icon-svg .mic-body{fill:#fff}
 
+/* NOTIFIKASI GIFT */
 .gift-banner-wrapper{position:absolute;bottom:34px;left:6px;right:6px;display:flex;justify-content:flex-start;align-items:center;z-index:20;pointer-events:none}
 @keyframes tiktokBannerSlideIn{0%{transform:translateX(-115%);opacity:0}75%{transform:translateX(4px);opacity:1}100%{transform:translateX(0);opacity:1}}
 @keyframes tiktokBannerSlideOut{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-115%);opacity:0}}
 @keyframes tiktokGiftIconBounce{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
-.gift-banner-toast{display:none;align-items:center;height:26px;background:linear-gradient(90deg,rgba(15,15,20,.85),rgba(20,20,28,.65));border:.5px solid rgba(255,255,255,.12);border-radius:999px;padding:2px 4px 2px 2px;box-shadow:0 2px 6px rgba(0,0,0,.4);animation:tiktokBannerSlideIn .35s ease-out forwards;max-width:75%;overflow:visible}
-.toast-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover;border:.8px solid rgba(255,255,255,.4);flex-shrink:0;background:#252530}
-.toast-text-col{display:flex;flex-direction:column;justify-content:center;margin:0 5px;overflow:hidden;line-height:1.1}
-.toast-name{font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:85px}
-.toast-desc{font-size:8.5px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
-.toast-gift-img{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));flex-shrink:0;margin:-2px -3px -2px 1px;animation:tiktokGiftIconBounce .38s ease-out both}
-.toast-combo-count{display:none;margin-left:5px;color:#fff;font-size:17px;line-height:1;font-weight:900;font-style:italic;white-space:nowrap;text-shadow:0 2px 5px rgba(0,0,0,.95);flex-shrink:0}
+.gift-banner-toast{display:none;align-items:center;height:32px;background:linear-gradient(90deg,rgba(15,15,20,.85),rgba(20,20,28,.65));border:.5px solid rgba(255,255,255,.12);border-radius:999px;padding:3px 5px 3px 3px;box-shadow:0 2px 6px rgba(0,0,0,.4);animation:tiktokBannerSlideIn .35s ease-out forwards;max-width:80%;overflow:visible}
+.toast-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;border:.8px solid rgba(255,255,255,.4);flex-shrink:0;background:#252530}
+.toast-text-col{display:flex;flex-direction:column;justify-content:center;margin:0 6px;overflow:hidden;line-height:1.1}
+.toast-name{font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px}
+.toast-desc{font-size:9px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
+
+/* IKON GIFT DIPERBESAR */
+.toast-gift-img{
+width:36px;
+height:36px;
+object-fit:contain;
+filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));
+flex-shrink:0;
+margin:-3px -3px -3px 2px;
+animation:tiktokGiftIconBounce .38s ease-out both;
+}
+.toast-combo-count{display:none;margin-left:6px;color:#fff;font-size:18px;line-height:1;font-weight:900;font-style:italic;white-space:nowrap;text-shadow:0 2px 5px rgba(0,0,0,.95);flex-shrink:0}
+
 .gift-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:50;pointer-events:none;display:none;background:transparent}
 #giftVideo{display:none}
 #giftCanvas{width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;transform:translateZ(0);backface-visibility:hidden}
@@ -156,9 +173,6 @@ box-shadow:none;
 <div class="phone-screen" id="displayContainer">
 <div class="live-layout">
 <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
-<div class="host-top-pill">
-<span class="host-pill-icon"><svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/><path d="M12 14c-5 0-8 2.5-8 5.5V21h16v-1.5c0-3-3-5.5-8-5.5Z"/></svg></span><span>Host</span>
-</div>
 <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
 <video id="hostVideo" class="host-video" autoplay playsinline muted></video>
 <img id="hostCameraImg" alt="Host Cam">
@@ -329,6 +343,7 @@ if(val>=1000)return(val/1000).toFixed(1).replace('.',',')+'K';
 return val.toLocaleString('id-ID');
 }
 
+/* UPDATE SLOT DAN FOTO PROFIL */
 function updateSlotDisplay(data){
 const{slotNum,nameInput,initialPoin,profileImg,action}=data;
 const slotBox=$(`slot-${slotNum}`);if(!slotBox)return;
@@ -361,11 +376,19 @@ else if(slotMuteStates[slotNum]!==undefined)updateMicStatus(slotNum,slotMuteStat
 }
 
 if(profileImg){
-icon.style.display='none';req.style.display='none';
-img.src=profileImg;img.style.display='block';
-bg.src=profileImg;bg.style.display='block';
+icon.style.display='none';
+req.style.display='none';
+img.onload=()=>{
+if(img.src===profileImg)slotBox.classList.add('has-photo');
+};
+img.onerror=()=>{
+slotBox.classList.remove('has-photo');
+};
+img.src=profileImg;
+img.style.display='block';
+bg.src=profileImg;
+bg.style.display='block';
 bgOverlay.style.display='block';
-slotBox.classList.add('has-photo');
 }
 }
 
@@ -380,7 +403,9 @@ badgeTimers[slotNum]=setTimeout(()=>{topBadge.style.display='none';topBadge.remo
 function showGiftToast(data,comboCount=1){
 const toast=$('giftBannerToast'),avatar=$('toastGifterAvatar'),nameElem=$('toastGifterName'),descElem=$('toastGiftDesc'),iconElem=$('toastGiftIcon'),comboElem=$('toastComboCount');
 const hostName=detectedHostName||'Host',hostAvatar=data.senderAvatar||detectedHostAvatar;
-avatar.src=hostAvatar;nameElem.innerText=hostName;descElem.innerText=data.giftTitle||'Gift';
+avatar.src=hostAvatar;
+nameElem.innerText=hostName;
+descElem.innerText=data.giftTitle||'Gift';
 if(data.badgeImg){iconElem.src=data.badgeImg;iconElem.style.display='block'}else{iconElem.style.display='none'}
 comboElem.textContent='x '+Math.max(1,Number(comboCount)||1);comboElem.style.display='inline-block';
 clearTimeout(toastTimeout);clearTimeout(toastHideTimer);
