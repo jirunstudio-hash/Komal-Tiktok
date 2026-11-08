@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized</title>
+<meta name="theme-color" content="#000000">
+<title>Display Studio - Balanced Performance HD</title>
 
 <style>
 * {
@@ -40,32 +40,26 @@ body {
     align-items: center;
     padding: 4px;
     background: #000;
-    transform: translateZ(0);
+    isolation: isolate;
 }
 
 .live-layout {
     display: flex;
     gap: 4px;
     width: 100%;
+    height: 100%;
+    min-height: 0;
     position: relative;
     z-index: 10;
     align-items: stretch;
 }
 
-@keyframes hostBluePulse {
-    0%, 100% {
-        border-color: #00d2ff;
-        box-shadow: 0 0 5px rgba(0,210,255,.5);
-    }
-    50% {
-        border-color: rgba(0,150,255,.45);
-        box-shadow: 0 0 2px rgba(0,150,255,.1);
-    }
-}
+/* ================= HOST ================= */
 
 .host-box {
-    flex: 1;
+    flex: 0 0 42%;
     min-width: 0;
+    height: 100%;
     background: #1c1d24;
     border-radius: 12px;
     overflow: hidden;
@@ -75,12 +69,11 @@ body {
     align-items: center;
     cursor: pointer;
     border: 1.5px solid #00d2ff;
-    animation: hostBluePulse 1.5s infinite ease-in-out;
-    transform: translateZ(0);
     contain: layout paint;
 }
 
-.host-video, #hostCameraImg {
+.host-video,
+#hostCameraImg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -89,7 +82,11 @@ body {
     z-index: 2;
     display: none;
     backface-visibility: hidden;
-    filter: none;
+}
+
+.host-video {
+    /* Penyesuaian ringan agar kamera tidak terlihat terlalu gelap */
+    filter: brightness(1.04) contrast(1.03) saturate(1.03);
 }
 
 #hostCameraImg {
@@ -97,11 +94,12 @@ body {
 }
 
 .host-placeholder {
-    color: #555761;
+    color: #8b8d98;
     font-size: .8rem;
     font-weight: 500;
     text-align: center;
     z-index: 1;
+    padding: 8px;
 }
 
 .host-top-pill {
@@ -140,7 +138,7 @@ body {
     bottom: 6px;
     left: 6px;
     z-index: 12;
-    background: rgba(0,0,0,.65);
+    background: rgba(0,0,0,.72);
     padding: 3px 8px;
     border-radius: 999px;
     display: flex;
@@ -150,19 +148,22 @@ body {
 
 .host-name-text {
     color: #fff;
-    font-size: .62rem;
+    font-size: .68rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* ================= KOMAL GRID ================= */
+
 .komal-grid {
     flex: 1;
     min-width: 0;
+    height: 100%;
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-rows: repeat(4,1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
     gap: 4px;
     position: relative;
     z-index: 10;
@@ -170,9 +171,11 @@ body {
 
 .slot-box {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
     background: #1c1d24;
-    border-radius: 12px;
+    border-radius: 10px;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -184,11 +187,11 @@ body {
 
 .slot-bg-blur {
     position: absolute !important;
-    inset: -8px !important;
-    width: calc(100% + 16px) !important;
-    height: calc(100% + 16px) !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
-    filter: blur(7px) brightness(.7) !important;
+    filter: blur(2px) brightness(.72) !important;
     display: none;
     z-index: 1;
     pointer-events: none;
@@ -197,7 +200,7 @@ body {
 .slot-bg-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,.25);
+    background: rgba(0,0,0,.23);
     display: none;
     z-index: 2;
     pointer-events: none;
@@ -206,7 +209,7 @@ body {
 .slot-plus-svg {
     width: 28px;
     height: 28px;
-    stroke: #8e95a3;
+    stroke: #a0a5b2;
     stroke-width: 4;
     stroke-linecap: round;
     z-index: 3;
@@ -214,7 +217,7 @@ body {
 }
 
 .slot-req {
-    color: #8e95a3;
+    color: #a0a5b2;
     font-size: .66rem;
     font-weight: 700;
     z-index: 3;
@@ -223,6 +226,8 @@ body {
 .slot-circle-img {
     width: 56px;
     height: 56px;
+    max-width: 55%;
+    max-height: 55%;
     border-radius: 50%;
     object-fit: cover;
     display: none;
@@ -231,8 +236,7 @@ body {
     left: 50%;
     transform: translate(-50%,-50%);
     z-index: 4;
-    box-shadow: 0 3px 8px rgba(0,0,0,.5);
-    filter: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,.4);
 }
 
 .slot-coin-badge {
@@ -242,7 +246,7 @@ body {
     display: flex;
     align-items: center;
     gap: 3.5px;
-    background: rgba(0,0,0,.65);
+    background: rgba(0,0,0,.72);
     padding: 2px 6px 2px 3px;
     border-radius: 999px;
     z-index: 6;
@@ -266,13 +270,14 @@ body {
 }
 
 .coin-count {
-    font-size: .58rem;
+    font-size: .62rem;
     color: #fff;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 @keyframes popGiftBadge {
-    0% { transform: scale(.5); opacity: 0; }
+    0% { transform: scale(.65); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
@@ -281,38 +286,38 @@ body {
     top: 5px;
     right: 5px;
     z-index: 8;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     display: none;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.6));
     pointer-events: none;
-    animation: popGiftBadge .3s ease-out;
+    animation: popGiftBadge .25s ease-out;
 }
 
 .slot-name-pill {
     position: absolute;
     bottom: 5px;
     left: 5px;
-    max-width: calc(100% - 32px);
+    max-width: calc(100% - 30px);
     display: flex;
     align-items: center;
     gap: 4px;
     z-index: 6;
-    background: rgba(0,0,0,.65);
+    background: rgba(0,0,0,.76);
     padding: 2px 4px 2px 7px;
     border-radius: 999px;
-    height: 18px;
+    height: 20px;
 }
 
 .slot-name-text {
     color: #fff;
-    font-size: .52rem;
+    font-size: .58rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 46px;
+    max-width: 72px;
 }
 
 .slot-plus-circle {
@@ -348,6 +353,8 @@ body {
     height: 12px;
 }
 
+/* ================= GIFT BANNER ================= */
+
 .gift-banner-wrapper {
     position: absolute;
     bottom: 34px;
@@ -361,33 +368,34 @@ body {
 }
 
 @keyframes tiktokBannerSlideIn {
-    0% { transform: translateX(-115%); opacity: 0; }
-    75% { transform: translateX(4px); opacity: 1; }
+    0% { transform: translateX(-110%); opacity: 0; }
+    75% { transform: translateX(3px); opacity: 1; }
     100% { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes tiktokBannerSlideOut {
     0% { transform: translateX(0); opacity: 1; }
-    100% { transform: translateX(-115%); opacity: 0; }
+    100% { transform: translateX(-110%); opacity: 0; }
 }
 
 @keyframes tiktokGiftIconBounce {
-    0% { transform: scale(.5); opacity: 0; }
+    0% { transform: scale(.65); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
 .gift-banner-toast {
     display: none;
     align-items: center;
-    height: 26px;
-    background: linear-gradient(90deg,rgba(15,15,20,.85),rgba(20,20,28,.65));
-    border: .5px solid rgba(255,255,255,.12);
+    height: 28px;
+    background: linear-gradient(90deg,rgba(15,15,20,.9),rgba(20,20,28,.75));
+    border: .5px solid rgba(255,255,255,.15);
     border-radius: 999px;
     padding: 2px 4px 2px 2px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.4);
-    animation: tiktokBannerSlideIn .35s ease-out forwards;
-    max-width: 75%;
+    box-shadow: 0 2px 5px rgba(0,0,0,.35);
+    animation: tiktokBannerSlideIn .3s ease-out forwards;
+    max-width: 85%;
     overflow: visible;
+    will-change: transform, opacity;
 }
 
 .toast-avatar {
@@ -416,7 +424,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 85px;
+    max-width: 105px;
 }
 
 .toast-desc {
@@ -426,17 +434,17 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90px;
+    max-width: 110px;
 }
 
 .toast-gift-img {
     width: 30px;
     height: 30px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.55));
     flex-shrink: 0;
     margin: -2px -3px -2px 1px;
-    animation: tiktokGiftIconBounce .38s ease-out both;
+    animation: tiktokGiftIconBounce .3s ease-out both;
 }
 
 .toast-combo-count {
@@ -448,9 +456,11 @@ body {
     font-weight: 900;
     font-style: italic;
     white-space: nowrap;
-    text-shadow: 0 2px 5px rgba(0,0,0,.95);
+    text-shadow: 0 2px 4px rgba(0,0,0,.95);
     flex-shrink: 0;
 }
+
+/* ================= GIFT VIDEO OVERLAY ================= */
 
 .gift-overlay {
     position: absolute;
@@ -461,21 +471,54 @@ body {
     pointer-events: none;
     display: none;
     background: transparent;
+    overflow: hidden;
 }
 
 #giftVideo {
     display: none;
 }
 
-#giftCanvas {
+#giftCanvas,
+#giftFallbackCanvas {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    display: block;
+    display: none;
     pointer-events: none;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 340px) {
+    .host-box {
+        flex-basis: 40%;
+    }
+
+    .slot-name-text {
+        max-width: 48px;
+        font-size: .52rem;
+    }
+
+    .slot-coin-badge {
+        top: 3px;
+        left: 3px;
+    }
+
+    .slot-top-badge {
+        width: 21px;
+        height: 21px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slot-top-badge,
+    .gift-banner-toast,
+    .toast-gift-img {
+        animation-duration: .01ms !important;
+    }
 }
 </style>
 </head>
@@ -486,6 +529,7 @@ body {
 
     <div class="live-layout">
 
+        <!-- HOST -->
         <div class="host-box" id="hostBox"
              onclick="startDisplayDirectCamera()"
              title="Klik untuk aktifkan kamera host">
@@ -509,16 +553,20 @@ body {
 
             <img id="hostCameraImg" alt="Host Cam">
 
+            <!-- NOTIFIKASI GIFT -->
             <div class="gift-banner-wrapper">
                 <div class="gift-banner-toast" id="giftBannerToast">
-                    <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar">
+
+                    <img id="toastGifterAvatar"
+                         class="toast-avatar" src="" alt="Avatar">
 
                     <div class="toast-text-col">
                         <div class="toast-name" id="toastGifterName">Host</div>
                         <div class="toast-desc" id="toastGiftDesc">Gift</div>
                     </div>
 
-                    <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift">
+                    <img id="toastGiftIcon"
+                         class="toast-gift-img" src="" alt="Gift">
                 </div>
 
                 <span id="toastComboCount" class="toast-combo-count">x 1</span>
@@ -529,12 +577,16 @@ body {
             </div>
         </div>
 
+        <!-- 8 KOTAK KOMAL -->
         <div class="komal-grid" id="komalGrid"></div>
+
     </div>
 
+    <!-- GIFT VIDEO -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
         <canvas id="giftCanvas"></canvas>
+        <canvas id="giftFallbackCanvas"></canvas>
     </div>
 
 </div>
@@ -542,7 +594,9 @@ body {
 <script>
 'use strict';
 
-/* ================= CHANNEL ================= */
+/* =====================================================
+   CHANNEL
+===================================================== */
 
 const channel = new BroadcastChannel('tiktok_live_channel');
 
@@ -561,21 +615,27 @@ const giftVideoQueue = [];
 let giftVideoQueueBusy = false;
 
 let detectedHostName = 'Host';
+
 let detectedHostAvatar =
 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
 
-/* ================= SLOT GENERATOR ================= */
+let hostVideoObjectURL = null;
+
+/* =====================================================
+   SLOT GENERATOR
+===================================================== */
 
 const grid = document.getElementById('komalGrid');
 
 for (let i = 1; i <= 8; i++) {
+
     slotPoints[i] = 0;
 
     grid.insertAdjacentHTML('beforeend', `
         <div class="slot-box" id="slot-${i}">
 
             <img id="bg-slot-${i}" class="slot-bg-blur"
-                 referrerpolicy="no-referrer">
+                 referrerpolicy="no-referrer" alt="">
 
             <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
@@ -605,10 +665,13 @@ for (let i = 1; i <= 8; i++) {
             <span class="slot-req" id="req-${i}">Permintaan</span>
 
             <img id="img-slot-${i}" class="slot-circle-img"
-                 referrerpolicy="no-referrer">
+                 referrerpolicy="no-referrer" alt="Profil peserta">
 
             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
-                <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
+
+                <span class="slot-name-text" id="nametext-slot-${i}">
+                    Slot ${i}
+                </span>
 
                 <div class="slot-plus-circle">
                     <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
@@ -641,7 +704,9 @@ for (let i = 1; i <= 8; i++) {
     `);
 }
 
-/* ================= KAMERA HOST OPTIMIZED ================= */
+/* =====================================================
+   KAMERA HOST - AUTO HD
+===================================================== */
 
 async function startDisplayDirectCamera() {
 
@@ -651,8 +716,12 @@ async function startDisplayDirectCamera() {
     const camImg = document.getElementById('hostCameraImg');
     const placeholder = document.getElementById('hostPlaceholder');
 
-    if (displayCamStream &&
-        displayCamStream.getVideoTracks().some(track => track.readyState === 'live')) {
+    if (
+        displayCamStream &&
+        displayCamStream.getVideoTracks().some(
+            track => track.readyState === 'live'
+        )
+    ) {
 
         hVid.srcObject = displayCamStream;
         hVid.style.display = 'block';
@@ -669,20 +738,40 @@ async function startDisplayDirectCamera() {
 
     try {
 
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
-            throw new Error('Browser tidak mendukung kamera atau halaman belum HTTPS.');
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+            throw new Error(
+                'Browser tidak mendukung kamera atau halaman belum HTTPS.'
+            );
         }
 
         camImg.style.display = 'none';
         camImg.removeAttribute('src');
 
+        /*
+         * AUTO HD:
+         * Browser memilih resolusi terbaik yang didukung kamera.
+         * Target utama 720p, dapat naik sampai 1080p.
+         * Tidak memaksa perangkat menggunakan resolusi yang tidak tersedia.
+         */
+
         const constraints = {
             audio: false,
             video: {
-                width: { ideal: 540 },
-                height: { ideal: 960 },
-                frameRate: { ideal: 30, max: 30 },
+                width: {
+                    ideal: 1280,
+                    max: 1920
+                },
+                height: {
+                    ideal: 720,
+                    max: 1080
+                },
+                frameRate: {
+                    ideal: 30,
+                    max: 30
+                },
                 facingMode: 'user'
             }
         };
@@ -700,15 +789,32 @@ async function startDisplayDirectCamera() {
         const track = displayCamStream.getVideoTracks()[0];
 
         if (track) {
-            console.log('Kamera aktif:', track.getSettings());
+
+            console.log(
+                'Kamera aktif:',
+                track.getSettings()
+            );
+
+            track.addEventListener('ended', () => {
+
+                displayCamStream = null;
+
+                hVid.style.display = 'none';
+                placeholder.style.display = 'block';
+                placeholder.textContent = 'Kamera terputus';
+
+            }, { once: true });
         }
 
     } catch (err) {
+
         console.error('Kamera error:', err);
 
         placeholder.style.display = 'block';
         placeholder.textContent = 'Kamera gagal aktif';
+
     } finally {
+
         cameraStarting = false;
     }
 }
@@ -716,7 +822,11 @@ async function startDisplayDirectCamera() {
 function stopDisplayDirectCamera() {
 
     if (displayCamStream) {
-        displayCamStream.getTracks().forEach(track => track.stop());
+
+        displayCamStream.getTracks().forEach(
+            track => track.stop()
+        );
+
         displayCamStream = null;
     }
 
@@ -729,17 +839,22 @@ function stopDisplayDirectCamera() {
     document.getElementById('hostPlaceholder').style.display = 'block';
 }
 
-/* ================= WEBGL ================= */
+/* =====================================================
+   WEBGL - GIFT CHROMA
+===================================================== */
 
 let gl = null;
 let glProgram = null;
 let glTexture = null;
 let glBuffers = {};
+
 let isWebGLSupported = false;
 
 function initWebGL(canvas) {
 
-    if (gl && glProgram) return true;
+    if (gl && glProgram && isWebGLSupported) {
+        return true;
+    }
 
     try {
 
@@ -773,23 +888,39 @@ function initWebGL(canvas) {
             varying vec2 v_tex;
 
             void main() {
+
                 vec4 c = texture2D(u_tex, v_tex);
 
                 float maxRB = max(c.r, c.b);
                 float gDiff = c.g - maxRB;
 
                 if (gDiff > 0.06 && c.g > 0.18) {
-                    float a = 1.0 - smoothstep(0.06, 0.18, gDiff);
+
+                    float a = 1.0 - smoothstep(
+                        0.06,
+                        0.18,
+                        gDiff
+                    );
+
                     c.a = min(c.a, a);
                     c.g = maxRB;
                 }
 
-                float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+                float lum = dot(
+                    c.rgb,
+                    vec3(0.299, 0.587, 0.114)
+                );
 
                 if (lum < 0.07) {
+
                     c.a = 0.0;
+
                 } else if (lum < 0.16) {
-                    c.a = min(c.a, (lum - 0.07) / 0.09);
+
+                    c.a = min(
+                        c.a,
+                        (lum - 0.07) / 0.09
+                    );
                 }
 
                 gl_FragColor = c;
@@ -803,17 +934,34 @@ function initWebGL(canvas) {
             gl.shaderSource(shader, src);
             gl.compileShader(shader);
 
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error(gl.getShaderInfoLog(shader));
+            if (
+                !gl.getShaderParameter(
+                    shader,
+                    gl.COMPILE_STATUS
+                )
+            ) {
+
+                console.error(
+                    gl.getShaderInfoLog(shader)
+                );
+
                 gl.deleteShader(shader);
+
                 return null;
             }
 
             return shader;
         }
 
-        const vs = createShader(gl.VERTEX_SHADER, vsSource);
-        const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+        const vs = createShader(
+            gl.VERTEX_SHADER,
+            vsSource
+        );
+
+        const fs = createShader(
+            gl.FRAGMENT_SHADER,
+            fsSource
+        );
 
         if (!vs || !fs) return false;
 
@@ -821,57 +969,118 @@ function initWebGL(canvas) {
 
         gl.attachShader(glProgram, vs);
         gl.attachShader(glProgram, fs);
+
         gl.linkProgram(glProgram);
 
-        if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
-            console.error(gl.getProgramInfoLog(glProgram));
+        if (
+            !gl.getProgramParameter(
+                glProgram,
+                gl.LINK_STATUS
+            )
+        ) {
+
+            console.error(
+                gl.getProgramInfoLog(glProgram)
+            );
+
             return false;
         }
 
+        gl.useProgram(glProgram);
+
         const posBuffer = gl.createBuffer();
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+        gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            posBuffer
+        );
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            -1,-1, 1,-1, -1,1,
-            -1,1, 1,-1, 1,1
-        ]), gl.STATIC_DRAW);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                -1,-1, 1,-1, -1,1,
+                -1,1, 1,-1, 1,1
+            ]),
+            gl.STATIC_DRAW
+        );
 
         const texBuffer = gl.createBuffer();
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
+        gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            texBuffer
+        );
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            0,1, 1,1, 0,0,
-            0,0, 1,1, 1,0
-        ]), gl.STATIC_DRAW);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                0,1, 1,1, 0,0,
+                0,0, 1,1, 1,0
+            ]),
+            gl.STATIC_DRAW
+        );
 
         glBuffers.pos = posBuffer;
         glBuffers.tex = texBuffer;
 
         glTexture = gl.createTexture();
 
-        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+        gl.bindTexture(
+            gl.TEXTURE_2D,
+            glTexture
+        );
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(
+            gl.TEXTURE_2D,
+            gl.TEXTURE_WRAP_S,
+            gl.CLAMP_TO_EDGE
+        );
+
+        gl.texParameteri(
+            gl.TEXTURE_2D,
+            gl.TEXTURE_WRAP_T,
+            gl.CLAMP_TO_EDGE
+        );
+
+        gl.texParameteri(
+            gl.TEXTURE_2D,
+            gl.TEXTURE_MIN_FILTER,
+            gl.LINEAR
+        );
+
+        gl.texParameteri(
+            gl.TEXTURE_2D,
+            gl.TEXTURE_MAG_FILTER,
+            gl.LINEAR
+        );
 
         gl.uniform1i(
-            gl.getUniformLocation(glProgram, 'u_tex'),
+            gl.getUniformLocation(
+                glProgram,
+                'u_tex'
+            ),
             0
         );
+
+        gl.clearColor(0, 0, 0, 0);
+
+        isWebGLSupported = true;
 
         return true;
 
     } catch (e) {
+
         console.error('WebGL init error:', e);
+
+        isWebGLSupported = false;
+
         return false;
     }
 }
 
-/* ================= DATABASE VIDEO ================= */
+/* =====================================================
+   DATABASE VIDEO GIFT
+===================================================== */
 
 const DB_NAME = "TikTokStudioStorageDB";
 const STORE_NAME = "permanent_assets";
@@ -880,10 +1089,18 @@ function openDB() {
 
     return new Promise(resolve => {
 
+        if (!window.indexedDB) {
+            resolve(null);
+            return;
+        }
+
         const req = indexedDB.open(DB_NAME, 1);
 
         req.onsuccess = () => resolve(req.result);
+
         req.onerror = () => resolve(null);
+
+        req.onblocked = () => resolve(null);
     });
 }
 
@@ -897,36 +1114,75 @@ async function getSavedVideo(id) {
 
         return new Promise(resolve => {
 
-            const tx = db.transaction(STORE_NAME, "readonly");
-            const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
 
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
+                db.close();
+
+                resolve(null);
+
+                return;
+            }
+
+            const tx = db.transaction(
+                STORE_NAME,
+                "readonly"
+            );
+
+            const req = tx.objectStore(STORE_NAME).get(
+                `video_${id}`
+            );
+
+            req.onsuccess = () => {
+
+                const result = req.result;
+
+                db.close();
+
+                resolve(result);
+            };
+
+            req.onerror = () => {
+
+                db.close();
+
+                resolve(null);
+            };
         });
 
     } catch (e) {
+
         return null;
     }
 }
 
-/* ================= FORMAT POIN ================= */
+/* =====================================================
+   FORMAT POIN
+===================================================== */
 
 function formatPoin(val) {
 
     if (!val || val === 0) return '0';
 
     if (val >= 1000000) {
-        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
+
+        return (
+            val / 1000000
+        ).toFixed(1).replace('.', ',') + 'M';
     }
 
     if (val >= 1000) {
-        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
+
+        return (
+            val / 1000
+        ).toFixed(1).replace('.', ',') + 'K';
     }
 
-    return val.toLocaleString('id-ID');
+    return Number(val).toLocaleString('id-ID');
 }
 
-/* ================= SLOT ================= */
+/* =====================================================
+   SLOT UPDATE
+===================================================== */
 
 function updateSlotDisplay(data) {
 
@@ -938,21 +1194,55 @@ function updateSlotDisplay(data) {
         action
     } = data;
 
-    const slotBox = document.getElementById(`slot-${slotNum}`);
+    const slotBox = document.getElementById(
+        `slot-${slotNum}`
+    );
 
     if (!slotBox) return;
 
-    const coinBadge = document.getElementById(`coin-badge-${slotNum}`);
-    const countElem = document.getElementById(`coincount-slot-${slotNum}`);
-    const namePill = document.getElementById(`namepill-slot-${slotNum}`);
-    const nameText = document.getElementById(`nametext-slot-${slotNum}`);
-    const mic = document.getElementById(`mic-slot-${slotNum}`);
-    const img = document.getElementById(`img-slot-${slotNum}`);
-    const bg = document.getElementById(`bg-slot-${slotNum}`);
-    const bgOverlay = document.getElementById(`overlay-slot-${slotNum}`);
-    const icon = document.getElementById(`icon-${slotNum}`);
-    const req = document.getElementById(`req-${slotNum}`);
-    const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
+    const coinBadge = document.getElementById(
+        `coin-badge-${slotNum}`
+    );
+
+    const countElem = document.getElementById(
+        `coincount-slot-${slotNum}`
+    );
+
+    const namePill = document.getElementById(
+        `namepill-slot-${slotNum}`
+    );
+
+    const nameText = document.getElementById(
+        `nametext-slot-${slotNum}`
+    );
+
+    const mic = document.getElementById(
+        `mic-slot-${slotNum}`
+    );
+
+    const img = document.getElementById(
+        `img-slot-${slotNum}`
+    );
+
+    const bg = document.getElementById(
+        `bg-slot-${slotNum}`
+    );
+
+    const bgOverlay = document.getElementById(
+        `overlay-slot-${slotNum}`
+    );
+
+    const icon = document.getElementById(
+        `icon-${slotNum}`
+    );
+
+    const req = document.getElementById(
+        `req-${slotNum}`
+    );
+
+    const topBadge = document.getElementById(
+        `topbadge-slot-${slotNum}`
+    );
 
     if (action === 'clear_slot') {
 
@@ -968,45 +1258,68 @@ function updateSlotDisplay(data) {
 
         icon.style.display = 'block';
         req.style.display = 'inline-block';
+
         namePill.style.display = 'none';
         mic.style.display = 'none';
         coinBadge.style.display = 'none';
 
         if (topBadge) {
+
             topBadge.style.display = 'none';
             topBadge.removeAttribute('src');
         }
 
         if (badgeTimers[slotNum]) {
+
             clearTimeout(badgeTimers[slotNum]);
+
+            delete badgeTimers[slotNum];
         }
 
         slotPoints[slotNum] = 0;
+
+        countElem.innerText = '0';
+
         return;
     }
 
     if (initialPoin !== undefined) {
-        slotPoints[slotNum] = initialPoin;
+
+        slotPoints[slotNum] =
+            Number(initialPoin) || 0;
     }
 
-    countElem.innerText = formatPoin(slotPoints[slotNum]);
+    countElem.innerText = formatPoin(
+        slotPoints[slotNum]
+    );
+
     coinBadge.style.display = 'flex';
 
     if (nameInput) {
+
         nameText.innerText = nameInput;
+
         namePill.style.display = 'flex';
+
         mic.style.display = 'flex';
     }
 
     if (profileImg) {
 
         icon.style.display = 'none';
+
         req.style.display = 'none';
 
-        img.src = profileImg;
+        if (img.src !== profileImg) {
+            img.src = profileImg;
+        }
+
         img.style.display = 'block';
 
-        bg.src = profileImg;
+        if (bg.src !== profileImg) {
+            bg.src = profileImg;
+        }
+
         bg.style.display = 'block';
 
         bgOverlay.style.display = 'block';
@@ -1017,49 +1330,94 @@ function showGiftBadgeTemporarily(slotNum, badgeSrc) {
 
     if (!badgeSrc || !slotNum) return;
 
-    const topBadge = document.getElementById(`topbadge-slot-${slotNum}`);
+    const topBadge = document.getElementById(
+        `topbadge-slot-${slotNum}`
+    );
 
     if (!topBadge) return;
 
     if (badgeTimers[slotNum]) {
+
         clearTimeout(badgeTimers[slotNum]);
     }
 
     topBadge.src = badgeSrc;
+
     topBadge.style.display = 'block';
 
     badgeTimers[slotNum] = setTimeout(() => {
+
         topBadge.style.display = 'none';
+
         topBadge.removeAttribute('src');
+
+        delete badgeTimers[slotNum];
+
     }, 5000);
 }
 
-/* ================= NOTIFIKASI GIFT ================= */
+/* =====================================================
+   NOTIFIKASI GIFT
+===================================================== */
 
 function showGiftToast(data, comboCount = 1) {
 
-    const toast = document.getElementById('giftBannerToast');
-    const avatar = document.getElementById('toastGifterAvatar');
-    const nameElem = document.getElementById('toastGifterName');
-    const descElem = document.getElementById('toastGiftDesc');
-    const iconElem = document.getElementById('toastGiftIcon');
-    const comboElem = document.getElementById('toastComboCount');
+    const toast = document.getElementById(
+        'giftBannerToast'
+    );
+
+    const avatar = document.getElementById(
+        'toastGifterAvatar'
+    );
+
+    const nameElem = document.getElementById(
+        'toastGifterName'
+    );
+
+    const descElem = document.getElementById(
+        'toastGiftDesc'
+    );
+
+    const iconElem = document.getElementById(
+        'toastGiftIcon'
+    );
+
+    const comboElem = document.getElementById(
+        'toastComboCount'
+    );
 
     const hostName = detectedHostName || 'Host';
-    const hostAvatar = data.senderAvatar || detectedHostAvatar;
 
-    avatar.src = hostAvatar;
+    const hostAvatar =
+        data.senderAvatar || detectedHostAvatar;
+
+    if (avatar.src !== hostAvatar) {
+        avatar.src = hostAvatar;
+    }
+
     nameElem.innerText = hostName;
+
     descElem.innerText = data.giftTitle || 'Gift';
 
     if (data.badgeImg) {
-        iconElem.src = data.badgeImg;
+
+        if (iconElem.src !== data.badgeImg) {
+            iconElem.src = data.badgeImg;
+        }
+
         iconElem.style.display = 'block';
+
     } else {
+
         iconElem.style.display = 'none';
     }
 
-    comboElem.textContent = 'x ' + Math.max(1, Number(comboCount) || 1);
+    comboElem.textContent =
+        'x ' + Math.max(
+            1,
+            Number(comboCount) || 1
+        );
+
     comboElem.style.display = 'inline-block';
 
     clearTimeout(toastTimeout);
@@ -1068,34 +1426,54 @@ function showGiftToast(data, comboCount = 1) {
     if (toast.style.display !== 'inline-flex') {
 
         toast.style.animation = 'none';
+
+        toast.style.display = 'inline-flex';
+
         void toast.offsetWidth;
 
         toast.style.animation =
-            'tiktokBannerSlideIn .35s ease-out forwards';
-
-        toast.style.display = 'inline-flex';
+            'tiktokBannerSlideIn .3s ease-out forwards';
     }
 
     toastTimeout = setTimeout(() => {
 
         toast.style.animation =
-            'tiktokBannerSlideOut .28s ease-in forwards';
+            'tiktokBannerSlideOut .25s ease-in forwards';
 
         toastHideTimer = setTimeout(() => {
+
             toast.style.display = 'none';
+
             comboElem.style.display = 'none';
-        }, 280);
+
+        }, 250);
 
     }, 3000);
 }
 
-/* ================= ANTRIAN VIDEO GIFT ================= */
+/* =====================================================
+   ANTRIAN VIDEO GIFT
+===================================================== */
 
 function queueGiftVideo(src, repeatCount = 1) {
 
     if (!src) return;
 
-    const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
+    const count = Math.max(
+        1,
+        Math.min(999, Number(repeatCount) || 1)
+    );
+
+    if (giftVideoQueue.length >= 30) {
+
+        console.warn('Antrean video gift penuh.');
+
+        if (src.startsWith('blob:')) {
+            URL.revokeObjectURL(src);
+        }
+
+        return;
+    }
 
     giftVideoQueue.push({
         src,
@@ -1107,7 +1485,12 @@ function queueGiftVideo(src, repeatCount = 1) {
 
 function playNextGiftVideo() {
 
-    if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
+    if (
+        giftVideoQueueBusy ||
+        giftVideoQueue.length === 0
+    ) {
+        return;
+    }
 
     giftVideoQueueBusy = true;
 
@@ -1118,8 +1501,11 @@ function playNextGiftVideo() {
         item.remaining--;
 
         if (item.remaining > 0) {
+
             giftVideoQueueBusy = false;
+
             playNextGiftVideo();
+
         } else {
 
             giftVideoQueue.shift();
@@ -1129,12 +1515,15 @@ function playNextGiftVideo() {
             }
 
             giftVideoQueueBusy = false;
+
             playNextGiftVideo();
         }
     });
 }
 
-/* ================= SISTEM COMBO GIFT ================= */
+/* =====================================================
+   SISTEM COMBO GIFT
+===================================================== */
 
 function getGiftComboKey(data) {
 
@@ -1152,14 +1541,18 @@ function getGiftComboKey(data) {
 async function resolveGiftVideo(data) {
 
     if (data.videoBlob) {
+
         return URL.createObjectURL(data.videoBlob);
     }
 
     if (data.giftId) {
 
-        const blob = await getSavedVideo(data.giftId);
+        const blob = await getSavedVideo(
+            data.giftId
+        );
 
         if (blob) {
+
             return URL.createObjectURL(blob);
         }
     }
@@ -1198,9 +1591,16 @@ function receiveGiftForCombo(data) {
     }
 
     group.revision++;
-    group.data = { ...group.data, ...data };
 
-    if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
+    group.data = {
+        ...group.data,
+        ...data
+    };
+
+    if (
+        Number.isFinite(cumulativeCount) &&
+        cumulativeCount > 0
+    ) {
 
         group.count = Math.max(
             group.count,
@@ -1215,30 +1615,40 @@ function receiveGiftForCombo(data) {
         );
     }
 
-    showGiftToast(group.data, group.count);
+    showGiftToast(
+        group.data,
+        group.count
+    );
 
     clearTimeout(group.timer);
 
-    group.videoPromise = group.videoPromise.then(async () => {
+    group.videoPromise =
+        group.videoPromise.then(async () => {
 
-        const resolvedSrc = await resolveGiftVideo(data);
+            const resolvedSrc =
+                await resolveGiftVideo(data);
 
-        if (resolvedSrc) {
+            if (resolvedSrc) {
 
-            if (
-                group.src &&
-                group.src.startsWith('blob:') &&
-                group.src !== resolvedSrc
-            ) {
-                URL.revokeObjectURL(group.src);
+                if (
+                    group.src &&
+                    group.src.startsWith('blob:') &&
+                    group.src !== resolvedSrc
+                ) {
+
+                    URL.revokeObjectURL(group.src);
+                }
+
+                group.src = resolvedSrc;
             }
 
-            group.src = resolvedSrc;
-        }
+        }).catch(err => {
 
-    }).catch(err => {
-        console.error('Gagal memuat video gift:', err);
-    });
+            console.error(
+                'Gagal memuat video gift:',
+                err
+            );
+        });
 
     const finishCombo = async () => {
 
@@ -1256,7 +1666,11 @@ function receiveGiftForCombo(data) {
         giftComboGroups.delete(key);
 
         if (group.src) {
-            queueGiftVideo(group.src, Math.max(1, group.count));
+
+            queueGiftVideo(
+                group.src,
+                Math.max(1, group.count)
+            );
         }
     };
 
@@ -1272,7 +1686,9 @@ function receiveGiftForCombo(data) {
     );
 }
 
-/* ================= PESAN MASUK ================= */
+/* =====================================================
+   PESAN MASUK
+===================================================== */
 
 function handleIncomingMessage(data) {
 
@@ -1281,8 +1697,11 @@ function handleIncomingMessage(data) {
     if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
 
         if (data.action === 'start') {
+
             startDisplayDirectCamera();
+
         } else if (data.action === 'stop') {
+
             stopDisplayDirectCamera();
         }
     }
@@ -1291,19 +1710,37 @@ function handleIncomingMessage(data) {
 
         stopDisplayDirectCamera();
 
-        const hVid = document.getElementById('hostVideo');
-        const camImg = document.getElementById('hostCameraImg');
+        const hVid = document.getElementById(
+            'hostVideo'
+        );
+
+        const camImg = document.getElementById(
+            'hostCameraImg'
+        );
 
         camImg.style.display = 'none';
+
+        if (hostVideoObjectURL) {
+
+            URL.revokeObjectURL(hostVideoObjectURL);
+
+            hostVideoObjectURL = null;
+        }
 
         if (data.videoBlob) {
 
             hVid.srcObject = null;
 
-            hVid.src = URL.createObjectURL(data.videoBlob);
+            hostVideoObjectURL =
+                URL.createObjectURL(data.videoBlob);
+
+            hVid.src = hostVideoObjectURL;
+
             hVid.style.display = 'block';
 
-            document.getElementById('hostPlaceholder').style.display = 'none';
+            document.getElementById(
+                'hostPlaceholder'
+            ).style.display = 'none';
 
             hVid.play().catch(() => {});
         }
@@ -1313,17 +1750,34 @@ function handleIncomingMessage(data) {
 
         stopDisplayDirectCamera();
 
-        const hVid = document.getElementById('hostVideo');
-        const camImg = document.getElementById('hostCameraImg');
+        const hVid = document.getElementById(
+            'hostVideo'
+        );
+
+        const camImg = document.getElementById(
+            'hostCameraImg'
+        );
 
         camImg.style.display = 'none';
 
         hVid.pause();
+
         hVid.srcObject = null;
+
         hVid.removeAttribute('src');
+
         hVid.style.display = 'none';
 
-        document.getElementById('hostPlaceholder').style.display = 'block';
+        if (hostVideoObjectURL) {
+
+            URL.revokeObjectURL(hostVideoObjectURL);
+
+            hostVideoObjectURL = null;
+        }
+
+        document.getElementById(
+            'hostPlaceholder'
+        ).style.display = 'block';
     }
 
     else if (
@@ -1335,11 +1789,13 @@ function handleIncomingMessage(data) {
 
             detectedHostName = data.hostName;
 
-            document.getElementById('hostNameText').innerText =
-                data.hostName;
+            document.getElementById(
+                'hostNameText'
+            ).innerText = data.hostName;
         }
 
         if (data.hostAvatar) {
+
             detectedHostAvatar = data.hostAvatar;
         }
     }
@@ -1351,54 +1807,96 @@ function handleIncomingMessage(data) {
 
     else if (data.type === 'PLAY_GIFT') {
 
-        const targetSlot = Number(data.targetSlot);
+        const targetSlot = Number(
+            data.targetSlot
+        );
 
-        if (targetSlot && slotPoints[targetSlot] !== undefined) {
+        if (
+            targetSlot &&
+            slotPoints[targetSlot] !== undefined
+        ) {
 
-            slotPoints[targetSlot] += Number(data.increment || 0);
+            slotPoints[targetSlot] +=
+                Number(data.increment || 0);
 
             const countElem =
-                document.getElementById(`coincount-slot-${targetSlot}`);
+                document.getElementById(
+                    `coincount-slot-${targetSlot}`
+                );
 
             if (countElem) {
-                countElem.innerText = formatPoin(slotPoints[targetSlot]);
+
+                countElem.innerText =
+                    formatPoin(slotPoints[targetSlot]);
             }
 
             const badge =
-                document.getElementById(`coin-badge-${targetSlot}`);
+                document.getElementById(
+                    `coin-badge-${targetSlot}`
+                );
 
-            if (badge) badge.style.display = 'flex';
+            if (badge) {
+                badge.style.display = 'flex';
+            }
         }
 
         if (data.badgeImg) {
-            showGiftBadgeTemporarily(targetSlot, data.badgeImg);
+
+            showGiftBadgeTemporarily(
+                targetSlot,
+                data.badgeImg
+            );
         }
 
         receiveGiftForCombo(data);
     }
 }
 
-/* ================= BROADCAST CHANNEL ================= */
+/* =====================================================
+   BROADCAST CHANNEL
+===================================================== */
 
 channel.onmessage = event => {
+
     handleIncomingMessage(event.data);
 };
 
-/* ================= WEBSOCKET ================= */
+/* =====================================================
+   WEBSOCKET
+===================================================== */
 
 let ws = null;
 let reconnectTimer = null;
+let reconnectDelay = 3000;
+let manuallyClosed = false;
 
 function connectWebSocket() {
+
+    if (
+        document.visibilityState === 'unloaded' ||
+        manuallyClosed
+    ) {
+        return;
+    }
 
     try {
 
         const protocol =
-            location.protocol === 'https:' ? 'wss:' : 'ws:';
+            location.protocol === 'https:'
+                ? 'wss:'
+                : 'ws:';
 
-        ws = new WebSocket(
-            `${protocol}//${location.host || 'localhost:8081'}`
-        );
+        const wsUrl =
+            `${protocol}//${location.host || 'localhost:8081'}`;
+
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+
+            reconnectDelay = 3000;
+
+            console.log('WebSocket terhubung.');
+        };
 
         ws.onmessage = event => {
 
@@ -1413,13 +1911,17 @@ function connectWebSocket() {
                         type: 'PLAY_GIFT',
 
                         targetSlot: 1,
+
                         increment: Number(d.coins || 1),
 
                         badgeImg: d.giftImage || '',
+
                         giftTitle: d.giftName || 'Gift',
 
                         senderName:
-                            d.nickname || d.username || 'User',
+                            d.nickname ||
+                            d.username ||
+                            'User',
 
                         senderAvatar: d.avatar || '',
 
@@ -1456,11 +1958,16 @@ function connectWebSocket() {
                 }
 
             } catch (err) {
-                console.error('WebSocket message error:', err);
+
+                console.error(
+                    'WebSocket message error:',
+                    err
+                );
             }
         };
 
         ws.onerror = err => {
+
             console.log('WebSocket error:', err);
         };
 
@@ -1468,65 +1975,112 @@ function connectWebSocket() {
 
             clearTimeout(reconnectTimer);
 
-            reconnectTimer = setTimeout(() => {
-                connectWebSocket();
-            }, 3000);
+            if (manuallyClosed) return;
+
+            reconnectTimer = setTimeout(
+                connectWebSocket,
+                reconnectDelay
+            );
+
+            reconnectDelay = Math.min(
+                reconnectDelay * 1.5,
+                15000
+            );
         };
 
     } catch (err) {
 
-        console.log('WebSocket connection error:', err);
+        console.log(
+            'WebSocket connection error:',
+            err
+        );
 
         clearTimeout(reconnectTimer);
 
-        reconnectTimer = setTimeout(() => {
-            connectWebSocket();
-        }, 3000);
+        reconnectTimer = setTimeout(
+            connectWebSocket,
+            reconnectDelay
+        );
     }
 }
 
 connectWebSocket();
 
-/* ================= PEMUTAR VIDEO GIFT OPTIMIZED ================= */
+/* =====================================================
+   RENDERER VIDEO GIFT
+===================================================== */
 
 let glReady = false;
+
 let renderActive = false;
+
 let renderFrameId = null;
+
 let videoFrameCallbackId = null;
+
 let lastVideoTime = -1;
+
+const giftVideo = document.getElementById(
+    'giftVideo'
+);
+
+const giftCanvas = document.getElementById(
+    'giftCanvas'
+);
+
+const giftFallbackCanvas = document.getElementById(
+    'giftFallbackCanvas'
+);
+
+/*
+ * Canvas 2D dibuat di CANVAS TERPISAH.
+ * Ini mencegah konflik getContext('2d') dan getContext('webgl')
+ * pada elemen canvas yang sama.
+ */
+
+const giftCanvasContext =
+    giftFallbackCanvas.getContext('2d', {
+        alpha: true,
+        desynchronized: true
+    });
 
 function stopGiftRenderer() {
 
     renderActive = false;
 
-    if (renderFrameId !== null) {
-        cancelAnimationFrame(renderFrameId);
-        renderFrameId = null;
-    }
-
-    const video = document.getElementById('giftVideo');
-
     if (
         videoFrameCallbackId !== null &&
-        video.cancelVideoFrameCallback
+        giftVideo.cancelVideoFrameCallback
     ) {
-        video.cancelVideoFrameCallback(videoFrameCallbackId);
+
+        giftVideo.cancelVideoFrameCallback(
+            videoFrameCallbackId
+        );
     }
 
     videoFrameCallbackId = null;
+
+    if (renderFrameId !== null) {
+
+        cancelAnimationFrame(renderFrameId);
+
+        renderFrameId = null;
+    }
 }
 
 function renderGiftFrame() {
 
     if (!renderActive) return;
 
-    const video = document.getElementById('giftVideo');
+    const video = giftVideo;
 
     if (
         video.ended ||
         video.readyState < video.HAVE_CURRENT_DATA
     ) {
+
         scheduleGiftFrame();
+
         return;
     }
 
@@ -1538,7 +2092,12 @@ function renderGiftFrame() {
 
             try {
 
-                gl.bindTexture(gl.TEXTURE_2D, glTexture);
+                gl.useProgram(glProgram);
+
+                gl.bindTexture(
+                    gl.TEXTURE_2D,
+                    glTexture
+                );
 
                 gl.texImage2D(
                     gl.TEXTURE_2D,
@@ -1549,24 +2108,55 @@ function renderGiftFrame() {
                     video
                 );
 
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                gl.drawArrays(
+                    gl.TRIANGLES,
+                    0,
+                    6
+                );
 
             } catch (e) {
-                console.error('WebGL rendering error:', e);
+
+                console.error(
+                    'WebGL rendering error:',
+                    e
+                );
+
+                glReady = false;
+
+                giftCanvas.style.display = 'none';
+
+                giftFallbackCanvas.style.display = 'block';
+
+                if (giftCanvasContext) {
+
+                    giftCanvasContext.clearRect(
+                        0,
+                        0,
+                        giftFallbackCanvas.width,
+                        giftFallbackCanvas.height
+                    );
+                }
             }
 
-        } else {
+        } else if (giftCanvasContext) {
 
-            const canvas = document.getElementById('giftCanvas');
-            const ctx = canvas.getContext('2d');
+            try {
 
-            if (ctx) {
-                ctx.drawImage(
+                giftCanvasContext.drawImage(
                     video,
                     0,
                     0,
-                    canvas.width,
-                    canvas.height
+                    giftFallbackCanvas.width,
+                    giftFallbackCanvas.height
+                );
+
+            } catch (e) {
+
+                console.warn(
+                    'Canvas fallback error:',
+                    e
                 );
             }
         }
@@ -1575,47 +2165,45 @@ function renderGiftFrame() {
     scheduleGiftFrame();
 }
 
-/*
- * Render hanya ketika video mempunyai frame baru.
- * Ini mengurangi pekerjaan GPU dibanding requestAnimationFrame
- * yang berjalan terus mengikuti refresh layar.
- */
-
 function scheduleGiftFrame() {
 
     if (!renderActive) return;
 
-    const video = document.getElementById('giftVideo');
-
-    if (video.requestVideoFrameCallback) {
+    if (giftVideo.requestVideoFrameCallback) {
 
         videoFrameCallbackId =
-            video.requestVideoFrameCallback(() => {
+            giftVideo.requestVideoFrameCallback(() => {
 
                 videoFrameCallbackId = null;
+
                 renderGiftFrame();
             });
 
     } else {
 
-        renderFrameId = requestAnimationFrame(() => {
+        renderFrameId =
+            requestAnimationFrame(() => {
 
-            renderFrameId = null;
-            renderGiftFrame();
-        });
+                renderFrameId = null;
+
+                renderGiftFrame();
+            });
     }
 }
 
+/* =====================================================
+   PLAY VIDEO GIFT
+===================================================== */
+
 function playGiftVideo(src, onFinished) {
 
-    const overlay =
-        document.getElementById('giftOverlayContainer');
+    const overlay = document.getElementById(
+        'giftOverlayContainer'
+    );
 
-    const video =
-        document.getElementById('giftVideo');
+    const video = giftVideo;
 
-    const canvas =
-        document.getElementById('giftCanvas');
+    const canvas = giftCanvas;
 
     let finished = false;
 
@@ -1636,14 +2224,28 @@ function playGiftVideo(src, onFinished) {
         video.onloadedmetadata = null;
 
         video.pause();
+
         video.removeAttribute('src');
+
         video.load();
 
         if (gl) {
+
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
+        if (giftCanvasContext) {
+
+            giftCanvasContext.clearRect(
+                0,
+                0,
+                giftFallbackCanvas.width,
+                giftFallbackCanvas.height
+            );
+        }
+
         if (typeof onFinished === 'function') {
+
             onFinished();
         }
     }
@@ -1651,31 +2253,59 @@ function playGiftVideo(src, onFinished) {
     overlay.style.display = 'block';
 
     video.pause();
+
     video.removeAttribute('src');
+
     video.load();
 
     video.src = src;
+
     video.muted = false;
+
     video.volume = 1;
 
     video.onended = finish;
+
     video.onerror = finish;
 
+    /*
+     * Gunakan WebGL terlebih dahulu.
+     * Jika tidak tersedia, gunakan Canvas 2D.
+     */
+
     glReady = initWebGL(canvas);
+
+    if (glReady) {
+
+        canvas.style.display = 'block';
+
+        giftFallbackCanvas.style.display = 'none';
+
+    } else {
+
+        canvas.style.display = 'none';
+
+        giftFallbackCanvas.style.display = 'block';
+    }
 
     video.onloadedmetadata = async () => {
 
         if (finished) return;
 
-        const originalWidth = video.videoWidth || 720;
-        const originalHeight = video.videoHeight || 1280;
+        const originalWidth =
+            video.videoWidth || 720;
+
+        const originalHeight =
+            video.videoHeight || 1280;
 
         /*
-         * Batasi ukuran canvas agar video gift tidak
-         * menggunakan resolusi terlalu besar.
+         * Batas resolusi render:
+         * Maksimum 720 x 1280.
+         * Rasio asli tetap dipertahankan.
          */
 
         const maxWidth = 720;
+
         const maxHeight = 1280;
 
         const scale = Math.min(
@@ -1695,36 +2325,76 @@ function playGiftVideo(src, onFinished) {
         );
 
         canvas.width = renderWidth;
+
         canvas.height = renderHeight;
+
+        giftFallbackCanvas.width = renderWidth;
+
+        giftFallbackCanvas.height = renderHeight;
 
         if (glReady && gl) {
 
-            gl.viewport(0, 0, renderWidth, renderHeight);
+            gl.viewport(
+                0,
+                0,
+                renderWidth,
+                renderHeight
+            );
+
             gl.useProgram(glProgram);
 
             const posLoc =
-                gl.getAttribLocation(glProgram, 'a_pos');
+                gl.getAttribLocation(
+                    glProgram,
+                    'a_pos'
+                );
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
+            gl.bindBuffer(
+                gl.ARRAY_BUFFER,
+                glBuffers.pos
+            );
+
             gl.enableVertexAttribArray(posLoc);
 
             gl.vertexAttribPointer(
-                posLoc, 2, gl.FLOAT, false, 0, 0
+                posLoc,
+                2,
+                gl.FLOAT,
+                false,
+                0,
+                0
             );
 
             const texLoc =
-                gl.getAttribLocation(glProgram, 'a_tex');
+                gl.getAttribLocation(
+                    glProgram,
+                    'a_tex'
+                );
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
+            gl.bindBuffer(
+                gl.ARRAY_BUFFER,
+                glBuffers.tex
+            );
+
             gl.enableVertexAttribArray(texLoc);
 
             gl.vertexAttribPointer(
-                texLoc, 2, gl.FLOAT, false, 0, 0
+                texLoc,
+                2,
+                gl.FLOAT,
+                false,
+                0,
+                0
             );
 
             gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, glTexture);
 
+            gl.bindTexture(
+                gl.TEXTURE_2D,
+                glTexture
+            );
+
+            gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
         lastVideoTime = -1;
@@ -1736,11 +2406,15 @@ function playGiftVideo(src, onFinished) {
             if (finished) return;
 
             renderActive = true;
+
             renderGiftFrame();
 
         } catch (err) {
 
-            console.warn('Gift video autoplay error:', err);
+            console.warn(
+                'Gift autoplay mencoba mode mute:',
+                err
+            );
 
             video.muted = true;
 
@@ -1751,10 +2425,13 @@ function playGiftVideo(src, onFinished) {
                 if (finished) return;
 
                 renderActive = true;
+
                 renderGiftFrame();
 
             } catch (error) {
+
                 console.error(error);
+
                 finish();
             }
         }
@@ -1763,31 +2440,89 @@ function playGiftVideo(src, onFinished) {
     video.load();
 }
 
-/* ================= CLEANUP ================= */
+/* =====================================================
+   CLEANUP
+===================================================== */
 
 window.addEventListener('pagehide', () => {
+
+    manuallyClosed = true;
 
     stopGiftRenderer();
 
     if (displayCamStream) {
-        displayCamStream.getTracks().forEach(track => track.stop());
+
+        displayCamStream.getTracks().forEach(
+            track => track.stop()
+        );
+
         displayCamStream = null;
     }
 
     if (ws) {
+
+        ws.onclose = null;
+
         ws.close();
     }
+
+    clearTimeout(reconnectTimer);
+
+    clearTimeout(toastTimeout);
+
+    clearTimeout(toastHideTimer);
+
+    for (const timer of Object.values(badgeTimers)) {
+
+        clearTimeout(timer);
+    }
+
+    for (const group of giftComboGroups.values()) {
+
+        clearTimeout(group.timer);
+    }
+
+    giftComboGroups.clear();
+
+    if (hostVideoObjectURL) {
+
+        URL.revokeObjectURL(hostVideoObjectURL);
+
+        hostVideoObjectURL = null;
+    }
+
+    for (const item of giftVideoQueue) {
+
+        if (
+            item.src &&
+            item.src.startsWith('blob:')
+        ) {
+
+            URL.revokeObjectURL(item.src);
+        }
+    }
+
+    giftVideoQueue.length = 0;
+
+    channel.close();
 });
+
+/* =====================================================
+   VISIBILITY
+===================================================== */
 
 document.addEventListener('visibilitychange', () => {
 
     /*
-     * Jangan menghentikan kamera ketika halaman
-     * sedang tidak terlihat. TikTok Studio dapat
-     * mengambil halaman sebagai sumber overlay.
+     * Tidak menghentikan kamera atau koneksi
+     * hanya karena display menjadi background.
      */
+
     if (document.hidden) {
-        console.log('Display berada di background.');
+
+        console.log(
+            'Display background: sistem tetap aktif.'
+        );
     }
 });
 
