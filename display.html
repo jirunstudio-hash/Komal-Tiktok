@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - External Camera Edition</title>
+<title>Display Studio - TikTok Live Optimized</title>
 
 <style>
 * {
@@ -66,42 +66,42 @@ body {
 .host-box {
     flex: 1;
     min-width: 0;
-    background: transparent;
+    background: #1c1d24;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
     border: 1.5px solid #00d2ff;
     animation: hostBluePulse 1.5s infinite ease-in-out;
     transform: translateZ(0);
     contain: layout paint;
 }
 
-/* Area ini disiapkan untuk kamera eksternal TikTok Studio */
-.host-camera-area {
-    position: absolute;
-    inset: 25px 2px 27px 2px;
-    background: transparent;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.host-camera-guide {
+.host-video, #hostCameraImg {
     position: absolute;
     inset: 0;
-    border-radius: 7px;
-    background: transparent;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    display: none;
+    backface-visibility: hidden;
+    filter: none;
 }
 
-.host-video, #hostCameraImg {
-    display: none !important;
+#hostCameraImg {
+    z-index: 3;
 }
 
 .host-placeholder {
-    display: none !important;
+    color: #555761;
+    font-size: .8rem;
+    font-weight: 500;
+    text-align: center;
+    z-index: 1;
 }
 
 .host-top-pill {
@@ -232,6 +232,7 @@ body {
     transform: translate(-50%,-50%);
     z-index: 4;
     box-shadow: 0 3px 8px rgba(0,0,0,.5);
+    filter: none;
 }
 
 .slot-coin-badge {
@@ -485,11 +486,9 @@ body {
 
     <div class="live-layout">
 
-        <div class="host-box" id="hostBox">
-
-            <div class="host-camera-area">
-                <div class="host-camera-guide"></div>
-            </div>
+        <div class="host-box" id="hostBox"
+             onclick="startDisplayDirectCamera()"
+             title="Klik untuk aktifkan kamera host">
 
             <div class="host-top-pill">
                 <span class="host-pill-icon">
@@ -502,7 +501,7 @@ body {
             </div>
 
             <div id="hostPlaceholder" class="host-placeholder">
-                Kamera TikTok Studio
+                Kamera Host (Standby)
             </div>
 
             <video id="hostVideo" class="host-video"
@@ -550,6 +549,8 @@ const channel = new BroadcastChannel('tiktok_live_channel');
 const slotPoints = {};
 const badgeTimers = {};
 
+let displayCamStream = null;
+let cameraStarting = false;
 let hostMediaObjectURL = null;
 
 let toastTimeout = null;
@@ -643,656 +644,113 @@ for (let i = 1; i <= 8; i++) {
     `);
 }
 
-/* ================= HOST EKSTERNAL ================= */
+/* ================= KAMERA HOST AUTO ================= */
 
-/*
- * Kamera tidak diakses dari browser.
- * Kamera host sepenuhnya berasal dari sumber Camera TikTok Studio.
- */
+async function startDisplayDirectCamera() {
 
-function stopDisplayDirectCamera() {
-    const video = $('hostVideo');
+    if (cameraStarting) return;
 
-    if (video) {
-        video.pause();
-        video.srcObject = null;
-        video.removeAttribute('src');
-        video.style.display = 'none';
+    const hVid = $('hostVideo');
+    const placeholder = $('hostPlaceholder');
+    const camImg = $('hostCameraImg');
+
+    if (displayCamStream &&
+        displayCamStream.getVideoTracks().some(t => t.readyState === 'live')) {
+
+        hVid.srcObject = displayCamStream;
+        hVid.style.display = 'block';
+        placeholder.style.display = 'none';
+
+        if (hVid.paused) {
+            await hVid.play().catch(() => {});
+        }
+        return;
     }
 
-    $('hostPlaceholder').style.display = 'none';
-    $('hostCameraImg').style.display = 'none';
+    cameraStarting = true;
+
+    try {
+
+        if (!navigator.mediaDevices?.getUserMedia) {
+            throw new Error('Kamera membutuhkan HTTPS atau localhost.');
+        }
+
+        camImg.style.display = 'none';
+
+        /*
+         * AUTO ADAPTIVE:
+         * Browser memilih resolusi terbaik yang tersedia.
+         * Resolusi tidak dipaksa 1080p.
+         */
+
+        const constraints = {
+            audio: false,
+            video: {
+                width: { ideal: 720 },
+                height: { ideal: 1280 },
+                frameRate: { ideal: 30, max: 30 },
+                facingMode: 'user'
+            }
+        };
+
+        displayCamStream =
+            await navigator.mediaDevices.getUserMedia(constraints);
+
+        hVid.srcObject = displayCamStream;
+        hVid.style.display = 'block';
+        placeholder.style.display = 'none';
+
+        await hVid.play();
+
+        const track = displayCamStream.getVideoTracks()[0];
+
+        if (track) {
+            console.log('Kamera aktif:', track.getSettings());
+        }
+
+    } catch (err) {
+
+        console.error('Kamera error:', err);
+
+        placeholder.style.display = 'block';
+        placeholder.textContent = 'Kamera gagal aktif';
+
+    } finally {
+        cameraStarting = false;
+    }
+}
+
+function stopDisplayDirectCamera() {
+
+    if (displayCamStream) {
+        displayCamStream.getTracks().forEach(track => track.stop());
+        displayCamStream = null;
+    }
+
+    const hVid = $('hostVideo');
+
+    hVid.pause();
+    hVid.srcObject = null;
+    hVid.style.display = 'none';
+
+    $('hostPlaceholder').style.display = 'block';
 }
 
 function releaseHostObjectURL() {
+
     if (hostMediaObjectURL) {
         URL.revokeObjectURL(hostMediaObjectURL);
         hostMediaObjectURL = null;
     }
 }
 
-/* ================= DATABASE VIDEO ================= */
-
-const DB_NAME = "TikTokStudioStorageDB";
-const STORE_NAME = "permanent_assets";
-
-let dbPromise = null;
-
-function openDB() {
-
-    if (dbPromise) return dbPromise;
-
-    dbPromise = new Promise(resolve => {
-
-        const req = indexedDB.open(DB_NAME, 1);
-
-        req.onsuccess = () => resolve(req.result);
-
-        req.onerror = () => {
-            dbPromise = null;
-            resolve(null);
-        };
-
-        req.onblocked = () => {
-            dbPromise = null;
-            resolve(null);
-        };
-    });
-
-    return dbPromise;
-}
-
-async function getSavedVideo(id) {
-
-    try {
-
-        const db = await openDB();
-
-        if (!db) return null;
-
-        return await new Promise(resolve => {
-
-            const tx = db.transaction(STORE_NAME, "readonly");
-            const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
-
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
-        });
-
-    } catch (e) {
-        return null;
-    }
-}
-
-/* ================= FORMAT POIN ================= */
-
-function formatPoin(val) {
-
-    val = Number(val) || 0;
-
-    if (val >= 1000000) {
-        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
-    }
-
-    if (val >= 1000) {
-        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
-    }
-
-    return val.toLocaleString('id-ID');
-}
-
-/* ================= SLOT ================= */
-
-function updateSlotDisplay(data) {
-
-    const {
-        slotNum,
-        nameInput,
-        initialPoin,
-        profileImg,
-        action
-    } = data;
-
-    const slotBox = $(`slot-${slotNum}`);
-
-    if (!slotBox) return;
-
-    const coinBadge = $(`coin-badge-${slotNum}`);
-    const countElem = $(`coincount-slot-${slotNum}`);
-    const namePill = $(`namepill-slot-${slotNum}`);
-    const nameText = $(`nametext-slot-${slotNum}`);
-    const mic = $(`mic-slot-${slotNum}`);
-    const img = $(`img-slot-${slotNum}`);
-    const bg = $(`bg-slot-${slotNum}`);
-    const bgOverlay = $(`overlay-slot-${slotNum}`);
-    const icon = $(`icon-${slotNum}`);
-    const req = $(`req-${slotNum}`);
-    const topBadge = $(`topbadge-slot-${slotNum}`);
-
-    if (action === 'clear_slot') {
-
-        img.style.display = 'none';
-        img.removeAttribute('src');
-
-        bg.style.display = 'none';
-        bg.removeAttribute('src');
-
-        bgOverlay.style.display = 'none';
-
-        slotBox.style.background = '#1c1d24';
-
-        icon.style.display = 'block';
-        req.style.display = 'inline-block';
-        namePill.style.display = 'none';
-        mic.style.display = 'none';
-        coinBadge.style.display = 'none';
-
-        if (topBadge) {
-            topBadge.style.display = 'none';
-            topBadge.removeAttribute('src');
-        }
-
-        if (badgeTimers[slotNum]) {
-            clearTimeout(badgeTimers[slotNum]);
-            delete badgeTimers[slotNum];
-        }
-
-        slotPoints[slotNum] = 0;
-        return;
-    }
-
-    if (initialPoin !== undefined) {
-        slotPoints[slotNum] = Number(initialPoin) || 0;
-    }
-
-    countElem.innerText = formatPoin(slotPoints[slotNum]);
-    coinBadge.style.display = 'flex';
-
-    if (nameInput) {
-        nameText.innerText = nameInput;
-        namePill.style.display = 'flex';
-        mic.style.display = 'flex';
-    }
-
-    if (profileImg) {
-
-        icon.style.display = 'none';
-        req.style.display = 'none';
-
-        img.src = profileImg;
-        img.style.display = 'block';
-
-        bg.src = profileImg;
-        bg.style.display = 'block';
-
-        bgOverlay.style.display = 'block';
-    }
-}
-
-function showGiftBadgeTemporarily(slotNum, badgeSrc) {
-
-    if (!badgeSrc || !slotNum) return;
-
-    const topBadge = $(`topbadge-slot-${slotNum}`);
-
-    if (!topBadge) return;
-
-    if (badgeTimers[slotNum]) {
-        clearTimeout(badgeTimers[slotNum]);
-    }
-
-    topBadge.src = badgeSrc;
-    topBadge.style.display = 'block';
-
-    badgeTimers[slotNum] = setTimeout(() => {
-        topBadge.style.display = 'none';
-        topBadge.removeAttribute('src');
-        delete badgeTimers[slotNum];
-    }, 5000);
-}
-
-/* ================= NOTIFIKASI GIFT ================= */
-
-function showGiftToast(data, comboCount = 1) {
-
-    const toast = $('giftBannerToast');
-    const avatar = $('toastGifterAvatar');
-    const nameElem = $('toastGifterName');
-    const descElem = $('toastGiftDesc');
-    const iconElem = $('toastGiftIcon');
-    const comboElem = $('toastComboCount');
-
-    avatar.src = data.senderAvatar || detectedHostAvatar;
-    nameElem.innerText = detectedHostName || 'Host';
-    descElem.innerText = data.giftTitle || 'Gift';
-
-    if (data.badgeImg) {
-        iconElem.src = data.badgeImg;
-        iconElem.style.display = 'block';
-    } else {
-        iconElem.style.display = 'none';
-    }
-
-    comboElem.textContent = 'x ' + Math.max(1, Number(comboCount) || 1);
-    comboElem.style.display = 'inline-block';
-
-    clearTimeout(toastTimeout);
-    clearTimeout(toastHideTimer);
-
-    if (toast.style.display !== 'inline-flex') {
-        toast.style.animation = 'none';
-        void toast.offsetWidth;
-        toast.style.animation = 'tiktokBannerSlideIn .35s ease-out forwards';
-        toast.style.display = 'inline-flex';
-    }
-
-    toastTimeout = setTimeout(() => {
-
-        toast.style.animation = 'tiktokBannerSlideOut .28s ease-in forwards';
-
-        toastHideTimer = setTimeout(() => {
-            toast.style.display = 'none';
-            comboElem.style.display = 'none';
-        }, 280);
-
-    }, 3000);
-}
-
-/* ================= ANTRIAN VIDEO GIFT ================= */
-
-function queueGiftVideo(src, repeatCount = 1) {
-
-    if (!src) return;
-
-    const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
-
-    giftVideoQueue.push({
-        src,
-        remaining: count,
-        isBlob: src.startsWith('blob:')
-    });
-
-    playNextGiftVideo();
-}
-
-function playNextGiftVideo() {
-
-    if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
-
-    giftVideoQueueBusy = true;
-
-    const item = giftVideoQueue[0];
-
-    playGiftVideo(item.src, () => {
-
-        item.remaining--;
-
-        if (item.remaining > 0) {
-            giftVideoQueueBusy = false;
-            playNextGiftVideo();
-        } else {
-
-            giftVideoQueue.shift();
-
-            if (item.isBlob) {
-                URL.revokeObjectURL(item.src);
-            }
-
-            giftVideoQueueBusy = false;
-            playNextGiftVideo();
-        }
-    });
-}
-
-/* ================= COMBO GIFT ================= */
-
-function getGiftComboKey(data) {
-
-    const sender = String(
-        data.senderName || data.username || 'user'
-    ).toLowerCase();
-
-    const gift = String(
-        data.giftId || data.giftTitle || 'gift'
-    ).toLowerCase();
-
-    return `${sender}::${gift}`;
-}
-
-async function resolveGiftVideo(data) {
-
-    if (data.videoBlob) {
-        return URL.createObjectURL(data.videoBlob);
-    }
-
-    if (data.giftId) {
-
-        const blob = await getSavedVideo(data.giftId);
-
-        if (blob) {
-            return URL.createObjectURL(blob);
-        }
-    }
-
-    if (data.src) return data.src;
-
-    return null;
-}
-
-function receiveGiftForCombo(data) {
-
-    const key = getGiftComboKey(data);
-
-    const rawCount =
-        data.repeatCount ??
-        data.comboCount ??
-        data.repeat_count ??
-        data.combo_count;
-
-    const cumulativeCount = Number(rawCount);
-
-    let group = giftComboGroups.get(key);
-
-    if (!group) {
-
-        group = {
-            data: { ...data },
-            count: 0,
-            src: null,
-            timer: null,
-            revision: 0,
-            videoPromise: Promise.resolve()
-        };
-
-        giftComboGroups.set(key, group);
-    }
-
-    group.revision++;
-    group.data = { ...group.data, ...data };
-
-    if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
-        group.count = Math.max(group.count, Math.floor(cumulativeCount));
-    } else {
-        group.count += Math.max(1, Math.floor(Number(data.giftCount) || 1));
-    }
-
-    showGiftToast(group.data, group.count);
-
-    clearTimeout(group.timer);
-
-    group.videoPromise = group.videoPromise.then(async () => {
-
-        const resolvedSrc = await resolveGiftVideo(data);
-
-        if (resolvedSrc) {
-
-            if (
-                group.src &&
-                group.src.startsWith('blob:') &&
-                group.src !== resolvedSrc
-            ) {
-                URL.revokeObjectURL(group.src);
-            }
-
-            group.src = resolvedSrc;
-        }
-
-    }).catch(err => {
-        console.error('Gagal memuat video gift:', err);
-    });
-
-    const finishCombo = async () => {
-
-        const finishingRevision = group.revision;
-
-        await group.videoPromise;
-
-        if (
-            giftComboGroups.get(key) !== group ||
-            group.revision !== finishingRevision
-        ) {
-            return;
-        }
-
-        giftComboGroups.delete(key);
-
-        if (group.src) {
-            queueGiftVideo(group.src, Math.max(1, group.count));
-        }
-    };
-
-    const comboEnded =
-        data.repeatEnd === true ||
-        data.repeat_end === true ||
-        data.comboEnd === true ||
-        data.combo_end === true;
-
-    group.timer = setTimeout(finishCombo, comboEnded ? 0 : 900);
-}
-
-/* ================= PESAN MASUK ================= */
-
-function handleIncomingMessage(data) {
-
-    if (!data) return;
-
-    if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
-        // Mode kamera eksternal: perintah kamera web diabaikan.
-        return;
-    }
-
-    else if (data.type === 'SET_HOST_VIDEO') {
-
-        const hVid = $('hostVideo');
-
-        releaseHostObjectURL();
-
-        if (data.videoBlob) {
-
-            hVid.srcObject = null;
-            hostMediaObjectURL = URL.createObjectURL(data.videoBlob);
-
-            hVid.src = hostMediaObjectURL;
-            hVid.style.display = 'none';
-
-            hVid.play().catch(() => {});
-        }
-    }
-
-    else if (data.type === 'RESET_HOST_MEDIA') {
-
-        const hVid = $('hostVideo');
-
-        releaseHostObjectURL();
-
-        hVid.pause();
-        hVid.srcObject = null;
-        hVid.removeAttribute('src');
-        hVid.style.display = 'none';
-        hVid.load();
-    }
-
-    else if (
-        data.type === 'UPDATE_HOST' ||
-        data.type === 'UPDATE_HOST_NAME'
-    ) {
-
-        if (data.hostName) {
-            detectedHostName = data.hostName;
-            $('hostNameText').innerText = data.hostName;
-        }
-
-        if (data.hostAvatar) {
-            detectedHostAvatar = data.hostAvatar;
-        }
-    }
-
-    else if (data.type === 'UPDATE_SLOT') {
-        updateSlotDisplay(data);
-    }
-
-    else if (data.type === 'PLAY_GIFT') {
-
-        const targetSlot = Number(data.targetSlot);
-
-        if (targetSlot && slotPoints[targetSlot] !== undefined) {
-
-            slotPoints[targetSlot] += Number(data.increment || 0);
-
-            const countElem = $(`coincount-slot-${targetSlot}`);
-
-            if (countElem) {
-                countElem.innerText = formatPoin(slotPoints[targetSlot]);
-            }
-
-            const badge = $(`coin-badge-${targetSlot}`);
-
-            if (badge) badge.style.display = 'flex';
-        }
-
-        if (data.badgeImg) {
-            showGiftBadgeTemporarily(targetSlot, data.badgeImg);
-        }
-
-        receiveGiftForCombo(data);
-    }
-}
-
-/* ================= BROADCAST CHANNEL ================= */
-
-channel.onmessage = event => {
-    handleIncomingMessage(event.data);
-};
-
-/* ================= WEBSOCKET ================= */
-
-let ws = null;
-let reconnectTimer = null;
-let reconnectDelay = 1000;
-let manuallyClosed = false;
-
-function connectWebSocket() {
-
-    if (manuallyClosed) return;
-
-    if (
-        ws &&
-        (ws.readyState === WebSocket.CONNECTING ||
-         ws.readyState === WebSocket.OPEN)
-    ) {
-        return;
-    }
-
-    try {
-
-        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-
-        ws = new WebSocket(
-            `${protocol}//${location.host || 'localhost:8081'}`
-        );
-
-        ws.onopen = () => {
-            reconnectDelay = 1000;
-            console.log('WebSocket terhubung.');
-        };
-
-        ws.onmessage = event => {
-
-            try {
-
-                const d = JSON.parse(event.data);
-
-                if (d.type === 'gift') {
-
-                    handleIncomingMessage({
-
-                        type: 'PLAY_GIFT',
-                        targetSlot: 1,
-                        increment: Number(d.coins || 1),
-
-                        badgeImg: d.giftImage || '',
-                        giftTitle: d.giftName || 'Gift',
-
-                        senderName: d.nickname || d.username || 'User',
-                        senderAvatar: d.avatar || '',
-
-                        giftId: d.giftId || d.gift_id || d.id || '',
-
-                        repeatCount:
-                            d.repeatCount ??
-                            d.repeat_count ??
-                            d.comboCount ??
-                            d.combo_count,
-
-                        giftCount: d.giftCount ?? d.gift_count,
-
-                        repeatEnd:
-                            d.repeatEnd ??
-                            d.repeat_end ??
-                            d.comboEnd ??
-                            d.combo_end,
-
-                        videoBlob: d.videoBlob,
-
-                        src: d.src || d.videoUrl || d.video_url || ''
-                    });
-                }
-
-            } catch (err) {
-                console.error('WebSocket message error:', err);
-            }
-        };
-
-        ws.onerror = err => {
-            console.log('WebSocket error:', err);
-        };
-
-        ws.onclose = () => {
-
-            ws = null;
-
-            if (manuallyClosed) return;
-
-            clearTimeout(reconnectTimer);
-
-            reconnectTimer = setTimeout(connectWebSocket, reconnectDelay);
-
-            reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
-        };
-
-    } catch (err) {
-
-        console.log('WebSocket connection error:', err);
-
-        clearTimeout(reconnectTimer);
-
-        reconnectTimer = setTimeout(connectWebSocket, reconnectDelay);
-
-        reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
-    }
-}
-
-connectWebSocket();
-
-/* ================= RENDER VIDEO GIFT ================= */
+/* ================= WEBGL ================= */
 
 let gl = null;
 let glProgram = null;
 let glTexture = null;
 let glBuffers = {};
-let glReady = false;
-let canvas2D = null;
-
-let renderActive = false;
-let renderFrameId = null;
-let videoFrameCallbackId = null;
-let lastVideoTime = -1;
-
-let giftVideoGeneration = 0;
-
-const giftCanvas = $('giftCanvas');
-const giftVideo = $('giftVideo');
-const giftOverlay = $('giftOverlayContainer');
+let isWebGLSupported = false;
 
 function initWebGL(canvas) {
 
@@ -1425,6 +883,8 @@ function initWebGL(canvas) {
             0
         );
 
+        isWebGLSupported = true;
+
         return true;
 
     } catch (e) {
@@ -1432,6 +892,686 @@ function initWebGL(canvas) {
         return false;
     }
 }
+
+/* ================= DATABASE VIDEO ================= */
+
+const DB_NAME = "TikTokStudioStorageDB";
+const STORE_NAME = "permanent_assets";
+
+let dbPromise = null;
+
+function openDB() {
+
+    if (dbPromise) return dbPromise;
+
+    dbPromise = new Promise(resolve => {
+
+        const req = indexedDB.open(DB_NAME, 1);
+
+        req.onsuccess = () => resolve(req.result);
+
+        req.onerror = () => {
+            dbPromise = null;
+            resolve(null);
+        };
+
+        req.onblocked = () => {
+            dbPromise = null;
+            resolve(null);
+        };
+    });
+
+    return dbPromise;
+}
+
+async function getSavedVideo(id) {
+
+    try {
+
+        const db = await openDB();
+
+        if (!db) return null;
+
+        return await new Promise(resolve => {
+
+            const tx = db.transaction(STORE_NAME, "readonly");
+            const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
+
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+        });
+
+    } catch (e) {
+        return null;
+    }
+}
+
+/* ================= FORMAT POIN ================= */
+
+function formatPoin(val) {
+
+    if (!val || val === 0) return '0';
+
+    if (val >= 1000000) {
+        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
+    }
+
+    if (val >= 1000) {
+        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
+    }
+
+    return val.toLocaleString('id-ID');
+}
+
+/* ================= SLOT ================= */
+
+function updateSlotDisplay(data) {
+
+    const {
+        slotNum,
+        nameInput,
+        initialPoin,
+        profileImg,
+        action
+    } = data;
+
+    const slotBox = $(`slot-${slotNum}`);
+
+    if (!slotBox) return;
+
+    const coinBadge = $(`coin-badge-${slotNum}`);
+    const countElem = $(`coincount-slot-${slotNum}`);
+    const namePill = $(`namepill-slot-${slotNum}`);
+    const nameText = $(`nametext-slot-${slotNum}`);
+    const mic = $(`mic-slot-${slotNum}`);
+    const img = $(`img-slot-${slotNum}`);
+    const bg = $(`bg-slot-${slotNum}`);
+    const bgOverlay = $(`overlay-slot-${slotNum}`);
+    const icon = $(`icon-${slotNum}`);
+    const req = $(`req-${slotNum}`);
+    const topBadge = $(`topbadge-slot-${slotNum}`);
+
+    if (action === 'clear_slot') {
+
+        img.style.display = 'none';
+        img.removeAttribute('src');
+
+        bg.style.display = 'none';
+        bg.removeAttribute('src');
+
+        bgOverlay.style.display = 'none';
+
+        slotBox.style.background = '#1c1d24';
+
+        icon.style.display = 'block';
+        req.style.display = 'inline-block';
+        namePill.style.display = 'none';
+        mic.style.display = 'none';
+        coinBadge.style.display = 'none';
+
+        if (topBadge) {
+            topBadge.style.display = 'none';
+            topBadge.removeAttribute('src');
+        }
+
+        if (badgeTimers[slotNum]) {
+            clearTimeout(badgeTimers[slotNum]);
+            delete badgeTimers[slotNum];
+        }
+
+        slotPoints[slotNum] = 0;
+        return;
+    }
+
+    if (initialPoin !== undefined) {
+        slotPoints[slotNum] = initialPoin;
+    }
+
+    countElem.innerText = formatPoin(slotPoints[slotNum]);
+    coinBadge.style.display = 'flex';
+
+    if (nameInput) {
+        nameText.innerText = nameInput;
+        namePill.style.display = 'flex';
+        mic.style.display = 'flex';
+    }
+
+    if (profileImg) {
+
+        icon.style.display = 'none';
+        req.style.display = 'none';
+
+        img.src = profileImg;
+        img.style.display = 'block';
+
+        bg.src = profileImg;
+        bg.style.display = 'block';
+
+        bgOverlay.style.display = 'block';
+    }
+}
+
+function showGiftBadgeTemporarily(slotNum, badgeSrc) {
+
+    if (!badgeSrc || !slotNum) return;
+
+    const topBadge = $(`topbadge-slot-${slotNum}`);
+
+    if (!topBadge) return;
+
+    if (badgeTimers[slotNum]) {
+        clearTimeout(badgeTimers[slotNum]);
+    }
+
+    topBadge.src = badgeSrc;
+    topBadge.style.display = 'block';
+
+    badgeTimers[slotNum] = setTimeout(() => {
+        topBadge.style.display = 'none';
+        topBadge.removeAttribute('src');
+        delete badgeTimers[slotNum];
+    }, 5000);
+}
+
+/* ================= NOTIFIKASI GIFT ================= */
+
+function showGiftToast(data, comboCount = 1) {
+
+    const toast = $('giftBannerToast');
+    const avatar = $('toastGifterAvatar');
+    const nameElem = $('toastGifterName');
+    const descElem = $('toastGiftDesc');
+    const iconElem = $('toastGiftIcon');
+    const comboElem = $('toastComboCount');
+
+    const hostName = detectedHostName || 'Host';
+    const hostAvatar = data.senderAvatar || detectedHostAvatar;
+
+    avatar.src = hostAvatar;
+    nameElem.innerText = hostName;
+    descElem.innerText = data.giftTitle || 'Gift';
+
+    if (data.badgeImg) {
+        iconElem.src = data.badgeImg;
+        iconElem.style.display = 'block';
+    } else {
+        iconElem.style.display = 'none';
+    }
+
+    comboElem.textContent = 'x ' + Math.max(1, Number(comboCount) || 1);
+    comboElem.style.display = 'inline-block';
+
+    clearTimeout(toastTimeout);
+    clearTimeout(toastHideTimer);
+
+    if (toast.style.display !== 'inline-flex') {
+
+        toast.style.animation = 'none';
+        void toast.offsetWidth;
+
+        toast.style.animation =
+            'tiktokBannerSlideIn .35s ease-out forwards';
+
+        toast.style.display = 'inline-flex';
+    }
+
+    toastTimeout = setTimeout(() => {
+
+        toast.style.animation =
+            'tiktokBannerSlideOut .28s ease-in forwards';
+
+        toastHideTimer = setTimeout(() => {
+            toast.style.display = 'none';
+            comboElem.style.display = 'none';
+        }, 280);
+
+    }, 3000);
+}
+
+/* ================= ANTRIAN VIDEO GIFT ================= */
+
+function queueGiftVideo(src, repeatCount = 1) {
+
+    if (!src) return;
+
+    const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
+
+    giftVideoQueue.push({
+        src,
+        remaining: count,
+        isBlob: src.startsWith('blob:')
+    });
+
+    playNextGiftVideo();
+}
+
+function playNextGiftVideo() {
+
+    if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
+
+    giftVideoQueueBusy = true;
+
+    const item = giftVideoQueue[0];
+
+    playGiftVideo(item.src, () => {
+
+        item.remaining--;
+
+        if (item.remaining > 0) {
+            giftVideoQueueBusy = false;
+            playNextGiftVideo();
+        } else {
+
+            giftVideoQueue.shift();
+
+            if (item.isBlob) {
+                URL.revokeObjectURL(item.src);
+            }
+
+            giftVideoQueueBusy = false;
+            playNextGiftVideo();
+        }
+    });
+}
+
+/* ================= SISTEM COMBO GIFT ================= */
+
+function getGiftComboKey(data) {
+
+    const sender = String(
+        data.senderName || data.username || 'user'
+    ).toLowerCase();
+
+    const gift = String(
+        data.giftId || data.giftTitle || 'gift'
+    ).toLowerCase();
+
+    return `${sender}::${gift}`;
+}
+
+async function resolveGiftVideo(data) {
+
+    if (data.videoBlob) {
+        return URL.createObjectURL(data.videoBlob);
+    }
+
+    if (data.giftId) {
+
+        const blob = await getSavedVideo(data.giftId);
+
+        if (blob) {
+            return URL.createObjectURL(blob);
+        }
+    }
+
+    if (data.src) return data.src;
+
+    return null;
+}
+
+function receiveGiftForCombo(data) {
+
+    const key = getGiftComboKey(data);
+
+    const rawCumulative =
+        data.repeatCount ??
+        data.comboCount ??
+        data.repeat_count ??
+        data.combo_count;
+
+    const cumulativeCount = Number(rawCumulative);
+
+    let group = giftComboGroups.get(key);
+
+    if (!group) {
+
+        group = {
+            data: { ...data },
+            count: 0,
+            src: null,
+            timer: null,
+            revision: 0,
+            videoPromise: Promise.resolve()
+        };
+
+        giftComboGroups.set(key, group);
+    }
+
+    group.revision++;
+    group.data = { ...group.data, ...data };
+
+    if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
+
+        group.count = Math.max(
+            group.count,
+            Math.floor(cumulativeCount)
+        );
+
+    } else {
+
+        group.count += Math.max(
+            1,
+            Math.floor(Number(data.giftCount) || 1)
+        );
+    }
+
+    showGiftToast(group.data, group.count);
+
+    clearTimeout(group.timer);
+
+    group.videoPromise = group.videoPromise.then(async () => {
+
+        const resolvedSrc = await resolveGiftVideo(data);
+
+        if (resolvedSrc) {
+
+            if (
+                group.src &&
+                group.src.startsWith('blob:') &&
+                group.src !== resolvedSrc
+            ) {
+                URL.revokeObjectURL(group.src);
+            }
+
+            group.src = resolvedSrc;
+        }
+
+    }).catch(err => {
+        console.error('Gagal memuat video gift:', err);
+    });
+
+    const finishCombo = async () => {
+
+        const finishingRevision = group.revision;
+
+        await group.videoPromise;
+
+        if (
+            giftComboGroups.get(key) !== group ||
+            group.revision !== finishingRevision
+        ) {
+            return;
+        }
+
+        giftComboGroups.delete(key);
+
+        if (group.src) {
+            queueGiftVideo(group.src, Math.max(1, group.count));
+        }
+    };
+
+    const comboEnded =
+        data.repeatEnd === true ||
+        data.repeat_end === true ||
+        data.comboEnd === true ||
+        data.combo_end === true;
+
+    group.timer = setTimeout(
+        finishCombo,
+        comboEnded ? 0 : 900
+    );
+}
+
+/* ================= PESAN MASUK ================= */
+
+function handleIncomingMessage(data) {
+
+    if (!data) return;
+
+    if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
+
+        if (data.action === 'start') {
+            startDisplayDirectCamera();
+        } else if (data.action === 'stop') {
+            stopDisplayDirectCamera();
+        }
+    }
+
+    else if (data.type === 'SET_HOST_VIDEO') {
+
+        stopDisplayDirectCamera();
+
+        const hVid = $('hostVideo');
+        const camImg = $('hostCameraImg');
+
+        camImg.style.display = 'none';
+
+        releaseHostObjectURL();
+
+        if (data.videoBlob) {
+
+            hVid.srcObject = null;
+
+            hostMediaObjectURL = URL.createObjectURL(data.videoBlob);
+
+            hVid.src = hostMediaObjectURL;
+            hVid.style.display = 'block';
+
+            $('hostPlaceholder').style.display = 'none';
+
+            hVid.play().catch(() => {});
+        }
+    }
+
+    else if (data.type === 'RESET_HOST_MEDIA') {
+
+        stopDisplayDirectCamera();
+
+        const hVid = $('hostVideo');
+        const camImg = $('hostCameraImg');
+
+        releaseHostObjectURL();
+
+        camImg.style.display = 'none';
+
+        hVid.pause();
+        hVid.srcObject = null;
+        hVid.removeAttribute('src');
+        hVid.style.display = 'none';
+        hVid.load();
+
+        $('hostPlaceholder').style.display = 'block';
+    }
+
+    else if (
+        data.type === 'UPDATE_HOST' ||
+        data.type === 'UPDATE_HOST_NAME'
+    ) {
+
+        if (data.hostName) {
+
+            detectedHostName = data.hostName;
+
+            $('hostNameText').innerText = data.hostName;
+        }
+
+        if (data.hostAvatar) {
+            detectedHostAvatar = data.hostAvatar;
+        }
+    }
+
+    else if (data.type === 'UPDATE_SLOT') {
+
+        updateSlotDisplay(data);
+    }
+
+    else if (data.type === 'PLAY_GIFT') {
+
+        const targetSlot = Number(data.targetSlot);
+
+        if (targetSlot && slotPoints[targetSlot] !== undefined) {
+
+            slotPoints[targetSlot] += Number(data.increment || 0);
+
+            const countElem =
+                $(`coincount-slot-${targetSlot}`);
+
+            if (countElem) {
+                countElem.innerText = formatPoin(slotPoints[targetSlot]);
+            }
+
+            const badge =
+                $(`coin-badge-${targetSlot}`);
+
+            if (badge) badge.style.display = 'flex';
+        }
+
+        if (data.badgeImg) {
+            showGiftBadgeTemporarily(targetSlot, data.badgeImg);
+        }
+
+        receiveGiftForCombo(data);
+    }
+}
+
+/* ================= BROADCAST CHANNEL ================= */
+
+channel.onmessage = event => {
+    handleIncomingMessage(event.data);
+};
+
+/* ================= WEBSOCKET ================= */
+
+let ws = null;
+let reconnectTimer = null;
+let reconnectDelay = 1000;
+let manuallyClosed = false;
+
+function connectWebSocket() {
+
+    if (manuallyClosed) return;
+
+    if (
+        ws &&
+        (ws.readyState === WebSocket.CONNECTING ||
+         ws.readyState === WebSocket.OPEN)
+    ) {
+        return;
+    }
+
+    try {
+
+        const protocol =
+            location.protocol === 'https:' ? 'wss:' : 'ws:';
+
+        ws = new WebSocket(
+            `${protocol}//${location.host || 'localhost:8081'}`
+        );
+
+        ws.onopen = () => {
+            reconnectDelay = 1000;
+            console.log('WebSocket terhubung.');
+        };
+
+        ws.onmessage = event => {
+
+            try {
+
+                const d = JSON.parse(event.data);
+
+                if (d.type === 'gift') {
+
+                    handleIncomingMessage({
+
+                        type: 'PLAY_GIFT',
+
+                        targetSlot: 1,
+                        increment: Number(d.coins || 1),
+
+                        badgeImg: d.giftImage || '',
+                        giftTitle: d.giftName || 'Gift',
+
+                        senderName:
+                            d.nickname || d.username || 'User',
+
+                        senderAvatar: d.avatar || '',
+
+                        giftId:
+                            d.giftId ||
+                            d.gift_id ||
+                            d.id ||
+                            '',
+
+                        repeatCount:
+                            d.repeatCount ??
+                            d.repeat_count ??
+                            d.comboCount ??
+                            d.combo_count,
+
+                        giftCount:
+                            d.giftCount ??
+                            d.gift_count,
+
+                        repeatEnd:
+                            d.repeatEnd ??
+                            d.repeat_end ??
+                            d.comboEnd ??
+                            d.combo_end,
+
+                        videoBlob: d.videoBlob,
+
+                        src:
+                            d.src ||
+                            d.videoUrl ||
+                            d.video_url ||
+                            ''
+                    });
+                }
+
+            } catch (err) {
+                console.error('WebSocket message error:', err);
+            }
+        };
+
+        ws.onerror = err => {
+            console.log('WebSocket error:', err);
+        };
+
+        ws.onclose = () => {
+
+            ws = null;
+
+            if (manuallyClosed) return;
+
+            clearTimeout(reconnectTimer);
+
+            reconnectTimer = setTimeout(() => {
+                connectWebSocket();
+            }, reconnectDelay);
+
+            reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+        };
+
+    } catch (err) {
+
+        console.log('WebSocket connection error:', err);
+
+        clearTimeout(reconnectTimer);
+
+        reconnectTimer = setTimeout(() => {
+            connectWebSocket();
+        }, reconnectDelay);
+
+        reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+    }
+}
+
+connectWebSocket();
+
+/* ================= PEMUTAR VIDEO GIFT ================= */
+
+let glReady = false;
+let renderActive = false;
+let renderFrameId = null;
+let videoFrameCallbackId = null;
+let lastVideoTime = -1;
+let giftVideoGeneration = 0;
+
+const giftCanvas = $('giftCanvas');
+const giftVideo = $('giftVideo');
+const giftOverlay = $('giftOverlayContainer');
+
+let canvas2D = null;
 
 function stopGiftRenderer() {
 
@@ -1450,29 +1590,6 @@ function stopGiftRenderer() {
     }
 
     videoFrameCallbackId = null;
-}
-
-function scheduleGiftFrame() {
-
-    if (!renderActive) return;
-
-    if (giftVideo.requestVideoFrameCallback) {
-
-        videoFrameCallbackId =
-            giftVideo.requestVideoFrameCallback(() => {
-
-                videoFrameCallbackId = null;
-                renderGiftFrame();
-            });
-
-    } else {
-
-        renderFrameId = requestAnimationFrame(() => {
-
-            renderFrameId = null;
-            renderGiftFrame();
-        });
-    }
 }
 
 function renderGiftFrame() {
@@ -1514,19 +1631,44 @@ function renderGiftFrame() {
                 console.error('WebGL rendering error:', e);
             }
 
-        } else if (canvas2D) {
+        } else {
 
-            canvas2D.drawImage(
-                video,
-                0,
-                0,
-                giftCanvas.width,
-                giftCanvas.height
-            );
+            if (canvas2D) {
+                canvas2D.drawImage(
+                    video,
+                    0,
+                    0,
+                    giftCanvas.width,
+                    giftCanvas.height
+                );
+            }
         }
     }
 
     scheduleGiftFrame();
+}
+
+function scheduleGiftFrame() {
+
+    if (!renderActive) return;
+
+    if (giftVideo.requestVideoFrameCallback) {
+
+        videoFrameCallbackId =
+            giftVideo.requestVideoFrameCallback(() => {
+
+                videoFrameCallbackId = null;
+                renderGiftFrame();
+            });
+
+    } else {
+
+        renderFrameId = requestAnimationFrame(() => {
+
+            renderFrameId = null;
+            renderGiftFrame();
+        });
+    }
 }
 
 function playGiftVideo(src, onFinished) {
@@ -1588,6 +1730,12 @@ function playGiftVideo(src, onFinished) {
     video.onerror = finish;
 
     glReady = initWebGL(canvas);
+
+    /*
+     * Jika WebGL tidak tersedia, gunakan Canvas 2D.
+     * Context 2D hanya diminta jika WebGL gagal.
+     */
+
     canvas2D = null;
 
     if (!glReady) {
@@ -1605,14 +1753,29 @@ function playGiftVideo(src, onFinished) {
         const originalWidth = video.videoWidth || 720;
         const originalHeight = video.videoHeight || 1280;
 
+        /*
+         * Batasi resolusi render untuk menjaga GPU.
+         * Rasio video tetap dipertahankan.
+         */
+
+        const maxWidth = 720;
+        const maxHeight = 1280;
+
         const scale = Math.min(
             1,
-            720 / originalWidth,
-            1280 / originalHeight
+            maxWidth / originalWidth,
+            maxHeight / originalHeight
         );
 
-        const renderWidth = Math.max(1, Math.round(originalWidth * scale));
-        const renderHeight = Math.max(1, Math.round(originalHeight * scale));
+        const renderWidth = Math.max(
+            1,
+            Math.round(originalWidth * scale)
+        );
+
+        const renderHeight = Math.max(
+            1,
+            Math.round(originalHeight * scale)
+        );
 
         canvas.width = renderWidth;
         canvas.height = renderHeight;
@@ -1622,17 +1785,25 @@ function playGiftVideo(src, onFinished) {
             gl.viewport(0, 0, renderWidth, renderHeight);
             gl.useProgram(glProgram);
 
-            const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
+            const posLoc =
+                gl.getAttribLocation(glProgram, 'a_pos');
 
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
             gl.enableVertexAttribArray(posLoc);
-            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-            const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
+            gl.vertexAttribPointer(
+                posLoc, 2, gl.FLOAT, false, 0, 0
+            );
+
+            const texLoc =
+                gl.getAttribLocation(glProgram, 'a_tex');
 
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
             gl.enableVertexAttribArray(texLoc);
-            gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
+
+            gl.vertexAttribPointer(
+                texLoc, 2, gl.FLOAT, false, 0, 0
+            );
 
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, glTexture);
@@ -1658,7 +1829,7 @@ function playGiftVideo(src, onFinished) {
 
         } catch (err) {
 
-            console.warn('Gift autoplay error:', err);
+            console.warn('Gift video autoplay error:', err);
 
             video.muted = true;
 
@@ -1689,6 +1860,11 @@ window.addEventListener('pagehide', () => {
 
     stopGiftRenderer();
 
+    if (displayCamStream) {
+        displayCamStream.getTracks().forEach(track => track.stop());
+        displayCamStream = null;
+    }
+
     if (ws) {
         ws.close();
         ws = null;
@@ -1703,7 +1879,6 @@ window.addEventListener('pagehide', () => {
     }
 
     for (const group of giftComboGroups.values()) {
-
         clearTimeout(group.timer);
 
         if (group.src?.startsWith('blob:')) {
@@ -1714,7 +1889,9 @@ window.addEventListener('pagehide', () => {
     giftComboGroups.clear();
 
     giftVideoQueue.forEach(item => {
-        if (item.isBlob) URL.revokeObjectURL(item.src);
+        if (item.isBlob) {
+            URL.revokeObjectURL(item.src);
+        }
     });
 
     giftVideoQueue.length = 0;
@@ -1723,6 +1900,15 @@ window.addEventListener('pagehide', () => {
 
     channel.close();
 });
+
+document.addEventListener('visibilitychange', () => {
+
+    if (document.hidden) {
+        console.log('Display berada di background.');
+    }
+});
+
+/* ================= WEBGL RECOVERY ================= */
 
 giftCanvas.addEventListener('webglcontextlost', event => {
 
@@ -1746,9 +1932,7 @@ giftCanvas.addEventListener('webglcontextrestored', () => {
     console.log('WebGL context restored:', glReady);
 });
 
-/* Kamera web sengaja tidak dijalankan dalam versi ini. */
-console.log('Display siap. Kamera host menggunakan TikTok Studio.');
-
 </script>
+
 </body>
 </html>
