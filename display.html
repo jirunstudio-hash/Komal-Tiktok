@@ -11,7 +11,7 @@ body{display:flex;justify-content:center;align-items:center}
 .phone-screen{width:100vw;height:100vh;max-width:440px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:4px;background:#000;transform:translateZ(0)}
 .live-layout{display:flex;gap:4px;width:100%;position:relative;z-index:10;align-items:stretch}
 
-/* HOST BLUE NEON PULSE */
+/* ANIMASI HOST */
 @keyframes hostBluePulse{
 0%,100%{border-color:#00d2ff;box-shadow:0 0 4px #00d2ff,0 0 9px rgba(0,210,255,.75),inset 0 0 3px rgba(0,210,255,.25)}
 50%{border-color:rgba(0,110,255,.25);box-shadow:0 0 1px rgba(0,150,255,.15),inset 0 0 1px rgba(0,150,255,.1)}
@@ -25,8 +25,42 @@ body{display:flex;justify-content:center;align-items:center}
 .host-pill-icon svg{width:13px;height:13px;fill:#26364a}
 .host-bottom-pill{position:absolute;bottom:6px;left:6px;z-index:12;background:rgba(0,0,0,.65);padding:3px 8px;border-radius:999px;display:flex;align-items:center;max-width:calc(100% - 16px)}
 .host-name-text{color:#fff;font-size:.62rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* GRID KOMAL */
 .komal-grid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:4px;position:relative;z-index:10}
-.slot-box{width:100%;aspect-ratio:1/1;background:#1c1d24;border-radius:12px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;contain:layout paint}
+
+/* KOTAK SLOT NORMAL */
+.slot-box{
+width:100%;
+aspect-ratio:1/1;
+background:#1c1d24;
+border:1.5px solid transparent;
+border-radius:12px;
+position:relative;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+contain:layout paint;
+}
+
+/* KOTAK SLOT BERKEDIP BIRU HANYA SAAT FOTO MUNCUL */
+@keyframes slotBluePulse{
+0%,100%{
+border-color:#00d2ff;
+box-shadow:0 0 4px #00d2ff,0 0 9px rgba(0,210,255,.75),inset 0 0 3px rgba(0,210,255,.25);
+}
+50%{
+border-color:rgba(0,110,255,.2);
+box-shadow:0 0 1px rgba(0,150,255,.1),inset 0 0 1px rgba(0,150,255,.05);
+}
+}
+.slot-box.has-photo{
+border-color:#00d2ff;
+animation:slotBluePulse .65s infinite ease-in-out;
+}
+
 .slot-bg-blur{position:absolute!important;inset:-8px!important;width:calc(100% + 16px)!important;height:calc(100% + 16px)!important;object-fit:cover!important;filter:blur(7px) brightness(.7)!important;display:none;z-index:1;pointer-events:none}
 .slot-bg-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25);display:none;z-index:2;pointer-events:none}
 .slot-plus-svg{width:28px;height:28px;stroke:#8e95a3;stroke-width:4;stroke-linecap:round;z-index:3;margin-bottom:2px}
@@ -39,7 +73,7 @@ body{display:flex;justify-content:center;align-items:center}
 @keyframes popGiftBadge{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 .slot-top-badge{position:absolute;top:5px;right:5px;z-index:8;width:24px;height:24px;display:none;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));pointer-events:none;animation:popGiftBadge .3s ease-out}
 
-/* NAMA AKUN TIKTOK - TANPA GARIS PUTIH */
+/* NAMA AKUN TANPA GARIS PUTIH */
 .slot-name-pill{
 position:absolute;
 bottom:5px;
@@ -70,7 +104,7 @@ text-shadow:none;
 .slot-plus-circle{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .slot-pill-plus-svg{width:8px;height:8px}
 
-/* MIKROFON TANPA LINGKARAN DAN BACKGROUND */
+/* MIKROFON TANPA LINGKARAN */
 .mic-container{
 position:absolute;
 bottom:5px;
@@ -197,7 +231,7 @@ grid.insertAdjacentHTML('beforeend',`
 </div>`);
 }
 
-/* Status mute dari data sumber */
+/* STATUS MIKROFON */
 function getMuteStatus(data){
 const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
 for(const key of keys){
@@ -213,8 +247,7 @@ return null;
 
 function updateMicStatus(slotNum,status){
 const mic=$(`mic-slot-${slotNum}`);
-if(!mic)return;
-if(status===null||status===undefined)return;
+if(!mic||status===null||status===undefined)return;
 slotMuteStates[slotNum]=Boolean(status);
 mic.classList.toggle('is-muted',Boolean(status));
 mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
@@ -300,14 +333,24 @@ function updateSlotDisplay(data){
 const{slotNum,nameInput,initialPoin,profileImg,action}=data;
 const slotBox=$(`slot-${slotNum}`);if(!slotBox)return;
 const coinBadge=$(`coin-badge-${slotNum}`),countElem=$(`coincount-slot-${slotNum}`),namePill=$(`namepill-slot-${slotNum}`),nameText=$(`nametext-slot-${slotNum}`),mic=$(`mic-slot-${slotNum}`),img=$(`img-slot-${slotNum}`),bg=$(`bg-slot-${slotNum}`),bgOverlay=$(`overlay-slot-${slotNum}`),icon=$(`icon-${slotNum}`),req=$(`req-${slotNum}`),topBadge=$(`topbadge-slot-${slotNum}`);
+
 if(action==='clear_slot'){
-img.style.display='none';img.removeAttribute('src');bg.style.display='none';bg.removeAttribute('src');bgOverlay.style.display='none';slotBox.style.background='#1c1d24';icon.style.display='block';req.style.display='inline-block';namePill.style.display='none';mic.style.display='none';mic.classList.remove('is-muted');delete slotMuteStates[slotNum];coinBadge.style.display='none';
+slotBox.classList.remove('has-photo');
+img.style.display='none';img.removeAttribute('src');
+bg.style.display='none';bg.removeAttribute('src');
+bgOverlay.style.display='none';slotBox.style.background='#1c1d24';
+icon.style.display='block';req.style.display='inline-block';
+namePill.style.display='none';mic.style.display='none';
+mic.classList.remove('is-muted');delete slotMuteStates[slotNum];
+coinBadge.style.display='none';
 if(topBadge){topBadge.style.display='none';topBadge.removeAttribute('src')}
 if(badgeTimers[slotNum]){clearTimeout(badgeTimers[slotNum]);delete badgeTimers[slotNum]}
 slotPoints[slotNum]=0;return;
 }
+
 if(initialPoin!==undefined)slotPoints[slotNum]=initialPoin;
 countElem.innerText=formatPoin(slotPoints[slotNum]);coinBadge.style.display='flex';
+
 if(nameInput){
 nameText.innerText=nameInput;
 namePill.style.display='flex';
@@ -316,7 +359,14 @@ const muteStatus=getMuteStatus(data);
 if(muteStatus!==null)updateMicStatus(slotNum,muteStatus);
 else if(slotMuteStates[slotNum]!==undefined)updateMicStatus(slotNum,slotMuteStates[slotNum]);
 }
-if(profileImg){icon.style.display='none';req.style.display='none';img.src=profileImg;img.style.display='block';bg.src=profileImg;bg.style.display='block';bgOverlay.style.display='block'}
+
+if(profileImg){
+icon.style.display='none';req.style.display='none';
+img.src=profileImg;img.style.display='block';
+bg.src=profileImg;bg.style.display='block';
+bgOverlay.style.display='block';
+slotBox.classList.add('has-photo');
+}
 }
 
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
