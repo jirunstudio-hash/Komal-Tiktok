@@ -20,12 +20,14 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
+            width: 100vw;
             height: 100vh; 
             overflow: hidden; 
         }
 
+        /* FULL HITAM PEKAT - GARIS MERAH & SHADOW DIHILANGKAN TOTAL */
         .phone-screen { 
-            height: calc(100vh - 20px); 
+            height: 100vh; 
             width: 100vw; 
             max-width: 440px; 
             background: #000; 
@@ -36,8 +38,9 @@
             justify-content: flex-start; 
             align-items: center; 
             padding: 4px;
-            border: 1.5px solid #ff0033;
-            box-shadow: 0 0 14px rgba(255, 0, 51, 0.35);
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
             transform: translateZ(0);
             backface-visibility: hidden;
         }
@@ -94,103 +97,6 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* ===== TIKTOK STYLE GIFT NOTIFICATION ===== */
-.host-gift-toast-container {
-    position: absolute;
-    bottom: 34px;
-    left: 6px;
-    z-index: 25;
-    pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-    max-width: calc(100% - 12px);
-}
-
-.gift-banner-toast {
-    display: none;
-    align-items: center;
-    height: 34px;
-    background: linear-gradient(
-        90deg,
-        rgba(20, 20, 25, 0.94) 0%,
-        rgba(30, 30, 38, 0.88) 75%,
-        rgba(35, 35, 45, 0.72) 100%
-    );
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
-    padding: 3px 7px 3px 4px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
-    animation: tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
-    max-width: 100%;
-    transform: translateZ(0);
-    position: relative;
-}
-
-.toast-avatar {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    flex-shrink: 0;
-    background: #252530;
-}
-
-.toast-text-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 6px;
-    margin-right: 5px;
-    overflow: hidden;
-    line-height: 1.15;
-}
-
-.toast-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 95px;
-    letter-spacing: 0;
-}
-
-.toast-desc {
-    font-size: 9px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 105px;
-    letter-spacing: 0;
-}
-
-.toast-gift-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
-    flex-shrink: 0;
-    animation: tiktokGiftIconBounce 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-}
-
-/* ANGKA COMBO DI LUAR KOTAK BANNER */
-.toast-combo-count {
-    display: none;
-    margin-left: 6px;
-    color: #ffffff;
-    font-size: 19px;
-    font-weight: 900;
-    font-style: italic;
-    white-space: nowrap;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-    align-self: center;
-}
         .host-bottom-pill {
             position: absolute;
             bottom: 6px;
@@ -393,6 +299,122 @@
             flex-shrink: 0;
         }
 
+        /* ===== BANNER NOTIFIKASI GIFT PERSIS 100% TIKTOK ===== */
+        .gift-banner-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            padding: 4px 6px 0 6px;
+            position: relative;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        @keyframes tiktokBannerSlideIn {
+            0% { transform: translateX(-115%); opacity: 0; }
+            75% { transform: translateX(4px); opacity: 1; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes tiktokBannerSlideOut {
+            0% { transform: translateX(0) scale(1); opacity: 1; }
+            100% { transform: translateX(-115%) scale(0.9); opacity: 0; }
+        }
+        @keyframes tiktokGiftIconBounce {
+            0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+            65% { transform: scale(1.22) rotate(4deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .gift-banner-toast {
+            display: none;
+            align-items: center;
+            height: 26px;
+            background: linear-gradient(90deg, rgba(15, 15, 20, 0.78) 0%, rgba(20, 20, 28, 0.65) 75%, rgba(25, 25, 35, 0.4) 100%);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 2px 4px 2px 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+            animation: tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            max-width: 80%;
+            transform: translateZ(0);
+            overflow: visible;
+            position: relative;
+        }
+
+        .toast-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 0.8px solid rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+            background: #252530;
+            image-rendering: high-quality;
+        }
+
+        .toast-text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            line-height: 1.1;
+        }
+
+        .toast-name {
+            font-size: 10px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85px;
+            letter-spacing: -0.1px;
+        }
+
+        .toast-desc {
+            font-size: 8.5px;
+            font-weight: 500;
+            color: #ffe66d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90px;
+            letter-spacing: -0.1px;
+        }
+
+        .toast-gift-img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+            flex-shrink: 0;
+            margin-left: 1px;
+            margin-right: -3px;
+            margin-top: -2px;
+            margin-bottom: -2px;
+            animation: tiktokGiftIconBounce 0.38s 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            image-rendering: high-quality;
+        }
+
+        /* ANGKA COMBO DI LUAR KAPSUL BANNER */
+        .toast-combo-count {
+            display: none;
+            margin-left: 5px;
+            color: #ffffff;
+            font-size: 17px;
+            line-height: 1;
+            font-weight: 900;
+            font-style: italic;
+            white-space: nowrap;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
+            align-self: center;
+            flex-shrink: 0;
+        }
+
         .gift-overlay { 
             position: absolute; 
             top: 0; 
@@ -429,22 +451,6 @@
             <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
             <video id="hostVideo" class="host-video" loop autoplay playsinline muted></video>
             <img id="hostCameraImg" alt="Host Cam">
-
-            <!-- BANNER NOTIFIKASI GIFT PERSIS DI ATAS NAMA HOST -->
-            <div class="host-gift-toast-container">
-    <div class="gift-banner-toast" id="giftBannerToast">
-        <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
-
-        <div class="toast-text-col">
-            <div class="toast-name" id="toastGifterName">Host</div>
-            <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
-        </div>
-
-        <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
-    </div>
-
-        <span id="toastComboCount" class="toast-combo-count">𝙭 𝟭</span>
-</div>
 
             <div class="host-bottom-pill" id="hostBottomPill">
                 <span class="host-name-text" id="hostNameText">Host</span>
@@ -503,6 +509,19 @@
         </div>
     </div>
 
+    <!-- BANNER NOTIFIKASI GIFT DI BAWAH HOST -->
+    <div class="gift-banner-wrapper">
+        <div class="gift-banner-toast" id="giftBannerToast">
+            <img id="toastGifterAvatar" class="toast-avatar" src="" alt="Avatar" referrerpolicy="no-referrer">
+            <div class="toast-text-col">
+                <div class="toast-name" id="toastGifterName">Host</div>
+                <div class="toast-desc" id="toastGiftDesc">mengirim Gift</div>
+            </div>
+            <img id="toastGiftIcon" class="toast-gift-img" src="" alt="Gift" referrerpolicy="no-referrer">
+        </div>
+        <span id="toastComboCount" class="toast-combo-count">𝙭 𝟭</span>
+    </div>
+
     <!-- AREA VIDEO GIFT FULL SCREEN WEBGL -->
     <div class="gift-overlay" id="giftOverlayContainer">
         <video id="giftVideo" playsinline crossorigin="anonymous"></video>
@@ -518,6 +537,11 @@
     let displayCamStream = null;
     let toastTimeout = null;
 
+    // Penggabung event combo gift dan antrean pemutaran video
+    const giftComboGroups = new Map();
+    const giftVideoQueue = [];
+    let giftVideoQueueBusy = false;
+
     let detectedHostName = 'Host';
     let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
 
@@ -530,8 +554,6 @@
             
             camImg.style.display = 'none';
             camImg.src = '';
-
-            // Hentikan video file jika sedang jalan
             hVid.removeAttribute('src');
 
             if (!displayCamStream) {
@@ -761,26 +783,31 @@
         }, 5000);
     }
 
-    function playGiftVideo(src) {
+    function showGiftToast(data, comboCount = 1, callbackAfter3Sec) {
         const toast = document.getElementById('giftBannerToast');
         const avatar = document.getElementById('toastGifterAvatar');
         const nameElem = document.getElementById('toastGifterName');
         const descElem = document.getElementById('toastGiftDesc');
         const iconElem = document.getElementById('toastGiftIcon');
+        const comboElem = document.getElementById('toastComboCount');
 
         const hostName = data.senderName || detectedHostName || 'Host';
         const hostAvatar = data.senderAvatar || detectedHostAvatar;
         const giftTitle = data.giftTitle || 'Gift';
         const giftIcon = data.badgeImg || '';
+        const count = Math.max(1, Number(comboCount) || 1);
+        const digits = '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵';
+        const styledCount = String(count).replace(/[0-9]/g, digit => digits[Number(digit)]);
 
         avatar.src = hostAvatar;
         nameElem.innerText = hostName;
         descElem.innerText = `mengirim ${giftTitle}`;
         iconElem.src = giftIcon;
+        comboElem.textContent = `𝙭 ${styledCount}`;
+        comboElem.style.display = 'inline-block';
 
         if (toastTimeout) clearTimeout(toastTimeout);
 
-        // Reset dan jalankan animasi meluncur ke atas nama host
         toast.style.animation = 'none';
         void toast.offsetWidth;
         toast.style.animation = 'tiktokBannerSlideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards';
@@ -795,10 +822,88 @@
         }, 3000);
     }
 
-    channel.onmessage = async (event) => {
-        const data = event.data;
+    function getGiftComboKey(data) {
+        const sender = String(data.senderName || data.username || 'user').toLowerCase();
+        const gift = String(data.giftId || data.giftTitle || 'gift').toLowerCase();
+        return `${sender}::${gift}`;
+    }
 
-        // KONTROL ON-CAM ATAU VIDEO DARI CONTROL PANEL
+    function queueGiftVideo(src, repeatCount = 1) {
+        if (!src) return;
+        const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
+        giftVideoQueue.push({ src, remaining: count });
+        playNextGiftVideo();
+    }
+
+    function playNextGiftVideo() {
+        if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
+        giftVideoQueueBusy = true;
+        const item = giftVideoQueue[0];
+
+        playGiftVideo(item.src, () => {
+            item.remaining -= 1;
+            if (item.remaining > 0) {
+                giftVideoQueueBusy = false;
+                playNextGiftVideo();
+            } else {
+                giftVideoQueue.shift();
+                if (item.src.startsWith('blob:')) URL.revokeObjectURL(item.src);
+                giftVideoQueueBusy = false;
+                playNextGiftVideo();
+            }
+        });
+    }
+
+    function receiveGiftForCombo(data) {
+        const key = getGiftComboKey(data);
+        const explicitCount = Number(data.repeatCount || data.comboCount || data.giftCount || data.repeat_count || data.combo_count || 0);
+        let group = giftComboGroups.get(key);
+
+        if (!group) {
+            group = { data: { ...data }, count: 0, src: null, timer: null };
+            giftComboGroups.set(key, group);
+        }
+
+        group.data = { ...group.data, ...data };
+        group.count = explicitCount > 0 ? Math.max(group.count, explicitCount) : group.count + 1;
+        showGiftToast(group.data, group.count);
+
+        if (group.timer) clearTimeout(group.timer);
+        if (group.timer) clearTimeout(group.timer);
+        group.videoPromise = (async () => {
+            let resolvedSrc = null;
+            if (data.videoBlob) {
+                resolvedSrc = URL.createObjectURL(data.videoBlob);
+            } else if (data.giftId) {
+                const blob = await getSavedVideo(data.giftId);
+                if (blob) resolvedSrc = URL.createObjectURL(blob);
+            } else if (data.src) {
+                resolvedSrc = data.src;
+            }
+            if (resolvedSrc) {
+                if (group.src && group.src.startsWith('blob:') && group.src !== resolvedSrc) {
+                    URL.revokeObjectURL(group.src);
+                }
+                group.src = resolvedSrc;
+            }
+        })();
+
+        group.timer = setTimeout(async () => {
+            await group.videoPromise;
+            giftComboGroups.delete(key);
+            const finalData = { ...group.data };
+            const finalCount = group.count;
+            const finalSrc = group.src;
+            showGiftToast(finalData, finalCount, () => {
+                if (finalSrc) queueGiftVideo(finalSrc, finalCount);
+            });
+        }, 850);
+    }
+
+    // LISTENER DARI BROADCAST CHANNEL & WEBSOCKET
+    function handleIncomingMessage(data) {
+        if (!data) return;
+
         if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
             if (data.action === 'start') {
                 startDisplayDirectCamera();
@@ -843,37 +948,44 @@
             updateSlotDisplay(data);
         }
         else if (data.type === 'PLAY_GIFT') {
-            const targetSlot = data.targetSlot;
-            
+            const targetSlot = Number(data.targetSlot);
+
             if (targetSlot && slotPoints[targetSlot] !== undefined) {
-                slotPoints[targetSlot] += (data.increment || 0);
+                slotPoints[targetSlot] += Number(data.increment || 0);
                 const countElem = document.getElementById(`coincount-slot-${targetSlot}`);
                 if (countElem) countElem.innerText = formatPoin(slotPoints[targetSlot]);
                 const badge = document.getElementById(`coin-badge-${targetSlot}`);
                 if (badge) badge.style.display = 'flex';
             }
 
-            if (data.badgeImg) {
-                showGiftBadgeTemporarily(targetSlot, data.badgeImg);
-            }
-
-            let videoUrl = null;
-            if (data.videoBlob) {
-                videoUrl = URL.createObjectURL(data.videoBlob);
-            } else if (data.giftId) {
-                const blob = await getSavedVideo(data.giftId);
-                if (blob) videoUrl = URL.createObjectURL(blob);
-            } else if (data.src) {
-                videoUrl = data.src;
-            }
-
-            showGiftToast(data, () => {
-                if (videoUrl) {
-                    playGiftVideo(videoUrl);
-                }
-            });
+            if (data.badgeImg) showGiftBadgeTemporarily(targetSlot, data.badgeImg);
+            receiveGiftForCombo(data);
         }
-    };
+    }
+
+    channel.onmessage = (event) => handleIncomingMessage(event.data);
+
+    // KONEKSI WEBSOCKET SERVER STREAM
+    try {
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${location.host || 'localhost:8081'}`);
+        ws.onmessage = (e) => {
+            try {
+                const d = JSON.parse(e.data);
+                if (d.type === 'gift') {
+                    handleIncomingMessage({
+                        type: 'PLAY_GIFT',
+                        targetSlot: 1,
+                        increment: Number(d.coins || 1),
+                        badgeImg: d.giftImage || '',
+                        giftTitle: d.giftName || 'Gift',
+                        senderName: d.nickname || d.username || 'User',
+                        senderAvatar: d.avatar || ''
+                    });
+                }
+            } catch(err) {}
+        };
+    } catch(err) {}
 
     function formatPoin(val) {
         if (!val || val === 0) return '0';
@@ -882,85 +994,110 @@
         return val.toLocaleString('id-ID');
     }
 
-    function playGiftVideo(src) {
+    function playGiftVideo(src, onFinished) {
         const overlayContainer = document.getElementById('giftOverlayContainer');
         const giftVideo = document.getElementById('giftVideo');
         const canvas = document.getElementById('giftCanvas');
+        let finished = false;
 
-        if (animFrameId) cancelAnimationFrame(animFrameId);
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+            overlayContainer.style.display = 'none';
+            if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
+            giftVideo.onended = null;
+            giftVideo.onerror = null;
+            giftVideo.onloadedmetadata = null;
+            giftVideo.pause();
+            giftVideo.removeAttribute('src');
+            giftVideo.load();
+            if (typeof onFinished === 'function') onFinished();
+        };
+
+        if (animFrameId) {
+            cancelAnimationFrame(animFrameId);
+            animFrameId = null;
+        }
 
         overlayContainer.style.display = 'block';
+        giftVideo.pause();
+        giftVideo.removeAttribute('src');
+        giftVideo.load();
         giftVideo.src = src;
-        giftVideo.currentTime = 0;
         giftVideo.muted = false;
         giftVideo.volume = 1.0;
+        giftVideo.onended = finish;
+        giftVideo.onerror = finish;
 
         isWebGLSupported = initWebGL(canvas);
 
         giftVideo.onloadedmetadata = () => {
+            if (finished) return;
             const vWidth = giftVideo.videoWidth || 720;
             const vHeight = giftVideo.videoHeight || 1280;
             canvas.width = vWidth;
             canvas.height = vHeight;
 
-            if (isWebGLSupported && gl) {
-                gl.viewport(0, 0, vWidth, vHeight);
-                gl.useProgram(glProgram);
-
-                const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
-                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
-                gl.enableVertexAttribArray(posLoc);
-                gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-                const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
-                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
-                gl.enableVertexAttribArray(texLoc);
-                gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
-
-                function renderWebGLFrame() {
-                    if (giftVideo.paused || giftVideo.ended) {
-                        overlayContainer.style.display = 'none';
-                        if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
-                        return;
-                    }
-
-                    if (giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA) {
+            const startPlayback = () => {
+                if (finished) return;
+                const renderWebGLFrame = () => {
+                    if (finished) return;
+                    if (giftVideo.ended) { finish(); return; }
+                    if (giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA && gl) {
                         gl.bindTexture(gl.TEXTURE_2D, glTexture);
                         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, giftVideo);
                         gl.drawArrays(gl.TRIANGLES, 0, 6);
                     }
-
                     animFrameId = requestAnimationFrame(renderWebGLFrame);
-                }
+                };
 
-                giftVideo.play().then(() => {
-                    renderWebGLFrame();
-                }).catch(() => {
-                    giftVideo.muted = true;
-                    giftVideo.play().then(() => { renderWebGLFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
-                });
-
-            } else {
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                function render2DFrame() {
-                    if (giftVideo.paused || giftVideo.ended) {
-                        overlayContainer.style.display = 'none';
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        return;
+                const render2DFrame = () => {
+                    if (finished) return;
+                    if (giftVideo.ended) { finish(); return; }
+                    const ctx = canvas.getContext('2d');
+                    if (ctx && giftVideo.readyState >= giftVideo.HAVE_CURRENT_DATA) {
+                        ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
                     }
-                    ctx.drawImage(giftVideo, 0, 0, canvas.width, canvas.height);
                     animFrameId = requestAnimationFrame(render2DFrame);
-                }
-                giftVideo.play().then(() => { render2DFrame(); }).catch(() => { overlayContainer.style.display = 'none'; });
-            }
-        };
+                };
 
-        giftVideo.onended = () => {
-            overlayContainer.style.display = 'none';
-            if (animFrameId) cancelAnimationFrame(animFrameId);
-            giftVideo.src = '';
+                const playPromise = giftVideo.play();
+                if (playPromise && typeof playPromise.then === 'function') {
+                    playPromise.then(() => {
+                        if (isWebGLSupported && gl) {
+                            gl.viewport(0, 0, vWidth, vHeight);
+                            gl.useProgram(glProgram);
+                            const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
+                            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
+                            gl.enableVertexAttribArray(posLoc);
+                            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+                            const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
+                            gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
+                            gl.enableVertexAttribArray(texLoc);
+                            gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
+                            renderWebGLFrame();
+                        } else {
+                            render2DFrame();
+                        }
+                    }).catch(() => {
+                        giftVideo.muted = true;
+                        giftVideo.play().then(() => {
+                            if (isWebGLSupported && gl) renderWebGLFrame();
+                            else render2DFrame();
+                        }).catch(finish);
+                    });
+                } else {
+                    finish();
+                }
+            };
+            startPlayback();
         };
     }
+
 </script>
 </body>
 </html>
