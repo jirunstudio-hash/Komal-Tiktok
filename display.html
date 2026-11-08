@@ -104,7 +104,6 @@ text-align:center;
 z-index:1
 }
 
-/* LABEL HOST ATAS DIHAPUS */
 .host-top-pill{
 display:none!important
 }
@@ -131,7 +130,7 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* GRID KOMAL - UKURAN HOST TETAP ASLI */
+/* GRID KOMAL TETAP ASLI */
 .komal-grid{
 flex:1;
 min-width:0;
@@ -143,7 +142,6 @@ position:relative;
 z-index:10
 }
 
-/* SLOT NORMAL */
 .slot-box{
 width:100%;
 aspect-ratio:1/1;
@@ -159,18 +157,14 @@ justify-content:center;
 contain:layout paint
 }
 
-/* KEDIP BIRU */
 @keyframes slotBluePulse{
 0%,100%{
 border-color:#00d2ff;
-box-shadow:
-inset 0 0 4px rgba(0,210,255,.45),
-inset 0 0 8px rgba(0,210,255,.18)
+box-shadow:inset 0 0 4px rgba(0,210,255,.45),inset 0 0 8px rgba(0,210,255,.18)
 }
 50%{
 border-color:rgba(0,110,255,.3);
-box-shadow:
-inset 0 0 1px rgba(0,150,255,.12)
+box-shadow:inset 0 0 1px rgba(0,150,255,.12)
 }
 }
 
@@ -179,7 +173,6 @@ border:1.5px solid #00d2ff;
 animation:slotBluePulse 1s infinite ease-in-out
 }
 
-/* FOTO DAN ELEMEN SLOT */
 .slot-bg-blur{
 position:absolute!important;
 inset:-8px!important;
@@ -288,7 +281,6 @@ pointer-events:none;
 animation:popGiftBadge .3s ease-out
 }
 
-/* NAMA MEMBER */
 .slot-name-pill{
 position:absolute;
 bottom:5px;
@@ -334,7 +326,6 @@ width:8px;
 height:8px
 }
 
-/* MIKROFON */
 .mic-container{
 position:absolute;
 bottom:5px;
@@ -382,10 +373,10 @@ box-shadow:none
 fill:#fff
 }
 
-/* NOTIFIKASI GIFT LEBIH BESAR */
+/* NOTIFIKASI GIFT - SEDIKIT LEBIH KECIL */
 .gift-banner-wrapper{
 position:absolute;
-bottom:34px;
+bottom:40px;
 left:6px;
 right:6px;
 display:flex;
@@ -396,59 +387,38 @@ pointer-events:none
 }
 
 @keyframes tiktokBannerSlideIn{
-0%{
-transform:translateX(-115%);
-opacity:0
-}
-75%{
-transform:translateX(4px);
-opacity:1
-}
-100%{
-transform:translateX(0);
-opacity:1
-}
+0%{transform:translateX(-115%);opacity:0}
+75%{transform:translateX(4px);opacity:1}
+100%{transform:translateX(0);opacity:1}
 }
 
 @keyframes tiktokBannerSlideOut{
-0%{
-transform:translateX(0);
-opacity:1
-}
-100%{
-transform:translateX(-115%);
-opacity:0
-}
+0%{transform:translateX(0);opacity:1}
+100%{transform:translateX(-115%);opacity:0}
 }
 
 @keyframes tiktokGiftIconBounce{
-0%{
-transform:scale(.5);
-opacity:0
-}
-100%{
-transform:scale(1);
-opacity:1
-}
+0%{transform:scale(.5);opacity:0}
+100%{transform:scale(1);opacity:1}
 }
 
 .gift-banner-toast{
 display:none;
 align-items:center;
-height:42px;
+height:37px;
 background:linear-gradient(90deg,rgba(15,15,20,.92),rgba(20,20,28,.82));
 border:.5px solid rgba(255,255,255,.16);
 border-radius:999px;
-padding:4px 8px 4px 4px;
+padding:3px 6px 3px 3px;
 box-shadow:0 2px 8px rgba(0,0,0,.5);
 animation:tiktokBannerSlideIn .35s ease-out forwards;
-max-width:90%;
+max-width:88%;
 overflow:visible
 }
 
 .toast-avatar{
-width:32px;
-height:32px;
+width:28px;
+height:28px;
 border-radius:50%;
 object-fit:cover;
 border:1px solid rgba(255,255,255,.45);
@@ -460,46 +430,46 @@ background:#252530
 display:flex;
 flex-direction:column;
 justify-content:center;
-margin:0 8px;
+margin:0 7px;
 overflow:hidden;
 line-height:1.15
 }
 
 .toast-name{
-font-size:12px;
+font-size:11px;
 font-weight:800;
 color:#fff;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:125px
+max-width:110px
 }
 
 .toast-desc{
-font-size:10px;
+font-size:9px;
 font-weight:600;
 color:#fff;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:130px
+max-width:115px
 }
 
 .toast-gift-img{
-width:42px;
-height:42px;
+width:37px;
+height:37px;
 object-fit:contain;
 filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));
 flex-shrink:0;
-margin:-4px -4px -4px 3px;
+margin:-3px -3px -3px 2px;
 animation:tiktokGiftIconBounce .38s ease-out both
 }
 
 .toast-combo-count{
 display:none;
-margin-left:7px;
+margin-left:6px;
 color:#fff;
-font-size:20px;
+font-size:18px;
 line-height:1;
 font-weight:900;
 font-style:italic;
@@ -508,6 +478,7 @@ text-shadow:0 2px 5px rgba(0,0,0,.95);
 flex-shrink:0
 }
 
+/* VIDEO GIFT NAIK 20 PIXEL TANPA MENGUBAH UKURAN CANVAS */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -516,7 +487,8 @@ height:100%;
 z-index:50;
 pointer-events:none;
 display:none;
-background:transparent
+background:transparent;
+transform:translateY(-20px)
 }
 
 #giftVideo{
@@ -605,7 +577,6 @@ let detectedHostName = 'Host';
 let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
 
 const $ = id => document.getElementById(id);
-
 const grid = $('komalGrid');
 
 for(let i=1;i<=8;i++){
@@ -613,9 +584,7 @@ slotPoints[i]=0;
 
 grid.insertAdjacentHTML('beforeend',`
 <div class="slot-box" id="slot-${i}">
-
 <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
-
 <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
 <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none">
@@ -640,7 +609,6 @@ grid.insertAdjacentHTML('beforeend',`
 
 <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none">
 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
-
 <div class="slot-plus-circle">
 <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
 <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
@@ -656,36 +624,27 @@ grid.insertAdjacentHTML('beforeend',`
 <line class="mic-slash" x1="3" y1="3" x2="21" y2="21" stroke-linecap="round"/>
 </svg>
 </div>
-
 </div>
 `);
 }
 
 /* STATUS MIKROFON */
 function getMuteStatus(data){
-const keys=[
-'isMuted','is_mute','mute','muted',
-'isMicMuted','micMuted','is_mic_muted'
-];
+const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
 
 for(const key of keys){
 if(Object.prototype.hasOwnProperty.call(data,key)){
 const value=data[key];
-
 if(typeof value==='boolean')return value;
-
 if(value===1||value==='1'||value==='true'||value==='muted')return true;
-
 if(value===0||value==='0'||value==='false'||value==='unmuted')return false;
 }
 }
-
 return null;
 }
 
 function updateMicStatus(slotNum,status){
 const mic=$(`mic-slot-${slotNum}`);
-
 if(!mic||status===null||status===undefined)return;
 
 slotMuteStates[slotNum]=Boolean(status);
@@ -695,7 +654,6 @@ mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 
 /* KAMERA HOST */
 async function startDisplayDirectCamera(){
-
 if(cameraStarting)return;
 
 const hVid=$('hostVideo');
@@ -703,20 +661,16 @@ const placeholder=$('hostPlaceholder');
 const camImg=$('hostCameraImg');
 
 if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
-
 hVid.srcObject=displayCamStream;
 hVid.style.display='block';
 placeholder.style.display='none';
-
 if(hVid.paused)await hVid.play().catch(()=>{});
-
 return;
 }
 
 cameraStarting=true;
 
 try{
-
 if(!navigator.mediaDevices?.getUserMedia){
 throw new Error('Kamera membutuhkan HTTPS atau localhost.');
 }
@@ -740,48 +694,38 @@ placeholder.style.display='none';
 await hVid.play();
 
 const track=displayCamStream.getVideoTracks()[0];
-
 if(track)console.log('Kamera aktif:',track.getSettings());
 
 }catch(err){
-
 console.error('Kamera error:',err);
 placeholder.style.display='block';
 placeholder.textContent='Kamera gagal aktif';
-
 }finally{
-
 cameraStarting=false;
-
 }
 }
 
 function stopDisplayDirectCamera(){
-
 if(displayCamStream){
 displayCamStream.getTracks().forEach(track=>track.stop());
 displayCamStream=null;
 }
 
 const hVid=$('hostVideo');
-
 hVid.pause();
 hVid.srcObject=null;
 hVid.style.display='none';
-
 $('hostPlaceholder').style.display='block';
 }
 
 function releaseHostObjectURL(){
-
 if(hostMediaObjectURL){
 URL.revokeObjectURL(hostMediaObjectURL);
 hostMediaObjectURL=null;
 }
-
-/* WEBGL */
 }
 
+/* WEBGL */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -789,11 +733,9 @@ let glBuffers={};
 let isWebGLSupported=false;
 
 function initWebGL(canvas){
-
 if(gl&&glProgram&&glTexture)return true;
 
 try{
-
 gl=canvas.getContext('webgl',{
 alpha:true,
 premultipliedAlpha:false,
@@ -819,33 +761,26 @@ const fsSource=`
 precision mediump float;
 uniform sampler2D u_tex;
 varying vec2 v_tex;
-
 void main(){
 vec4 c=texture2D(u_tex,v_tex);
 float maxRB=max(c.r,c.b);
 float gDiff=c.g-maxRB;
-
 if(gDiff>0.06&&c.g>0.18){
 float a=1.0-smoothstep(0.06,0.18,gDiff);
 c.a=min(c.a,a);
 c.g=maxRB;
 }
-
 float lum=dot(c.rgb,vec3(0.299,0.587,0.114));
-
 if(lum<0.07){
 c.a=0.0;
 }else if(lum<0.16){
 c.a=min(c.a,(lum-0.07)/0.09);
 }
-
 gl_FragColor=c;
 }`;
 
 function createShader(type,src){
-
 const shader=gl.createShader(type);
-
 gl.shaderSource(shader,src);
 gl.compileShader(shader);
 
@@ -854,21 +789,17 @@ console.error(gl.getShaderInfoLog(shader));
 gl.deleteShader(shader);
 return null;
 }
-
 return shader;
 }
 
 const vs=createShader(gl.VERTEX_SHADER,vsSource);
 const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-
 if(!vs||!fs)return false;
 
 glProgram=gl.createProgram();
-
 gl.attachShader(glProgram,vs);
 gl.attachShader(glProgram,fs);
 gl.linkProgram(glProgram);
-
 gl.deleteShader(vs);
 gl.deleteShader(fs);
 
@@ -878,133 +809,84 @@ return false;
 }
 
 const posBuffer=gl.createBuffer();
-
 gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-
-gl.bufferData(
-gl.ARRAY_BUFFER,
-new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),
-gl.STATIC_DRAW
-);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
 
 const texBuffer=gl.createBuffer();
-
 gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-
-gl.bufferData(
-gl.ARRAY_BUFFER,
-new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),
-gl.STATIC_DRAW
-);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
 
 glBuffers.pos=posBuffer;
 glBuffers.tex=texBuffer;
-
 glTexture=gl.createTexture();
 
 gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
 gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
 gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-
 gl.useProgram(glProgram);
-
 gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
 isWebGLSupported=true;
-
 return true;
 
 }catch(e){
-
 console.error('WebGL init error:',e);
 return false;
-
 }
 }
 
 /* DATABASE VIDEO GIFT */
 const DB_NAME="TikTokStudioStorageDB";
 const STORE_NAME="permanent_assets";
-
 let dbPromise=null;
 
 function openDB(){
-
 if(dbPromise)return dbPromise;
 
 dbPromise=new Promise(resolve=>{
-
 const req=indexedDB.open(DB_NAME,1);
-
 req.onsuccess=()=>resolve(req.result);
-
 req.onerror=()=>{
 dbPromise=null;
 resolve(null);
 };
-
 req.onblocked=()=>{
 dbPromise=null;
 resolve(null);
 };
-
 });
-
 return dbPromise;
 }
 
 async function getSavedVideo(id){
-
 try{
-
 const db=await openDB();
-
 if(!db)return null;
 
 return await new Promise(resolve=>{
-
 const tx=db.transaction(STORE_NAME,"readonly");
 const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
-
 req.onsuccess=()=>resolve(req.result);
 req.onerror=()=>resolve(null);
-
 });
-
 }catch(e){
-
 return null;
-
 }
 }
 
 function formatPoin(val){
-
 if(!val||val===0)return'0';
-
 if(val>=1000000)return(val/1000000).toFixed(1).replace('.',',')+'M';
-
 if(val>=1000)return(val/1000).toFixed(1).replace('.',',')+'K';
-
 return val.toLocaleString('id-ID');
 }
 
 /* UPDATE SLOT DAN FOTO PROFIL */
 function updateSlotDisplay(data){
-
-const{
-slotNum,
-nameInput,
-initialPoin,
-profileImg,
-action
-}=data;
-
+const{slotNum,nameInput,initialPoin,profileImg,action}=data;
 const slotBox=$(`slot-${slotNum}`);
-
 if(!slotBox)return;
 
 const coinBadge=$(`coin-badge-${slotNum}`);
@@ -1020,29 +902,19 @@ const req=$(`req-${slotNum}`);
 const topBadge=$(`topbadge-slot-${slotNum}`);
 
 if(action==='clear_slot'){
-
 slotBox.classList.remove('has-photo');
-
 img.style.display='none';
 img.removeAttribute('src');
-
 bg.style.display='none';
 bg.removeAttribute('src');
-
 bgOverlay.style.display='none';
-
 slotBox.style.background='#1c1d24';
-
 icon.style.display='block';
 req.style.display='inline-block';
-
 namePill.style.display='none';
 mic.style.display='none';
-
 mic.classList.remove('is-muted');
-
 delete slotMuteStates[slotNum];
-
 coinBadge.style.display='none';
 
 if(topBadge){
@@ -1056,7 +928,6 @@ delete badgeTimers[slotNum];
 }
 
 slotPoints[slotNum]=0;
-
 return;
 }
 
@@ -1068,23 +939,19 @@ countElem.innerText=formatPoin(slotPoints[slotNum]);
 coinBadge.style.display='flex';
 
 if(nameInput){
-
 nameText.innerText=nameInput;
 namePill.style.display='flex';
 mic.style.display='flex';
 
 const muteStatus=getMuteStatus(data);
-
 if(muteStatus!==null){
 updateMicStatus(slotNum,muteStatus);
 }else if(slotMuteStates[slotNum]!==undefined){
 updateMicStatus(slotNum,slotMuteStates[slotNum]);
 }
-
 }
 
 if(profileImg){
-
 icon.style.display='none';
 req.style.display='none';
 
@@ -1100,22 +967,15 @@ slotBox.classList.remove('has-photo');
 
 img.src=profileImg;
 img.style.display='block';
-
 bg.src=profileImg;
 bg.style.display='block';
-
 bgOverlay.style.display='block';
-
 }
-
 }
 
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
-
 if(!badgeSrc||!slotNum)return;
-
 const topBadge=$(`topbadge-slot-${slotNum}`);
-
 if(!topBadge)return;
 
 if(badgeTimers[slotNum]){
@@ -1126,19 +986,14 @@ topBadge.src=badgeSrc;
 topBadge.style.display='block';
 
 badgeTimers[slotNum]=setTimeout(()=>{
-
 topBadge.style.display='none';
 topBadge.removeAttribute('src');
-
 delete badgeTimers[slotNum];
-
 },5000);
-
 }
 
 /* NOTIFIKASI GIFT */
 function showGiftToast(data,comboCount=1){
-
 const toast=$('giftBannerToast');
 const avatar=$('toastGifterAvatar');
 const nameElem=$('toastGifterName');
@@ -1150,7 +1005,6 @@ const hostName=detectedHostName||'Host';
 const hostAvatar=data.senderAvatar||detectedHostAvatar;
 
 avatar.src=hostAvatar;
-
 nameElem.innerText=hostName;
 descElem.innerText=data.giftTitle||'Gift';
 
@@ -1168,37 +1022,24 @@ clearTimeout(toastTimeout);
 clearTimeout(toastHideTimer);
 
 if(toast.style.display!=='inline-flex'){
-
 toast.style.animation='none';
-
 void toast.offsetWidth;
-
 toast.style.animation='tiktokBannerSlideIn .35s ease-out forwards';
-
 toast.style.display='inline-flex';
-
 }
 
 toastTimeout=setTimeout(()=>{
-
 toast.style.animation='tiktokBannerSlideOut .28s ease-in forwards';
-
 toastHideTimer=setTimeout(()=>{
-
 toast.style.display='none';
 comboElem.style.display='none';
-
 },280);
-
 },3000);
-
 }
 
 /* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src,repeatCount=1){
-
 if(!src)return;
-
 const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
 
 giftVideoQueue.push({
@@ -1208,28 +1049,21 @@ isBlob:src.startsWith('blob:')
 });
 
 playNextGiftVideo();
-
 }
 
 function playNextGiftVideo(){
-
 if(giftVideoQueueBusy||giftVideoQueue.length===0)return;
 
 giftVideoQueueBusy=true;
-
 const item=giftVideoQueue[0];
 
 playGiftVideo(item.src,()=>{
-
 item.remaining--;
 
 if(item.remaining>0){
-
 giftVideoQueueBusy=false;
 playNextGiftVideo();
-
 }else{
-
 giftVideoQueue.shift();
 
 if(item.isBlob){
@@ -1238,47 +1072,33 @@ URL.revokeObjectURL(item.src);
 
 giftVideoQueueBusy=false;
 playNextGiftVideo();
-
 }
-
 });
-
 }
 
 function getGiftComboKey(data){
-
 const sender=String(data.senderName||data.username||'user').toLowerCase();
-
 const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
-
 return`${sender}::${gift}`;
-
 }
 
 async function resolveGiftVideo(data){
-
 if(data.videoBlob){
 return URL.createObjectURL(data.videoBlob);
 }
 
 if(data.giftId){
-
 const blob=await getSavedVideo(data.giftId);
-
 if(blob){
 return URL.createObjectURL(blob);
 }
-
 }
 
 if(data.src)return data.src;
-
 return null;
-
 }
 
 function receiveGiftForCombo(data){
-
 const key=getGiftComboKey(data);
 
 const rawCumulative=
@@ -1288,11 +1108,9 @@ data.repeat_count??
 data.combo_count;
 
 const cumulativeCount=Number(rawCumulative);
-
 let group=giftComboGroups.get(key);
 
 if(!group){
-
 group={
 data:{...data},
 count:0,
@@ -1301,48 +1119,34 @@ timer:null,
 revision:0,
 videoPromise:Promise.resolve()
 };
-
 giftComboGroups.set(key,group);
-
 }
 
 group.revision++;
 group.data={...group.data,...data};
 
 if(Number.isFinite(cumulativeCount)&&cumulativeCount>0){
-
 group.count=Math.max(group.count,Math.floor(cumulativeCount));
-
 }else{
-
 group.count+=Math.max(1,Math.floor(Number(data.giftCount)||1));
-
 }
 
 showGiftToast(group.data,group.count);
-
 clearTimeout(group.timer);
 
 group.videoPromise=group.videoPromise.then(async()=>{
-
 const resolvedSrc=await resolveGiftVideo(data);
 
 if(resolvedSrc){
-
 if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
 URL.revokeObjectURL(group.src);
 }
-
 group.src=resolvedSrc;
-
 }
-
 }).catch(err=>console.error('Gagal memuat video gift:',err));
 
 const finishCombo=async()=>{
-
 const finishingRevision=group.revision;
-
 await group.videoPromise;
 
 if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision){
@@ -1354,7 +1158,6 @@ giftComboGroups.delete(key);
 if(group.src){
 queueGiftVideo(group.src,Math.max(1,group.count));
 }
-
 };
 
 const comboEnded=
@@ -1364,129 +1167,90 @@ data.comboEnd===true||
 data.combo_end===true;
 
 group.timer=setTimeout(finishCombo,comboEnded?0:900);
-
 }
 
 /* PESAN MASUK */
 function handleIncomingMessage(data){
-
 if(!data)return;
 
 if(data.type==='TRIGGER_DISPLAY_CAMERA'){
-
 if(data.action==='start'){
 startDisplayDirectCamera();
 }else if(data.action==='stop'){
 stopDisplayDirectCamera();
 }
-
 }
 
 else if(data.type==='SET_HOST_VIDEO'){
-
 stopDisplayDirectCamera();
 
 const hVid=$('hostVideo');
 const camImg=$('hostCameraImg');
-
 camImg.style.display='none';
-
 releaseHostObjectURL();
 
 if(data.videoBlob){
-
 hVid.srcObject=null;
-
 hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
-
 hVid.src=hostMediaObjectURL;
 hVid.style.display='block';
-
 $('hostPlaceholder').style.display='none';
-
 hVid.play().catch(()=>{});
-
 }
-
 }
 
 else if(data.type==='RESET_HOST_MEDIA'){
-
 stopDisplayDirectCamera();
 
 const hVid=$('hostVideo');
 const camImg=$('hostCameraImg');
-
 releaseHostObjectURL();
-
 camImg.style.display='none';
-
 hVid.pause();
 hVid.srcObject=null;
 hVid.removeAttribute('src');
 hVid.style.display='none';
 hVid.load();
-
 $('hostPlaceholder').style.display='block';
-
 }
 
 else if(data.type==='UPDATE_HOST'||data.type==='UPDATE_HOST_NAME'){
-
 if(data.hostName){
-
 detectedHostName=data.hostName;
 $('hostNameText').innerText=data.hostName;
-
 }
-
 if(data.hostAvatar){
 detectedHostAvatar=data.hostAvatar;
 }
-
 }
 
 else if(data.type==='UPDATE_SLOT'){
-
 updateSlotDisplay(data);
-
 }
 
 else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
-
 const slotNum=Number(data.slotNum);
 
 if(slotNum>=1&&slotNum<=8){
-
 const status=getMuteStatus(data);
 
 if(status!==null){
-
 slotMuteStates[slotNum]=status;
-
 const mic=$(`mic-slot-${slotNum}`);
 
 if(mic){
-
 mic.style.display='flex';
 updateMicStatus(slotNum,status);
-
 }
-
 }
-
 }
-
 }
 
 else if(data.type==='PLAY_GIFT'){
-
 const targetSlot=Number(data.targetSlot);
 
 if(targetSlot&&slotPoints[targetSlot]!==undefined){
-
 slotPoints[targetSlot]+=Number(data.increment||0);
-
 const countElem=$(`coincount-slot-${targetSlot}`);
 
 if(countElem){
@@ -1494,11 +1258,9 @@ countElem.innerText=formatPoin(slotPoints[targetSlot]);
 }
 
 const badge=$(`coin-badge-${targetSlot}`);
-
 if(badge){
 badge.style.display='flex';
 }
-
 }
 
 if(data.badgeImg){
@@ -1506,9 +1268,7 @@ showGiftBadgeTemporarily(targetSlot,data.badgeImg);
 }
 
 receiveGiftForCombo(data);
-
 }
-
 }
 
 channel.onmessage=event=>handleIncomingMessage(event.data);
@@ -1520,7 +1280,6 @@ let reconnectDelay=1000;
 let manuallyClosed=false;
 
 function connectWebSocket(){
-
 if(manuallyClosed)return;
 
 if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN)){
@@ -1528,9 +1287,7 @@ return;
 }
 
 try{
-
 const protocol=location.protocol==='https:'?'wss:':'ws:';
-
 ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
 
 ws.onopen=()=>{
@@ -1539,15 +1296,11 @@ console.log('WebSocket terhubung.');
 };
 
 ws.onmessage=event=>{
-
 try{
-
 const d=JSON.parse(event.data);
 
 if(d.type==='gift'){
-
 handleIncomingMessage({
-
 type:'PLAY_GIFT',
 targetSlot:1,
 increment:Number(d.coins||1),
@@ -1573,17 +1326,11 @@ d.combo_end,
 
 videoBlob:d.videoBlob,
 src:d.src||d.videoUrl||d.video_url||''
-
 });
-
 }
-
 }catch(err){
-
 console.error('WebSocket message error:',err);
-
 }
-
 };
 
 ws.onerror=err=>{
@@ -1591,31 +1338,20 @@ console.log('WebSocket error:',err);
 };
 
 ws.onclose=()=>{
-
 ws=null;
-
 if(manuallyClosed)return;
 
 clearTimeout(reconnectTimer);
-
 reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-
 reconnectDelay=Math.min(reconnectDelay*1.5,10000);
-
 };
 
 }catch(err){
-
 console.log('WebSocket connection error:',err);
-
 clearTimeout(reconnectTimer);
-
 reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-
 reconnectDelay=Math.min(reconnectDelay*1.5,10000);
-
 }
-
 }
 
 connectWebSocket();
@@ -1631,11 +1367,9 @@ let giftVideoGeneration=0;
 const giftCanvas=$('giftCanvas');
 const giftVideo=$('giftVideo');
 const giftOverlay=$('giftOverlayContainer');
-
 let canvas2D=null;
 
 function stopGiftRenderer(){
-
 renderActive=false;
 
 if(renderFrameId!==null){
@@ -1648,115 +1382,73 @@ giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
 }
 
 videoFrameCallbackId=null;
-
 }
 
 function renderGiftFrame(){
-
 if(!renderActive)return;
 
 const video=giftVideo;
 
 if(video.ended||video.readyState<video.HAVE_CURRENT_DATA){
-
 scheduleGiftFrame();
 return;
-
 }
 
 if(video.currentTime!==lastVideoTime){
-
 lastVideoTime=video.currentTime;
 
 if(glReady&&gl){
-
 try{
-
 gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
-gl.texImage2D(
-gl.TEXTURE_2D,
-0,
-gl.RGBA,
-gl.RGBA,
-gl.UNSIGNED_BYTE,
-video
-);
-
+gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
 gl.drawArrays(gl.TRIANGLES,0,6);
-
 }catch(e){
-
 console.error('WebGL rendering error:',e);
-
 }
-
 }else if(canvas2D){
-
 canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
-
 }
-
 }
 
 scheduleGiftFrame();
-
 }
 
 function scheduleGiftFrame(){
-
 if(!renderActive)return;
 
 if(giftVideo.requestVideoFrameCallback){
-
 videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
-
 videoFrameCallbackId=null;
 renderGiftFrame();
-
 });
-
 }else{
-
 renderFrameId=requestAnimationFrame(()=>{
-
 renderFrameId=null;
 renderGiftFrame();
-
 });
-
 }
-
 }
 
 function playGiftVideo(src,onFinished){
-
 const video=giftVideo;
 const canvas=giftCanvas;
 const overlay=giftOverlay;
-
 const generation=++giftVideoGeneration;
 
 let finished=false;
-
 stopGiftRenderer();
 
 function finish(){
-
 if(finished)return;
-
 finished=true;
 
 if(generation!==giftVideoGeneration)return;
 
 stopGiftRenderer();
-
 overlay.style.display='none';
-
 video.onended=null;
 video.onerror=null;
 video.onloadedmetadata=null;
-
 video.pause();
 video.removeAttribute('src');
 video.load();
@@ -1772,52 +1464,38 @@ canvas2D.clearRect(0,0,canvas.width,canvas.height);
 if(typeof onFinished==='function'){
 onFinished();
 }
-
 }
 
 overlay.style.display='block';
-
 video.pause();
 video.removeAttribute('src');
 video.load();
-
 video.src=src;
 video.muted=false;
 video.volume=1;
-
 video.onended=finish;
 video.onerror=finish;
 
 glReady=initWebGL(canvas);
-
 canvas2D=null;
 
 if(!glReady){
-
 try{
 canvas2D=canvas.getContext('2d');
 }catch(e){
 console.warn('Canvas 2D tidak tersedia:',e);
 }
-
 }
 
 video.onloadedmetadata=async()=>{
-
 if(finished||generation!==giftVideoGeneration)return;
 
 const originalWidth=video.videoWidth||720;
 const originalHeight=video.videoHeight||1280;
-
 const maxWidth=720;
 const maxHeight=1280;
 
-const scale=Math.min(
-1,
-maxWidth/originalWidth,
-maxHeight/originalHeight
-);
-
+const scale=Math.min(1,maxWidth/originalWidth,maxHeight/originalHeight);
 const renderWidth=Math.max(1,Math.round(originalWidth*scale));
 const renderHeight=Math.max(1,Math.round(originalHeight*scale));
 
@@ -1825,40 +1503,31 @@ canvas.width=renderWidth;
 canvas.height=renderHeight;
 
 if(glReady&&gl){
-
 gl.viewport(0,0,renderWidth,renderHeight);
 gl.useProgram(glProgram);
 
 const posLoc=gl.getAttribLocation(glProgram,'a_pos');
-
 gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
 gl.enableVertexAttribArray(posLoc);
-
 gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
 const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-
 gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
 gl.enableVertexAttribArray(texLoc);
-
 gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
 gl.activeTexture(gl.TEXTURE0);
 gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
 gl.clearColor(0,0,0,0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 
 }else if(canvas2D){
-
 canvas2D.clearRect(0,0,renderWidth,renderHeight);
-
 }
 
 lastVideoTime=-1;
 
 try{
-
 await video.play();
 
 if(finished||generation!==giftVideoGeneration)return;
@@ -1867,13 +1536,10 @@ renderActive=true;
 renderGiftFrame();
 
 }catch(err){
-
 console.warn('Gift video autoplay error:',err);
-
 video.muted=true;
 
 try{
-
 await video.play();
 
 if(finished||generation!==giftVideoGeneration)return;
@@ -1882,32 +1548,23 @@ renderActive=true;
 renderGiftFrame();
 
 }catch(error){
-
 console.error(error);
 finish();
-
 }
-
 }
-
 };
 
 video.load();
-
 }
 
 /* BERSIHKAN SAAT HALAMAN DITUTUP */
 window.addEventListener('pagehide',()=>{
-
 manuallyClosed=true;
-
 stopGiftRenderer();
 
 if(displayCamStream){
-
 displayCamStream.getTracks().forEach(track=>track.stop());
 displayCamStream=null;
-
 }
 
 if(ws){
@@ -1924,66 +1581,47 @@ clearTimeout(timer);
 }
 
 for(const group of giftComboGroups.values()){
-
 clearTimeout(group.timer);
 
 if(group.src?.startsWith('blob:')){
 URL.revokeObjectURL(group.src);
 }
-
 }
 
 giftComboGroups.clear();
 
 giftVideoQueue.forEach(item=>{
-
 if(item.isBlob){
 URL.revokeObjectURL(item.src);
 }
-
 });
 
 giftVideoQueue.length=0;
-
 releaseHostObjectURL();
-
 channel.close();
-
 });
 
 document.addEventListener('visibilitychange',()=>{
-
 if(document.hidden){
 console.log('Display berada di background.');
 }
-
 });
 
 giftCanvas.addEventListener('webglcontextlost',event=>{
-
 event.preventDefault();
-
 stopGiftRenderer();
-
 glReady=false;
-
 console.warn('WebGL context lost.');
-
 });
 
 giftCanvas.addEventListener('webglcontextrestored',()=>{
-
 gl=null;
 glProgram=null;
 glTexture=null;
 glBuffers={};
-
 glReady=initWebGL(giftCanvas);
-
 console.log('WebGL context restored:',glReady);
-
 });
-
 </script>
 </body>
 </html>
