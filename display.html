@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized</title>
+<title>Display Studio - Performance Edition</title>
 
 <style>
 * {
@@ -40,7 +40,7 @@ body {
     align-items: center;
     padding: 4px;
     background: #000;
-    transform: translateZ(0);
+    isolation: isolate;
 }
 
 .live-layout {
@@ -50,17 +50,6 @@ body {
     position: relative;
     z-index: 10;
     align-items: stretch;
-}
-
-@keyframes hostBluePulse {
-    0%, 100% {
-        border-color: #00d2ff;
-        box-shadow: 0 0 5px rgba(0,210,255,.5);
-    }
-    50% {
-        border-color: rgba(0,150,255,.45);
-        box-shadow: 0 0 2px rgba(0,150,255,.1);
-    }
 }
 
 .host-box {
@@ -75,8 +64,6 @@ body {
     align-items: center;
     cursor: pointer;
     border: 1.5px solid #00d2ff;
-    animation: hostBluePulse 1.5s infinite ease-in-out;
-    transform: translateZ(0);
     contain: layout paint;
 }
 
@@ -89,7 +76,6 @@ body {
     z-index: 2;
     display: none;
     backface-visibility: hidden;
-    filter: none;
 }
 
 #hostCameraImg {
@@ -184,11 +170,14 @@ body {
 
 .slot-bg-blur {
     position: absolute !important;
-    inset: -8px !important;
-    width: calc(100% + 16px) !important;
-    height: calc(100% + 16px) !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
-    filter: blur(7px) brightness(.7) !important;
+
+    /* Blur lebih ringan untuk GPU */
+    filter: blur(3px) brightness(.7) !important;
+
     display: none;
     z-index: 1;
     pointer-events: none;
@@ -232,7 +221,6 @@ body {
     transform: translate(-50%,-50%);
     z-index: 4;
     box-shadow: 0 3px 8px rgba(0,0,0,.5);
-    filter: none;
 }
 
 .slot-coin-badge {
@@ -285,7 +273,7 @@ body {
     height: 24px;
     display: none;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.6));
     pointer-events: none;
     animation: popGiftBadge .3s ease-out;
 }
@@ -433,7 +421,7 @@ body {
     width: 30px;
     height: 30px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.6));
     flex-shrink: 0;
     margin: -2px -3px -2px 1px;
     animation: tiktokGiftIconBounce .38s ease-out both;
@@ -474,8 +462,15 @@ body {
     object-position: center;
     display: block;
     pointer-events: none;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+}
+
+/* Preferensi perangkat dengan resource terbatas */
+@media (prefers-reduced-motion: reduce) {
+    .slot-top-badge,
+    .gift-banner-toast,
+    .toast-gift-img {
+        animation-duration: .01ms !important;
+    }
 }
 </style>
 </head>
@@ -564,6 +559,8 @@ let detectedHostName = 'Host';
 let detectedHostAvatar =
 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
 
+let hostVideoObjectURL = null;
+
 /* ================= SLOT GENERATOR ================= */
 
 const grid = document.getElementById('komalGrid');
@@ -641,7 +638,7 @@ for (let i = 1; i <= 8; i++) {
     `);
 }
 
-/* ================= KAMERA HOST OPTIMIZED ================= */
+/* ================= KAMERA HOST ================= */
 
 async function startDisplayDirectCamera() {
 
@@ -680,9 +677,9 @@ async function startDisplayDirectCamera() {
         const constraints = {
             audio: false,
             video: {
-                width: { ideal: 540 },
-                height: { ideal: 960 },
-                frameRate: { ideal: 30, max: 30 },
+                width: { ideal: 720, max: 1280 },
+                height: { ideal: 1280, max: 720 },
+                frameRate: { ideal: 24, max: 30 },
                 facingMode: 'user'
             }
         };
@@ -701,6 +698,13 @@ async function startDisplayDirectCamera() {
 
         if (track) {
             console.log('Kamera aktif:', track.getSettings());
+
+            track.addEventListener('ended', () => {
+                displayCamStream = null;
+                hVid.style.display = 'none';
+                placeholder.style.display = 'block';
+                placeholder.textContent = 'Kamera terputus';
+            }, { once: true });
         }
 
     } catch (err) {
@@ -863,6 +867,8 @@ function initWebGL(canvas) {
             0
         );
 
+        isWebGLSupported = true;
+
         return true;
 
     } catch (e) {
@@ -897,11 +903,25 @@ async function getSavedVideo(id) {
 
         return new Promise(resolve => {
 
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.close();
+                resolve(null);
+                return;
+            }
+
             const tx = db.transaction(STORE_NAME, "readonly");
             const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
 
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
+            req.onsuccess = () => {
+                const result = req.result;
+                db.close();
+                resolve(result);
+            };
+
+            req.onerror = () => {
+                db.close();
+                resolve(null);
+            };
         });
 
     } catch (e) {
@@ -923,7 +943,7 @@ function formatPoin(val) {
         return (val / 1000).toFixed(1).replace('.', ',') + 'K';
     }
 
-    return val.toLocaleString('id-ID');
+    return Number(val).toLocaleString('id-ID');
 }
 
 /* ================= SLOT ================= */
@@ -979,14 +999,16 @@ function updateSlotDisplay(data) {
 
         if (badgeTimers[slotNum]) {
             clearTimeout(badgeTimers[slotNum]);
+            delete badgeTimers[slotNum];
         }
 
         slotPoints[slotNum] = 0;
+        countElem.innerText = '0';
         return;
     }
 
     if (initialPoin !== undefined) {
-        slotPoints[slotNum] = initialPoin;
+        slotPoints[slotNum] = Number(initialPoin) || 0;
     }
 
     countElem.innerText = formatPoin(slotPoints[slotNum]);
@@ -1003,10 +1025,10 @@ function updateSlotDisplay(data) {
         icon.style.display = 'none';
         req.style.display = 'none';
 
-        img.src = profileImg;
+        if (img.src !== profileImg) img.src = profileImg;
         img.style.display = 'block';
 
-        bg.src = profileImg;
+        if (bg.src !== profileImg) bg.src = profileImg;
         bg.style.display = 'block';
 
         bgOverlay.style.display = 'block';
@@ -1031,6 +1053,7 @@ function showGiftBadgeTemporarily(slotNum, badgeSrc) {
     badgeTimers[slotNum] = setTimeout(() => {
         topBadge.style.display = 'none';
         topBadge.removeAttribute('src');
+        delete badgeTimers[slotNum];
     }, 5000);
 }
 
@@ -1048,12 +1071,12 @@ function showGiftToast(data, comboCount = 1) {
     const hostName = detectedHostName || 'Host';
     const hostAvatar = data.senderAvatar || detectedHostAvatar;
 
-    avatar.src = hostAvatar;
+    if (avatar.src !== hostAvatar) avatar.src = hostAvatar;
     nameElem.innerText = hostName;
     descElem.innerText = data.giftTitle || 'Gift';
 
     if (data.badgeImg) {
-        iconElem.src = data.badgeImg;
+        if (iconElem.src !== data.badgeImg) iconElem.src = data.badgeImg;
         iconElem.style.display = 'block';
     } else {
         iconElem.style.display = 'none';
@@ -1068,12 +1091,12 @@ function showGiftToast(data, comboCount = 1) {
     if (toast.style.display !== 'inline-flex') {
 
         toast.style.animation = 'none';
+        toast.style.display = 'inline-flex';
+
         void toast.offsetWidth;
 
         toast.style.animation =
             'tiktokBannerSlideIn .35s ease-out forwards';
-
-        toast.style.display = 'inline-flex';
     }
 
     toastTimeout = setTimeout(() => {
@@ -1096,6 +1119,13 @@ function queueGiftVideo(src, repeatCount = 1) {
     if (!src) return;
 
     const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
+
+    // Hindari antrean terlalu besar saat gift masuk bertubi-tubi.
+    if (giftVideoQueue.length >= 30) {
+        console.warn('Antrean video gift penuh.');
+        if (src.startsWith('blob:')) URL.revokeObjectURL(src);
+        return;
+    }
 
     giftVideoQueue.push({
         src,
@@ -1296,11 +1326,17 @@ function handleIncomingMessage(data) {
 
         camImg.style.display = 'none';
 
+        if (hostVideoObjectURL) {
+            URL.revokeObjectURL(hostVideoObjectURL);
+            hostVideoObjectURL = null;
+        }
+
         if (data.videoBlob) {
 
             hVid.srcObject = null;
 
-            hVid.src = URL.createObjectURL(data.videoBlob);
+            hostVideoObjectURL = URL.createObjectURL(data.videoBlob);
+            hVid.src = hostVideoObjectURL;
             hVid.style.display = 'block';
 
             document.getElementById('hostPlaceholder').style.display = 'none';
@@ -1322,6 +1358,11 @@ function handleIncomingMessage(data) {
         hVid.srcObject = null;
         hVid.removeAttribute('src');
         hVid.style.display = 'none';
+
+        if (hostVideoObjectURL) {
+            URL.revokeObjectURL(hostVideoObjectURL);
+            hostVideoObjectURL = null;
+        }
 
         document.getElementById('hostPlaceholder').style.display = 'block';
     }
@@ -1388,8 +1429,11 @@ channel.onmessage = event => {
 
 let ws = null;
 let reconnectTimer = null;
+let reconnectDelay = 3000;
 
 function connectWebSocket() {
+
+    if (document.visibilityState === 'unloaded') return;
 
     try {
 
@@ -1399,6 +1443,10 @@ function connectWebSocket() {
         ws = new WebSocket(
             `${protocol}//${location.host || 'localhost:8081'}`
         );
+
+        ws.onopen = () => {
+            reconnectDelay = 3000;
+        };
 
         ws.onmessage = event => {
 
@@ -1470,7 +1518,9 @@ function connectWebSocket() {
 
             reconnectTimer = setTimeout(() => {
                 connectWebSocket();
-            }, 3000);
+            }, reconnectDelay);
+
+            reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
         };
 
     } catch (err) {
@@ -1481,13 +1531,13 @@ function connectWebSocket() {
 
         reconnectTimer = setTimeout(() => {
             connectWebSocket();
-        }, 3000);
+        }, reconnectDelay);
     }
 }
 
 connectWebSocket();
 
-/* ================= PEMUTAR VIDEO GIFT OPTIMIZED ================= */
+/* ================= PEMUTAR VIDEO GIFT ================= */
 
 let glReady = false;
 let renderActive = false;
@@ -1499,11 +1549,6 @@ function stopGiftRenderer() {
 
     renderActive = false;
 
-    if (renderFrameId !== null) {
-        cancelAnimationFrame(renderFrameId);
-        renderFrameId = null;
-    }
-
     const video = document.getElementById('giftVideo');
 
     if (
@@ -1514,6 +1559,11 @@ function stopGiftRenderer() {
     }
 
     videoFrameCallbackId = null;
+
+    if (renderFrameId !== null) {
+        cancelAnimationFrame(renderFrameId);
+        renderFrameId = null;
+    }
 }
 
 function renderGiftFrame() {
@@ -1553,20 +1603,20 @@ function renderGiftFrame() {
 
             } catch (e) {
                 console.error('WebGL rendering error:', e);
+                glReady = false;
             }
 
         } else {
 
-            const canvas = document.getElementById('giftCanvas');
-            const ctx = canvas.getContext('2d');
+            const ctx = giftCanvasContext;
 
             if (ctx) {
                 ctx.drawImage(
                     video,
                     0,
                     0,
-                    canvas.width,
-                    canvas.height
+                    document.getElementById('giftCanvas').width,
+                    document.getElementById('giftCanvas').height
                 );
             }
         }
@@ -1574,12 +1624,6 @@ function renderGiftFrame() {
 
     scheduleGiftFrame();
 }
-
-/*
- * Render hanya ketika video mempunyai frame baru.
- * Ini mengurangi pekerjaan GPU dibanding requestAnimationFrame
- * yang berjalan terus mengikuti refresh layar.
- */
 
 function scheduleGiftFrame() {
 
@@ -1606,6 +1650,12 @@ function scheduleGiftFrame() {
     }
 }
 
+const giftCanvas = document.getElementById('giftCanvas');
+const giftCanvasContext = giftCanvas.getContext('2d', {
+    alpha: true,
+    desynchronized: true
+});
+
 function playGiftVideo(src, onFinished) {
 
     const overlay =
@@ -1614,8 +1664,7 @@ function playGiftVideo(src, onFinished) {
     const video =
         document.getElementById('giftVideo');
 
-    const canvas =
-        document.getElementById('giftCanvas');
+    const canvas = giftCanvas;
 
     let finished = false;
 
@@ -1641,6 +1690,12 @@ function playGiftVideo(src, onFinished) {
 
         if (gl) {
             gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+
+        if (giftCanvasContext) {
+            giftCanvasContext.clearRect(
+                0, 0, canvas.width, canvas.height
+            );
         }
 
         if (typeof onFinished === 'function') {
@@ -1671,8 +1726,8 @@ function playGiftVideo(src, onFinished) {
         const originalHeight = video.videoHeight || 1280;
 
         /*
-         * Batasi ukuran canvas agar video gift tidak
-         * menggunakan resolusi terlalu besar.
+         * Resolusi tinggi dipertahankan untuk ketajaman.
+         * Video berukuran besar dibatasi untuk mengurangi beban GPU.
          */
 
         const maxWidth = 720;
@@ -1777,17 +1832,37 @@ window.addEventListener('pagehide', () => {
     if (ws) {
         ws.close();
     }
+
+    clearTimeout(reconnectTimer);
+    clearTimeout(toastTimeout);
+    clearTimeout(toastHideTimer);
+
+    for (const timer of Object.values(badgeTimers)) {
+        clearTimeout(timer);
+    }
+
+    if (hostVideoObjectURL) {
+        URL.revokeObjectURL(hostVideoObjectURL);
+        hostVideoObjectURL = null;
+    }
+
+    for (const item of giftVideoQueue) {
+        if (item.src && item.src.startsWith('blob:')) {
+            URL.revokeObjectURL(item.src);
+        }
+    }
+
+    giftVideoQueue.length = 0;
 });
 
 document.addEventListener('visibilitychange', () => {
 
     /*
-     * Jangan menghentikan kamera ketika halaman
-     * sedang tidak terlihat. TikTok Studio dapat
-     * mengambil halaman sebagai sumber overlay.
+     * Tidak menghentikan kamera atau koneksi hanya karena
+     * display menjadi background pada TikTok Studio.
      */
     if (document.hidden) {
-        console.log('Display berada di background.');
+        console.log('Display background: renderer gift tetap mengikuti video.');
     }
 });
 
