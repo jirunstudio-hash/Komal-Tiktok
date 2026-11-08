@@ -89,8 +89,6 @@ body {
     object-fit: cover;
     z-index: 2;
     display: none;
-
-    /* Penajaman video host, ringan */
     image-rendering: auto;
     backface-visibility: hidden;
     filter: contrast(1.06) saturate(1.04);
@@ -104,8 +102,6 @@ body {
     object-fit: cover;
     z-index: 3;
     display: none;
-
-    /* Penajaman gambar kamera host, ringan */
     image-rendering: auto;
     backface-visibility: hidden;
     filter: contrast(1.06) saturate(1.04);
@@ -119,18 +115,43 @@ body {
     z-index: 1;
 }
 
+/* BADGE HOST */
+
 .host-top-pill {
     position: absolute;
     top: 6px;
     left: 6px;
     z-index: 12;
-    background: rgba(0,0,0,.45);
-    backdrop-filter: blur(4px);
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: .6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 20px;
+    padding: 2px 8px 2px 5px;
+    border-radius: 20px;
+    background: #dceaff;
+    color: #26364a;
+    font-size: 11px;
     font-weight: 600;
-    color: rgba(255,255,255,.9);
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,.18);
+}
+
+.host-pill-icon {
+    width: 13px;
+    height: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.host-pill-icon svg {
+    width: 13px;
+    height: 13px;
+    display: block;
+    fill: #26364a;
 }
 
 .host-bottom-pill {
@@ -234,8 +255,6 @@ body {
     transform: translate(-50%,-50%);
     z-index: 4;
     box-shadow: 0 3px 10px rgba(0,0,0,.65);
-
-    /* Penajaman gambar profil kotak, ringan */
     image-rendering: auto;
     backface-visibility: hidden;
     filter: contrast(1.06) saturate(1.04);
@@ -497,8 +516,6 @@ body {
     object-position: center;
     display: block;
     pointer-events: none;
-
-    /* Rendering video gift tetap ringan */
     image-rendering: auto;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -516,7 +533,16 @@ body {
              onclick="startDisplayDirectCamera()"
              title="Klik untuk aktifkan kamera host">
 
-            <div class="host-top-pill">Host</div>
+            <!-- BADGE HOST BARU -->
+            <div class="host-top-pill">
+                <span class="host-pill-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/>
+                        <path d="M12 14c-5 0-8 2.5-8 5.5V21h16v-1.5c0-3-3-5.5-8-5.5Z"/>
+                    </svg>
+                </span>
+                <span>Host</span>
+            </div>
 
             <div id="hostPlaceholder" class="host-placeholder">
                 Kamera Host (Standby)
@@ -1015,10 +1041,7 @@ function showGiftToast(data, comboCount = 1) {
     const iconElem = document.getElementById('toastGiftIcon');
     const comboElem = document.getElementById('toastComboCount');
 
-    // NAMA UTAMA MENGIKUTI HOST YANG TERDETEKSI DARI CONTROL
     const hostName = detectedHostName || 'Host';
-
-    // Avatar tetap memakai avatar pengirim jika tersedia.
     const hostAvatar = data.senderAvatar || detectedHostAvatar;
 
     const giftTitle = data.giftTitle || 'Gift';
@@ -1037,14 +1060,12 @@ function showGiftToast(data, comboCount = 1) {
         iconElem.style.display = 'none';
     }
 
-    // ANGKA BIASA: x 1, x 2, x 3
     comboElem.textContent = 'x ' + count;
     comboElem.style.display = 'inline-block';
 
     if (toastTimeout) clearTimeout(toastTimeout);
     if (toastHideTimer) clearTimeout(toastHideTimer);
 
-    // Animasi masuk hanya saat notifikasi pertama muncul.
     if (toast.style.display !== 'inline-flex') {
         toast.style.animation = 'none';
         void toast.offsetWidth;
@@ -1055,7 +1076,6 @@ function showGiftToast(data, comboCount = 1) {
         toast.style.display = 'inline-flex';
     }
 
-    // Setiap event combo memperbarui angka tanpa membuat banner baru.
     toastTimeout = setTimeout(() => {
         toast.style.animation = 'tiktokBannerSlideOut .28s ease-in forwards';
 
@@ -1137,7 +1157,6 @@ async function resolveGiftVideo(data) {
         }
     }
 
-    // Gunakan URL cadangan jika video database tidak ditemukan.
     if (data.src) {
         return data.src;
     }
@@ -1174,22 +1193,18 @@ function receiveGiftForCombo(data) {
     group.revision++;
     group.data = { ...group.data, ...data };
 
-    // Jika server mengirim jumlah combo kumulatif,
-    // gunakan angka tersebut dan jangan menambahkannya lagi.
     if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
         group.count = Math.max(
             group.count,
             Math.floor(cumulativeCount)
         );
     } else {
-        // Jika tidak ada data kumulatif, hitung event satu per satu.
         group.count += Math.max(
             1,
             Math.floor(Number(data.giftCount) || 1)
         );
     }
 
-    // Satu banner diperbarui, bukan membuat notifikasi baru.
     showGiftToast(group.data, group.count);
 
     if (group.timer) {
@@ -1219,7 +1234,6 @@ function receiveGiftForCombo(data) {
 
         await group.videoPromise;
 
-        // Jangan selesaikan combo jika ada event baru.
         if (
             giftComboGroups.get(key) !== group ||
             group.revision !== finishingRevision
@@ -1232,9 +1246,6 @@ function receiveGiftForCombo(data) {
         const finalCount = Math.max(1, group.count);
         const finalSrc = group.src;
 
-        // Tidak memanggil showGiftToast lagi.
-        // Jadi nama dan ikon gift tetap muncul satu kali.
-        // Video dimainkan sesuai jumlah combo.
         if (finalSrc) {
             queueGiftVideo(finalSrc, finalCount);
         }
