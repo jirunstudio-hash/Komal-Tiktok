@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized</title>
+<title>Display Studio - TikTok Live HD</title>
 
 <style>
 * {
@@ -104,54 +103,50 @@ body {
     z-index: 1;
 }
 
+/* HOST LABEL DI BAGIAN ATAS */
 .host-top-pill {
     position: absolute;
-    top: 6px;
-    left: 6px;
+    top: 8px;
+    left: 8px;
     z-index: 12;
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    height: 20px;
-    padding: 2px 8px 2px 5px;
-    border-radius: 20px;
-    background: #dceaff;
+    gap: 6px;
+    min-height: 27px;
+    max-width: calc(100% - 16px);
+    padding: 4px 10px 4px 7px;
+    border-radius: 8px;
+    background: rgba(245,248,255,.94);
     color: #26364a;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,.28);
 }
 
 .host-pill-icon {
-    width: 13px;
-    height: 13px;
+    width: 16px;
+    height: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex: 0 0 16px;
 }
 
 .host-pill-icon svg {
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
     fill: #26364a;
 }
 
 .host-bottom-pill {
-    position: absolute;
-    bottom: 6px;
-    left: 6px;
-    z-index: 12;
-    background: rgba(0,0,0,.65);
-    padding: 3px 8px;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    max-width: calc(100% - 16px);
+    display: none;
 }
 
 .host-name-text {
     color: #fff;
-    font-size: .62rem;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 800;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -235,40 +230,45 @@ body {
     filter: none;
 }
 
+/* BADGE POIN DENGAN BINTANG */
 .slot-coin-badge {
     position: absolute;
     top: 5px;
     left: 5px;
     display: flex;
     align-items: center;
-    gap: 3.5px;
-    background: rgba(0,0,0,.65);
-    padding: 2px 6px 2px 3px;
+    gap: 4px;
+    background: rgba(0,0,0,.78);
+    padding: 3px 8px 3px 4px;
     border-radius: 999px;
-    z-index: 6;
+    z-index: 8;
+    min-height: 23px;
+    border: 1px solid rgba(255,255,255,.12);
 }
 
 .cyan-diamond-circle {
-    width: 13px;
-    height: 13px;
+    width: 16px;
+    height: 16px;
     background: radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 0 5px rgba(0,190,255,.55);
 }
 
 .star-svg {
-    width: 7px;
-    height: 7px;
+    width: 9px;
+    height: 9px;
     fill: #fff;
 }
 
 .coin-count {
-    font-size: .58rem;
+    font-size: 11px;
     color: #fff;
-    font-weight: 700;
+    font-weight: 800;
+    white-space: nowrap;
 }
 
 @keyframes popGiftBadge {
@@ -281,8 +281,8 @@ body {
     top: 5px;
     right: 5px;
     z-index: 8;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     display: none;
     object-fit: contain;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
@@ -290,36 +290,43 @@ body {
     animation: popGiftBadge .3s ease-out;
 }
 
+/* NAMA PESERTA LEBIH JELAS */
 .slot-name-pill {
     position: absolute;
     bottom: 5px;
     left: 5px;
-    max-width: calc(100% - 32px);
+    max-width: calc(100% - 34px);
     display: flex;
     align-items: center;
-    gap: 4px;
-    z-index: 6;
-    background: rgba(0,0,0,.65);
-    padding: 2px 4px 2px 7px;
-    border-radius: 999px;
-    height: 18px;
+    gap: 5px;
+    z-index: 9;
+    background: rgba(12,14,18,.92);
+    border: 1px solid rgba(255,255,255,.18);
+    padding: 3px 6px 3px 8px;
+    border-radius: 7px;
+    min-height: 23px;
+    box-shadow: 0 2px 7px rgba(0,0,0,.45);
 }
 
 .slot-name-text {
     color: #fff;
-    font-size: .52rem;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 800;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 46px;
+    max-width: 85px;
+    text-shadow: 0 1px 2px #000;
+    line-height: 1.2;
 }
 
+/* ICON TAMBAH BULAT DI SAMPING NAMA */
 .slot-plus-circle {
-    width: 14px;
-    height: 14px;
+    width: 17px;
+    height: 17px;
     border-radius: 50%;
-    background: rgba(255,255,255,.28);
+    background: rgba(255,255,255,.30);
+    border: 1px solid rgba(255,255,255,.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -327,25 +334,30 @@ body {
 }
 
 .slot-pill-plus-svg {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 
+/* ICON MIKROFON KOTAK */
 .mic-container {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    z-index: 6;
-    width: 20px;
-    height: 20px;
+    z-index: 10;
+    width: 23px;
+    height: 23px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 6px;
+    background: rgba(0,0,0,.82);
+    border: 1px solid rgba(255,255,255,.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,.4);
 }
 
 .mic-icon-svg {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
 }
 
 .gift-banner-wrapper {
@@ -379,23 +391,23 @@ body {
 .gift-banner-toast {
     display: none;
     align-items: center;
-    height: 26px;
-    background: linear-gradient(90deg,rgba(15,15,20,.85),rgba(20,20,28,.65));
-    border: .5px solid rgba(255,255,255,.12);
+    height: 30px;
+    background: linear-gradient(90deg,rgba(15,15,20,.92),rgba(20,20,28,.82));
+    border: 1px solid rgba(255,255,255,.18);
     border-radius: 999px;
-    padding: 2px 4px 2px 2px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    padding: 3px 6px 3px 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.5);
     animation: tiktokBannerSlideIn .35s ease-out forwards;
     max-width: 75%;
     overflow: visible;
 }
 
 .toast-avatar {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     object-fit: cover;
-    border: .8px solid rgba(255,255,255,.4);
+    border: 1px solid rgba(255,255,255,.5);
     flex-shrink: 0;
     background: #252530;
 }
@@ -404,34 +416,34 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0 5px;
+    margin: 0 6px;
     overflow: hidden;
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 .toast-name {
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 800;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 85px;
+    max-width: 100px;
 }
 
 .toast-desc {
-    font-size: 8.5px;
+    font-size: 9px;
     font-weight: 500;
-    color: #fff;
+    color: rgba(255,255,255,.85);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90px;
+    max-width: 110px;
 }
 
 .toast-gift-img {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,.7));
     flex-shrink: 0;
@@ -477,6 +489,44 @@ body {
     transform: translateZ(0);
     backface-visibility: hidden;
 }
+
+/* RESPONSIVE */
+@media (max-width: 380px) {
+    .slot-name-pill {
+        gap: 3px;
+        padding: 2px 4px 2px 6px;
+        min-height: 21px;
+    }
+
+    .slot-name-text {
+        font-size: 9px;
+        max-width: 65px;
+    }
+
+    .slot-plus-circle {
+        width: 15px;
+        height: 15px;
+    }
+
+    .mic-container {
+        width: 21px;
+        height: 21px;
+        right: 4px;
+        bottom: 4px;
+    }
+
+    .slot-coin-badge {
+        top: 4px;
+        left: 4px;
+        min-height: 20px;
+        padding: 2px 6px 2px 3px;
+    }
+
+    .coin-count {
+        font-size: 10px;
+    }
+}
+
 </style>
 </head>
 
@@ -676,12 +726,6 @@ async function startDisplayDirectCamera() {
         }
 
         camImg.style.display = 'none';
-
-        /*
-         * AUTO ADAPTIVE:
-         * Browser memilih resolusi terbaik yang tersedia.
-         * Resolusi tidak dipaksa 1080p.
-         */
 
         const constraints = {
             audio: false,
@@ -1731,11 +1775,6 @@ function playGiftVideo(src, onFinished) {
 
     glReady = initWebGL(canvas);
 
-    /*
-     * Jika WebGL tidak tersedia, gunakan Canvas 2D.
-     * Context 2D hanya diminta jika WebGL gagal.
-     */
-
     canvas2D = null;
 
     if (!glReady) {
@@ -1752,11 +1791,6 @@ function playGiftVideo(src, onFinished) {
 
         const originalWidth = video.videoWidth || 720;
         const originalHeight = video.videoHeight || 1280;
-
-        /*
-         * Batasi resolusi render untuk menjaga GPU.
-         * Rasio video tetap dipertahankan.
-         */
 
         const maxWidth = 720;
         const maxHeight = 1280;
