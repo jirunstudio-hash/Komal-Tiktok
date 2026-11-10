@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -492,42 +493,27 @@ body {
     backface-visibility: hidden;
 }
 
-/* ===== LABEL TAJAM & RESPONSIF ===== */
-.slot-box,
-.host-box {
+/* LABEL TAJAM */
+.slot-box, .host-box {
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
 }
-@media (max-width: 360px) {
-    .slot-name-pill {
-        left: 4px;
-        bottom: 4px;
-        min-height: 22px;
-        padding: 2px 4px 2px 6px;
-        gap: 3px;
-        max-width: calc(100% - 30px);
-    }
-    .slot-name-text { font-size: 9px; max-width: 68px; }
-    .slot-plus-circle { width: 15px; height: 15px; flex-basis: 15px; }
-    .slot-pill-plus-svg { width: 8px; height: 8px; }
-    .mic-container { width: 21px; height: 21px; right: 4px; bottom: 4px; }
-    .mic-icon-svg { width: 12px; height: 12px; }
-    .slot-coin-badge { top: 4px; left: 4px; min-height: 20px; padding: 2px 6px 2px 3px; }
-    .cyan-diamond-circle { width: 15px; height: 15px; }
-    .coin-count { font-size: 9px; }
-}
 
-/* ===== UPDATE KOMAL SESUAI FOTO ===== */
+/* UPDATE TAMPILAN KOMAL */
 .host-top-pill,
 .host-bottom-pill,
-.host-name-text { display:none !important; }
+.host-name-text {
+    display:none !important;
+}
 
 .gift-banner-wrapper,
 .gift-banner-toast,
 .toast-avatar,
 .toast-text-col,
 .toast-gift-img,
-.toast-combo-count { display:none !important; }
+.toast-combo-count {
+    display:none !important;
+}
 
 .phone-screen {
     width:100vw;
@@ -545,15 +531,18 @@ body {
     align-items:flex-start;
 }
 
-.host-box { display:none !important; }
+.host-box {
+    display:none !important;
+}
 
+/* KOTAK KOMAL - DESKTOP */
 .komal-grid {
     flex:none;
     width:100%;
     min-width:0;
     display:grid;
-    grid-template-columns:repeat(2,min(24vw,228px));
-    grid-template-rows:repeat(4,min(24vw,228px));
+    grid-template-columns:repeat(2, min(24vw, 228px));
+    grid-template-rows:repeat(4, min(24vw, 228px));
     justify-content:space-between;
     align-content:start;
     gap:7px 0;
@@ -589,20 +578,43 @@ body {
 .slot-name-pill,
 .slot-coin-badge,
 .slot-top-badge,
-.mic-container { display:none !important; }
+.mic-container {
+    display:none !important;
+}
 
-.slot-circle-img { z-index:4; }
+.slot-circle-img {
+    z-index:4;
+}
 
+/* KOTAK KOMAL - HP */
 @media (max-width:500px) {
     .komal-grid {
-        grid-template-columns:repeat(2,min(24vw,120px));
-        grid-template-rows:repeat(4,min(24vw,120px));
+        grid-template-columns:repeat(2, min(24vw, 120px));
+        grid-template-rows:repeat(4, min(24vw, 120px));
         gap:5px 0;
         padding-top:5.2vh;
     }
-    .slot-box { border-radius:12px !important; }
-    .slot-plus-svg { width:26px !important; height:26px !important; }
-    .slot-req { font-size:10px !important; }
+
+    .slot-box {
+        border-radius:12px !important;
+    }
+
+    .slot-plus-svg {
+        width:26px !important;
+        height:26px !important;
+    }
+
+    .slot-req {
+        font-size:10px !important;
+    }
+}
+
+/* UPDATE RESPONSIF: UKURAN KOTAK LEBIH KECIL */
+@media (min-width:501px) {
+    .komal-grid {
+        grid-template-columns:repeat(2, min(20vw, 180px));
+        grid-template-rows:repeat(4, min(20vw, 180px));
+    }
 }
 
 </style>
@@ -672,8 +684,7 @@ body {
 <script>
 'use strict';
 
-/* ================= CHANNEL ================= */
-
+/* CHANNEL */
 const channel = new BroadcastChannel('tiktok_live_channel');
 
 const slotPoints = {};
@@ -697,8 +708,7 @@ let detectedHostAvatar =
 
 const $ = id => document.getElementById(id);
 
-/* ================= SLOT GENERATOR ================= */
-
+/* SLOT GENERATOR */
 const grid = $('komalGrid');
 
 for (let i = 1; i <= 8; i++) {
@@ -706,29 +716,20 @@ for (let i = 1; i <= 8; i++) {
 
     grid.insertAdjacentHTML('beforeend', `
         <div class="slot-box" id="slot-${i}">
-
-            <img id="bg-slot-${i}" class="slot-bg-blur"
-                 referrerpolicy="no-referrer">
-
+            <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
             <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
-            <div class="slot-coin-badge" id="coin-badge-${i}"
-                 style="display:none;">
-
+            <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none;">
                 <div class="cyan-diamond-circle">
                     <svg class="star-svg" viewBox="0 0 24 24">
                         <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
                     </svg>
                 </div>
-
                 <span class="coin-count" id="coincount-slot-${i}">0</span>
             </div>
 
-            <img class="slot-top-badge"
-                 id="topbadge-slot-${i}"
-                 referrerpolicy="no-referrer"
-                 crossorigin="anonymous"
-                 alt="Gift">
+            <img class="slot-top-badge" id="topbadge-slot-${i}"
+                 referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
             <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -737,47 +738,34 @@ for (let i = 1; i <= 8; i++) {
 
             <span class="slot-req" id="req-${i}">Permintaan</span>
 
-            <img id="img-slot-${i}" class="slot-circle-img"
-                 referrerpolicy="no-referrer">
+            <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
 
             <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none;">
                 <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
-
                 <div class="slot-plus-circle">
                     <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
                         <line x1="8" y1="2.5" x2="8" y2="13.5"
-                              stroke="#ffffff" stroke-width="2.2"
-                              stroke-linecap="round"></line>
+                              stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
                         <line x1="2.5" y1="8" x2="13.5" y2="8"
-                              stroke="#ffffff" stroke-width="2.2"
-                              stroke-linecap="round"></line>
+                              stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
                     </svg>
                 </div>
             </div>
 
             <div class="mic-container" id="mic-slot-${i}" style="display:none;">
                 <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"
-                          fill="#ffffff"/>
-                    <path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"
-                          fill="#ffffff"/>
-                    <line x1="3" y1="3" x2="21" y2="21"
-                          stroke="#000000" stroke-width="3.5"
-                          stroke-linecap="round"/>
-                    <line x1="3" y1="3" x2="21" y2="21"
-                          stroke="#ffffff" stroke-width="1.8"
-                          stroke-linecap="round"/>
+                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="#ffffff"/>
+                    <path d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z" fill="#ffffff"/>
+                    <line x1="3" y1="3" x2="21" y2="21" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+                    <line x1="3" y1="3" x2="21" y2="21" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
             </div>
-
         </div>
     `);
 }
 
-/* ================= KAMERA HOST AUTO ================= */
-
+/* KAMERA HOST */
 async function startDisplayDirectCamera() {
-
     if (cameraStarting) return;
 
     const hVid = $('hostVideo');
@@ -786,28 +774,23 @@ async function startDisplayDirectCamera() {
 
     if (displayCamStream &&
         displayCamStream.getVideoTracks().some(t => t.readyState === 'live')) {
-
         hVid.srcObject = displayCamStream;
         hVid.style.display = 'block';
         placeholder.style.display = 'none';
-
-        if (hVid.paused) {
-            await hVid.play().catch(() => {});
-        }
+        if (hVid.paused) await hVid.play().catch(() => {});
         return;
     }
 
     cameraStarting = true;
 
     try {
-
         if (!navigator.mediaDevices?.getUserMedia) {
             throw new Error('Kamera membutuhkan HTTPS atau localhost.');
         }
 
         camImg.style.display = 'none';
 
-        const constraints = {
+        displayCamStream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
                 width: { ideal: 720 },
@@ -815,61 +798,46 @@ async function startDisplayDirectCamera() {
                 frameRate: { ideal: 30, max: 30 },
                 facingMode: 'user'
             }
-        };
-
-        displayCamStream =
-            await navigator.mediaDevices.getUserMedia(constraints);
+        });
 
         hVid.srcObject = displayCamStream;
         hVid.style.display = 'block';
         placeholder.style.display = 'none';
-
         await hVid.play();
 
         const track = displayCamStream.getVideoTracks()[0];
-
-        if (track) {
-            console.log('Kamera aktif:', track.getSettings());
-        }
+        if (track) console.log('Kamera aktif:', track.getSettings());
 
     } catch (err) {
-
         console.error('Kamera error:', err);
-
         placeholder.style.display = 'block';
         placeholder.textContent = 'Kamera gagal aktif';
-
     } finally {
         cameraStarting = false;
     }
 }
 
 function stopDisplayDirectCamera() {
-
     if (displayCamStream) {
         displayCamStream.getTracks().forEach(track => track.stop());
         displayCamStream = null;
     }
 
     const hVid = $('hostVideo');
-
     hVid.pause();
     hVid.srcObject = null;
     hVid.style.display = 'none';
-
     $('hostPlaceholder').style.display = 'block';
 }
 
 function releaseHostObjectURL() {
-
     if (hostMediaObjectURL) {
         URL.revokeObjectURL(hostMediaObjectURL);
         hostMediaObjectURL = null;
     }
 }
 
-/* ================= WEBGL ================= */
-
+/* WEBGL */
 let gl = null;
 let glProgram = null;
 let glTexture = null;
@@ -877,11 +845,9 @@ let glBuffers = {};
 let isWebGLSupported = false;
 
 function initWebGL(canvas) {
-
     if (gl && glProgram && glTexture) return true;
 
     try {
-
         gl = canvas.getContext('webgl', {
             alpha: true,
             premultipliedAlpha: false,
@@ -898,7 +864,6 @@ function initWebGL(canvas) {
             attribute vec2 a_pos;
             attribute vec2 a_tex;
             varying vec2 v_tex;
-
             void main() {
                 gl_Position = vec4(a_pos, 0.0, 1.0);
                 v_tex = a_tex;
@@ -907,61 +872,47 @@ function initWebGL(canvas) {
 
         const fsSource = `
             precision mediump float;
-
             uniform sampler2D u_tex;
             varying vec2 v_tex;
-
             void main() {
                 vec4 c = texture2D(u_tex, v_tex);
-
                 float maxRB = max(c.r, c.b);
                 float gDiff = c.g - maxRB;
-
                 if (gDiff > 0.06 && c.g > 0.18) {
                     float a = 1.0 - smoothstep(0.06, 0.18, gDiff);
                     c.a = min(c.a, a);
                     c.g = maxRB;
                 }
-
                 float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
-
                 if (lum < 0.07) {
                     c.a = 0.0;
                 } else if (lum < 0.16) {
                     c.a = min(c.a, (lum - 0.07) / 0.09);
                 }
-
                 gl_FragColor = c;
             }
         `;
 
         function createShader(type, src) {
-
             const shader = gl.createShader(type);
-
             gl.shaderSource(shader, src);
             gl.compileShader(shader);
-
             if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
                 console.error(gl.getShaderInfoLog(shader));
                 gl.deleteShader(shader);
                 return null;
             }
-
             return shader;
         }
 
         const vs = createShader(gl.VERTEX_SHADER, vsSource);
         const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
-
         if (!vs || !fs) return false;
 
         glProgram = gl.createProgram();
-
         gl.attachShader(glProgram, vs);
         gl.attachShader(glProgram, fs);
         gl.linkProgram(glProgram);
-
         gl.deleteShader(vs);
         gl.deleteShader(fs);
 
@@ -971,18 +922,14 @@ function initWebGL(canvas) {
         }
 
         const posBuffer = gl.createBuffer();
-
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             -1,-1, 1,-1, -1,1,
             -1,1, 1,-1, 1,1
         ]), gl.STATIC_DRAW);
 
         const texBuffer = gl.createBuffer();
-
         gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
-
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             0,1, 1,1, 0,0,
             0,0, 1,1, 1,0
@@ -992,23 +939,16 @@ function initWebGL(canvas) {
         glBuffers.tex = texBuffer;
 
         glTexture = gl.createTexture();
-
         gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
         gl.useProgram(glProgram);
-
-        gl.uniform1i(
-            gl.getUniformLocation(glProgram, 'u_tex'),
-            0
-        );
+        gl.uniform1i(gl.getUniformLocation(glProgram, 'u_tex'), 0);
 
         isWebGLSupported = true;
-
         return true;
 
     } catch (e) {
@@ -1017,28 +957,21 @@ function initWebGL(canvas) {
     }
 }
 
-/* ================= DATABASE VIDEO ================= */
-
+/* DATABASE VIDEO */
 const DB_NAME = "TikTokStudioStorageDB";
 const STORE_NAME = "permanent_assets";
-
 let dbPromise = null;
 
 function openDB() {
-
     if (dbPromise) return dbPromise;
 
     dbPromise = new Promise(resolve => {
-
         const req = indexedDB.open(DB_NAME, 1);
-
         req.onsuccess = () => resolve(req.result);
-
         req.onerror = () => {
             dbPromise = null;
             resolve(null);
         };
-
         req.onblocked = () => {
             dbPromise = null;
             resolve(null);
@@ -1049,58 +982,33 @@ function openDB() {
 }
 
 async function getSavedVideo(id) {
-
     try {
-
         const db = await openDB();
-
         if (!db) return null;
 
         return await new Promise(resolve => {
-
             const tx = db.transaction(STORE_NAME, "readonly");
             const req = tx.objectStore(STORE_NAME).get(`video_${id}`);
-
             req.onsuccess = () => resolve(req.result);
             req.onerror = () => resolve(null);
         });
-
     } catch (e) {
         return null;
     }
 }
 
-/* ================= FORMAT POIN ================= */
-
+/* FORMAT POIN */
 function formatPoin(val) {
-
     if (!val || val === 0) return '0';
-
-    if (val >= 1000000) {
-        return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
-    }
-
-    if (val >= 1000) {
-        return (val / 1000).toFixed(1).replace('.', ',') + 'K';
-    }
-
+    if (val >= 1000000) return (val / 1000000).toFixed(1).replace('.', ',') + 'M';
+    if (val >= 1000) return (val / 1000).toFixed(1).replace('.', ',') + 'K';
     return val.toLocaleString('id-ID');
 }
 
-/* ================= SLOT ================= */
-
+/* SLOT */
 function updateSlotDisplay(data) {
-
-    const {
-        slotNum,
-        nameInput,
-        initialPoin,
-        profileImg,
-        action
-    } = data;
-
+    const { slotNum, nameInput, initialPoin, profileImg, action } = data;
     const slotBox = $(`slot-${slotNum}`);
-
     if (!slotBox) return;
 
     const coinBadge = $(`coin-badge-${slotNum}`);
@@ -1116,17 +1024,12 @@ function updateSlotDisplay(data) {
     const topBadge = $(`topbadge-slot-${slotNum}`);
 
     if (action === 'clear_slot') {
-
         img.style.display = 'none';
         img.removeAttribute('src');
-
         bg.style.display = 'none';
         bg.removeAttribute('src');
-
         bgOverlay.style.display = 'none';
-
         slotBox.style.background = '#1c1d24';
-
         icon.style.display = 'block';
         req.style.display = 'inline-block';
         namePill.style.display = 'none';
@@ -1147,9 +1050,7 @@ function updateSlotDisplay(data) {
         return;
     }
 
-    if (initialPoin !== undefined) {
-        slotPoints[slotNum] = initialPoin;
-    }
+    if (initialPoin !== undefined) slotPoints[slotNum] = initialPoin;
 
     countElem.innerText = formatPoin(slotPoints[slotNum]);
     coinBadge.style.display = 'flex';
@@ -1161,31 +1062,23 @@ function updateSlotDisplay(data) {
     }
 
     if (profileImg) {
-
         icon.style.display = 'none';
         req.style.display = 'none';
-
         img.src = profileImg;
         img.style.display = 'block';
-
         bg.src = profileImg;
         bg.style.display = 'block';
-
         bgOverlay.style.display = 'block';
     }
 }
 
 function showGiftBadgeTemporarily(slotNum, badgeSrc) {
-
     if (!badgeSrc || !slotNum) return;
 
     const topBadge = $(`topbadge-slot-${slotNum}`);
-
     if (!topBadge) return;
 
-    if (badgeTimers[slotNum]) {
-        clearTimeout(badgeTimers[slotNum]);
-    }
+    if (badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
 
     topBadge.src = badgeSrc;
     topBadge.style.display = 'block';
@@ -1197,10 +1090,8 @@ function showGiftBadgeTemporarily(slotNum, badgeSrc) {
     }, 5000);
 }
 
-/* ================= NOTIFIKASI GIFT ================= */
-
+/* NOTIFIKASI GIFT */
 function showGiftToast(data, comboCount = 1) {
-
     const toast = $('giftBannerToast');
     const avatar = $('toastGifterAvatar');
     const nameElem = $('toastGifterName');
@@ -1229,37 +1120,26 @@ function showGiftToast(data, comboCount = 1) {
     clearTimeout(toastHideTimer);
 
     if (toast.style.display !== 'inline-flex') {
-
         toast.style.animation = 'none';
         void toast.offsetWidth;
-
-        toast.style.animation =
-            'tiktokBannerSlideIn .35s ease-out forwards';
-
+        toast.style.animation = 'tiktokBannerSlideIn .35s ease-out forwards';
         toast.style.display = 'inline-flex';
     }
 
     toastTimeout = setTimeout(() => {
-
-        toast.style.animation =
-            'tiktokBannerSlideOut .28s ease-in forwards';
-
+        toast.style.animation = 'tiktokBannerSlideOut .28s ease-in forwards';
         toastHideTimer = setTimeout(() => {
             toast.style.display = 'none';
             comboElem.style.display = 'none';
         }, 280);
-
     }, 3000);
 }
 
-/* ================= ANTRIAN VIDEO GIFT ================= */
-
+/* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src, repeatCount = 1) {
-
     if (!src) return;
 
     const count = Math.max(1, Math.min(999, Number(repeatCount) || 1));
-
     giftVideoQueue.push({
         src,
         remaining: count,
@@ -1270,71 +1150,46 @@ function queueGiftVideo(src, repeatCount = 1) {
 }
 
 function playNextGiftVideo() {
-
     if (giftVideoQueueBusy || giftVideoQueue.length === 0) return;
 
     giftVideoQueueBusy = true;
-
     const item = giftVideoQueue[0];
 
     playGiftVideo(item.src, () => {
-
         item.remaining--;
 
         if (item.remaining > 0) {
             giftVideoQueueBusy = false;
             playNextGiftVideo();
         } else {
-
             giftVideoQueue.shift();
-
-            if (item.isBlob) {
-                URL.revokeObjectURL(item.src);
-            }
-
+            if (item.isBlob) URL.revokeObjectURL(item.src);
             giftVideoQueueBusy = false;
             playNextGiftVideo();
         }
     });
 }
 
-/* ================= SISTEM COMBO GIFT ================= */
-
+/* SISTEM COMBO GIFT */
 function getGiftComboKey(data) {
-
-    const sender = String(
-        data.senderName || data.username || 'user'
-    ).toLowerCase();
-
-    const gift = String(
-        data.giftId || data.giftTitle || 'gift'
-    ).toLowerCase();
-
+    const sender = String(data.senderName || data.username || 'user').toLowerCase();
+    const gift = String(data.giftId || data.giftTitle || 'gift').toLowerCase();
     return `${sender}::${gift}`;
 }
 
 async function resolveGiftVideo(data) {
-
-    if (data.videoBlob) {
-        return URL.createObjectURL(data.videoBlob);
-    }
+    if (data.videoBlob) return URL.createObjectURL(data.videoBlob);
 
     if (data.giftId) {
-
         const blob = await getSavedVideo(data.giftId);
-
-        if (blob) {
-            return URL.createObjectURL(blob);
-        }
+        if (blob) return URL.createObjectURL(blob);
     }
 
     if (data.src) return data.src;
-
     return null;
 }
 
 function receiveGiftForCombo(data) {
-
     const key = getGiftComboKey(data);
 
     const rawCumulative =
@@ -1344,11 +1199,9 @@ function receiveGiftForCombo(data) {
         data.combo_count;
 
     const cumulativeCount = Number(rawCumulative);
-
     let group = giftComboGroups.get(key);
 
     if (!group) {
-
         group = {
             data: { ...data },
             count: 0,
@@ -1357,7 +1210,6 @@ function receiveGiftForCombo(data) {
             revision: 0,
             videoPromise: Promise.resolve()
         };
-
         giftComboGroups.set(key, group);
     }
 
@@ -1365,57 +1217,35 @@ function receiveGiftForCombo(data) {
     group.data = { ...group.data, ...data };
 
     if (Number.isFinite(cumulativeCount) && cumulativeCount > 0) {
-
-        group.count = Math.max(
-            group.count,
-            Math.floor(cumulativeCount)
-        );
-
+        group.count = Math.max(group.count, Math.floor(cumulativeCount));
     } else {
-
-        group.count += Math.max(
-            1,
-            Math.floor(Number(data.giftCount) || 1)
-        );
+        group.count += Math.max(1, Math.floor(Number(data.giftCount) || 1));
     }
 
     showGiftToast(group.data, group.count);
-
     clearTimeout(group.timer);
 
     group.videoPromise = group.videoPromise.then(async () => {
-
         const resolvedSrc = await resolveGiftVideo(data);
 
         if (resolvedSrc) {
-
-            if (
-                group.src &&
-                group.src.startsWith('blob:') &&
-                group.src !== resolvedSrc
-            ) {
+            if (group.src && group.src.startsWith('blob:') && group.src !== resolvedSrc) {
                 URL.revokeObjectURL(group.src);
             }
-
             group.src = resolvedSrc;
         }
-
     }).catch(err => {
         console.error('Gagal memuat video gift:', err);
     });
 
     const finishCombo = async () => {
-
         const finishingRevision = group.revision;
-
         await group.videoPromise;
 
         if (
             giftComboGroups.get(key) !== group ||
             group.revision !== finishingRevision
-        ) {
-            return;
-        }
+        ) return;
 
         giftComboGroups.delete(key);
 
@@ -1430,159 +1260,110 @@ function receiveGiftForCombo(data) {
         data.comboEnd === true ||
         data.combo_end === true;
 
-    group.timer = setTimeout(
-        finishCombo,
-        comboEnded ? 0 : 900
-    );
+    group.timer = setTimeout(finishCombo, comboEnded ? 0 : 900);
 }
 
-/* ================= PESAN MASUK ================= */
-
+/* PESAN MASUK */
 function handleIncomingMessage(data) {
-
     if (!data) return;
 
     if (data.type === 'TRIGGER_DISPLAY_CAMERA') {
-
-        if (data.action === 'start') {
-            startDisplayDirectCamera();
-        } else if (data.action === 'stop') {
-            stopDisplayDirectCamera();
-        }
+        if (data.action === 'start') startDisplayDirectCamera();
+        else if (data.action === 'stop') stopDisplayDirectCamera();
     }
 
     else if (data.type === 'SET_HOST_VIDEO') {
-
         stopDisplayDirectCamera();
 
         const hVid = $('hostVideo');
         const camImg = $('hostCameraImg');
 
         camImg.style.display = 'none';
-
         releaseHostObjectURL();
 
         if (data.videoBlob) {
-
             hVid.srcObject = null;
-
             hostMediaObjectURL = URL.createObjectURL(data.videoBlob);
-
             hVid.src = hostMediaObjectURL;
             hVid.style.display = 'block';
-
             $('hostPlaceholder').style.display = 'none';
-
             hVid.play().catch(() => {});
         }
     }
 
     else if (data.type === 'RESET_HOST_MEDIA') {
-
         stopDisplayDirectCamera();
 
         const hVid = $('hostVideo');
         const camImg = $('hostCameraImg');
 
         releaseHostObjectURL();
-
         camImg.style.display = 'none';
-
         hVid.pause();
         hVid.srcObject = null;
         hVid.removeAttribute('src');
         hVid.style.display = 'none';
         hVid.load();
-
         $('hostPlaceholder').style.display = 'block';
     }
 
-    else if (
-        data.type === 'UPDATE_HOST' ||
-        data.type === 'UPDATE_HOST_NAME'
-    ) {
-
+    else if (data.type === 'UPDATE_HOST' || data.type === 'UPDATE_HOST_NAME') {
         if (data.hostName) {
-
             detectedHostName = data.hostName;
-
             $('hostNameText').innerText = data.hostName;
             const topHostName = $('hostTopName');
             if (topHostName) topHostName.innerText = data.hostName;
         }
 
-        if (data.hostAvatar) {
-            detectedHostAvatar = data.hostAvatar;
-        }
+        if (data.hostAvatar) detectedHostAvatar = data.hostAvatar;
     }
 
     else if (data.type === 'UPDATE_SLOT') {
-
         updateSlotDisplay(data);
     }
 
     else if (data.type === 'PLAY_GIFT') {
-
         const targetSlot = Number(data.targetSlot);
 
         if (targetSlot && slotPoints[targetSlot] !== undefined) {
-
             slotPoints[targetSlot] += Number(data.increment || 0);
 
-            const countElem =
-                $(`coincount-slot-${targetSlot}`);
+            const countElem = $(`coincount-slot-${targetSlot}`);
+            if (countElem) countElem.innerText = formatPoin(slotPoints[targetSlot]);
 
-            if (countElem) {
-                countElem.innerText = formatPoin(slotPoints[targetSlot]);
-            }
-
-            const badge =
-                $(`coin-badge-${targetSlot}`);
-
+            const badge = $(`coin-badge-${targetSlot}`);
             if (badge) badge.style.display = 'flex';
         }
 
-        if (data.badgeImg) {
-            showGiftBadgeTemporarily(targetSlot, data.badgeImg);
-        }
-
+        if (data.badgeImg) showGiftBadgeTemporarily(targetSlot, data.badgeImg);
         receiveGiftForCombo(data);
     }
 }
 
-/* ================= BROADCAST CHANNEL ================= */
-
+/* BROADCAST CHANNEL */
 channel.onmessage = event => {
     handleIncomingMessage(event.data);
 };
 
-/* ================= WEBSOCKET ================= */
-
+/* WEBSOCKET */
 let ws = null;
 let reconnectTimer = null;
 let reconnectDelay = 1000;
 let manuallyClosed = false;
 
 function connectWebSocket() {
-
     if (manuallyClosed) return;
 
     if (
         ws &&
         (ws.readyState === WebSocket.CONNECTING ||
          ws.readyState === WebSocket.OPEN)
-    ) {
-        return;
-    }
+    ) return;
 
     try {
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-        const protocol =
-            location.protocol === 'https:' ? 'wss:' : 'ws:';
-
-        ws = new WebSocket(
-            `${protocol}//${location.host || 'localhost:8081'}`
-        );
+        ws = new WebSocket(`${protocol}//${location.host || 'localhost:8081'}`);
 
         ws.onopen = () => {
             reconnectDelay = 1000;
@@ -1590,102 +1371,53 @@ function connectWebSocket() {
         };
 
         ws.onmessage = event => {
-
             try {
-
                 const d = JSON.parse(event.data);
 
                 if (d.type === 'gift') {
-
                     handleIncomingMessage({
-
                         type: 'PLAY_GIFT',
-
                         targetSlot: 1,
                         increment: Number(d.coins || 1),
-
                         badgeImg: d.giftImage || '',
                         giftTitle: d.giftName || 'Gift',
-
-                        senderName:
-                            d.nickname || d.username || 'User',
-
+                        senderName: d.nickname || d.username || 'User',
                         senderAvatar: d.avatar || '',
-
-                        giftId:
-                            d.giftId ||
-                            d.gift_id ||
-                            d.id ||
-                            '',
-
-                        repeatCount:
-                            d.repeatCount ??
-                            d.repeat_count ??
-                            d.comboCount ??
-                            d.combo_count,
-
-                        giftCount:
-                            d.giftCount ??
-                            d.gift_count,
-
-                        repeatEnd:
-                            d.repeatEnd ??
-                            d.repeat_end ??
-                            d.comboEnd ??
-                            d.combo_end,
-
+                        giftId: d.giftId || d.gift_id || d.id || '',
+                        repeatCount: d.repeatCount ?? d.repeat_count ?? d.comboCount ?? d.combo_count,
+                        giftCount: d.giftCount ?? d.gift_count,
+                        repeatEnd: d.repeatEnd ?? d.repeat_end ?? d.comboEnd ?? d.combo_end,
                         videoBlob: d.videoBlob,
-
-                        src:
-                            d.src ||
-                            d.videoUrl ||
-                            d.video_url ||
-                            ''
+                        src: d.src || d.videoUrl || d.video_url || ''
                     });
                 }
-
             } catch (err) {
                 console.error('WebSocket message error:', err);
             }
         };
 
-        ws.onerror = err => {
-            console.log('WebSocket error:', err);
-        };
+        ws.onerror = err => console.log('WebSocket error:', err);
 
         ws.onclose = () => {
-
             ws = null;
-
             if (manuallyClosed) return;
 
             clearTimeout(reconnectTimer);
-
-            reconnectTimer = setTimeout(() => {
-                connectWebSocket();
-            }, reconnectDelay);
-
+            reconnectTimer = setTimeout(connectWebSocket, reconnectDelay);
             reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
         };
 
     } catch (err) {
-
         console.log('WebSocket connection error:', err);
-
         clearTimeout(reconnectTimer);
-
-        reconnectTimer = setTimeout(() => {
-            connectWebSocket();
-        }, reconnectDelay);
-
+        reconnectTimer = setTimeout(connectWebSocket, reconnectDelay);
         reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
     }
 }
 
 connectWebSocket();
 
-/* ================= PEMUTAR VIDEO GIFT ================= */
-
+/* PEMUTAR VIDEO GIFT */
 let glReady = false;
 let renderActive = false;
 let renderFrameId = null;
@@ -1700,7 +1432,6 @@ const giftOverlay = $('giftOverlayContainer');
 let canvas2D = null;
 
 function stopGiftRenderer() {
-
     renderActive = false;
 
     if (renderFrameId !== null) {
@@ -1708,10 +1439,7 @@ function stopGiftRenderer() {
         renderFrameId = null;
     }
 
-    if (
-        videoFrameCallbackId !== null &&
-        giftVideo.cancelVideoFrameCallback
-    ) {
+    if (videoFrameCallbackId !== null && giftVideo.cancelVideoFrameCallback) {
         giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
     }
 
@@ -1719,55 +1447,31 @@ function stopGiftRenderer() {
 }
 
 function renderGiftFrame() {
-
     if (!renderActive) return;
 
     const video = giftVideo;
 
-    if (
-        video.ended ||
-        video.readyState < video.HAVE_CURRENT_DATA
-    ) {
+    if (video.ended || video.readyState < video.HAVE_CURRENT_DATA) {
         scheduleGiftFrame();
         return;
     }
 
     if (video.currentTime !== lastVideoTime) {
-
         lastVideoTime = video.currentTime;
 
         if (glReady && gl) {
-
             try {
-
                 gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
                 gl.texImage2D(
-                    gl.TEXTURE_2D,
-                    0,
-                    gl.RGBA,
-                    gl.RGBA,
-                    gl.UNSIGNED_BYTE,
-                    video
+                    gl.TEXTURE_2D, 0, gl.RGBA,
+                    gl.RGBA, gl.UNSIGNED_BYTE, video
                 );
-
                 gl.drawArrays(gl.TRIANGLES, 0, 6);
-
             } catch (e) {
                 console.error('WebGL rendering error:', e);
             }
-
-        } else {
-
-            if (canvas2D) {
-                canvas2D.drawImage(
-                    video,
-                    0,
-                    0,
-                    giftCanvas.width,
-                    giftCanvas.height
-                );
-            }
+        } else if (canvas2D) {
+            canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
         }
     }
 
@@ -1775,22 +1479,15 @@ function renderGiftFrame() {
 }
 
 function scheduleGiftFrame() {
-
     if (!renderActive) return;
 
     if (giftVideo.requestVideoFrameCallback) {
-
-        videoFrameCallbackId =
-            giftVideo.requestVideoFrameCallback(() => {
-
-                videoFrameCallbackId = null;
-                renderGiftFrame();
-            });
-
+        videoFrameCallbackId = giftVideo.requestVideoFrameCallback(() => {
+            videoFrameCallbackId = null;
+            renderGiftFrame();
+        });
     } else {
-
         renderFrameId = requestAnimationFrame(() => {
-
             renderFrameId = null;
             renderGiftFrame();
         });
@@ -1798,27 +1495,21 @@ function scheduleGiftFrame() {
 }
 
 function playGiftVideo(src, onFinished) {
-
     const video = giftVideo;
     const canvas = giftCanvas;
     const overlay = giftOverlay;
-
     const generation = ++giftVideoGeneration;
 
     let finished = false;
-
     stopGiftRenderer();
 
     function finish() {
-
         if (finished) return;
-
         finished = true;
 
         if (generation !== giftVideoGeneration) return;
 
         stopGiftRenderer();
-
         overlay.style.display = 'none';
 
         video.onended = null;
@@ -1829,21 +1520,13 @@ function playGiftVideo(src, onFinished) {
         video.removeAttribute('src');
         video.load();
 
-        if (gl) {
-            gl.clear(gl.COLOR_BUFFER_BIT);
-        }
+        if (gl) gl.clear(gl.COLOR_BUFFER_BIT);
+        if (canvas2D) canvas2D.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (canvas2D) {
-            canvas2D.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        if (typeof onFinished === 'function') {
-            onFinished();
-        }
+        if (typeof onFinished === 'function') onFinished();
     }
 
     overlay.style.display = 'block';
-
     video.pause();
     video.removeAttribute('src');
     video.load();
@@ -1856,7 +1539,6 @@ function playGiftVideo(src, onFinished) {
     video.onerror = finish;
 
     glReady = initWebGL(canvas);
-
     canvas2D = null;
 
     if (!glReady) {
@@ -1868,96 +1550,56 @@ function playGiftVideo(src, onFinished) {
     }
 
     video.onloadedmetadata = async () => {
-
         if (finished || generation !== giftVideoGeneration) return;
 
         const originalWidth = video.videoWidth || 720;
         const originalHeight = video.videoHeight || 1280;
+        const scale = Math.min(1, 720 / originalWidth, 1280 / originalHeight);
 
-        const maxWidth = 720;
-        const maxHeight = 1280;
-
-        const scale = Math.min(
-            1,
-            maxWidth / originalWidth,
-            maxHeight / originalHeight
-        );
-
-        const renderWidth = Math.max(
-            1,
-            Math.round(originalWidth * scale)
-        );
-
-        const renderHeight = Math.max(
-            1,
-            Math.round(originalHeight * scale)
-        );
+        const renderWidth = Math.max(1, Math.round(originalWidth * scale));
+        const renderHeight = Math.max(1, Math.round(originalHeight * scale));
 
         canvas.width = renderWidth;
         canvas.height = renderHeight;
 
         if (glReady && gl) {
-
             gl.viewport(0, 0, renderWidth, renderHeight);
             gl.useProgram(glProgram);
 
-            const posLoc =
-                gl.getAttribLocation(glProgram, 'a_pos');
-
+            const posLoc = gl.getAttribLocation(glProgram, 'a_pos');
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.pos);
             gl.enableVertexAttribArray(posLoc);
+            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-            gl.vertexAttribPointer(
-                posLoc, 2, gl.FLOAT, false, 0, 0
-            );
-
-            const texLoc =
-                gl.getAttribLocation(glProgram, 'a_tex');
-
+            const texLoc = gl.getAttribLocation(glProgram, 'a_tex');
             gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.tex);
             gl.enableVertexAttribArray(texLoc);
-
-            gl.vertexAttribPointer(
-                texLoc, 2, gl.FLOAT, false, 0, 0
-            );
+            gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
 
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, glTexture);
-
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT);
-
         } else if (canvas2D) {
-
             canvas2D.clearRect(0, 0, renderWidth, renderHeight);
         }
 
         lastVideoTime = -1;
 
         try {
-
             await video.play();
-
             if (finished || generation !== giftVideoGeneration) return;
-
             renderActive = true;
             renderGiftFrame();
-
         } catch (err) {
-
             console.warn('Gift video autoplay error:', err);
-
             video.muted = true;
 
             try {
-
                 await video.play();
-
                 if (finished || generation !== giftVideoGeneration) return;
-
                 renderActive = true;
                 renderGiftFrame();
-
             } catch (error) {
                 console.error(error);
                 finish();
@@ -1968,12 +1610,9 @@ function playGiftVideo(src, onFinished) {
     video.load();
 }
 
-/* ================= CLEANUP ================= */
-
+/* CLEANUP */
 window.addEventListener('pagehide', () => {
-
     manuallyClosed = true;
-
     stopGiftRenderer();
 
     if (displayCamStream) {
@@ -1990,64 +1629,44 @@ window.addEventListener('pagehide', () => {
     clearTimeout(toastTimeout);
     clearTimeout(toastHideTimer);
 
-    for (const timer of Object.values(badgeTimers)) {
-        clearTimeout(timer);
-    }
+    for (const timer of Object.values(badgeTimers)) clearTimeout(timer);
 
     for (const group of giftComboGroups.values()) {
         clearTimeout(group.timer);
-
-        if (group.src?.startsWith('blob:')) {
-            URL.revokeObjectURL(group.src);
-        }
+        if (group.src?.startsWith('blob:')) URL.revokeObjectURL(group.src);
     }
 
     giftComboGroups.clear();
 
     giftVideoQueue.forEach(item => {
-        if (item.isBlob) {
-            URL.revokeObjectURL(item.src);
-        }
+        if (item.isBlob) URL.revokeObjectURL(item.src);
     });
 
     giftVideoQueue.length = 0;
-
     releaseHostObjectURL();
-
     channel.close();
 });
 
 document.addEventListener('visibilitychange', () => {
-
-    if (document.hidden) {
-        console.log('Display berada di background.');
-    }
+    if (document.hidden) console.log('Display berada di background.');
 });
 
-/* ================= WEBGL RECOVERY ================= */
-
+/* WEBGL RECOVERY */
 giftCanvas.addEventListener('webglcontextlost', event => {
-
     event.preventDefault();
-
     stopGiftRenderer();
     glReady = false;
-
     console.warn('WebGL context lost.');
 });
 
 giftCanvas.addEventListener('webglcontextrestored', () => {
-
     gl = null;
     glProgram = null;
     glTexture = null;
     glBuffers = {};
-
     glReady = initWebGL(giftCanvas);
-
     console.log('WebGL context restored:', glReady);
 });
-
 </script>
 
 </body>
