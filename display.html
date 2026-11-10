@@ -36,19 +36,79 @@ position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-align-items:center;
-padding:12px 6px 6px 6px;
 background:#000;
 transform:translateZ(0)
 }
 
-/* VIDEO FULL LAYAR DI BELAKANG KOTAK & KAMERA REALTIME (Z-INDEX 1) */
-.gift-overlay{
+/* KAMERA REALTIME & VIDEO HOST FULL LAYAR SAMPAI BAWAH */
+.host-fullscreen{
 position:absolute;
 inset:0;
 width:100%;
 height:100%;
 z-index:1;
+background:#000;
+overflow:hidden;
+cursor:pointer;
+display:flex;
+justify-content:center;
+align-items:center
+}
+
+.host-video,#hostCameraImg{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:2;
+display:none;
+backface-visibility:hidden;
+filter:none
+}
+
+#hostCameraImg{
+z-index:3
+}
+
+.host-placeholder{
+color:rgba(255,255,255,0.25);
+font-size:.8rem;
+font-weight:500;
+text-align:center;
+z-index:1;
+display:none
+}
+
+.host-bottom-pill{
+position:absolute;
+bottom:20px;
+left:14px;
+z-index:12;
+background:rgba(0,0,0,.65);
+padding:4px 10px;
+border-radius:999px;
+display:none;
+align-items:center;
+max-width:calc(100% - 28px)
+}
+
+.host-name-text{
+color:#fff;
+font-size:.68rem;
+font-weight:600;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+/* OVERLAY VIDEO GIFT FULL LAYAR */
+.gift-overlay{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+z-index:5;
 pointer-events:none;
 display:none;
 background:transparent
@@ -69,24 +129,25 @@ transform:translateZ(0);
 backface-visibility:hidden
 }
 
-/* LAYOUT KOTAK & KAMERA DI DEPAN VIDEO (Z-INDEX 10) */
+/* TATA LETAK 4 KIRI & 4 KANAN MELAYANG DI DEPAN VIDEO */
 .live-layout{
-display:flex;
-gap:6px;
-width:100%;
 position:relative;
 z-index:10;
-align-items:stretch
+width:100%;
+display:flex;
+justify-content:space-between;
+padding:12px 8px 8px 8px;
+pointer-events:none /* Klik tengah tembus ke kamera host */
 }
 
 .komal-col{
-flex:1;
-min-width:0;
+width:23%;
+max-width:92px;
 display:flex;
 flex-direction:column;
 gap:6px;
 position:relative;
-z-index:10
+pointer-events:auto
 }
 
 /* KOTAK SLOT KOMAL */
@@ -103,8 +164,7 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 contain:layout paint;
-transition:transform .2s ease;
-z-index:10
+transition:transform .2s ease
 }
 
 @keyframes slotBluePulse{
@@ -324,102 +384,33 @@ box-shadow:none
 .mic-container.is-muted .mic-icon-svg .mic-body{
 fill:#fff
 }
-
-/* KAMERA REALTIME HOST DI TENGAH (Z-INDEX 10) */
-.host-box{
-flex:2.1;
-min-width:0;
-background:transparent;
-border-radius:15px;
-overflow:hidden;
-position:relative;
-display:flex;
-justify-content:center;
-align-items:center;
-cursor:pointer;
-border:none;
-transform:translateZ(0);
-contain:layout paint;
-z-index:10
-}
-
-.host-video,#hostCameraImg{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:2;
-display:none;
-backface-visibility:hidden;
-filter:none
-}
-
-#hostCameraImg{
-z-index:3
-}
-
-.host-placeholder{
-color:rgba(255,255,255,0.25);
-font-size:.75rem;
-font-weight:500;
-text-align:center;
-z-index:1;
-display:none
-}
-
-.host-bottom-pill{
-position:absolute;
-bottom:6px;
-left:6px;
-z-index:12;
-background:rgba(0,0,0,.65);
-padding:3px 8px;
-border-radius:999px;
-display:none;
-align-items:center;
-max-width:calc(100% - 16px)
-}
-
-.host-name-text{
-color:#fff;
-font-size:.62rem;
-font-weight:600;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
 </style>
 </head>
 
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- OVERLAY VIDEO FULL LAYAR (DI BELAKANG KOTAK & KAMERA) -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR DARI ATAS SAMPAI BAWAH -->
+  <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
+    <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
+    <video id="hostVideo" class="host-video" autoplay playsinline muted></video>
+    <img id="hostCameraImg" alt="Host Cam">
+
+    <div class="host-bottom-pill" id="hostBottomPill">
+      <span class="host-name-text" id="hostNameText">Host</span>
+    </div>
+  </div>
+
+  <!-- OVERLAY VIDEO ANIMASI GIFT (TRANSPARAN DI ATAS KAMERA, DI BELAKANG KOTAK) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <video id="giftVideo" playsinline crossorigin="anonymous"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
+  <!-- 4 KOTAK KIRI & 4 KANAN MELAYANG DI DEPAN -->
   <div class="live-layout">
-
-    <!-- 4 KOTAK KIRI (SLOT 1 - 4) -->
     <div class="komal-col" id="colLeft"></div>
-
-    <!-- KAMERA REALTIME HOST DI TENGAH -->
-    <div class="host-box" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik untuk aktifkan kamera host">
-      <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
-      <video id="hostVideo" class="host-video" autoplay playsinline muted></video>
-      <img id="hostCameraImg" alt="Host Cam">
-
-      <div class="host-bottom-pill" id="hostBottomPill">
-        <span class="host-name-text" id="hostNameText">Host</span>
-      </div>
-    </div>
-
-    <!-- 4 KOTAK KANAN (SLOT 5 - 8) -->
     <div class="komal-col" id="colRight"></div>
-
   </div>
 
 </div>
@@ -447,7 +438,7 @@ const $ = id => document.getElementById(id);
 const colLeft = $('colLeft');
 const colRight = $('colRight');
 
-// MEMBUAT 4 SLOT KIRI DAN 4 SLOT KANAN
+// MEMBUAT 4 SLOT KIRI (1-4) & 4 SLOT KANAN (5-8)
 for(let i=1; i<=8; i++){
   slotPoints[i] = 0;
   const parentCol = i <= 4 ? colLeft : colRight;
@@ -521,7 +512,7 @@ function updateMicStatus(slotNum,status){
   mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 }
 
-/* KAMERA REALTIME HOST */
+/* KAMERA REALTIME HOST (FULLSCREEN) */
 async function startDisplayDirectCamera(){
   if(cameraStarting) return;
 
@@ -549,8 +540,8 @@ async function startDisplayDirectCamera(){
     displayCamStream=await navigator.mediaDevices.getUserMedia({
       audio:false,
       video:{
-        width:{ideal:720},
-        height:{ideal:1280},
+        width:{ideal:1080},
+        height:{ideal:1920},
         frameRate:{ideal:30,max:30},
         facingMode:'user'
       }
@@ -695,7 +686,7 @@ function initWebGL(canvas){
   }
 }
 
-/* DATABASE VIDEO ASSETS */
+/* DATABASE ASSETS */
 const DB_NAME="TikTokStudioStorageDB";
 const STORE_NAME="permanent_assets";
 let dbPromise=null;
@@ -733,7 +724,7 @@ function formatPoin(val){
   return val.toLocaleString('id-ID');
 }
 
-/* UPDATE TAMPILAN SLOT */
+/* UPDATE SLOT */
 function updateSlotDisplay(data){
   const{slotNum,nameInput,initialPoin,profileImg,action}=data;
   const slotBox=$(`slot-${slotNum}`);
@@ -1078,7 +1069,7 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO (FULL LAYAR DI BELAKANG) */
+/* RENDERER VIDEO */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
