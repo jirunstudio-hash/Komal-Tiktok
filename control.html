@@ -18,9 +18,9 @@
         input:focus, select:focus { border-color: #4facfe; }
 
         button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
-        .btn-green { background: #10b981; } .btn-green:hover { background: #059669; }
-        .btn-red { background: #ef4444; } .btn-red:hover { background: #dc2626; }
-        .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
+        .btn-green { background: #10b981; color: #000; } .btn-green:hover { background: #059669; }
+        .btn-red { background: #ef4444; color: #fff; } .btn-red:hover { background: #dc2626; }
+        .btn-blue { background: #2563eb; color: #fff; } .btn-blue:hover { background: #1d4ed8; }
         .btn-tiktok { background: #fe2c55; color:#fff; } .btn-tiktok:hover { background: #e02447; }
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; }
 
@@ -244,6 +244,19 @@
             <button class="btn-red" style="width:100%; margin-top:10px; font-size:0.72rem; padding: 6px;" onclick="resetHostMediaStandby()">⏹ Reset Layar Host (Standby)</button>
         </div>
 
+        <!-- SOUND CONTROL (TEROMPET & MUSIK DARI AUCTION) -->
+        <div class="card" style="border: 1.5px solid #20d59a;">
+            <h3 style="color:#20d59a;">
+                <span>🎺 Sound Control (Terompet & Musik)</span>
+                <span id="soundStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Audio Standby</span>
+            </h3>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button type="button" id="hornButton" class="btn-blue" style="padding: 12px; font-size: 0.85rem;" onclick="playHorn()">🎺 TEROMPET</button>
+                <button type="button" id="musicButton" class="btn-green" style="padding: 12px; font-size: 0.85rem;" onclick="toggleMusic()">🎵 MUSIK TEROMPET</button>
+            </div>
+        </div>
+
         <!-- 2. DETEKSI USERNAME TIKTOK UNTUK KOTAK -->
         <div class="card">
             <h3>2. Deteksi Akun TikTok & Pasang ke Kotak Otomatis</h3>
@@ -351,8 +364,71 @@
 
     </div>
 
+    <!-- ELEMEN AUDIO DARI AUCTION.HTML -->
+    <audio id="hornAudio" preload="auto" src="https://e.top4top.io/m_3933s4xm91.mp4"></audio>
+    <audio id="musicAudio" preload="auto" loop src="https://d.top4top.io/m_3935k602z0.mp4"></audio>
+
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
+
+        // ================= SOUND CONTROL (TEROMPET & MUSIK) =================
+        const hornAudio = document.getElementById("hornAudio");
+        const musicAudio = document.getElementById("musicAudio");
+        let musicActive = false;
+
+        function playHorn() {
+            if (!hornAudio) return;
+            hornAudio.pause();
+            try { hornAudio.currentTime = 0; } catch (e) {}
+            hornAudio.play().catch(() => {});
+
+            const status = document.getElementById("soundStatus");
+            if (status) {
+                status.innerText = "🎺 Terompet dibunyikan!";
+                status.style.color = "#4ba8ff";
+                setTimeout(() => { status.innerText = "Audio Standby"; status.style.color = "#aaa"; }, 2000);
+            }
+
+            // Kirim sinyal broadcast jika display juga ingin membunyikan
+            channel.postMessage({ type: 'PLAY_SOUND', sound: 'horn' });
+        }
+
+        function toggleMusic() {
+            const button = document.getElementById("musicButton");
+            const status = document.getElementById("soundStatus");
+            if (!musicAudio) return;
+
+            if (musicActive) {
+                musicActive = false;
+                musicAudio.pause();
+                try { musicAudio.currentTime = 0; } catch (e) {}
+                if (button) {
+                    button.className = "btn-green";
+                    button.innerText = "🎵 MUSIK TEROMPET";
+                }
+                if (status) {
+                    status.innerText = "Musik dimatikan";
+                    status.style.color = "#aaa";
+                }
+                channel.postMessage({ type: 'STOP_SOUND', sound: 'music' });
+                return;
+            }
+
+            musicActive = true;
+            musicAudio.loop = true;
+            if (button) {
+                button.className = "btn-red";
+                button.innerText = "⏹ STOP MUSIK";
+            }
+            musicAudio.play().catch(() => {});
+
+            if (status) {
+                status.innerText = "🎵 Musik berputar...";
+                status.style.color = "#20d59a";
+            }
+
+            channel.postMessage({ type: 'PLAY_SOUND', sound: 'music' });
+        }
 
         // ================= INDEXEDDB =================
         const DB_NAME = "TikTokStudioStorageDB";
