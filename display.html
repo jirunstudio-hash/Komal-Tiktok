@@ -28,7 +28,7 @@ justify-content:center;
 align-items:center
 }
 
-/* LAYAR UTAMA DINAIKKAN DARI BAWAH */
+/* LAYAR UTAMA */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -42,7 +42,7 @@ transform:translateZ(0);
 padding-bottom:45px
 }
 
-/* KAMERA REALTIME & VIDEO HOST FULL LAYAR */
+/* KAMERA REALTIME & VIDEO HOST (IKUT DINAIKKAN SAMA DENGAN VIDIO ANIMASI) */
 .host-fullscreen{
 position:absolute;
 inset:0;
@@ -54,7 +54,8 @@ overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
-align-items:center
+align-items:center;
+transform:translateY(-45px) /* Naik 45px sama persis dengan vidio animasi */
 }
 
 .host-video,#hostCameraImg{
@@ -82,10 +83,10 @@ z-index:1;
 display:none
 }
 
-/* PIL NAMA HOST JUGA IKUT DINAIKKAN */
+/* PIL NAMA HOST MENYESUAIKAN DI ATAS GARIS BAWAH */
 .host-bottom-pill{
 position:absolute;
-bottom:60px;
+bottom:20px;
 left:14px;
 z-index:12;
 background:rgba(0,0,0,.65);
@@ -105,7 +106,7 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* VIDEO DINAIKKAN SEDIKIT DARI BAWAH (-45px) AGAR PAS */
+/* VIDEO ANIMASI GIFT (SEJAJAR DENGAN HOST & KAMERA) */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -115,7 +116,7 @@ z-index:5;
 pointer-events:none;
 display:none;
 background:transparent;
-transform:translateY(-45px)
+transform:translateY(-45px) /* Naik 45px sejajar dengan host-fullscreen */
 }
 
 #giftVideo{
@@ -394,7 +395,7 @@ fill:#fff
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR -->
+  <!-- KAMERA REALTIME / VIDEO HOST (NAIK -45px SEJAJAR VIDIO ANIMASI) -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted></video>
@@ -405,7 +406,7 @@ fill:#fff
     </div>
   </div>
 
-  <!-- OVERLAY VIDEO GIFT FULL LAYAR (TERANGKAT SEDIKIT DARI BAWAH) -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT (NAIK -45px SEJAJAR HOST) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
@@ -1074,7 +1075,7 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO BEBAS BUG (AUTO RECOVERY) */
+/* RENDERER VIDEO BEBAS BUG */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1207,7 +1208,6 @@ function playGiftVideo(src,onFinished){
     try{ canvas2D=canvas.getContext('2d'); }catch(e){}
   }
 
-  // Safety Timer: Jika video stuck/bug > 12 detik, paksa lanjut ke antrian berikutnya
   safetyTimer=setTimeout(()=>{
     if(!finished) finish();
   }, 12000);
