@@ -393,7 +393,7 @@ box-shadow:none!important
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT FULL LAYAR HD -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT FULL LAYAR HD (100% SOLID & WARNA ASLI) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
@@ -419,7 +419,6 @@ let displayCamStream = null;
 let cameraStarting = false;
 let hostMediaObjectURL = null;
 
-// VARIABEL SEAMLESS HOST LOOPING
 let activeHostVid = 1;
 let hostLoopActive = false;
 
@@ -479,7 +478,6 @@ for(let i=1; i<=8; i++){
       <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
         <path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
         <path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
-        <!-- Layer outline pemisah & garis coret "\" putih -->
         <line class="mic-slash-bg" x1="4" y1="4" x2="20" y2="20"/>
         <line class="mic-slash" x1="4" y1="4" x2="20" y2="20"/>
       </svg>
@@ -507,7 +505,6 @@ function updateMicStatus(slotNum,status){
   if(!mic||status===null||status===undefined) return;
 
   slotMuteStates[slotNum]=Boolean(status);
-  // Default status: true (tampil coretan putih seolah-olah di-mute)
   mic.classList.toggle('is-unmuted', !Boolean(status));
   mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
@@ -580,7 +577,7 @@ function stopHostSeamlessLoop(){
   }
 }
 
-/* KAMERA REALTIME HOST */
+/* KAMERA REALTIME HOST (1080p FULL HD) */
 async function startDisplayDirectCamera(){
   if(cameraStarting) return;
 
@@ -656,7 +653,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL RENDERER HD */
+/* WEBGL RENDERER DENGAN LUMA KEY PRESISI TINGGI (WARNA GIFT TETAP 100% ASLI) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -679,6 +676,7 @@ function initWebGL(canvas){
 
     if(!gl) return false;
 
+    // SHADER AGAR WARNA GIFT 100% PEKAT & TETAP TRANSPARAN TERHADAP HOST
     const vsSource=`
     attribute vec2 a_pos;
     attribute vec2 a_tex;
@@ -693,21 +691,26 @@ function initWebGL(canvas){
     uniform sampler2D u_tex;
     varying vec2 v_tex;
     void main(){
-      vec4 c=texture2D(u_tex,v_tex);
-      float maxRB=max(c.r,c.b);
-      float gDiff=c.g-maxRB;
-      if(gDiff>0.06&&c.g>0.18){
-        float a=1.0-smoothstep(0.06,0.18,gDiff);
-        c.a=min(c.a,a);
-        c.g=maxRB;
+      vec4 c = texture2D(u_tex, v_tex);
+
+      // 1. CHROMA KEY HIJAU
+      float maxRB = max(c.r, c.b);
+      float gDiff = c.g - maxRB;
+      if(gDiff > 0.08 && c.g > 0.25){
+        float a = 1.0 - smoothstep(0.08, 0.20, gDiff);
+        c.a = min(c.a, a);
+        c.g = maxRB;
       }
-      float lum=dot(c.rgb,vec3(0.299,0.587,0.114));
-      if(lum<0.07){
-        c.a=0.0;
-      }else if(lum<0.16){
-        c.a=min(c.a,(lum-0.07)/0.09);
+
+      // 2. LUMA KEY HITAM HANYA PADA BACKGROUND PEKAT (TIDAK MEMUDARKAN GIFT)
+      float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+      if(lum < 0.032){
+        c.a = 0.0;
+      } else if(lum < 0.075){
+        c.a = min(c.a, (lum - 0.032) / 0.043);
       }
-      gl_FragColor=c;
+
+      gl_FragColor = c;
     }`;
 
     function createShader(type,src){
@@ -1040,10 +1043,6 @@ function handleIncomingMessage(data){
     camImg.style.display='none';
     $('hostPlaceholder').style.display='none';
   }
-  else if(data.type==='UPDATE_HOST'||data.type==='UPDATE_HOST_NAME'){
-    if(data.hostName) detectedHostName=data.hostName;
-    if(data.hostAvatar) detectedHostAvatar=data.hostAvatar;
-  }
   else if(data.type==='UPDATE_SLOT'){
     updateSlotDisplay(data);
   }
@@ -1135,7 +1134,7 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO BEBAS BUG (HD 1080p) */
+/* RENDERER VIDEO BEBAS BUG (HD 1080p BUFFER) */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1277,9 +1276,9 @@ function playGiftVideo(src,onFinished){
 
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
-    const scale=Math.min(1,1080/originalWidth,1920/originalHeight);
-    const renderWidth=Math.max(1,Math.round(originalWidth*scale));
-    const renderHeight=Math.max(1,Math.round(originalHeight*scale));
+    const scale=Math.min(1, 1080/originalWidth, 1920/originalHeight);
+    const renderWidth=Math.max(1, Math.round(originalWidth*scale));
+    const renderHeight=Math.max(1, Math.round(originalHeight*scale));
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
