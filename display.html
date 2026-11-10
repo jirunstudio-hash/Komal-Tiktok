@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -25,30 +26,30 @@ color:#fff
 body{
 display:flex;
 justify-content:center;
-align-items:center
+align-items:stretch
 }
 
 .phone-screen{
 width:100vw;
 height:100vh;
-max-width:440px;
+max-width:none;
 position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-align-items:center;
-padding:4px;
+align-items:stretch;
+padding:0;
 background:#000;
 transform:translateZ(0)
 }
 
 .live-layout{
 display:flex;
-gap:4px;
 width:100%;
+height:100%;
 position:relative;
 z-index:10;
-align-items:stretch
+align-items:flex-start
 }
 
 /* HOST BLUE NEON PULSE */
@@ -64,6 +65,7 @@ box-shadow:0 0 1px rgba(0,150,255,.15),inset 0 0 1px rgba(0,150,255,.1)
 }
 
 .host-box{
+display:none!important;
 flex:1;
 min-width:0;
 background:#1c1d24;
@@ -130,24 +132,29 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* GRID KOMAL TETAP ASLI */
+/* GRID KOMAL */
 .komal-grid{
-flex:1;
+flex:none;
+width:100%;
 min-width:0;
 display:grid;
-grid-template-columns:repeat(2,1fr);
-grid-template-rows:repeat(4,1fr);
-gap:4px;
+grid-template-columns:repeat(2,min(24vw,228px));
+grid-template-rows:repeat(4,min(24vw,228px));
+justify-content:space-between;
+align-content:start;
+gap:7px 0;
+padding:4.8vh 1% 0;
 position:relative;
 z-index:10
 }
 
 .slot-box{
 width:100%;
+height:100%;
 aspect-ratio:1/1;
-background:#1c1d24;
-border:1.5px solid transparent;
-border-radius:12px;
+background:#888;
+border:0;
+border-radius:20px;
 position:relative;
 overflow:hidden;
 display:flex;
@@ -195,19 +202,19 @@ pointer-events:none
 }
 
 .slot-plus-svg{
-width:28px;
-height:28px;
-stroke:#8e95a3;
-stroke-width:4;
+width:48px;
+height:48px;
+stroke:#fff;
+stroke-width:2.6;
 stroke-linecap:round;
 z-index:3;
 margin-bottom:2px
 }
 
 .slot-req{
-color:#8e95a3;
-font-size:.66rem;
-font-weight:700;
+color:#fff;
+font-size:clamp(14px,2.3vw,22px);
+font-weight:500;
 z-index:3
 }
 
@@ -373,7 +380,7 @@ box-shadow:none
 fill:#fff
 }
 
-/* NOTIFIKASI GIFT - SEDIKIT LEBIH KECIL */
+/* NOTIFIKASI GIFT */
 .gift-banner-wrapper{
 position:absolute;
 bottom:40px;
@@ -478,7 +485,7 @@ text-shadow:0 2px 5px rgba(0,0,0,.95);
 flex-shrink:0
 }
 
-/* VIDEO GIFT NAIK 20 PIXEL TANPA MENGUBAH UKURAN CANVAS */
+/* VIDEO GIFT */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -504,6 +511,44 @@ display:block;
 pointer-events:none;
 transform:translateZ(0);
 backface-visibility:hidden
+}
+
+/* TAMPILAN KOMAL MINIMAL */
+.host-box,
+.gift-banner-wrapper,
+.host-top-pill,
+.host-bottom-pill,
+.slot-coin-badge,
+.slot-top-badge,
+.mic-container,
+.slot-plus-circle{
+display:none!important;
+}
+
+.slot-name-pill{
+left:6px;
+bottom:6px;
+max-width:calc(100% - 12px);
+}
+
+.slot-name-text{
+max-width:100%;
+}
+
+.slot-box:not(.has-photo){
+background:#888;
+}
+
+@media(max-width:600px){
+.komal-grid{
+grid-template-columns:repeat(2,24vw);
+grid-template-rows:repeat(4,24vw);
+gap:6px 0;
+padding-top:4.8vh;
+}
+.slot-box{border-radius:14px}
+.slot-plus-svg{width:34px;height:34px}
+.slot-req{font-size:clamp(11px,2.3vw,15px)}
 }
 </style>
 </head>
