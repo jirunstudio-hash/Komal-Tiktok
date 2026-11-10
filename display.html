@@ -106,14 +106,14 @@ will-change:opacity
 opacity:1
 }
 
-/* SISTEM PENAHAN: MEMBLOKIR VIDEO HOST DI AREA BAWAH SAAT GIFT MUNCUL */
+/* BACKDROP PENAHAN BAWAH SOLID (MENGUNCI VIDEO HOST DI BAWAH AGAR TIDAK TEMBUS) */
 .gift-bottom-backdrop{
 position:absolute;
 left:0;
 right:0;
 bottom:0;
-height:58%; /* Melindungi area bawah tempat animasi gift muncul */
-background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 22%, rgba(0,0,0,0.95) 45%, #000000 68%, #000000 100%);
+height:68%; /* Melindungi seluruh area tengah hingga bawah tempat animasi gift bermain */
+background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 12%, #000000 25%, #000000 100%);
 pointer-events:none;
 z-index:1
 }
@@ -404,7 +404,7 @@ box-shadow:none!important
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR (TETAP MUNCUL DI ATAS & BELAKANG) -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR (TETAP MUNCUL DI ATAS) -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -412,7 +412,7 @@ box-shadow:none!important
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT (DILENGKAPI BACKDROP PENAHAN ANTI-TEMBUS) -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT DENGAN PENAHAN SOLID ANTI-TEMBUS -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <div class="gift-bottom-backdrop"></div>
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
@@ -695,7 +695,6 @@ function initWebGL(canvas){
 
     if(!gl) return false;
 
-    // Matikan blending pada draw quad agar output alpha murni langsung tercatat ke canvas
     gl.disable(gl.BLEND);
 
     const vsSource=`
@@ -707,6 +706,7 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
+    // SHADER: HANYA HAPUS BACKGROUND VOID MURNI, ELEMEN GIFT 100% SOLID OPAQUE
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -718,16 +718,16 @@ function initWebGL(canvas){
       // 1. Deteksi Background Hijau (Chroma Key)
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
-      bool isGreen = (gDiff > 0.16 && c.g > 0.35 && c.g > c.r * 1.25 && c.g > c.b * 1.25);
+      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
 
-      // 2. Deteksi Background Hitam Video (Termasuk standard video Y=16)
+      // 2. Deteksi Background Hitam Video (Hanya void gelap pekat tanpa warna)
       float maxC = max(c.r, max(c.g, c.b));
       float minC = min(c.r, min(c.g, c.b));
       float chromaDiff = maxC - minC;
-      bool isBlack = (maxC < 0.075 && chromaDiff < 0.035);
+      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
       if (isGreen || isBlack) {
-        c.a = 0.0;
+        c.a = 0.0; // Latar belakang transparan
       } else {
         // Semua bagian tubuh gift (mobil, panggung, kilau, naga) WAJIB 100% SOLID OPAQUE
         c.a = 1.0;
