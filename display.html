@@ -30,7 +30,7 @@ justify-content:center;
 align-items:center
 }
 
-/* LAYAR UTAMA */
+/* LAYAR UTAMA (TETAP PERSIS ASLI: MAX 440PX) */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -57,7 +57,8 @@ cursor:pointer;
 display:flex;
 justify-content:center;
 align-items:center;
-transform:translateY(-45px)
+transform:translateY(-45px);
+transition:opacity 0.25s ease
 }
 
 .host-video,#hostCameraImg{
@@ -86,7 +87,13 @@ z-index:1;
 display:none
 }
 
-/* VIDEO ANIMASI GIFT HD (FADE-IN HALUS & BAWAH 100% SOLID ANTI-TEMBUS) */
+/* FITUR: KETIKA GIFT AKTIF, HOST DI BAWAHNYA REDUP AGAR TIDAK TEMBUS */
+.phone-screen.gift-playing .host-fullscreen{
+opacity:0;
+pointer-events:none
+}
+
+/* VIDEO ANIMASI GIFT HD (FADE-IN HALUS & LEBIH JELAS) */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -96,7 +103,7 @@ z-index:5;
 pointer-events:none;
 display:none;
 opacity:0;
-background:transparent;
+background:rgba(0,0,0,0.75); /* Latar gelap studio agar animasi gift tajam & tidak tembus */
 transform:translateY(-45px);
 transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 will-change:opacity
@@ -330,7 +337,7 @@ width:8px;
 height:8px
 }
 
-/* MIKROFON TANPA LINGKARAN */
+/* MIKROFON */
 .mic-container{
 position:absolute;
 bottom:6px;
@@ -436,6 +443,7 @@ let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-00
 const $ = id => document.getElementById(id);
 const colLeft = $('colLeft');
 const colRight = $('colRight');
+const displayContainer = $('displayContainer');
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
@@ -656,7 +664,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL RENDERER: SETENGAH KE BAWAH 100% SOLID (ANTI-TEMBUS HOST) */
+/* WEBGL RENDERER DENGAN WARNA TAJAM & SOLID */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -682,40 +690,30 @@ function initWebGL(canvas){
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    // Meneruskan posisi vertikal layar (v_pos_y) ke Fragment Shader
     const vsSource=`
     attribute vec2 a_pos;
     attribute vec2 a_tex;
     varying vec2 v_tex;
-    varying float v_pos_y;
     void main(){
       gl_Position=vec4(a_pos,0.0,1.0);
       v_tex=a_tex;
-      v_pos_y=a_pos.y;
     }`;
 
-    // SHADER: SETENGAH KE BAWAH DIKUNCI 100% SOLID SEHINGGA HOST TIDAK TEMBUS
+    // SHADER AGAR WARNA ANIMASI GIFT LEBIH JELAS & 100% SOLID
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
     varying vec2 v_tex;
-    varying float v_pos_y;
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      // v_pos_y: 1.0 (atas layar), -1.0 (bawah layar), 0.0 (tengah layar)
-      // bottomFactor = 1.0 untuk SETENGAH KE BAWAH, 0.0 untuk SETENGAH KE ATAS
-      float bottomFactor = 1.0 - smoothstep(-0.06, 0.06, v_pos_y);
-
-      // 1. CHROMA KEY HIJAU (Hanya untuk bagian atas)
+      // 1. CHROMA KEY HIJAU
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
       if(gDiff > 0.16 && c.g > 0.32){
         float a = 1.0 - smoothstep(0.16, 0.28, gDiff);
         c.a = min(c.a, a);
         c.g = maxRB;
-        // Di bagian bawah, ganti sisa hijau menjadi hitam pekat solid
-        c.rgb = mix(c.rgb, vec3(0.0), bottomFactor);
       }
 
       // 2. DETEKSI BACKGROUND HITAM PEKAT
@@ -726,17 +724,12 @@ function initWebGL(canvas){
       if(maxVal < 0.035 && chroma < 0.02){
         c.a = 0.0;
       } else if(maxVal < 0.065 && chroma < 0.025){
-        float edgeAlpha = (maxVal - 0.035) / 0.030;
-        c.a = min(c.a, edgeAlpha);
+        c.a = (maxVal - 0.035) / 0.030;
       } else {
+        // Efek gift dibuat 100% solid & warna tajam agar tampil jelas
         if(c.a > 0.0){
           c.a = 1.0;
         }
-      }
-
-      // 3. SETENGAH KE BAWAH: JAMIN 100% SOLID (EFEK HOST SAMA SEKALI TIDAK BOLEH TEMBUS)
-      if(bottomFactor > 0.0){
-        c.a = mix(c.a, 1.0, bottomFactor);
       }
 
       gl_FragColor = c;
@@ -1213,8 +1206,9 @@ function renderGiftFrame(){
       }catch(e){}
     }
 
-    // Munculkan video dengan fade-in halus saat frame pertama siap
+    // Tampilkan animasi dengan halus & sembunyikan host di bawahnya
     if(!giftOverlay.classList.contains('visible')){
+      displayContainer.classList.add('gift-playing');
       giftOverlay.classList.add('visible');
     }
   }
@@ -1254,7 +1248,9 @@ function playGiftVideo(src,onFinished){
 
     if(generation!==giftVideoGeneration) return;
 
+    // Transisi fade-out halus saat video selesai
     overlay.classList.remove('visible');
+    displayContainer.classList.remove('gift-playing');
 
     setTimeout(()=>{
       if(generation!==giftVideoGeneration) return;
