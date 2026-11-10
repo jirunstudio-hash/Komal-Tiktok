@@ -32,9 +32,6 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #2e2e40;
         }
         @media(max-width: 500px) {
             .host-media-container { grid-template-columns: 1fr; }
@@ -219,28 +216,12 @@
 
     <div class="dashboard">
 
-        <!-- 1. IDENTITAS & MEDIA HOST -->
+        <!-- 1. KONTROL TAMPILAN & MEDIA HOST -->
         <div class="card">
             <h3>
-                <span>1. Identitas Host & Tampilan Layar Host</span>
+                <span>1. Tampilan Layar & Kamera Host</span>
                 <span id="remoteHostStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Host Standby</span>
             </h3>
-
-            <div class="form-group">
-                <label>Ketik Username TikTok Host (Nama & Foto Otomatis ke Display):</label>
-                <div style="display:flex; gap:6px;">
-                    <input type="text" id="hostUsernameInput" placeholder="Contoh: atjunior atau @username" style="flex:1;">
-                    <button id="btnDetectHost" class="btn-tiktok" onclick="detectHostTikTokUser()">🔍 Cari Akun Host</button>
-                </div>
-            </div>
-
-            <div id="hostProfilePreviewBox" class="profile-preview" style="margin-bottom: 10px;">
-                <img id="hostPrevImg" src="" alt="Avatar Host" referrerpolicy="no-referrer">
-                <div class="profile-meta">
-                    <b id="hostPrevNick">Nama Host</b>
-                    <span id="hostPrevUser">@username</span>
-                </div>
-            </div>
 
             <div class="host-media-container">
                 <div class="host-media-box">
@@ -260,10 +241,10 @@
                 </div>
             </div>
 
-            <button class="btn-red" style="width:100%; margin-top:10px; font-size:0.72rem; padding: 6px;" onclick="resetHostMediaStandby()">⏹ Reset Kotak Host (Standby)</button>
+            <button class="btn-red" style="width:100%; margin-top:10px; font-size:0.72rem; padding: 6px;" onclick="resetHostMediaStandby()">⏹ Reset Layar Host (Standby)</button>
         </div>
 
-        <!-- 2. DETEKSI USERNAME TIKTOK -->
+        <!-- 2. DETEKSI USERNAME TIKTOK UNTUK KOTAK -->
         <div class="card">
             <h3>2. Deteksi Akun TikTok & Pasang ke Kotak Otomatis</h3>
 
@@ -299,7 +280,7 @@
         <!-- 3. KATALOG GIFT -->
         <div class="card" style="border: 1.5px solid #f59e0b;">
             <h3 style="color:#f59e0b;">
-                <span>🎁 3. Katalog Gift TikTok (Notifikasi 3 Detik + Video Full)</span>
+                <span>🎁 3. Katalog Gift TikTok (Video Full Layar)</span>
                 <span style="font-size:0.65rem; color:#10b981; font-weight:normal;">💾 Auto-Saved IndexedDB</span>
             </h3>
 
@@ -372,13 +353,6 @@
 
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
-
-        // PENYIMPAN IDENTITAS PROFIL HOST
-        let currentHostProfile = {
-            nickname: localStorage.getItem('saved_host_name') || 'Host',
-            avatar: localStorage.getItem('saved_host_avatar') || 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg',
-            username: localStorage.getItem('saved_host_user') || ''
-        };
 
         // ================= INDEXEDDB =================
         const DB_NAME = "TikTokStudioStorageDB";
@@ -513,7 +487,6 @@
         }
 
         // ================= DATABASE 9 GIFT RESMI =================
-        // URL IKON ASLI TETAP DIPERTAHANKAN
         const GIFTS_DATABASE = [
             { id: 'gift_1', title: 'TikTok Universe', coins: 44999, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp' },
             { id: 'gift_2', title: 'Paus Antariksa', coins: 6000, icon: 'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp' },
@@ -806,8 +779,6 @@
                 targetSlot: targetSlot,
                 increment: gift.coins,
                 badgeImg: gift.icon,
-                senderName: currentHostProfile.nickname || 'Host',
-                senderAvatar: currentHostProfile.avatar || '',
                 videoBlob: savedVideo || null
             });
         }
@@ -868,52 +839,6 @@
             var resP = await fetch(proxy);
             var jsonP = await resP.json();
             return extractTikwmUser(JSON.parse(jsonP.contents));
-        }
-
-        // CARI AKUN TIKTOK HOST
-        async function detectHostTikTokUser() {
-            var inputVal = document.getElementById('hostUsernameInput').value.trim();
-            if (!inputVal) return;
-
-            var cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
-                                    .replace(/^@/, '')
-                                    .split(/[/?#]/)[0].trim();
-
-            var btn = document.getElementById('btnDetectHost');
-            btn.innerText = "⏳ Mencari...";
-            btn.disabled = true;
-
-            try {
-                var data = await requestTikwmUser(cleanUser);
-
-                currentHostProfile = {
-                    username: data.username,
-                    nickname: data.nickname,
-                    avatar: data.avatar
-                };
-
-                document.getElementById('hostPrevImg').src = data.avatar;
-                document.getElementById('hostPrevNick').innerText = data.nickname;
-                document.getElementById('hostPrevUser').innerText = '@' + data.username;
-                document.getElementById('hostProfilePreviewBox').style.display = 'flex';
-
-                channel.postMessage({
-                    type: 'UPDATE_HOST',
-                    hostName: data.nickname,
-                    hostAvatar: data.avatar
-                });
-
-                localStorage.setItem('saved_host_name', data.nickname);
-                localStorage.setItem('saved_host_avatar', data.avatar);
-                localStorage.setItem('saved_host_user', data.username);
-
-            } catch (err) {
-                alert("Akun TikTok Host tidak ditemukan!");
-                document.getElementById('hostProfilePreviewBox').style.display = 'none';
-            } finally {
-                btn.innerText = "🔍 Cari Akun Host";
-                btn.disabled = false;
-            }
         }
 
         // CARI AKUN TIKTOK KOMAL
@@ -1048,35 +973,6 @@
 
         // ================= SAAT HALAMAN DIBUKA =================
         window.onload = () => {
-            const savedHostName = localStorage.getItem('saved_host_name');
-            const savedHostUser = localStorage.getItem('saved_host_user');
-            const savedHostAvatar = localStorage.getItem('saved_host_avatar');
-
-            if (savedHostUser) {
-                document.getElementById('hostUsernameInput').value = savedHostUser;
-            }
-
-            if (savedHostAvatar) {
-                document.getElementById('hostPrevImg').src = savedHostAvatar;
-                document.getElementById('hostPrevNick').innerText = savedHostName || 'Host';
-                document.getElementById('hostPrevUser').innerText = '@' + (savedHostUser || '');
-                document.getElementById('hostProfilePreviewBox').style.display = 'flex';
-
-                currentHostProfile = {
-                    nickname: savedHostName || 'Host',
-                    avatar: savedHostAvatar,
-                    username: savedHostUser || ''
-                };
-            }
-
-            if (savedHostName || savedHostAvatar) {
-                channel.postMessage({
-                    type: 'UPDATE_HOST',
-                    hostName: savedHostName || 'Host',
-                    hostAvatar: savedHostAvatar || ''
-                });
-            }
-
             checkHostVideoStatus();
             renderGiftsUI();
             renderSlotList();
