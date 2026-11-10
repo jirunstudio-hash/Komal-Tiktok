@@ -131,18 +131,19 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* GRID KOMAL TETAP ASLI */
+/* GRID KOMAL */
 .komal-grid{
 flex:none;
 width:100%;
 min-width:0;
 display:grid;
-grid-template-columns:repeat(2,min(24vw,228px));
-grid-template-rows:repeat(4,min(24vw,228px));
+grid-template-columns:repeat(2,min(22vw,175px));
+grid-template-rows:repeat(4,min(22vw,175px));
 justify-content:space-between;
 align-content:start;
-gap:7px 0;
-padding:4.8vh 1% 0;
+column-gap:0;
+row-gap:8px;
+padding:4vh 3% 0;
 position:relative;
 z-index:10
 }
@@ -153,7 +154,7 @@ height:100%;
 aspect-ratio:1/1;
 background:#888;
 border:0;
-border-radius:20px;
+border-radius:14px;
 position:relative;
 overflow:hidden;
 display:flex;
@@ -201,8 +202,8 @@ pointer-events:none
 }
 
 .slot-plus-svg{
-width:48px;
-height:48px;
+width:30px;
+height:30px;
 stroke:#fff;
 stroke-width:2.6;
 stroke-linecap:round;
@@ -212,7 +213,7 @@ margin-bottom:2px
 
 .slot-req{
 color:#fff;
-font-size:clamp(14px,2.3vw,22px);
+font-size:12px;
 font-weight:500;
 z-index:3
 }
@@ -289,9 +290,9 @@ animation:popGiftBadge .3s ease-out
 
 .slot-name-pill{
 position:absolute;
-bottom:5px;
-left:5px;
-max-width:calc(100% - 34px);
+bottom:6px;
+left:6px;
+max-width:calc(100% - 12px);
 display:flex;
 align-items:center;
 gap:5px;
@@ -312,7 +313,7 @@ letter-spacing:0;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:85px;
+max-width:100%;
 text-shadow:none
 }
 
@@ -379,7 +380,7 @@ box-shadow:none
 fill:#fff
 }
 
-/* NOTIFIKASI GIFT - SEDIKIT LEBIH KECIL */
+/* NOTIFIKASI GIFT */
 .gift-banner-wrapper{
 position:absolute;
 bottom:40px;
@@ -484,7 +485,7 @@ text-shadow:0 2px 5px rgba(0,0,0,.95);
 flex-shrink:0
 }
 
-/* VIDEO GIFT NAIK 20 PIXEL TANPA MENGUBAH UKURAN CANVAS */
+/* VIDEO GIFT */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -512,7 +513,7 @@ transform:translateZ(0);
 backface-visibility:hidden
 }
 
-/* TAMPILAN KOMAL MINIMAL DIPERKECIL */
+/* SEMBUNYIKAN ELEMEN YANG TIDAK DIPAKAI */
 .host-box,
 .gift-banner-wrapper,
 .host-top-pill,
@@ -521,49 +522,31 @@ backface-visibility:hidden
 .slot-top-badge,
 .mic-container,
 .slot-plus-circle{
-    display:none!important;
+display:none!important;
 }
 
+@media(max-width:600px){
 .komal-grid{
-    width:100%;
-    grid-template-columns:repeat(2,min(19vw,175px));
-    grid-template-rows:repeat(4,min(19vw,175px));
-    justify-content:space-evenly;
-    align-content:start;
-    column-gap:0;
-    row-gap:8px;
-    padding:4vh 0 0;
+grid-template-columns:repeat(2,min(22vw,105px));
+grid-template-rows:repeat(4,min(22vw,105px));
+column-gap:0;
+row-gap:7px;
+padding:4vh 3% 0;
 }
 
 .slot-box{
-    width:100%;
-    height:100%;
-    border-radius:14px;
-    background:#888;
+border-radius:12px;
 }
 
-.slot-name-pill{
-    left:6px;
-    bottom:6px;
-    max-width:calc(100% - 12px);
-}
-.slot-name-text{max-width:100%}
-.slot-box:not(.has-photo){background:#888}
-.slot-plus-svg{width:30px;height:30px}
-.slot-req{font-size:12px}
-
-@media(max-width:600px){
-    .komal-grid{
-        grid-template-columns:repeat(2,min(19vw,90px));
-        grid-template-rows:repeat(4,min(19vw,90px));
-        row-gap:6px;
-        padding-top:4vh;
-    }
-    .slot-box{border-radius:12px}
-    .slot-plus-svg{width:23px;height:23px}
-    .slot-req{font-size:9px}
+.slot-plus-svg{
+width:23px;
+height:23px;
 }
 
+.slot-req{
+font-size:9px;
+}
+}
 </style>
 </head>
 
@@ -967,7 +950,7 @@ img.removeAttribute('src');
 bg.style.display='none';
 bg.removeAttribute('src');
 bgOverlay.style.display='none';
-slotBox.style.background='#1c1d24';
+slotBox.style.background='#888';
 icon.style.display='block';
 req.style.display='inline-block';
 namePill.style.display='none';
