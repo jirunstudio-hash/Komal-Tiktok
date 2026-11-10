@@ -28,6 +28,7 @@ justify-content:center;
 align-items:center
 }
 
+/* LAYAR UTAMA DINAIKKAN DARI BAWAH */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -37,10 +38,11 @@ overflow:hidden;
 display:flex;
 flex-direction:column;
 background:#000;
-transform:translateZ(0)
+transform:translateZ(0);
+padding-bottom:45px
 }
 
-/* KAMERA REALTIME & VIDEO HOST FULL LAYAR SAMPAI BAWAH */
+/* KAMERA REALTIME & VIDEO HOST FULL LAYAR */
 .host-fullscreen{
 position:absolute;
 inset:0;
@@ -80,9 +82,10 @@ z-index:1;
 display:none
 }
 
+/* PIL NAMA HOST JUGA IKUT DINAIKKAN */
 .host-bottom-pill{
 position:absolute;
-bottom:20px;
+bottom:60px;
 left:14px;
 z-index:12;
 background:rgba(0,0,0,.65);
@@ -102,7 +105,7 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* OVERLAY VIDEO GIFT FULL LAYAR */
+/* VIDEO DINAIKKAN SEDIKIT DARI BAWAH (-45px) AGAR PAS */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -111,7 +114,8 @@ height:100%;
 z-index:5;
 pointer-events:none;
 display:none;
-background:transparent
+background:transparent;
+transform:translateY(-45px)
 }
 
 #giftVideo{
@@ -129,15 +133,15 @@ transform:translateZ(0);
 backface-visibility:hidden
 }
 
-/* TATA LETAK 4 KIRI & 4 KANAN MELAYANG DI DEPAN VIDEO */
+/* 4 KOTAK KIRI & 4 KOTAK KANAN */
 .live-layout{
 position:relative;
 z-index:10;
 width:100%;
 display:flex;
 justify-content:space-between;
-padding:12px 8px 8px 8px;
-pointer-events:none /* Klik tengah tembus ke kamera host */
+padding:14px 8px 8px 8px;
+pointer-events:none
 }
 
 .komal-col{
@@ -390,7 +394,7 @@ fill:#fff
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR DARI ATAS SAMPAI BAWAH -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted></video>
@@ -401,13 +405,13 @@ fill:#fff
     </div>
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT (TRANSPARAN DI ATAS KAMERA, DI BELAKANG KOTAK) -->
+  <!-- OVERLAY VIDEO GIFT FULL LAYAR (TERANGKAT SEDIKIT DARI BAWAH) -->
   <div class="gift-overlay" id="giftOverlayContainer">
-    <video id="giftVideo" playsinline crossorigin="anonymous"></video>
+    <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
-  <!-- 4 KOTAK KIRI & 4 KANAN MELAYANG DI DEPAN -->
+  <!-- 4 KOTAK KIRI & 4 KOTAK KANAN -->
   <div class="live-layout">
     <div class="komal-col" id="colLeft"></div>
     <div class="komal-col" id="colRight"></div>
@@ -438,7 +442,7 @@ const $ = id => document.getElementById(id);
 const colLeft = $('colLeft');
 const colRight = $('colRight');
 
-// MEMBUAT 4 SLOT KIRI (1-4) & 4 SLOT KANAN (5-8)
+// MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
   slotPoints[i] = 0;
   const parentCol = i <= 4 ? colLeft : colRight;
@@ -512,7 +516,7 @@ function updateMicStatus(slotNum,status){
   mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 }
 
-/* KAMERA REALTIME HOST (FULLSCREEN) */
+/* KAMERA REALTIME HOST */
 async function startDisplayDirectCamera(){
   if(cameraStarting) return;
 
@@ -829,7 +833,7 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
   },5000);
 }
 
-/* ANTRIAN VIDEO */
+/* SISTEM ANTRIAN VIDEO BEBAS BUG */
 function queueGiftVideo(src,repeatCount=1){
   if(!src) return;
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
@@ -842,7 +846,7 @@ function queueGiftVideo(src,repeatCount=1){
 }
 
 function playNextGiftVideo(){
-  if(giftVideoQueueBusy||giftVideoQueue.length===0) return;
+  if(giftVideoQueueBusy || giftVideoQueue.length===0) return;
 
   giftVideoQueueBusy=true;
   const item=giftVideoQueue[0];
@@ -851,12 +855,14 @@ function playNextGiftVideo(){
     item.remaining--;
     if(item.remaining>0){
       giftVideoQueueBusy=false;
-      playNextGiftVideo();
+      setTimeout(playNextGiftVideo,50);
     }else{
       giftVideoQueue.shift();
-      if(item.isBlob) URL.revokeObjectURL(item.src);
+      if(item.isBlob){
+        try{ URL.revokeObjectURL(item.src); }catch(e){}
+      }
       giftVideoQueueBusy=false;
-      playNextGiftVideo();
+      setTimeout(playNextGiftVideo,50);
     }
   });
 }
@@ -910,7 +916,7 @@ function receiveGiftForCombo(data){
     const resolvedSrc=await resolveGiftVideo(data);
     if(resolvedSrc){
       if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
-        URL.revokeObjectURL(group.src);
+        try{ URL.revokeObjectURL(group.src); }catch(e){}
       }
       group.src=resolvedSrc;
     }
@@ -1027,7 +1033,6 @@ function connectWebSocket(){
 
     ws.onopen=()=>{
       reconnectDelay=1000;
-      console.log('WebSocket terhubung.');
     };
 
     ws.onmessage=event=>{
@@ -1069,13 +1074,14 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO */
+/* RENDERER VIDEO BEBAS BUG (AUTO RECOVERY) */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
 let videoFrameCallbackId=null;
 let lastVideoTime=-1;
 let giftVideoGeneration=0;
+let activeFinishHandler=null;
 
 const giftCanvas=$('giftCanvas');
 const giftVideo=$('giftVideo');
@@ -1095,7 +1101,12 @@ function renderGiftFrame(){
   if(!renderActive) return;
   const video=giftVideo;
 
-  if(video.ended||video.readyState<video.HAVE_CURRENT_DATA){
+  if(video.ended){
+    if(activeFinishHandler) activeFinishHandler();
+    return;
+  }
+
+  if(video.readyState < video.HAVE_CURRENT_DATA){
     scheduleGiftFrame();
     return;
   }
@@ -1109,7 +1120,9 @@ function renderGiftFrame(){
         gl.drawArrays(gl.TRIANGLES,0,6);
       }catch(e){}
     }else if(canvas2D){
-      canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
+      try{
+        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
+      }catch(e){}
     }
   }
   scheduleGiftFrame();
@@ -1137,31 +1150,51 @@ function playGiftVideo(src,onFinished){
   const generation=++giftVideoGeneration;
 
   let finished=false;
+  let safetyTimer=null;
   stopGiftRenderer();
 
   function finish(){
     if(finished) return;
     finished=true;
+    activeFinishHandler=null;
+    clearTimeout(safetyTimer);
+
     if(generation!==giftVideoGeneration) return;
 
     stopGiftRenderer();
     overlay.style.display='none';
     video.onended=null;
     video.onerror=null;
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
+    video.onloadedmetadata=null;
 
-    if(gl) gl.clear(gl.COLOR_BUFFER_BIT);
-    if(canvas2D) canvas2D.clearRect(0,0,canvas.width,canvas.height);
+    try{
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    }catch(e){}
+
+    if(gl){
+      try{
+        gl.clearColor(0,0,0,0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }catch(e){}
+    }
+    if(canvas2D){
+      try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
+    }
 
     if(typeof onFinished==='function') onFinished();
   }
 
+  activeFinishHandler=finish;
   overlay.style.display='block';
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
+
+  try{
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+  }catch(e){}
+
   video.src=src;
   video.muted=false;
   video.volume=1;
@@ -1174,6 +1207,11 @@ function playGiftVideo(src,onFinished){
     try{ canvas2D=canvas.getContext('2d'); }catch(e){}
   }
 
+  // Safety Timer: Jika video stuck/bug > 12 detik, paksa lanjut ke antrian berikutnya
+  safetyTimer=setTimeout(()=>{
+    if(!finished) finish();
+  }, 12000);
+
   video.onloadedmetadata=async()=>{
     if(finished||generation!==giftVideoGeneration) return;
 
@@ -1185,6 +1223,13 @@ function playGiftVideo(src,onFinished){
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
+
+    if(video.duration&&Number.isFinite(video.duration)){
+      clearTimeout(safetyTimer);
+      safetyTimer=setTimeout(()=>{
+        if(!finished) finish();
+      }, (video.duration*1000)+1500);
+    }
 
     if(glReady&&gl){
       gl.viewport(0,0,renderWidth,renderHeight);
