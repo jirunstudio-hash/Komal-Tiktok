@@ -1,422 +1,422 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
 <title>Display Studio - TikTok Live Optimized HD</title>
 
 <style>
 :root{
-  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM */
-  --bottom-gap: 85px;
+  --bottom-gap:85px;
+  --screen-max:440px;
 }
 
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
--webkit-font-smoothing:antialiased;
--moz-osx-font-smoothing:grayscale;
-text-rendering:optimizeLegibility
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
 }
 
-/* LATAR WEB LUAR: PUTIH BERSIH */
 html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#ffffff;
-color:#fff
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#fff;
+  color:#fff;
 }
 
 body{
-display:flex;
-justify-content:center;
-align-items:flex-start; /* Kotak mulai rata dari atas */
-background:#ffffff
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG AGAK KE ATAS SEJAK AWAL BUKA */
 .phone-screen{
-width:100vw;
-max-width:440px;
-height:calc(100vh - var(--bottom-gap));
-max-height:calc(100vh - var(--bottom-gap));
-aspect-ratio:9/16;
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-background:#000000;
-transform:translateZ(0);
-box-shadow:none!important;
-border:none!important;
-padding-bottom:0
+  width:100vw;
+  max-width:var(--screen-max);
+  height:calc(100dvh - var(--bottom-gap));
+  max-height:calc(100dvh - var(--bottom-gap));
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:#000;
+  isolation:isolate;
+  transform:translateZ(0);
+  border:0;
+  padding:0;
 }
 
-/* KAMERA REALTIME & VIDEO HOST */
+/* VIDEO HOST */
 .host-fullscreen{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-z-index:1;
-background:#000000;
-overflow:hidden;
-cursor:pointer;
-display:flex;
-justify-content:center;
-align-items:center
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:1;
+  background:#000;
+  overflow:hidden;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.host-video,#hostCameraImg{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-object-position:center;
-z-index:2;
-display:none;
-backface-visibility:hidden;
-filter:none;
-transition:opacity 0.22s ease-in-out
-}
-
+.host-video,
 #hostCameraImg{
-z-index:4
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  z-index:2;
+  display:none;
+  backface-visibility:hidden;
+  filter:none;
+  transition:opacity .18s ease;
 }
+
+#hostCameraImg{z-index:4}
 
 .host-placeholder{
-color:rgba(255,255,255,0.4);
-font-size:.85rem;
-font-weight:700;
-text-align:center;
-z-index:1;
-display:none
+  color:rgba(255,255,255,.4);
+  font-size:.85rem;
+  font-weight:700;
+  text-align:center;
+  z-index:1;
+  display:none;
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD */
+/* GIFT OVERLAY */
 .gift-overlay{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-z-index:5;
-pointer-events:none;
-display:none;
-opacity:0;
-background:transparent;
-transition:opacity 0.15s ease-out
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:5;
+  pointer-events:none;
+  display:none;
+  opacity:0;
+  background:transparent;
+  transition:opacity .12s ease;
+  overflow:hidden;
+  isolation:isolate;
 }
 
-.gift-overlay.visible{
-opacity:1
-}
+.gift-overlay.visible{opacity:1}
 
-#giftVideo{
-display:none
-}
+#giftVideo{display:none}
 
 #giftCanvas{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-object-position:center;
-display:block;
-pointer-events:none;
-z-index:2
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  pointer-events:none;
+  z-index:2;
 }
 
-/* LAYOUT 4 KIRI & 4 KANAN */
+/* SLOT LAYOUT */
 .live-layout{
-position:relative;
-z-index:10;
-width:100%;
-display:flex;
-justify-content:space-between;
-padding:14px 10px 8px 10px;
-pointer-events:none
+  position:relative;
+  z-index:10;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:14px 10px 8px;
+  pointer-events:none;
 }
 
 .komal-col{
-width:92px;
-flex:0 0 92px;
-display:flex;
-flex-direction:column;
-gap:8px;
-position:relative;
-pointer-events:auto
+  width:92px;
+  flex:0 0 92px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  position:relative;
+  pointer-events:auto;
 }
 
-/* KOTAK SLOT KOMAL - DIPERJELAS SEBELUM & SESUDAH ADA TARGET */
 .slot-box{
-width:92px;
-height:92px;
-background:rgba(42, 45, 54, 0.9);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
-border:1.5px solid rgba(255,255,255,0.38);
-border-radius:15px;
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-box-shadow:0 4px 14px rgba(0,0,0,0.7);
-transition:all .2s ease
+  width:92px;
+  height:92px;
+  flex-shrink:0;
+  background:rgba(42,45,54,.9);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,255,255,.38);
+  border-radius:15px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.7);
+  transition:background .2s ease;
 }
 
 .slot-box.has-photo{
-background:#0c0d12;
-border:1.5px solid rgba(255,255,255,0.5);
-box-shadow:0 4px 16px rgba(0,0,0,0.85);
-animation:none!important
+  background:#0c0d12;
+  border:1.5px solid rgba(255,255,255,.5);
+  box-shadow:0 4px 16px rgba(0,0,0,.85);
 }
 
 .slot-bg-blur{
-position:absolute!important;
-inset:-8px!important;
-width:calc(100% + 16px)!important;
-height:calc(100% + 16px)!important;
-object-fit:cover!important;
-filter:blur(8px) brightness(.55)!important;
-display:none;
-z-index:1;
-pointer-events:none
+  position:absolute!important;
+  inset:-8px!important;
+  width:calc(100% + 16px)!important;
+  height:calc(100% + 16px)!important;
+  object-fit:cover!important;
+  filter:blur(8px) brightness(.55)!important;
+  display:none;
+  z-index:1;
+  pointer-events:none;
 }
 
 .slot-bg-overlay{
-position:absolute;
-inset:0;
-background:rgba(0,0,0,.35);
-display:none;
-z-index:2;
-pointer-events:none
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  z-index:2;
+  pointer-events:none;
 }
 
-/* IKON PLUS & TEKS PERMINTAAN */
 .slot-plus-svg{
-width:28px;
-height:28px;
-stroke:#ffffff;
-stroke-width:3.2;
-stroke-linecap:round;
-z-index:3;
-margin-bottom:3px;
-filter:drop-shadow(0 2px 5px rgba(0,0,0,0.9))
+  width:28px;
+  height:28px;
+  stroke:#fff;
+  stroke-width:3.2;
+  stroke-linecap:round;
+  z-index:3;
+  margin-bottom:3px;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.9));
 }
 
 .slot-req{
-color:#ffffff;
-font-size:11px;
-font-weight:800;
-letter-spacing:0.3px;
-z-index:3;
-text-shadow:0 2px 4px rgba(0,0,0,0.95)
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.3px;
+  z-index:3;
+  text-shadow:0 2px 4px rgba(0,0,0,.95);
 }
 
-/* FOTO PROFIL KOMAL: BIASA BULAT NATURAL */
+/* FOTO PROFIL */
 .slot-circle-img{
-width:64px;
-height:64px;
-border-radius:50%;
-object-fit:cover;
-display:none;
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-z-index:4;
-border:none!important;
-box-shadow:0 4px 14px rgba(0,0,0,.85);
-image-rendering:-webkit-optimize-contrast
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  border:0!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.85);
+  image-rendering:-webkit-optimize-contrast;
 }
 
-/* BADGE KOIN ANGKA 0 */
 .slot-coin-badge{
-position:absolute;
-top:5px;
-left:5px;
-display:flex;
-align-items:center;
-gap:3.5px;
-background:rgba(12,13,18,.92);
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:0.5px solid rgba(255,255,255,.35);
-padding:2px 6.5px 2px 3.5px;
-border-radius:999px;
-z-index:6;
-box-shadow:0 2px 6px rgba(0,0,0,.65)
+  position:absolute;
+  top:5px;
+  left:5px;
+  display:flex;
+  align-items:center;
+  gap:3.5px;
+  background:rgba(12,13,18,.92);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  border:.5px solid rgba(255,255,255,.35);
+  padding:2px 6.5px 2px 3.5px;
+  border-radius:999px;
+  z-index:6;
+  box-shadow:0 2px 6px rgba(0,0,0,.65);
 }
 
-/* BULAT BIRU BINTANG: GARIS PUTIH TIPIS */
 .cyan-diamond-circle{
-width:13.5px;
-height:13.5px;
-background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0;
-border:1px solid rgba(255,255,255,0.95);
-box-shadow:0 0 3px rgba(56,189,248,0.5)
+  width:13.5px;
+  height:13.5px;
+  background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 0 3px rgba(56,189,248,.5);
 }
 
 .star-svg{
-width:7.5px;
-height:7.5px;
-fill:#fff
+  width:7.5px;
+  height:7.5px;
+  fill:#fff;
 }
 
 .coin-count{
-font-size:10px;
-color:#fff;
-font-weight:800;
-text-shadow:0 1px 2px rgba(0,0,0,.9)
+  font-size:10px;
+  color:#fff;
+  font-weight:800;
+  text-shadow:0 1px 2px rgba(0,0,0,.9);
 }
 
 @keyframes popGiftBadge{
-0%{transform:scale(.5);opacity:0}
-100%{transform:scale(1);opacity:1}
+  0%{transform:scale(.5);opacity:0}
+  100%{transform:scale(1);opacity:1}
 }
 
 .slot-top-badge{
-position:absolute;
-top:5px;
-right:5px;
-z-index:8;
-width:25px;
-height:25px;
-display:none;
-object-fit:contain;
-filter:drop-shadow(0 2px 6px rgba(0,0,0,.9));
-pointer-events:none;
-animation:popGiftBadge .3s ease-out
+  position:absolute;
+  top:5px;
+  right:5px;
+  z-index:8;
+  width:25px;
+  height:25px;
+  display:none;
+  object-fit:contain;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.9));
+  pointer-events:none;
+  animation:popGiftBadge .3s ease-out;
 }
 
-/* NAMA SLOT */
 .slot-name-pill{
-position:absolute;
-bottom:6px;
-left:6px;
-max-width:calc(100% - 32px);
-display:flex;
-align-items:center;
-gap:4px;
-z-index:7;
-background:rgba(12,13,18,.92);
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:0.5px solid rgba(255,255,255,.35);
-padding:2px 6px;
-border-radius:999px;
-min-height:20px;
-box-shadow:0 2px 6px rgba(0,0,0,.75)
+  position:absolute;
+  bottom:6px;
+  left:6px;
+  max-width:calc(100% - 32px);
+  display:flex;
+  align-items:center;
+  gap:4px;
+  z-index:7;
+  background:rgba(12,13,18,.92);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  border:.5px solid rgba(255,255,255,.35);
+  padding:2px 6px;
+  border-radius:999px;
+  min-height:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.75);
 }
 
 .slot-name-text{
-color:#fff;
-font-size:10.5px;
-font-weight:800;
-letter-spacing:0.2px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-max-width:62px;
-text-shadow:0 1px 3px rgba(0,0,0,.95)
+  color:#fff;
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:62px;
+  text-shadow:0 1px 3px rgba(0,0,0,.95);
 }
 
 .slot-plus-circle{
-width:13px;
-height:13px;
-border-radius:50%;
-background:rgba(255,255,255,.35);
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:rgba(255,255,255,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
 
-.slot-pill-plus-svg{
-width:8px;
-height:8px
-}
+.slot-pill-plus-svg{width:8px;height:8px}
 
-/* MIKROFON */
 .mic-container{
-position:absolute;
-bottom:5px;
-right:5px;
-z-index:8;
-width:20px;
-height:20px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:transparent!important;
-border:none!important;
-border-radius:0!important;
-box-shadow:none!important
+  position:absolute;
+  bottom:5px;
+  right:5px;
+  z-index:8;
+  width:20px;
+  height:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
 }
 
 .mic-icon-svg{
-width:18px;
-height:18px;
-display:block;
-filter:drop-shadow(0 1px 3px rgba(0,0,0,0.95))
+  width:18px;
+  height:18px;
+  display:block;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.95));
 }
 
-.mic-icon-svg .mic-body{
-fill:#ffffff
-}
+.mic-icon-svg .mic-body{fill:#fff}
 
 .mic-icon-svg .mic-slash-bg{
-stroke:#000000;
-stroke-width:4.6;
-stroke-linecap:round;
-display:block
+  stroke:#000;
+  stroke-width:4.6;
+  stroke-linecap:round;
+  display:block;
 }
 
 .mic-icon-svg .mic-slash{
-stroke:#ffffff;
-stroke-width:2.6;
-stroke-linecap:round;
-display:block;
-filter:drop-shadow(0 1px 2px rgba(0,0,0,0.95))
+  stroke:#fff;
+  stroke-width:2.6;
+  stroke-linecap:round;
+  display:block;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.95));
 }
 
 .mic-container.is-unmuted .mic-icon-svg .mic-slash,
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
-display:none
+  display:none;
 }
+
+@media(max-width:340px){
+  .komal-col{width:82px;flex-basis:82px}
+  .slot-box{width:82px;height:82px}
+  .live-layout{padding-left:7px;padding-right:7px}
+}
+
 </style>
 </head>
 
 <body>
+
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST -->
-  <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
-    <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
-    <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
-    <video id="hostVideo2" class="host-video" playsinline muted preload="auto"></video>
+  <div class="host-fullscreen" id="hostBox"
+       onclick="startDisplayDirectCamera()"
+       title="Klik layar untuk aktifkan kamera host">
+
+    <div id="hostPlaceholder" class="host-placeholder">
+      Kamera Host (Standby)
+    </div>
+
+    <video id="hostVideo" class="host-video"
+           autoplay playsinline muted preload="auto"></video>
+
+    <video id="hostVideo2" class="host-video"
+           playsinline muted preload="auto"></video>
+
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT HD -->
   <div class="gift-overlay" id="giftOverlayContainer">
-    <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
+    <video id="giftVideo" playsinline webkit-playsinline
+           preload="auto" crossorigin="anonymous"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
-  <!-- 4 KOTAK KIRI & 4 KOTAK KANAN -->
   <div class="live-layout">
     <div class="komal-col" id="colLeft"></div>
     <div class="komal-col" id="colRight"></div>
@@ -427,84 +427,95 @@ display:none
 <script>
 'use strict';
 
-const channel = new BroadcastChannel('tiktok_live_channel');
-const slotPoints = {};
-const badgeTimers = {};
-const slotMuteStates = {};
+/* =========================================
+   INISIALISASI
+========================================= */
 
-let displayCamStream = null;
-let cameraStarting = false;
-let hostMediaObjectURL = null;
+const channel=new BroadcastChannel('tiktok_live_channel');
+const slotPoints={};
+const badgeTimers={};
+const slotMuteStates={};
 
-let activeHostVid = 1;
-let hostLoopActive = false;
+let displayCamStream=null;
+let cameraStarting=false;
+let hostMediaObjectURL=null;
 
-const giftComboGroups = new Map();
-const giftVideoQueue = [];
-let giftVideoQueueBusy = false;
+let activeHostVid=1;
+let hostLoopActive=false;
 
-const $ = id => document.getElementById(id);
-const colLeft = $('colLeft');
-const colRight = $('colRight');
-const displayContainer = $('displayContainer');
+const giftComboGroups=new Map();
+const giftVideoQueue=[];
+let giftVideoQueueBusy=false;
 
-// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16 DAN TERANGKAT DARI BAWAH
-function fitScreen() {
-  const w = Math.min(window.innerWidth || 440, 440);
-  const gap = 85;
-  const h = Math.max(400, (window.innerHeight || 800) - gap);
-  displayContainer.style.width = w + 'px';
-  displayContainer.style.height = h + 'px';
+const $=id=>document.getElementById(id);
+const colLeft=$('colLeft');
+const colRight=$('colRight');
+const displayContainer=$('displayContainer');
+
+function fitScreen(){
+  const w=Math.min(window.innerWidth||440,440);
+  const h=Math.max(300,(window.innerHeight||800)-85);
+  displayContainer.style.width=w+'px';
+  displayContainer.style.height=h+'px';
 }
+
 fitScreen();
-window.addEventListener('resize', fitScreen);
+window.addEventListener('resize',fitScreen);
 
-function syncContainerToVideo(videoElement) {
-  if (!videoElement) return;
-  const w = videoElement.videoWidth;
-  const h = videoElement.videoHeight;
-  if (w && h) {
-    const curWidth = Math.min(window.innerWidth || 440, 440);
-    const gap = 85;
-    const maxAllowedH = (window.innerHeight || 800) - gap;
-    let detectedHeight = Math.round(curWidth * (h / w));
-    if (detectedHeight > maxAllowedH) {
-      detectedHeight = maxAllowedH;
-    }
-    displayContainer.style.width = curWidth + 'px';
-    displayContainer.style.height = detectedHeight + 'px';
-  }
+function syncContainerToVideo(video){
+  if(!video||!video.videoWidth||!video.videoHeight)return;
+
+  const w=Math.min(window.innerWidth||440,440);
+  const maxH=(window.innerHeight||800)-85;
+  const h=Math.min(Math.round(w*video.videoHeight/video.videoWidth),maxH);
+
+  displayContainer.style.width=w+'px';
+  displayContainer.style.height=Math.max(300,h)+'px';
 }
 
-// AUTO-UNLOCK AUDIO UNTUK BROWSER (MENGAKTIFKAN SUARA PENUH OTOMATIS)
-let isAudioUnlocked = false;
-function unlockAllAudio() {
-  isAudioUnlocked = true;
-  const v = $('giftVideo');
-  if (v && !v.paused) {
-    v.muted = false;
-    v.volume = 1.0;
+/* =========================================
+   AUDIO
+========================================= */
+
+let isAudioUnlocked=false;
+let audioContext=null;
+
+function unlockAllAudio(){
+  isAudioUnlocked=true;
+
+  const v=$('giftVideo');
+  if(v&&!v.paused){
+    v.muted=false;
+    v.volume=1;
   }
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (AudioCtx) {
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') ctx.resume();
+
+  try{
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(AudioCtx){
+      if(!audioContext)audioContext=new AudioCtx();
+      if(audioContext.state==='suspended')audioContext.resume();
     }
-  } catch (e) {}
+  }catch(e){}
 }
-['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt =>
-  window.addEventListener(evt, unlockAllAudio, { passive: true })
-);
 
-// MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
-for(let i=1; i<=8; i++){
-  slotPoints[i] = 0;
-  const parentCol = i <= 4 ? colLeft : colRight;
+['click','touchstart','pointerdown','keydown'].forEach(evt=>{
+  window.addEventListener(evt,unlockAllAudio,{passive:true,once:true});
+});
 
-  parentCol.insertAdjacentHTML('beforeend',`
+/* =========================================
+   MEMBUAT 8 SLOT
+========================================= */
+
+for(let i=1;i<=8;i++){
+  slotPoints[i]=0;
+  const parent=i<=4?colLeft:colRight;
+
+  parent.insertAdjacentHTML('beforeend',`
   <div class="slot-box" id="slot-${i}">
-    <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
+
+    <img id="bg-slot-${i}" class="slot-bg-blur"
+         referrerpolicy="no-referrer">
+
     <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
     <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none">
@@ -516,7 +527,8 @@ for(let i=1; i<=8; i++){
       <span class="coin-count" id="coincount-slot-${i}">0</span>
     </div>
 
-    <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
+    <img class="slot-top-badge" id="topbadge-slot-${i}"
+         referrerpolicy="no-referrer" alt="Gift">
 
     <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
       <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -525,84 +537,101 @@ for(let i=1; i<=8; i++){
 
     <span class="slot-req" id="req-${i}">Permintaan</span>
 
-    <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
+    <img id="img-slot-${i}" class="slot-circle-img"
+         referrerpolicy="no-referrer">
 
     <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none">
       <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
       <div class="slot-plus-circle">
         <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
-          <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
-          <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
+          <line x1="8" y1="2.5" x2="8" y2="13.5"
+                stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="2.5" y1="8" x2="13.5" y2="8"
+                stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
       </div>
     </div>
 
     <div class="mic-container" id="mic-slot-${i}" style="display:none">
-      <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
+      <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
         <path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
         <path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
         <line class="mic-slash-bg" x1="4" y1="4" x2="20" y2="20"/>
         <line class="mic-slash" x1="4" y1="4" x2="20" y2="20"/>
       </svg>
     </div>
+
   </div>
   `);
 }
 
-/* SISTEM FOTO ANTI-ERROR & TAJAM */
-function loadSlotPhotoSafely(slotNum, rawUrl){
-  const img = $(`img-slot-${slotNum}`);
-  const bg = $(`bg-slot-${slotNum}`);
-  const slotBox = $(`slot-${slotNum}`);
-  const icon = $(`icon-${slotNum}`);
-  const req = $(`req-${slotNum}`);
-  const bgOverlay = $(`overlay-slot-${slotNum}`);
+/* =========================================
+   FOTO PROFIL
+========================================= */
 
-  if(!img || !rawUrl) return;
+function loadSlotPhotoSafely(slotNum,rawUrl){
+  const img=$(`img-slot-${slotNum}`);
+  const bg=$(`bg-slot-${slotNum}`);
+  const box=$(`slot-${slotNum}`);
+  const icon=$(`icon-${slotNum}`);
+  const req=$(`req-${slotNum}`);
+  const overlay=$(`overlay-slot-${slotNum}`);
 
-  icon.style.display = 'none';
-  req.style.display = 'none';
+  if(!img||!rawUrl)return;
 
-  let targetUrl = rawUrl;
-  if(typeof rawUrl === 'string' && rawUrl.includes('100x100')){
-    targetUrl = rawUrl.replace('100x100', '300x300');
-  }
+  icon.style.display='none';
+  req.style.display='none';
 
-  img.onload = () => {
-    slotBox.classList.add('has-photo');
-    img.style.display = 'block';
-    bg.style.display = 'block';
-    bgOverlay.style.display = 'block';
+  const targetUrl=typeof rawUrl==='string'
+    ?rawUrl.replace('100x100','300x300')
+    :rawUrl;
+
+  img.onload=()=>{
+    box.classList.add('has-photo');
+    img.style.display='block';
+    bg.style.display='block';
+    overlay.style.display='block';
   };
 
-  img.onerror = () => {
-    if(img.src !== rawUrl){
-      img.src = rawUrl;
-      bg.src = rawUrl;
-    } else {
-      slotBox.classList.remove('has-photo');
-      slotBox.style.background = 'rgba(42, 45, 54, 0.9)';
-      img.style.display = 'none';
-      bg.style.display = 'none';
-      bgOverlay.style.display = 'none';
-      icon.style.display = 'block';
-      req.style.display = 'inline-block';
+  img.onerror=()=>{
+    if(img.dataset.retry!=='1'){
+      img.dataset.retry='1';
+      img.src=rawUrl;
+      bg.src=rawUrl;
+    }else{
+      img.style.display='none';
+      bg.style.display='none';
+      overlay.style.display='none';
+      box.classList.remove('has-photo');
+      icon.style.display='block';
+      req.style.display='inline-block';
+      img.dataset.retry='';
     }
   };
 
-  img.src = targetUrl;
-  bg.src = targetUrl;
+  img.dataset.retry='';
+  img.src=targetUrl;
+  bg.src=targetUrl;
 }
 
-/* KONTROL MIKROFON */
+/* =========================================
+   STATUS MIKROFON
+========================================= */
+
 function getMuteStatus(data){
-  const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
+  const keys=[
+    'isMuted','is_mute','mute','muted',
+    'isMicMuted','micMuted','is_mic_muted'
+  ];
+
   for(const key of keys){
     if(Object.prototype.hasOwnProperty.call(data,key)){
       const value=data[key];
-      if(typeof value==='boolean') return value;
-      if(value===1||value==='1'||value==='true'||value==='muted') return true;
-      if(value===0||value==='0'||value==='false'||value==='unmuted') return false;
+
+      if(typeof value==='boolean')return value;
+
+      if(value===1||value==='1'||value==='true'||value==='muted')return true;
+      if(value===0||value==='0'||value==='false'||value==='unmuted')return false;
     }
   }
   return null;
@@ -610,113 +639,100 @@ function getMuteStatus(data){
 
 function updateMicStatus(slotNum,status){
   const mic=$(`mic-slot-${slotNum}`);
-  if(!mic||status===null||status===undefined) return;
+  if(!mic||status===null||status===undefined)return;
 
   slotMuteStates[slotNum]=Boolean(status);
-  mic.classList.toggle('is-unmuted', !Boolean(status));
-  mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
+  mic.classList.toggle('is-unmuted',!Boolean(status));
+  mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 }
 
-/* SEAMLESS VIDEO HOST */
+/* =========================================
+   VIDEO HOST DUAL BUFFER
+========================================= */
+
 function setupSeamlessHostVideo(url){
   stopHostSeamlessLoop();
 
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
+  const v1=$('hostVideo');
+  const v2=$('hostVideo2');
 
-  v1.srcObject = null;
-  v2.srcObject = null;
-  v1.src = url;
-  v2.src = url;
+  v1.srcObject=null;
+  v2.srcObject=null;
 
-  v1.onloadedmetadata = () => syncContainerToVideo(v1);
+  v1.src=url;
+  v2.src=url;
 
-  v1.style.display = 'block';
-  v2.style.display = 'block';
-  v1.style.opacity = '1';
-  v2.style.opacity = '0';
-  v1.style.zIndex = '3';
-  v2.style.zIndex = '2';
+  v1.loop=true;
+  v2.loop=true;
+
+  v1.onloadedmetadata=()=>syncContainerToVideo(v1);
+
+  v1.style.display='block';
+  v2.style.display='none';
+  v1.style.opacity='1';
+  v2.style.opacity='0';
+  v1.style.zIndex='3';
+  v2.style.zIndex='2';
 
   v1.play().catch(()=>{});
-  activeHostVid = 1;
-  hostLoopActive = true;
 
-  const handleSeamlessLoop = () => {
-    if (!hostLoopActive) return;
-    const current = activeHostVid === 1 ? v1 : v2;
-    const next = activeHostVid === 1 ? v2 : v1;
-
-    if (current.duration && current.currentTime > 0) {
-      const timeLeft = current.duration - current.currentTime;
-      if (timeLeft <= 0.22 && next.paused) {
-        next.currentTime = 0;
-        next.play().then(()=>{
-          next.style.zIndex = '3';
-          current.style.zIndex = '2';
-          next.style.opacity = '1';
-          current.style.opacity = '0';
-          activeHostVid = activeHostVid === 1 ? 2 : 1;
-        }).catch(()=>{});
-      }
-    }
-  };
-
-  v1.ontimeupdate = handleSeamlessLoop;
-  v2.ontimeupdate = handleSeamlessLoop;
+  activeHostVid=1;
+  hostLoopActive=true;
 }
 
 function stopHostSeamlessLoop(){
-  hostLoopActive = false;
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
+  hostLoopActive=false;
 
-  if(v1){
-    v1.ontimeupdate = null;
-    v1.onloadedmetadata = null;
-    v1.pause();
-    v1.removeAttribute('src');
-    v1.style.opacity = '1';
-    v1.style.display = 'none';
-  }
-  if(v2){
-    v2.ontimeupdate = null;
-    v2.pause();
-    v2.removeAttribute('src');
-    v2.style.opacity = '0';
-    v2.style.display = 'none';
-  }
+  ['hostVideo','hostVideo2'].forEach(id=>{
+    const v=$(id);
+    if(!v)return;
+
+    v.ontimeupdate=null;
+    v.onloadedmetadata=null;
+    v.pause();
+    v.loop=false;
+    v.removeAttribute('src');
+    v.srcObject=null;
+    v.style.opacity='0';
+    v.style.display='none';
+    v.load();
+  });
 }
 
-/* KAMERA REALTIME HOST */
+/* =========================================
+   KAMERA HOST
+========================================= */
+
 async function startDisplayDirectCamera(){
   unlockAllAudio();
-  if(cameraStarting) return;
-  stopHostSeamlessLoop();
+
+  if(cameraStarting)return;
 
   const hVid=$('hostVideo');
   const hVid2=$('hostVideo2');
   const placeholder=$('hostPlaceholder');
   const camImg=$('hostCameraImg');
 
+  stopHostSeamlessLoop();
+
   hVid2.style.display='none';
+  camImg.style.display='none';
 
   if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
     hVid.srcObject=displayCamStream;
     hVid.style.display='block';
     hVid.style.opacity='1';
     placeholder.style.display='none';
-    if(hVid.paused) await hVid.play().catch(()=>{});
+    await hVid.play().catch(()=>{});
     return;
   }
 
   cameraStarting=true;
+
   try{
     if(!navigator.mediaDevices?.getUserMedia){
-      throw new Error('Kamera butuh HTTPS');
+      throw new Error('Kamera memerlukan HTTPS atau localhost');
     }
-
-    camImg.style.display='none';
 
     displayCamStream=await navigator.mediaDevices.getUserMedia({
       audio:false,
@@ -735,10 +751,11 @@ async function startDisplayDirectCamera(){
     placeholder.style.display='none';
 
     await hVid.play();
+
   }catch(err){
     console.error('Kamera error:',err);
     placeholder.style.display='block';
-    placeholder.textContent='Kamera standby / nonaktif';
+    placeholder.textContent='Kamera standby / periksa izin kamera';
   }finally{
     cameraStarting=false;
   }
@@ -746,7 +763,7 @@ async function startDisplayDirectCamera(){
 
 function stopDisplayDirectCamera(){
   if(displayCamStream){
-    displayCamStream.getTracks().forEach(track=>track.stop());
+    displayCamStream.getTracks().forEach(t=>t.stop());
     displayCamStream=null;
   }
 
@@ -754,6 +771,7 @@ function stopDisplayDirectCamera(){
   hVid.pause();
   hVid.srcObject=null;
   hVid.style.display='none';
+
   $('hostPlaceholder').style.display='none';
 }
 
@@ -764,15 +782,19 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY & VOID ENGINE (ANTI-TEMBUS & SOLID) */
+/* =========================================
+   WEBGL CHROMA KEY ENGINE
+========================================= */
+
 let gl=null;
 let glProgram=null;
 let glTexture=null;
 let glBuffers={};
-let isWebGLSupported=false;
+let glReady=false;
+let canvas2D=null;
 
 function initWebGL(canvas){
-  if(gl&&glProgram&&glTexture) return true;
+  if(gl&&glProgram&&glTexture)return true;
 
   try{
     gl=canvas.getContext('webgl',{
@@ -784,56 +806,74 @@ function initWebGL(canvas){
       preserveDrawingBuffer:false
     });
 
-    if(!gl) return false;
+    if(!gl)return false;
 
-    gl.disable(gl.BLEND); // Mode solid anti-tembus
+    gl.disable(gl.BLEND);
 
     const vsSource=`
-    attribute vec2 a_pos;
-    attribute vec2 a_tex;
-    varying vec2 v_tex;
-    void main(){
-      gl_Position=vec4(a_pos,0.0,1.0);
-      v_tex=a_tex;
-    }`;
+      attribute vec2 a_pos;
+      attribute vec2 a_tex;
+      varying vec2 v_tex;
+
+      void main(){
+        gl_Position=vec4(a_pos,0.0,1.0);
+        v_tex=a_tex;
+      }
+    `;
 
     const fsSource=`
-    precision mediump float;
-    uniform sampler2D u_tex;
-    varying vec2 v_tex;
+      precision highp float;
 
-    void main(){
-      vec4 c = texture2D(u_tex, v_tex);
+      uniform sampler2D u_tex;
+      varying vec2 v_tex;
 
-      // 1. Deteksi Green Screen
-      float maxRB = max(c.r, c.b);
-      float greenDiff = c.g - maxRB;
-      bool isGreen = (greenDiff > 0.08 && c.g > 0.28 && c.g > c.r * 1.15 && c.g > c.b * 1.15);
+      void main(){
+        vec4 c=texture2D(u_tex,v_tex);
 
-      // 2. Deteksi Background Hitam Gelap (Void)
-      float maxRGB = max(c.r, max(c.g, c.b));
-      float minRGB = min(c.r, min(c.g, c.b));
-      float sat = maxRGB - minRGB;
-      bool isBlack = (maxRGB < 0.065 && sat < 0.035);
+        float maxRB=max(c.r,c.b);
+        float greenDiff=c.g-maxRB;
 
-      if (isGreen || isBlack) {
-        c.a = 0.0;
-      } else {
-        c.a = 1.0;
-        if (greenDiff > 0.02 && c.g > maxRB) {
-          c.g = maxRB;
+        float greenMask=step(0.08,greenDiff)
+          *step(0.28,c.g)
+          *step(c.r*1.15,c.g)
+          *step(c.b*1.15,c.g);
+
+        float maxRGB=max(c.r,max(c.g,c.b));
+        float minRGB=min(c.r,min(c.g,c.b));
+        float sat=maxRGB-minRGB;
+
+        float blackMask=(1.0-step(0.065,maxRGB))
+          *(1.0-step(0.035,sat));
+
+        float mask=max(greenMask,blackMask);
+
+        float softGreen=1.0-smoothstep(0.035,0.12,greenDiff);
+        float softBlack=smoothstep(0.025,0.085,maxRGB);
+
+        float alpha=1.0-mask;
+
+        c.g=min(c.g,maxRB+0.025);
+
+        if(greenMask>0.5){
+          alpha=softGreen;
         }
+
+        if(blackMask>0.5){
+          alpha=softBlack;
+        }
+
+        c.a=alpha;
+        gl_FragColor=c;
       }
+    `;
 
-      gl_FragColor = c;
-    }`;
-
-    function createShader(type,src){
+    function createShader(type,source){
       const shader=gl.createShader(type);
-      gl.shaderSource(shader,src);
+      gl.shaderSource(shader,source);
       gl.compileShader(shader);
+
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        console.error('Shader compile error:',gl.getShaderInfoLog(shader));
+        console.error(gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -842,24 +882,43 @@ function initWebGL(canvas){
 
     const vs=createShader(gl.VERTEX_SHADER,vsSource);
     const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-    if(!vs||!fs) return false;
+
+    if(!vs||!fs)return false;
 
     glProgram=gl.createProgram();
     gl.attachShader(glProgram,vs);
     gl.attachShader(glProgram,fs);
     gl.linkProgram(glProgram);
+
     gl.deleteShader(vs);
     gl.deleteShader(fs);
 
-    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)) return false;
+    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)){
+      console.error(gl.getProgramInfoLog(glProgram));
+      return false;
+    }
 
     const posBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1,-1,1,-1,-1,1,
+        -1,1,1,-1,1,1
+      ]),
+      gl.STATIC_DRAW
+    );
 
     const texBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        0,1,1,1,0,0,
+        0,0,1,1,1,0
+      ]),
+      gl.STATIC_DRAW
+    );
 
     glBuffers.pos=posBuffer;
     glBuffers.tex=texBuffer;
@@ -870,39 +929,60 @@ function initWebGL(canvas){
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+
     gl.useProgram(glProgram);
     gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
-    isWebGLSupported=true;
     return true;
+
   }catch(e){
+    console.error('WebGL error:',e);
     return false;
   }
 }
 
-/* DATABASE ASSETS */
-const DB_NAME="TikTokStudioStorageDB";
-const STORE_NAME="permanent_assets";
+/* =========================================
+   DATABASE VIDEO
+========================================= */
+
+const DB_NAME='TikTokStudioStorageDB';
+const STORE_NAME='permanent_assets';
 let dbPromise=null;
 
 function openDB(){
-  if(dbPromise) return dbPromise;
+  if(dbPromise)return dbPromise;
+
   dbPromise=new Promise(resolve=>{
     const req=indexedDB.open(DB_NAME,1);
+
     req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>{ dbPromise=null; resolve(null); };
-    req.onblocked=()=>{ dbPromise=null; resolve(null); };
+    req.onerror=()=>{
+      dbPromise=null;
+      resolve(null);
+    };
+    req.onblocked=()=>{
+      dbPromise=null;
+      resolve(null);
+    };
   });
+
   return dbPromise;
 }
 
 async function getSavedVideo(id){
   try{
     const db=await openDB();
-    if(!db) return null;
+    if(!db)return null;
+
     return await new Promise(resolve=>{
-      const tx=db.transaction(STORE_NAME,"readonly");
+      if(!db.objectStoreNames.contains(STORE_NAME)){
+        resolve(null);
+        return;
+      }
+
+      const tx=db.transaction(STORE_NAME,'readonly');
       const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
+
       req.onsuccess=()=>resolve(req.result);
       req.onerror=()=>resolve(null);
     });
@@ -912,17 +992,23 @@ async function getSavedVideo(id){
 }
 
 function formatPoin(val){
-  if(!val||val===0) return '0';
-  if(val>=1000000) return (val/1000000).toFixed(1).replace('.',',')+'M';
-  if(val>=1000) return (val/1000).toFixed(1).replace('.',',')+'K';
-  return val.toLocaleString('id-ID');
+  if(!val||val===0)return '0';
+  if(val>=1000000)return (val/1000000).toFixed(1).replace('.',',')+'M';
+  if(val>=1000)return (val/1000).toFixed(1).replace('.',',')+'K';
+  return Number(val).toLocaleString('id-ID');
 }
 
-/* UPDATE SLOT */
+/* =========================================
+   UPDATE SLOT
+========================================= */
+
 function updateSlotDisplay(data){
-  const{slotNum,nameInput,initialPoin,profileImg,action}=data;
+  const{
+    slotNum,nameInput,initialPoin,profileImg,action
+  }=data;
+
   const slotBox=$(`slot-${slotNum}`);
-  if(!slotBox) return;
+  if(!slotBox)return;
 
   const coinBadge=$(`coin-badge-${slotNum}`);
   const countElem=$(`coincount-slot-${slotNum}`);
@@ -938,34 +1024,40 @@ function updateSlotDisplay(data){
 
   if(action==='clear_slot'){
     slotBox.classList.remove('has-photo');
+
     img.style.display='none';
     img.removeAttribute('src');
     bg.style.display='none';
     bg.removeAttribute('src');
     bgOverlay.style.display='none';
-    slotBox.style.background='rgba(42, 45, 54, 0.9)';
+
+    slotBox.style.background='rgba(42,45,54,.9)';
     icon.style.display='block';
     req.style.display='inline-block';
     namePill.style.display='none';
     mic.style.display='none';
+
     mic.classList.remove('is-unmuted');
     delete slotMuteStates[slotNum];
+
     coinBadge.style.display='none';
 
     if(topBadge){
       topBadge.style.display='none';
       topBadge.removeAttribute('src');
     }
+
     if(badgeTimers[slotNum]){
       clearTimeout(badgeTimers[slotNum]);
       delete badgeTimers[slotNum];
     }
+
     slotPoints[slotNum]=0;
     return;
   }
 
   if(initialPoin!==undefined){
-    slotPoints[slotNum]=initialPoin;
+    slotPoints[slotNum]=Number(initialPoin)||0;
   }
 
   countElem.innerText=formatPoin(slotPoints[slotNum]);
@@ -977,26 +1069,28 @@ function updateSlotDisplay(data){
     mic.style.display='flex';
 
     const muteStatus=getMuteStatus(data);
+
     if(muteStatus!==null){
       updateMicStatus(slotNum,muteStatus);
     }else if(slotMuteStates[slotNum]!==undefined){
       updateMicStatus(slotNum,slotMuteStates[slotNum]);
     }else{
-      updateMicStatus(slotNum, true);
+      updateMicStatus(slotNum,true);
     }
   }
 
   if(profileImg){
-    loadSlotPhotoSafely(slotNum, profileImg);
+    loadSlotPhotoSafely(slotNum,profileImg);
   }
 }
 
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
-  if(!badgeSrc||!slotNum) return;
-  const topBadge=$(`topbadge-slot-${slotNum}`);
-  if(!topBadge) return;
+  if(!badgeSrc||!slotNum)return;
 
-  if(badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
+  const topBadge=$(`topbadge-slot-${slotNum}`);
+  if(!topBadge)return;
+
+  if(badgeTimers[slotNum])clearTimeout(badgeTimers[slotNum]);
 
   topBadge.src=badgeSrc;
   topBadge.style.display='block';
@@ -1008,34 +1102,44 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
   },5000);
 }
 
-/* ANTRIAN VIDEO GIFT */
+/* =========================================
+   ANTRIAN VIDEO GIFT
+========================================= */
+
 function queueGiftVideo(src,repeatCount=1){
-  if(!src) return;
+  if(!src)return;
+
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
+
   giftVideoQueue.push({
     src,
     remaining:count,
     isBlob:src.startsWith('blob:')
   });
+
   playNextGiftVideo();
 }
 
 function playNextGiftVideo(){
-  if(giftVideoQueueBusy || giftVideoQueue.length===0) return;
+  if(giftVideoQueueBusy||giftVideoQueue.length===0)return;
 
   giftVideoQueueBusy=true;
+
   const item=giftVideoQueue[0];
 
   playGiftVideo(item.src,()=>{
     item.remaining--;
+
     if(item.remaining>0){
       giftVideoQueueBusy=false;
       setTimeout(playNextGiftVideo,50);
     }else{
       giftVideoQueue.shift();
+
       if(item.isBlob){
-        try{ URL.revokeObjectURL(item.src); }catch(e){}
+        try{URL.revokeObjectURL(item.src)}catch(e){}
       }
+
       giftVideoQueueBusy=false;
       setTimeout(playNextGiftVideo,50);
     }
@@ -1045,24 +1149,39 @@ function playNextGiftVideo(){
 function getGiftComboKey(data){
   const sender=String(data.senderName||data.username||'user').toLowerCase();
   const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
-  return`${sender}::${gift}`;
+  return `${sender}::${gift}`;
 }
 
 async function resolveGiftVideo(data){
-  if(data.videoBlob) return URL.createObjectURL(data.videoBlob);
-  if(data.blob && data.blob instanceof Blob) return URL.createObjectURL(data.blob);
-  const gId = data.giftId || data.gift_id || data.id;
-  if(gId){
-    const blob=await getSavedVideo(gId);
-    if(blob) return URL.createObjectURL(blob);
+  if(data.videoBlob instanceof Blob){
+    return URL.createObjectURL(data.videoBlob);
   }
-  return data.src || data.videoUrl || data.video_url || data.videoSrc || data.url || data.video || null;
+
+  if(data.blob instanceof Blob){
+    return URL.createObjectURL(data.blob);
+  }
+
+  const id=data.giftId||data.gift_id||data.id;
+
+  if(id){
+    const blob=await getSavedVideo(id);
+    if(blob instanceof Blob){
+      return URL.createObjectURL(blob);
+    }
+  }
+
+  return data.src||data.videoUrl||data.video_url||
+         data.videoSrc||data.url||data.video||null;
 }
 
 function receiveGiftForCombo(data){
   const key=getGiftComboKey(data);
-  const rawCumulative=data.repeatCount??data.comboCount??data.repeat_count??data.combo_count;
-  const cumulativeCount=Number(rawCumulative);
+
+  const rawCount=data.repeatCount??data.comboCount??
+                 data.repeat_count??data.combo_count;
+
+  const cumulative=Number(rawCount);
+
   let group=giftComboGroups.get(key);
 
   if(!group){
@@ -1080,8 +1199,8 @@ function receiveGiftForCombo(data){
   group.revision++;
   group.data={...group.data,...data};
 
-  if(Number.isFinite(cumulativeCount)&&cumulativeCount>0){
-    group.count=Math.max(group.count,Math.floor(cumulativeCount));
+  if(Number.isFinite(cumulative)&&cumulative>0){
+    group.count=Math.max(group.count,Math.floor(cumulative));
   }else{
     group.count+=Math.max(1,Math.floor(Number(data.giftCount)||1));
   }
@@ -1089,69 +1208,87 @@ function receiveGiftForCombo(data){
   clearTimeout(group.timer);
 
   group.videoPromise=group.videoPromise.then(async()=>{
-    const resolvedSrc=await resolveGiftVideo(data);
-    if(resolvedSrc){
-      if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
-        try{ URL.revokeObjectURL(group.src); }catch(e){}
+    const resolved=await resolveGiftVideo(data);
+
+    if(resolved){
+      if(group.src&&group.src.startsWith('blob:')&&group.src!==resolved){
+        try{URL.revokeObjectURL(group.src)}catch(e){}
       }
-      group.src=resolvedSrc;
+      group.src=resolved;
     }
-  }).catch(err=>console.error('Gagal muat video:',err));
+  }).catch(e=>console.error('Video gift:',e));
 
   const finishCombo=async()=>{
-    const finishingRevision=group.revision;
+    const revision=group.revision;
     await group.videoPromise;
 
-    if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision) return;
+    if(giftComboGroups.get(key)!==group||group.revision!==revision)return;
 
     giftComboGroups.delete(key);
+
     if(group.src){
       queueGiftVideo(group.src,Math.max(1,group.count));
     }
   };
 
-  const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
-  group.timer=setTimeout(finishCombo,comboEnded?0:900);
+  const ended=data.repeatEnd===true||data.repeat_end===true||
+              data.comboEnd===true||data.combo_end===true;
+
+  group.timer=setTimeout(finishCombo,ended?0:900);
 }
 
-/* BROADCAST CHANNEL */
+/* =========================================
+   BROADCAST CHANNEL
+========================================= */
+
 function handleIncomingMessage(data){
-  if(!data) return;
+  if(!data)return;
 
   if(data.type==='TRIGGER_DISPLAY_CAMERA'){
-    if(data.action==='start') startDisplayDirectCamera();
-    else if(data.action==='stop') stopDisplayDirectCamera();
+    if(data.action==='start')startDisplayDirectCamera();
+    else if(data.action==='stop')stopDisplayDirectCamera();
   }
+
   else if(data.type==='SET_HOST_VIDEO'){
     stopDisplayDirectCamera();
+
     const camImg=$('hostCameraImg');
     camImg.style.display='none';
+
     releaseHostObjectURL();
 
-    if(data.videoBlob){
+    if(data.videoBlob instanceof Blob){
       hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
       setupSeamlessHostVideo(hostMediaObjectURL);
       $('hostPlaceholder').style.display='none';
     }
   }
+
   else if(data.type==='RESET_HOST_MEDIA'){
     stopDisplayDirectCamera();
     stopHostSeamlessLoop();
-    const camImg=$('hostCameraImg');
+
     releaseHostObjectURL();
-    camImg.style.display='none';
+
+    $('hostCameraImg').style.display='none';
     $('hostPlaceholder').style.display='none';
   }
+
   else if(data.type==='UPDATE_SLOT'){
     updateSlotDisplay(data);
   }
+
   else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
     const slotNum=Number(data.slotNum);
+
     if(slotNum>=1&&slotNum<=8){
       const status=getMuteStatus(data);
+
       if(status!==null){
         slotMuteStates[slotNum]=status;
+
         const mic=$(`mic-slot-${slotNum}`);
+
         if(mic){
           mic.style.display='flex';
           updateMicStatus(slotNum,status);
@@ -1159,77 +1296,107 @@ function handleIncomingMessage(data){
       }
     }
   }
+
   else if(data.type==='PLAY_GIFT'){
-    const targetSlot=Number(data.targetSlot);
-    if(targetSlot&&slotPoints[targetSlot]!==undefined){
-      slotPoints[targetSlot]+=Number(data.increment||0);
-      const countElem=$(`coincount-slot-${targetSlot}`);
-      if(countElem) countElem.innerText=formatPoin(slotPoints[targetSlot]);
-      const badge=$(`coin-badge-${targetSlot}`);
-      if(badge) badge.style.display='flex';
+    const target=Number(data.targetSlot);
+
+    if(target&&slotPoints[target]!==undefined){
+      slotPoints[target]+=Number(data.increment||0);
+
+      const count=$(`coincount-slot-${target}`);
+      if(count)count.innerText=formatPoin(slotPoints[target]);
+
+      const badge=$(`coin-badge-${target}`);
+      if(badge)badge.style.display='flex';
     }
 
-    if(data.badgeImg) showGiftBadgeTemporarily(targetSlot,data.badgeImg);
+    if(data.badgeImg){
+      showGiftBadgeTemporarily(target,data.badgeImg);
+    }
+
     receiveGiftForCombo(data);
   }
 }
 
 channel.onmessage=event=>handleIncomingMessage(event.data);
 
-/* WEBSOCKET */
+/* =========================================
+   WEBSOCKET
+========================================= */
+
 let ws=null;
 let reconnectTimer=null;
 let reconnectDelay=1000;
 let manuallyClosed=false;
 
 function connectWebSocket(){
-  if(manuallyClosed) return;
-  if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN)) return;
+  if(manuallyClosed)return;
+
+  if(ws&&(ws.readyState===WebSocket.CONNECTING||
+          ws.readyState===WebSocket.OPEN))return;
 
   try{
     const protocol=location.protocol==='https:'?'wss:':'ws:';
+
     ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
 
-    ws.onopen=()=>{ reconnectDelay=1000; };
+    ws.onopen=()=>{
+      reconnectDelay=1000;
+    };
+
     ws.onmessage=event=>{
       try{
         const d=JSON.parse(event.data);
+
         if(d.type==='gift'){
           handleIncomingMessage({
             type:'PLAY_GIFT',
-            targetSlot:1,
+            targetSlot:Number(d.targetSlot)||1,
             increment:Number(d.coins||1),
             badgeImg:d.giftImage||'',
             giftTitle:d.giftName||'Gift',
             senderName:d.nickname||d.username||'User',
             senderAvatar:d.avatar||'',
             giftId:d.giftId||d.gift_id||d.id||'',
-            repeatCount:d.repeatCount??d.repeat_count??d.comboCount??d.combo_count,
+            repeatCount:d.repeatCount??d.repeat_count??
+                        d.comboCount??d.combo_count,
             giftCount:d.giftCount??d.gift_count,
-            repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
+            repeatEnd:d.repeatEnd??d.repeat_end??
+                      d.comboEnd??d.combo_end,
             videoBlob:d.videoBlob,
             src:d.src||d.videoUrl||d.video_url||d.url||''
           });
         }
-      }catch(err){}
+      }catch(e){
+        console.error('WebSocket data error:',e);
+      }
     };
+
     ws.onerror=()=>{};
+
     ws.onclose=()=>{
       ws=null;
-      if(manuallyClosed) return;
+
+      if(manuallyClosed)return;
+
       clearTimeout(reconnectTimer);
+
       reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
       reconnectDelay=Math.min(reconnectDelay*1.5,10000);
     };
-  }catch(err){
+
+  }catch(e){
     clearTimeout(reconnectTimer);
     reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
   }
 }
+
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE DENGAN DUAL-STAGE SAFE AUDIO PLAY */
-let glReady=false;
+/* =========================================
+   GIFT VIDEO RENDERER
+========================================= */
+
 let renderActive=false;
 let renderFrameId=null;
 let lastVideoTime=-1;
@@ -1239,38 +1406,53 @@ let activeFinishHandler=null;
 const giftCanvas=$('giftCanvas');
 const giftVideo=$('giftVideo');
 const giftOverlay=$('giftOverlayContainer');
-let canvas2D=null;
 
 function stopGiftRenderer(){
   renderActive=false;
-  if(renderFrameId!==null){ cancelAnimationFrame(renderFrameId); renderFrameId=null; }
+
+  if(renderFrameId!==null){
+    cancelAnimationFrame(renderFrameId);
+    renderFrameId=null;
+  }
 }
 
 function renderGiftFrame(){
-  if(!renderActive) return;
+  if(!renderActive)return;
+
   const video=giftVideo;
 
   if(video.ended){
-    if(activeFinishHandler) activeFinishHandler();
+    if(activeFinishHandler)activeFinishHandler();
     return;
   }
 
-  if(video.readyState >= video.HAVE_CURRENT_DATA){
-    if(video.currentTime !== lastVideoTime){
-      lastVideoTime = video.currentTime;
-      if(glReady && gl){
+  if(video.readyState>=video.HAVE_CURRENT_DATA){
+    if(video.currentTime!==lastVideoTime){
+      lastVideoTime=video.currentTime;
+
+      if(glReady&&gl){
         try{
-          gl.bindTexture(gl.TEXTURE_2D, glTexture);
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
-          gl.drawArrays(gl.TRIANGLES, 0, 6);
+          gl.bindTexture(gl.TEXTURE_2D,glTexture);
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            video
+          );
+
+          gl.drawArrays(gl.TRIANGLES,0,6);
+
         }catch(e){
-          if(canvas2D){
-            try{ canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height); }catch(err){}
-          }
+          console.warn('WebGL rendering error:',e);
         }
-      }else if(canvas2D){
+      }
+      else if(canvas2D){
         try{
-          canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
+          canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
         }catch(e){}
       }
 
@@ -1280,32 +1462,36 @@ function renderGiftFrame(){
     }
   }
 
-  renderFrameId = requestAnimationFrame(renderGiftFrame);
+  renderFrameId=requestAnimationFrame(renderGiftFrame);
 }
 
 function playGiftVideo(src,onFinished){
-  if(!src) {
-    if(typeof onFinished==='function') onFinished();
+  if(!src){
+    if(typeof onFinished==='function')onFinished();
     return;
   }
 
   const video=giftVideo;
   const canvas=giftCanvas;
   const overlay=giftOverlay;
+
   const generation=++giftVideoGeneration;
 
   let finished=false;
   let safetyTimer=null;
+
   stopGiftRenderer();
 
   function finish(){
-    if(finished) return;
+    if(finished)return;
+
     finished=true;
     activeFinishHandler=null;
+
     clearTimeout(safetyTimer);
 
     if(generation!==giftVideoGeneration){
-      if(typeof onFinished==='function') onFinished();
+      if(typeof onFinished==='function')onFinished();
       return;
     }
 
@@ -1313,11 +1499,12 @@ function playGiftVideo(src,onFinished){
 
     setTimeout(()=>{
       if(generation!==giftVideoGeneration){
-        if(typeof onFinished==='function') onFinished();
+        if(typeof onFinished==='function')onFinished();
         return;
       }
 
       stopGiftRenderer();
+
       overlay.style.display='none';
 
       video.onended=null;
@@ -1336,12 +1523,16 @@ function playGiftVideo(src,onFinished){
           gl.clear(gl.COLOR_BUFFER_BIT);
         }catch(e){}
       }
+
       if(canvas2D){
-        try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
+        try{
+          canvas2D.clearRect(0,0,canvas.width,canvas.height);
+        }catch(e){}
       }
 
-      if(typeof onFinished==='function') onFinished();
-    }, 150);
+      if(typeof onFinished==='function')onFinished();
+
+    },120);
   }
 
   activeFinishHandler=finish;
@@ -1355,96 +1546,116 @@ function playGiftVideo(src,onFinished){
     video.load();
   }catch(e){}
 
-  // SUARA PENUH AKTIF
-  video.muted = false;
-  video.volume = 1.0;
-  video.playsInline = true;
+  video.muted=!isAudioUnlocked;
+  video.volume=1;
+  video.playsInline=true;
+
   video.setAttribute('playsinline','');
   video.setAttribute('webkit-playsinline','');
 
   video.onended=finish;
+
   video.onerror=()=>{
-    console.warn('Video load error pada src:', src);
+    console.warn('Video gift gagal dimuat:',src);
     finish();
   };
 
   glReady=initWebGL(canvas);
   canvas2D=null;
+
   if(!glReady){
-    try{ canvas2D=canvas.getContext('2d'); }catch(e){}
+    try{
+      canvas2D=canvas.getContext('2d');
+    }catch(e){}
   }
 
   safetyTimer=setTimeout(()=>{
-    if(!finished) finish();
-  }, 15000);
+    if(!finished)finish();
+  },30000);
 
   video.onloadedmetadata=async()=>{
-    if(finished || generation!==giftVideoGeneration) return;
+    if(finished||generation!==giftVideoGeneration)return;
 
-    const originalWidth = video.videoWidth || 1080;
-    const originalHeight = video.videoHeight || 1920;
-    const scale = Math.min(1, 1080 / originalWidth, 1920 / originalHeight);
-    const renderWidth = Math.max(1, Math.round(originalWidth * scale));
-    const renderHeight = Math.max(1, Math.round(originalHeight * scale));
+    const originalWidth=video.videoWidth||1080;
+    const originalHeight=video.videoHeight||1920;
 
-    canvas.width=renderWidth;
-    canvas.height=renderHeight;
+    const scale=Math.min(
+      1,
+      1080/originalWidth,
+      1920/originalHeight
+    );
+
+    const width=Math.max(1,Math.round(originalWidth*scale));
+    const height=Math.max(1,Math.round(originalHeight*scale));
+
+    canvas.width=width;
+    canvas.height=height;
 
     if(video.duration&&Number.isFinite(video.duration)){
       clearTimeout(safetyTimer);
+
       safetyTimer=setTimeout(()=>{
-        if(!finished) finish();
-      }, (video.duration*1000)+1500);
+        if(!finished)finish();
+      },video.duration*1000+2500);
     }
 
     if(glReady&&gl){
-      gl.viewport(0,0,renderWidth,renderHeight);
+      gl.viewport(0,0,width,height);
       gl.useProgram(glProgram);
 
       const posLoc=gl.getAttribLocation(glProgram,'a_pos');
+
       gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
       gl.enableVertexAttribArray(posLoc);
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
       gl.enableVertexAttribArray(texLoc);
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D,glTexture);
+
       gl.clearColor(0,0,0,0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-    }else if(canvas2D){
-      canvas2D.clearRect(0,0,renderWidth,renderHeight);
     }
 
     lastVideoTime=-1;
 
-    // COBA PUTAR LANGSUNG BERSUARA
     try{
       await video.play();
-      if(finished || generation!==giftVideoGeneration) return;
+
+      if(finished||generation!==giftVideoGeneration)return;
+
       renderActive=true;
       renderGiftFrame();
+
       overlay.classList.add('visible');
-    }catch(audioErr){
-      console.warn('Browser butuh interaksi, putar video dan unmute otomatis:', audioErr);
+
+    }catch(e){
+      console.warn('Browser menolak audio otomatis:',e);
+
       video.muted=true;
+
       try{
         await video.play();
-        if(finished || generation!==giftVideoGeneration) return;
+
+        if(finished||generation!==giftVideoGeneration)return;
+
         renderActive=true;
         renderGiftFrame();
+
         overlay.classList.add('visible');
 
-        // Jika user sudah klik di mana saja, langsung hidupkan suara
         if(isAudioUnlocked){
           video.muted=false;
-          video.volume=1.0;
+          video.volume=1;
         }
-      }catch(finalErr){
-        console.error('Final play error:', finalErr);
+
+      }catch(finalError){
+        console.error('Gagal memutar gift:',finalError);
         finish();
       }
     }
@@ -1454,41 +1665,64 @@ function playGiftVideo(src,onFinished){
   video.load();
 }
 
-// FUNGSI TEST LANGSUNG DARI BROWSER (Ketik playTestGift() di console browser)
-window.playTestGift = function(url){
-  const testUrl = url || 'https://www.w3schools.com/html/mov_bbb.mp4';
+/* =========================================
+   TEST VIDEO
+========================================= */
+
+window.playTestGift=function(url){
+  const testUrl=url||'https://www.w3schools.com/html/mov_bbb.mp4';
+
   unlockAllAudio();
-  queueGiftVideo(testUrl, 1);
+  queueGiftVideo(testUrl,1);
 };
 
-/* CLEANUP */
+/* =========================================
+   CLEANUP
+========================================= */
+
 window.addEventListener('pagehide',()=>{
   manuallyClosed=true;
+
   stopGiftRenderer();
   stopHostSeamlessLoop();
 
   if(displayCamStream){
-    displayCamStream.getTracks().forEach(track=>track.stop());
+    displayCamStream.getTracks().forEach(t=>t.stop());
     displayCamStream=null;
   }
-  if(ws){ ws.close(); ws=null; }
+
+  if(ws){
+    ws.close();
+    ws=null;
+  }
+
   clearTimeout(reconnectTimer);
 
-  for(const timer of Object.values(badgeTimers)) clearTimeout(timer);
+  Object.values(badgeTimers).forEach(clearTimeout);
+
   for(const group of giftComboGroups.values()){
     clearTimeout(group.timer);
-    if(group.src?.startsWith('blob:')) URL.revokeObjectURL(group.src);
+
+    if(group.src?.startsWith('blob:')){
+      URL.revokeObjectURL(group.src);
+    }
   }
+
   giftComboGroups.clear();
 
   giftVideoQueue.forEach(item=>{
-    if(item.isBlob) URL.revokeObjectURL(item.src);
+    if(item.isBlob){
+      URL.revokeObjectURL(item.src);
+    }
   });
+
   giftVideoQueue.length=0;
 
   releaseHostObjectURL();
+
   channel.close();
 });
+
 </script>
 </body>
 </html>
