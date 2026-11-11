@@ -6,11 +6,6 @@
 <title>Display Studio - TikTok Live Optimized HD</title>
 
 <style>
-:root{
-  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM */
-  --bottom-gap: 85px;
-}
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -21,53 +16,48 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB LUAR: PUTIH BERSIH */
 html,body{
 width:100%;
 height:100%;
 overflow:hidden;
-background:#ffffff;
+background:#000;
 color:#fff
 }
 
 body{
 display:flex;
 justify-content:center;
-align-items:flex-start; /* Kotak mulai rata dari atas */
-background:#ffffff
+align-items:center
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI */
+/* LAYAR UTAMA (TETAP PERSIS ASLI: MAX 440PX) */
 .phone-screen{
 width:100vw;
+height:100vh;
 max-width:440px;
-height:calc(100vh - var(--bottom-gap));
-max-height:calc(100vh - var(--bottom-gap));
-aspect-ratio:9/16;
 position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000000;
+background:#000;
 transform:translateZ(0);
-box-shadow:none!important;
-border:none!important;
-padding-bottom:0
+padding-bottom:45px
 }
 
-/* KAMERA REALTIME & VIDEO HOST */
+/* KAMERA REALTIME & VIDEO HOST (TETAP MUNCUL SEPANJANG LIVE) */
 .host-fullscreen{
 position:absolute;
 inset:0;
 width:100%;
 height:100%;
 z-index:1;
-background:#000000;
+background:#000;
 overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
-align-items:center
+align-items:center;
+transform:translateY(-45px)
 }
 
 .host-video,#hostCameraImg{
@@ -76,7 +66,6 @@ inset:0;
 width:100%;
 height:100%;
 object-fit:cover;
-object-position:center;
 z-index:2;
 display:none;
 backface-visibility:hidden;
@@ -89,21 +78,18 @@ z-index:4
 }
 
 .host-placeholder{
-color:rgba(255,255,255,0.4);
-font-size:.85rem;
-font-weight:700;
+color:rgba(255,255,255,0.25);
+font-size:.8rem;
+font-weight:600;
 text-align:center;
 z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD - SEJAJAR RAPI DARI ATAS */
+/* OVERLAY ANIMASI GIFT HD */
 .gift-overlay{
 position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:0;
+inset:0;
 width:100%;
 height:100%;
 z-index:5;
@@ -111,12 +97,25 @@ pointer-events:none;
 display:none;
 opacity:0;
 background:transparent;
-overflow:hidden;
-transition:opacity 0.15s ease-out
+transform:translateY(-45px);
+transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+will-change:opacity
 }
 
 .gift-overlay.visible{
 opacity:1
+}
+
+/* BACKDROP PENAHAN BAWAH SOLID (MENGUNCI VIDEO HOST DI BAWAH AGAR TIDAK TEMBUS) */
+.gift-bottom-backdrop{
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:68%; /* Melindungi seluruh area tengah hingga bawah tempat animasi gift bermain */
+background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 12%, #000000 25%, #000000 100%);
+pointer-events:none;
+z-index:1
 }
 
 #giftVideo{
@@ -125,47 +124,46 @@ display:none
 
 #giftCanvas{
 position:absolute;
-top:0;
-left:0;
+inset:0;
 width:100%;
 height:100%;
 object-fit:cover;
-object-position:center top; /* Kunci sejajar rapi dari garis batas atas */
+object-position:center;
 display:block;
 pointer-events:none;
-z-index:2;
-image-rendering:-webkit-optimize-contrast
+transform:translateZ(0);
+backface-visibility:hidden;
+image-rendering:-webkit-optimize-contrast;
+z-index:2
 }
 
-/* LAYOUT 4 KIRI & 4 KANAN */
+/* 4 KOTAK KIRI & 4 KOTAK KANAN */
 .live-layout{
 position:relative;
 z-index:10;
 width:100%;
 display:flex;
 justify-content:space-between;
-padding:14px 10px 8px 10px;
+padding:14px 8px 8px 8px;
 pointer-events:none
 }
 
 .komal-col{
-width:92px;
-flex:0 0 92px;
+width:23%;
+max-width:92px;
 display:flex;
 flex-direction:column;
-gap:8px;
+gap:7px;
 position:relative;
 pointer-events:auto
 }
 
 /* KOTAK SLOT KOMAL */
 .slot-box{
-width:92px;
-height:92px;
-background:rgba(42, 45, 54, 0.9);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
-border:1.5px solid rgba(255,255,255,0.38);
+width:100%;
+aspect-ratio:1/1;
+background:#6e7178;
+border:1px solid rgba(255,255,255,0.15);
 border-radius:15px;
 position:relative;
 overflow:hidden;
@@ -173,14 +171,14 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-box-shadow:0 4px 14px rgba(0,0,0,0.7);
-transition:all .2s ease
+contain:layout paint;
+box-shadow:0 4px 14px rgba(0,0,0,0.55);
+transition:transform .2s ease
 }
 
 .slot-box.has-photo{
-background:#0c0d12;
-border:1.5px solid rgba(255,255,255,0.5);
-box-shadow:0 4px 16px rgba(0,0,0,0.85);
+background:#16171d;
+border:1px solid rgba(255,255,255,0.22);
 animation:none!important
 }
 
@@ -190,7 +188,7 @@ inset:-8px!important;
 width:calc(100% + 16px)!important;
 height:calc(100% + 16px)!important;
 object-fit:cover!important;
-filter:blur(8px) brightness(.55)!important;
+filter:blur(8px) brightness(.7)!important;
 display:none;
 z-index:1;
 pointer-events:none
@@ -199,7 +197,7 @@ pointer-events:none
 .slot-bg-overlay{
 position:absolute;
 inset:0;
-background:rgba(0,0,0,.35);
+background:rgba(0,0,0,.25);
 display:none;
 z-index:2;
 pointer-events:none
@@ -207,29 +205,28 @@ pointer-events:none
 
 /* IKON PLUS & TEKS PERMINTAAN */
 .slot-plus-svg{
-width:28px;
-height:28px;
+width:26px;
+height:26px;
 stroke:#ffffff;
-stroke-width:3.2;
+stroke-width:3;
 stroke-linecap:round;
 z-index:3;
-margin-bottom:3px;
-filter:drop-shadow(0 2px 5px rgba(0,0,0,0.9))
+margin-bottom:4px;
+filter:drop-shadow(0 1px 3px rgba(0,0,0,0.65))
 }
 
 .slot-req{
 color:#ffffff;
-font-size:11px;
-font-weight:800;
+font-size:.68rem;
+font-weight:700;
 letter-spacing:0.3px;
 z-index:3;
-text-shadow:0 2px 4px rgba(0,0,0,0.95)
+text-shadow:0 1px 3px rgba(0,0,0,0.85)
 }
 
-/* FOTO PROFIL KOMAL */
 .slot-circle-img{
-width:64px;
-height:64px;
+width:56px;
+height:56px;
 border-radius:50%;
 object-fit:cover;
 display:none;
@@ -238,12 +235,10 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:none!important;
-box-shadow:0 4px 14px rgba(0,0,0,.85);
-image-rendering:-webkit-optimize-contrast
+box-shadow:0 3px 10px rgba(0,0,0,.65);
+filter:none
 }
 
-/* BADGE KOIN ANGKA 0 */
 .slot-coin-badge{
 position:absolute;
 top:5px;
@@ -251,40 +246,37 @@ left:5px;
 display:flex;
 align-items:center;
 gap:3.5px;
-background:rgba(12,13,18,.92);
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:0.5px solid rgba(255,255,255,.35);
-padding:2px 6.5px 2px 3.5px;
+background:rgba(12,13,18,.85);
+backdrop-filter:blur(4px);
+border:0.5px solid rgba(255,255,255,.18);
+padding:2px 6px 2px 3px;
 border-radius:999px;
 z-index:6;
-box-shadow:0 2px 6px rgba(0,0,0,.65)
+box-shadow:0 2px 5px rgba(0,0,0,.5)
 }
 
 .cyan-diamond-circle{
-width:13.5px;
-height:13.5px;
+width:13px;
+height:13px;
 background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-flex-shrink:0;
-border:1px solid rgba(255,255,255,0.95);
-box-shadow:0 0 3px rgba(56,189,248,0.5)
+flex-shrink:0
 }
 
 .star-svg{
-width:7.5px;
-height:7.5px;
+width:7px;
+height:7px;
 fill:#fff
 }
 
 .coin-count{
-font-size:10px;
+font-size:.6rem;
 color:#fff;
 font-weight:800;
-text-shadow:0 1px 2px rgba(0,0,0,.9)
+text-shadow:0 1px 2px rgba(0,0,0,.8)
 }
 
 @keyframes popGiftBadge{
@@ -297,11 +289,11 @@ position:absolute;
 top:5px;
 right:5px;
 z-index:8;
-width:25px;
-height:25px;
+width:24px;
+height:24px;
 display:none;
 object-fit:contain;
-filter:drop-shadow(0 2px 6px rgba(0,0,0,.9));
+filter:drop-shadow(0 2px 5px rgba(0,0,0,.85));
 pointer-events:none;
 animation:popGiftBadge .3s ease-out
 }
@@ -311,19 +303,18 @@ animation:popGiftBadge .3s ease-out
 position:absolute;
 bottom:6px;
 left:6px;
-max-width:calc(100% - 32px);
+max-width:calc(100% - 34px);
 display:flex;
 align-items:center;
-gap:4px;
+gap:5px;
 z-index:7;
-background:rgba(12,13,18,.92);
+background:rgba(12,13,18,.88);
 backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:0.5px solid rgba(255,255,255,.35);
-padding:2px 6px;
+border:0.5px solid rgba(255,255,255,.25);
+padding:2.5px 7px;
 border-radius:999px;
-min-height:20px;
-box-shadow:0 2px 6px rgba(0,0,0,.75)
+min-height:22px;
+box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
 .slot-name-text{
@@ -334,15 +325,15 @@ letter-spacing:0.2px;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:62px;
-text-shadow:0 1px 3px rgba(0,0,0,.95)
+max-width:68px;
+text-shadow:0 1px 2px rgba(0,0,0,.95)
 }
 
 .slot-plus-circle{
-width:13px;
-height:13px;
+width:14px;
+height:14px;
 border-radius:50%;
-background:rgba(255,255,255,.35);
+background:rgba(255,255,255,.28);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -357,8 +348,8 @@ height:8px
 /* MIKROFON */
 .mic-container{
 position:absolute;
-bottom:5px;
-right:5px;
+bottom:6px;
+right:6px;
 z-index:8;
 width:20px;
 height:20px;
@@ -401,13 +392,19 @@ filter:drop-shadow(0 1px 2px rgba(0,0,0,0.95))
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
 display:none
 }
+
+.mic-container.is-muted{
+background:transparent!important;
+border:none!important;
+box-shadow:none!important
+}
 </style>
 </head>
 
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR (TETAP MUNCUL DI ATAS) -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -415,13 +412,14 @@ display:none
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT HD -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT DENGAN PENAHAN SOLID ANTI-TEMBUS -->
   <div class="gift-overlay" id="giftOverlayContainer">
-    <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
+    <div class="gift-bottom-backdrop"></div>
+    <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
-  <!-- 4 KOTAK KIRI & 4 KANAN -->
+  <!-- 4 KOTAK KIRI & 4 KOTAK KANAN -->
   <div class="live-layout">
     <div class="komal-col" id="colLeft"></div>
     <div class="komal-col" id="colRight"></div>
@@ -448,59 +446,12 @@ const giftComboGroups = new Map();
 const giftVideoQueue = [];
 let giftVideoQueueBusy = false;
 
+let detectedHostName = 'Host';
+let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
+
 const $ = id => document.getElementById(id);
 const colLeft = $('colLeft');
 const colRight = $('colRight');
-const displayContainer = $('displayContainer');
-
-// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16
-function fitScreen() {
-  const w = Math.min(window.innerWidth || 440, 440);
-  const gap = 85;
-  const h = Math.max(400, (window.innerHeight || 800) - gap);
-  displayContainer.style.width = w + 'px';
-  displayContainer.style.height = h + 'px';
-}
-fitScreen();
-window.addEventListener('resize', fitScreen);
-
-function syncContainerToVideo(videoElement) {
-  if (!videoElement) return;
-  const w = videoElement.videoWidth;
-  const h = videoElement.videoHeight;
-  if (w && h) {
-    const curWidth = Math.min(window.innerWidth || 440, 440);
-    const gap = 85;
-    const maxAllowedH = (window.innerHeight || 800) - gap;
-    let detectedHeight = Math.round(curWidth * (h / w));
-    if (detectedHeight > maxAllowedH) {
-      detectedHeight = maxAllowedH;
-    }
-    displayContainer.style.width = curWidth + 'px';
-    displayContainer.style.height = detectedHeight + 'px';
-  }
-}
-
-// AUTO-UNLOCK AUDIO UNTUK BROWSER
-let isAudioUnlocked = false;
-function unlockAllAudio() {
-  isAudioUnlocked = true;
-  const v = $('giftVideo');
-  if (v && !v.paused) {
-    v.muted = false;
-    v.volume = 1.0;
-  }
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (AudioCtx) {
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') ctx.resume();
-    }
-  } catch (e) {}
-}
-['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt =>
-  window.addEventListener(evt, unlockAllAudio, { passive: true })
-);
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
@@ -554,51 +505,6 @@ for(let i=1; i<=8; i++){
   `);
 }
 
-/* SISTEM FOTO ANTI-ERROR */
-function loadSlotPhotoSafely(slotNum, rawUrl){
-  const img = $(`img-slot-${slotNum}`);
-  const bg = $(`bg-slot-${slotNum}`);
-  const slotBox = $(`slot-${slotNum}`);
-  const icon = $(`icon-${slotNum}`);
-  const req = $(`req-${slotNum}`);
-  const bgOverlay = $(`overlay-slot-${slotNum}`);
-
-  if(!img || !rawUrl) return;
-
-  icon.style.display = 'none';
-  req.style.display = 'none';
-
-  let targetUrl = rawUrl;
-  if(typeof rawUrl === 'string' && rawUrl.includes('100x100')){
-    targetUrl = rawUrl.replace('100x100', '300x300');
-  }
-
-  img.onload = () => {
-    slotBox.classList.add('has-photo');
-    img.style.display = 'block';
-    bg.style.display = 'block';
-    bgOverlay.style.display = 'block';
-  };
-
-  img.onerror = () => {
-    if(img.src !== rawUrl){
-      img.src = rawUrl;
-      bg.src = rawUrl;
-    } else {
-      slotBox.classList.remove('has-photo');
-      slotBox.style.background = 'rgba(42, 45, 54, 0.9)';
-      img.style.display = 'none';
-      bg.style.display = 'none';
-      bgOverlay.style.display = 'none';
-      icon.style.display = 'block';
-      req.style.display = 'inline-block';
-    }
-  };
-
-  img.src = targetUrl;
-  bg.src = targetUrl;
-}
-
 /* KONTROL MIKROFON */
 function getMuteStatus(data){
   const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
@@ -622,7 +528,7 @@ function updateMicStatus(slotNum,status){
   mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
-/* SEAMLESS VIDEO HOST */
+/* SISTEM VIDEO HOST SEAMLESS LOOP */
 function setupSeamlessHostVideo(url){
   stopHostSeamlessLoop();
 
@@ -633,8 +539,6 @@ function setupSeamlessHostVideo(url){
   v2.srcObject = null;
   v1.src = url;
   v2.src = url;
-
-  v1.onloadedmetadata = () => syncContainerToVideo(v1);
 
   v1.style.display = 'block';
   v2.style.display = 'block';
@@ -678,7 +582,6 @@ function stopHostSeamlessLoop(){
 
   if(v1){
     v1.ontimeupdate = null;
-    v1.onloadedmetadata = null;
     v1.pause();
     v1.removeAttribute('src');
     v1.style.opacity = '1';
@@ -693,10 +596,10 @@ function stopHostSeamlessLoop(){
   }
 }
 
-/* KAMERA REALTIME HOST */
+/* KAMERA REALTIME HOST (1080p FULL HD) */
 async function startDisplayDirectCamera(){
-  unlockAllAudio();
   if(cameraStarting) return;
+
   stopHostSeamlessLoop();
 
   const hVid=$('hostVideo');
@@ -716,9 +619,10 @@ async function startDisplayDirectCamera(){
   }
 
   cameraStarting=true;
+
   try{
     if(!navigator.mediaDevices?.getUserMedia){
-      throw new Error('Kamera butuh HTTPS');
+      throw new Error('Kamera membutuhkan HTTPS atau localhost.');
     }
 
     camImg.style.display='none';
@@ -728,13 +632,12 @@ async function startDisplayDirectCamera(){
       video:{
         width:{ideal:1080},
         height:{ideal:1920},
+        frameRate:{ideal:30,max:30},
         facingMode:'user'
       }
     });
 
     hVid.srcObject=displayCamStream;
-    hVid.onloadedmetadata=()=>syncContainerToVideo(hVid);
-
     hVid.style.display='block';
     hVid.style.opacity='1';
     placeholder.style.display='none';
@@ -743,7 +646,7 @@ async function startDisplayDirectCamera(){
   }catch(err){
     console.error('Kamera error:',err);
     placeholder.style.display='block';
-    placeholder.textContent='Kamera standby / nonaktif';
+    placeholder.textContent='Kamera gagal aktif';
   }finally{
     cameraStarting=false;
   }
@@ -769,7 +672,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL ENGINE: ULTRA-SMOOTH ANTI-PECAH & PEMBERSIH GARIS BATAS */
+/* WEBGL RENDERER: EFEK GIFT 100% SOLID & ANTI-TEMBUS */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -786,13 +689,13 @@ function initWebGL(canvas){
       antialias:true,
       depth:false,
       stencil:false,
-      preserveDrawingBuffer:false
+      preserveDrawingBuffer:false,
+      powerPreference:'high-performance'
     });
 
     if(!gl) return false;
 
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.disable(gl.BLEND);
 
     const vsSource=`
     attribute vec2 a_pos;
@@ -803,7 +706,7 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
-    // SHADER ANTI-PECAH + PEMBERSIH GARIS ARTIFAK KOMPRESI DI BATAS TEPI/ATAS
+    // SHADER: HANYA HAPUS BACKGROUND VOID MURNI, ELEMEN GIFT 100% SOLID OPAQUE
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -812,38 +715,25 @@ function initWebGL(canvas){
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      // 1. Deteksi Green Screen dengan Soft Feathering
+      // 1. Deteksi Background Hijau (Chroma Key)
       float maxRB = max(c.r, c.b);
-      float greenDiff = c.g - maxRB;
-      float greenFactor = smoothstep(0.04, 0.16, greenDiff) * smoothstep(0.20, 0.42, c.g);
+      float gDiff = c.g - maxRB;
+      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
 
-      // Hilangkan kebocoran warna hijau di pinggir animasi
-      if (greenDiff > 0.01 && c.g > maxRB) {
-        c.g = mix(c.g, maxRB, 0.85);
-      }
+      // 2. Deteksi Background Hitam Video (Hanya void gelap pekat tanpa warna)
+      float maxC = max(c.r, max(c.g, c.b));
+      float minC = min(c.r, min(c.g, c.b));
+      float chromaDiff = maxC - minC;
+      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
-      // 2. Deteksi Background Hitam Gelap dengan Toleransi Kompresi
-      float maxRGB = max(c.r, max(c.g, c.b));
-      float minRGB = min(c.r, min(c.g, c.b));
-      float sat = maxRGB - minRGB;
-
-      // Bersihkan warna hitam hingga level abu-abu kompresi
-      float blackFactor = 1.0 - smoothstep(0.03, 0.16, maxRGB);
-      blackFactor *= (1.0 - smoothstep(0.05, 0.20, sat));
-
-      float removeFactor = max(greenFactor, blackFactor);
-      float alpha = clamp(1.0 - removeFactor, 0.0, 1.0);
-
-      // 3. PEMBERSIH GARIS BATAS ATAS & TEPIAN LUAR (Edge Bleed Dissolve)
-      // Menghilangkan 3 piksel garis patah / artefak kompresi di tepian paling luar
-      float edgeClean = smoothstep(0.0, 0.005, v_tex.y) * smoothstep(1.0, 0.995, v_tex.y)
-                      * smoothstep(0.0, 0.005, v_tex.x) * smoothstep(1.0, 0.995, v_tex.x);
-      alpha *= edgeClean;
-
-      if (alpha <= 0.01) {
-        c = vec4(0.0);
+      if (isGreen || isBlack) {
+        c.a = 0.0; // Latar belakang transparan
       } else {
-        c.a = alpha;
+        // Semua bagian tubuh gift (mobil, panggung, kilau, naga) WAJIB 100% SOLID OPAQUE
+        c.a = 1.0;
+        if (gDiff > 0.05 && c.g > maxRB) {
+          c.g = maxRB;
+        }
       }
 
       gl_FragColor = c;
@@ -854,7 +744,6 @@ function initWebGL(canvas){
       gl.shaderSource(shader,src);
       gl.compileShader(shader);
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        console.error('Shader compile error:',gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -876,11 +765,11 @@ function initWebGL(canvas){
 
     const posBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1, 1,-1, -1,1,  -1,1, 1,-1, 1,1]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
 
     const texBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1, 1,1, 0,0,  0,0, 1,1, 1,0]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
 
     glBuffers.pos=posBuffer;
     glBuffers.tex=texBuffer;
@@ -964,7 +853,7 @@ function updateSlotDisplay(data){
     bg.style.display='none';
     bg.removeAttribute('src');
     bgOverlay.style.display='none';
-    slotBox.style.background='rgba(42, 45, 54, 0.9)';
+    slotBox.style.background='#6e7178';
     icon.style.display='block';
     req.style.display='inline-block';
     namePill.style.display='none';
@@ -1008,7 +897,24 @@ function updateSlotDisplay(data){
   }
 
   if(profileImg){
-    loadSlotPhotoSafely(slotNum, profileImg);
+    icon.style.display='none';
+    req.style.display='none';
+
+    img.onload=()=>{
+      if(img.src===profileImg){
+        slotBox.classList.add('has-photo');
+      }
+    };
+    img.onerror=()=>{
+      slotBox.classList.remove('has-photo');
+      slotBox.style.background='#6e7178';
+    };
+
+    img.src=profileImg;
+    img.style.display='block';
+    bg.src=profileImg;
+    bg.style.display='block';
+    bgOverlay.style.display='block';
   }
 }
 
@@ -1071,13 +977,12 @@ function getGiftComboKey(data){
 
 async function resolveGiftVideo(data){
   if(data.videoBlob) return URL.createObjectURL(data.videoBlob);
-  if(data.blob && data.blob instanceof Blob) return URL.createObjectURL(data.blob);
-  const gId = data.giftId || data.gift_id || data.id;
-  if(gId){
-    const blob=await getSavedVideo(gId);
+  if(data.giftId){
+    const blob=await getSavedVideo(data.giftId);
     if(blob) return URL.createObjectURL(blob);
   }
-  return data.src || data.videoUrl || data.video_url || data.videoSrc || data.url || data.video || null;
+  if(data.src) return data.src;
+  return null;
 }
 
 function receiveGiftForCombo(data){
@@ -1117,7 +1022,7 @@ function receiveGiftForCombo(data){
       }
       group.src=resolvedSrc;
     }
-  }).catch(err=>console.error('Gagal muat video:',err));
+  }).catch(err=>console.error('Gagal memuat video gift:',err));
 
   const finishCombo=async()=>{
     const finishingRevision=group.revision;
@@ -1211,7 +1116,10 @@ function connectWebSocket(){
     const protocol=location.protocol==='https:'?'wss:':'ws:';
     ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
 
-    ws.onopen=()=>{ reconnectDelay=1000; };
+    ws.onopen=()=>{
+      reconnectDelay=1000;
+    };
+
     ws.onmessage=event=>{
       try{
         const d=JSON.parse(event.data);
@@ -1229,12 +1137,13 @@ function connectWebSocket(){
             giftCount:d.giftCount??d.gift_count,
             repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
             videoBlob:d.videoBlob,
-            src:d.src||d.videoUrl||d.video_url||d.url||''
+            src:d.src||d.videoUrl||d.video_url||''
           });
         }
       }catch(err){}
     };
-    ws.onerror=()=>{};
+
+    ws.onerror=err=>{};
     ws.onclose=()=>{
       ws=null;
       if(manuallyClosed) return;
@@ -1247,12 +1156,14 @@ function connectWebSocket(){
     reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
   }
 }
+
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE */
+/* RENDERER VIDEO BEBAS BUG (HD 1080p BUFFER) */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
+let videoFrameCallbackId=null;
 let lastVideoTime=-1;
 let giftVideoGeneration=0;
 let activeFinishHandler=null;
@@ -1265,6 +1176,10 @@ let canvas2D=null;
 function stopGiftRenderer(){
   renderActive=false;
   if(renderFrameId!==null){ cancelAnimationFrame(renderFrameId); renderFrameId=null; }
+  if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
+    giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
+  }
+  videoFrameCallbackId=null;
 }
 
 function renderGiftFrame(){
@@ -1276,43 +1191,48 @@ function renderGiftFrame(){
     return;
   }
 
-  if(video.readyState >= video.HAVE_CURRENT_DATA){
-    if(video.currentTime !== lastVideoTime){
-      lastVideoTime = video.currentTime;
-      if(glReady && gl){
-        try{
-          gl.clearColor(0,0,0,0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-          gl.bindTexture(gl.TEXTURE_2D, glTexture);
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
-          gl.drawArrays(gl.TRIANGLES, 0, 6);
-        }catch(e){
-          if(canvas2D){
-            try{ canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height); }catch(err){}
-          }
-        }
-      }else if(canvas2D){
-        try{
-          canvas2D.clearRect(0,0,giftCanvas.width,giftCanvas.height);
-          canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
-        }catch(e){}
-      }
-
-      if(!giftOverlay.classList.contains('visible')){
-        giftOverlay.classList.add('visible');
-      }
-    }
-  }
-
-  renderFrameId = requestAnimationFrame(renderGiftFrame);
-}
-
-function playGiftVideo(src,onFinished){
-  if(!src) {
-    if(typeof onFinished==='function') onFinished();
+  if(video.readyState < video.HAVE_CURRENT_DATA){
+    scheduleGiftFrame();
     return;
   }
 
+  if(video.currentTime!==lastVideoTime){
+    lastVideoTime=video.currentTime;
+    if(glReady&&gl){
+      try{
+        gl.bindTexture(gl.TEXTURE_2D,glTexture);
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
+        gl.drawArrays(gl.TRIANGLES,0,6);
+      }catch(e){}
+    }else if(canvas2D){
+      try{
+        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
+      }catch(e){}
+    }
+
+    if(!giftOverlay.classList.contains('visible')){
+      giftOverlay.classList.add('visible');
+    }
+  }
+  scheduleGiftFrame();
+}
+
+function scheduleGiftFrame(){
+  if(!renderActive) return;
+  if(giftVideo.requestVideoFrameCallback){
+    videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
+      videoFrameCallbackId=null;
+      renderGiftFrame();
+    });
+  }else{
+    renderFrameId=requestAnimationFrame(()=>{
+      renderFrameId=null;
+      renderGiftFrame();
+    });
+  }
+}
+
+function playGiftVideo(src,onFinished){
   const video=giftVideo;
   const canvas=giftCanvas;
   const overlay=giftOverlay;
@@ -1328,22 +1248,15 @@ function playGiftVideo(src,onFinished){
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
-    if(generation!==giftVideoGeneration){
-      if(typeof onFinished==='function') onFinished();
-      return;
-    }
+    if(generation!==giftVideoGeneration) return;
 
     overlay.classList.remove('visible');
 
     setTimeout(()=>{
-      if(generation!==giftVideoGeneration){
-        if(typeof onFinished==='function') onFinished();
-        return;
-      }
+      if(generation!==giftVideoGeneration) return;
 
       stopGiftRenderer();
       overlay.style.display='none';
-
       video.onended=null;
       video.onerror=null;
       video.onloadedmetadata=null;
@@ -1365,7 +1278,7 @@ function playGiftVideo(src,onFinished){
       }
 
       if(typeof onFinished==='function') onFinished();
-    }, 150);
+    }, 200);
   }
 
   activeFinishHandler=finish;
@@ -1379,18 +1292,11 @@ function playGiftVideo(src,onFinished){
     video.load();
   }catch(e){}
 
-  video.crossOrigin = 'anonymous';
-  video.muted = false;
-  video.volume = 1.0;
-  video.playsInline = true;
-  video.setAttribute('playsinline','');
-  video.setAttribute('webkit-playsinline','');
-
+  video.src=src;
+  video.muted=false;
+  video.volume=1;
   video.onended=finish;
-  video.onerror=()=>{
-    console.warn('Video load error pada src:', src);
-    finish();
-  };
+  video.onerror=finish;
 
   glReady=initWebGL(canvas);
   canvas2D=null;
@@ -1400,14 +1306,16 @@ function playGiftVideo(src,onFinished){
 
   safetyTimer=setTimeout(()=>{
     if(!finished) finish();
-  }, 15000);
+  }, 12000);
 
   video.onloadedmetadata=async()=>{
-    if(finished || generation!==giftVideoGeneration) return;
+    if(finished||generation!==giftVideoGeneration) return;
 
-    // RESOLUSI FULL HD (1:1 DENGAN VIDEO ASLI AGAR TIDAK PECAH)
-    const renderWidth = video.videoWidth || 1080;
-    const renderHeight = video.videoHeight || 1920;
+    const originalWidth=video.videoWidth||1080;
+    const originalHeight=video.videoHeight||1920;
+    const scale=Math.min(1, 1080/originalWidth, 1920/originalHeight);
+    const renderWidth=Math.max(1, Math.round(originalWidth*scale));
+    const renderHeight=Math.max(1, Math.round(originalHeight*scale));
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
@@ -1445,41 +1353,24 @@ function playGiftVideo(src,onFinished){
 
     try{
       await video.play();
-      if(finished || generation!==giftVideoGeneration) return;
+      if(finished||generation!==giftVideoGeneration) return;
       renderActive=true;
       renderGiftFrame();
-      overlay.classList.add('visible');
-    }catch(audioErr){
-      console.warn('Autoplay bersuara dibatasi browser, mencoba mode muted:', audioErr);
+    }catch(err){
       video.muted=true;
       try{
         await video.play();
-        if(finished || generation!==giftVideoGeneration) return;
+        if(finished||generation!==giftVideoGeneration) return;
         renderActive=true;
         renderGiftFrame();
-        overlay.classList.add('visible');
-
-        if(isAudioUnlocked){
-          video.muted=false;
-          video.volume=1.0;
-        }
-      }catch(finalErr){
-        console.error('Gagal memutar video animasi:', finalErr);
+      }catch(error){
         finish();
       }
     }
   };
 
-  video.src=src;
   video.load();
 }
-
-// FUNGSI TEST LANGSUNG
-window.playTestGift = function(url){
-  const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
-  unlockAllAudio();
-  queueGiftVideo(testUrl, 1);
-};
 
 /* CLEANUP */
 window.addEventListener('pagehide',()=>{
