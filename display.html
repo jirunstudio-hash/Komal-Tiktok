@@ -6,11 +6,6 @@
 <title>Display Studio - TikTok Live Optimized HD</title>
 
 <style>
-:root{
-  /* UBAH ANGKA INI JIKA INGIN GARIS BAWAH KOTAK LEBIH NAIK LAGI (Misal: 45px, 50px, 60px) */
-  --bottom-gap: 45px;
-}
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -21,7 +16,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB LUAR (SISI KIRI, KANAN, & BAWAH PUTIH BERSIH) */
+/* LATAR WEB LUAR PUTIH */
 html,body{
 width:100%;
 height:100%;
@@ -37,35 +32,37 @@ align-items:flex-start; /* Kotak mulai dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: GARIS BAWAH IKUT DINAIKKAN */
+/* KOTAK HITAM: OTOMATIS MENDETEKSI PANJANG ASLI VIDEO HOST (RASIO 9:16) */
 .phone-screen{
 width:100vw;
-height:calc(100vh - var(--bottom-gap)); /* Garis bawah kotak hitam ikut dinaikkan */
 max-width:440px;
+/* Otomatis mendeteksi panjang ke bawah sesuai rasio asli video TikTok (9:16) */
+aspect-ratio:9/16;
+height:auto;
+max-height:100vh;
 position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
 background:#000000;
 transform:translateZ(0);
-padding-bottom:0;
-border-bottom:1px solid rgba(0,0,0,0.12) /* Garis batas bawah rapi */
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+border-bottom:2px solid rgba(0,0,0,0.2) /* Garis batas bawah presisi */
 }
 
-/* KAMERA REALTIME & VIDEO HOST FULL MENGIKUTI KOTAK */
+/* KAMERA REALTIME & VIDEO HOST: POSISI PERSIS 100% SAMA DENGAN ANIMASI */
 .host-fullscreen{
 position:absolute;
 inset:0;
 width:100%;
 height:100%;
 z-index:1;
-background:#000;
+background:#000000;
 overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
-align-items:center;
-transform:none
+align-items:center
 }
 
 .host-video,#hostCameraImg{
@@ -74,6 +71,7 @@ inset:0;
 width:100%;
 height:100%;
 object-fit:cover;
+object-position:center;
 z-index:2;
 display:none;
 backface-visibility:hidden;
@@ -94,7 +92,7 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD (PAS DENGAN KOTAK) */
+/* OVERLAY VIDEO ANIMASI GIFT HD (UKURAN & POSISI SAMA PERSIS DENGAN HOST) */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -103,19 +101,20 @@ height:100%;
 z-index:5;
 pointer-events:none;
 display:none;
-opacity:0;
-background:transparent;
-transform:none;
-transition:opacity 0.15s ease-out;
-will-change:opacity
+opacity:1;
+background:transparent
 }
 
-.gift-overlay.visible{
-opacity:1
-}
-
+/* Video off-screen agar decoding browser tidak dicegat */
 #giftVideo{
-display:none
+position:absolute;
+top:0;
+left:0;
+width:1px;
+height:1px;
+opacity:0;
+pointer-events:none;
+z-index:-1
 }
 
 #giftCanvas{
@@ -151,7 +150,7 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL - DESAIN TAJAM & JERNIH */
+/* KOTAK SLOT KOMAL */
 .slot-box{
 width:92px;
 height:92px;
@@ -216,7 +215,7 @@ z-index:3;
 text-shadow:0 2px 4px rgba(0,0,0,0.95)
 }
 
-/* FOTO PROFIL KOMAL - JERNIH, TAJAM & BINGKAI SOLID */
+/* FOTO PROFIL KOMAL */
 .slot-circle-img{
 width:62px;
 height:62px;
@@ -393,7 +392,7 @@ display:none
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL SAMPAI GARIS BAWAH -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL OTOMATIS PERSISI -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -437,6 +436,20 @@ let giftVideoQueueBusy = false;
 const $ = id => document.getElementById(id);
 const colLeft = $('colLeft');
 const colRight = $('colRight');
+const displayContainer = $('displayContainer');
+
+// DETEKSI OTOMATIS PANJANG KE BAWAH BERDASARKAN RESOLUSI VIDEO/KAMERA HOST
+function syncContainerToVideo(videoElement) {
+  if (!videoElement) return;
+  const w = videoElement.videoWidth;
+  const h = videoElement.videoHeight;
+  if (w && h) {
+    const curWidth = displayContainer.clientWidth || 440;
+    const detectedHeight = Math.round(curWidth * (h / w));
+    displayContainer.style.aspectRatio = `${w} / ${h}`;
+    displayContainer.style.height = `${detectedHeight}px`;
+  }
+}
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
@@ -570,6 +583,8 @@ function setupSeamlessHostVideo(url){
   v1.src = url;
   v2.src = url;
 
+  v1.onloadedmetadata = () => syncContainerToVideo(v1);
+
   v1.style.display = 'block';
   v2.style.display = 'block';
   v1.style.opacity = '1';
@@ -612,6 +627,7 @@ function stopHostSeamlessLoop(){
 
   if(v1){
     v1.ontimeupdate = null;
+    v1.onloadedmetadata = null;
     v1.pause();
     v1.removeAttribute('src');
     v1.style.opacity = '1';
@@ -665,6 +681,8 @@ async function startDisplayDirectCamera(){
     });
 
     hVid.srcObject=displayCamStream;
+    hVid.onloadedmetadata=()=>syncContainerToVideo(hVid);
+
     hVid.style.display='block';
     hVid.style.opacity='1';
     placeholder.style.display='none';
@@ -699,7 +717,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY ENGINE STANDAR OBS BROADCAST */
+/* WEBGL CHROMA KEY ENGINE (ANTI-TEMBUS & SOLID) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -712,7 +730,7 @@ function initWebGL(canvas){
   try{
     gl=canvas.getContext('webgl',{
       alpha:true,
-      premultipliedAlpha:true,
+      premultipliedAlpha:false,
       antialias:true,
       depth:false,
       stencil:false,
@@ -722,7 +740,7 @@ function initWebGL(canvas){
     if(!gl) return false;
 
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const vsSource=`
     attribute vec2 a_pos;
@@ -734,51 +752,33 @@ function initWebGL(canvas){
     }`;
 
     const fsSource=`
-    #ifdef GL_FRAGMENT_PRECISION_HIGH
-    precision highp float;
-    #else
     precision mediump float;
-    #endif
-
     uniform sampler2D u_tex;
     varying vec2 v_tex;
 
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      float cb = -0.168736 * c.r - 0.331264 * c.g + 0.500000 * c.b;
-      float cr =  0.500000 * c.r - 0.418688 * c.g - 0.081312 * c.b;
-
-      vec2 greenRef = vec2(-0.318, -0.438);
-      float chromaDist = distance(vec2(cb, cr), greenRef);
-
-      float greenAlpha = smoothstep(0.32, 0.45, chromaDist);
-
-      float maxVal = max(c.r, max(c.g, c.b));
-      float minVal = min(c.r, min(c.g, c.b));
-      float blackAlpha = smoothstep(0.015, 0.055, maxVal);
-      if ((maxVal - minVal) > 0.03) {
-        blackAlpha = 1.0;
-      }
-
-      float finalAlpha = min(greenAlpha, blackAlpha);
-
+      // 1. Deteksi Green Screen
       float maxRB = max(c.r, c.b);
-      if (c.g > maxRB) {
-        float despill = 1.0 - smoothstep(0.44, 0.56, chromaDist);
-        c.g = mix(c.g, maxRB, despill);
+      float greenDiff = c.g - maxRB;
+      bool isGreen = (greenDiff > 0.08 && c.g > 0.28 && c.g > c.r * 1.15 && c.g > c.b * 1.15);
+
+      // 2. Deteksi Pure Black Background (Void)
+      float maxRGB = max(c.r, max(c.g, c.b));
+      float minRGB = min(c.r, min(c.g, c.b));
+      bool isBlack = (maxRGB < 0.045 && (maxRGB - minRGB) < 0.025);
+
+      if (isGreen || isBlack) {
+        c.a = 0.0;
+      } else {
+        c.a = 1.0;
+        if (greenDiff > 0.02 && c.g > maxRB) {
+          c.g = maxRB; // Despill hijau
+        }
       }
 
-      if (finalAlpha > 0.88) {
-        finalAlpha = 1.0;
-      }
-
-      if (finalAlpha <= 0.01) {
-        discard;
-      }
-
-      c.rgb *= finalAlpha;
-      gl_FragColor = vec4(c.rgb, finalAlpha);
+      gl_FragColor = c;
     }`;
 
     function createShader(type,src){
@@ -786,7 +786,6 @@ function initWebGL(canvas){
       gl.shaderSource(shader,src);
       gl.compileShader(shader);
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        console.error('Shader compile error:',gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -829,7 +828,6 @@ function initWebGL(canvas){
     isWebGLSupported=true;
     return true;
   }catch(e){
-    console.error('WebGL init failed:',e);
     return false;
   }
 }
@@ -1008,8 +1006,7 @@ async function resolveGiftVideo(data){
     const blob=await getSavedVideo(data.giftId);
     if(blob) return URL.createObjectURL(blob);
   }
-  if(data.src) return data.src;
-  return null;
+  return data.src || data.videoUrl || data.video_url || data.videoSrc || null;
 }
 
 function receiveGiftForCombo(data){
@@ -1049,7 +1046,7 @@ function receiveGiftForCombo(data){
       }
       group.src=resolvedSrc;
     }
-  }).catch(err=>console.error('Gagal memuat video gift:',err));
+  }).catch(err=>console.error('Gagal muat video:',err));
 
   const finishCombo=async()=>{
     const finishingRevision=group.revision;
@@ -1181,11 +1178,10 @@ function connectWebSocket(){
 }
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE */
+/* RENDERER VIDEO ENGINE AKTIF DENGAN RAF LANGSUNG */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
-let videoFrameCallbackId=null;
 let lastVideoTime=-1;
 let giftVideoGeneration=0;
 let activeFinishHandler=null;
@@ -1198,10 +1194,6 @@ let canvas2D=null;
 function stopGiftRenderer(){
   renderActive=false;
   if(renderFrameId!==null){ cancelAnimationFrame(renderFrameId); renderFrameId=null; }
-  if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
-    giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
-  }
-  videoFrameCallbackId=null;
 }
 
 function renderGiftFrame(){
@@ -1213,48 +1205,32 @@ function renderGiftFrame(){
     return;
   }
 
-  if(video.readyState < video.HAVE_CURRENT_DATA){
-    scheduleGiftFrame();
-    return;
-  }
-
-  if(video.currentTime!==lastVideoTime){
-    lastVideoTime=video.currentTime;
-    if(glReady&&gl){
-      try{
-        gl.bindTexture(gl.TEXTURE_2D,glTexture);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
-        gl.drawArrays(gl.TRIANGLES,0,6);
-      }catch(e){}
-    }else if(canvas2D){
-      try{
-        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
-      }catch(e){}
-    }
-
-    if(!giftOverlay.classList.contains('visible')){
-      giftOverlay.classList.add('visible');
+  if(video.readyState >= video.HAVE_CURRENT_DATA){
+    if(video.currentTime !== lastVideoTime){
+      lastVideoTime = video.currentTime;
+      if(glReady && gl){
+        try{
+          gl.bindTexture(gl.TEXTURE_2D, glTexture);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }catch(e){
+          if(canvas2D){
+            try{ canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height); }catch(err){}
+          }
+        }
+      }else if(canvas2D){
+        try{
+          canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
+        }catch(e){}
+      }
     }
   }
-  scheduleGiftFrame();
-}
 
-function scheduleGiftFrame(){
-  if(!renderActive) return;
-  if(giftVideo.requestVideoFrameCallback){
-    videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
-      videoFrameCallbackId=null;
-      renderGiftFrame();
-    });
-  }else{
-    renderFrameId=requestAnimationFrame(()=>{
-      renderFrameId=null;
-      renderGiftFrame();
-    });
-  }
+  renderFrameId = requestAnimationFrame(renderGiftFrame);
 }
 
 function playGiftVideo(src,onFinished){
+  if(!src) return;
   const video=giftVideo;
   const canvas=giftCanvas;
   const overlay=giftOverlay;
@@ -1272,41 +1248,35 @@ function playGiftVideo(src,onFinished){
 
     if(generation!==giftVideoGeneration) return;
 
-    overlay.classList.remove('visible');
+    overlay.style.display='none';
 
-    setTimeout(()=>{
-      if(generation!==giftVideoGeneration) return;
+    stopGiftRenderer();
+    video.onended=null;
+    video.onerror=null;
+    video.onloadedmetadata=null;
 
-      stopGiftRenderer();
-      overlay.style.display='none';
-      video.onended=null;
-      video.onerror=null;
-      video.onloadedmetadata=null;
+    try{
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    }catch(e){}
 
+    if(gl){
       try{
-        video.pause();
-        video.removeAttribute('src');
-        video.load();
+        gl.clearColor(0,0,0,0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
       }catch(e){}
+    }
+    if(canvas2D){
+      try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
+    }
 
-      if(gl){
-        try{
-          gl.clearColor(0,0,0,0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        }catch(e){}
-      }
-      if(canvas2D){
-        try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
-      }
-
-      if(typeof onFinished==='function') onFinished();
-    }, 150);
+    if(typeof onFinished==='function') onFinished();
   }
 
   activeFinishHandler=finish;
 
   overlay.style.display='block';
-  overlay.classList.remove('visible');
 
   try{
     video.pause();
@@ -1314,9 +1284,14 @@ function playGiftVideo(src,onFinished){
     video.load();
   }catch(e){}
 
+  if(!src.startsWith('blob:') && !src.startsWith('data:')){
+    video.crossOrigin='anonymous';
+  }else{
+    video.removeAttribute('crossorigin');
+  }
+
   video.src=src;
-  video.muted=false;
-  video.volume=1;
+  video.muted=true; // Muted agar autoplay tidak pernah diblokir browser
   video.onended=finish;
   video.onerror=finish;
 
@@ -1356,7 +1331,7 @@ function playGiftVideo(src,onFinished){
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
       gl.enableVertexAttribArray(texLoc);
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
@@ -1376,20 +1351,18 @@ function playGiftVideo(src,onFinished){
       renderActive=true;
       renderGiftFrame();
     }catch(err){
-      video.muted=true;
-      try{
-        await video.play();
-        if(finished||generation!==giftVideoGeneration) return;
-        renderActive=true;
-        renderGiftFrame();
-      }catch(error){
-        finish();
-      }
+      finish();
     }
   };
 
   video.load();
 }
+
+// FUNGSI TEST LANGSUNG DARI CONSOLE BROWSER JIKA INGIN CEK ANIMASI
+window.playTestGift = function(url){
+  if(!url) return;
+  queueGiftVideo(url, 1);
+};
 
 /* CLEANUP */
 window.addEventListener('pagehide',()=>{
