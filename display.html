@@ -32,32 +32,32 @@ align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: LATAR WARNA HITAM PEKAT */
+/* KOTAK HITAM: SEJAK PERTAMA DIBUKA LANGSUNG PAS DI RASIO 9:16 */
 .phone-screen{
 width:100vw;
 max-width:440px;
-aspect-ratio:9/16; /* Rasio otomatis video TikTok Live */
-height:auto;
+height:calc(min(100vw, 440px) * 16 / 9); /* Langsung pas di rasio 9:16 sejak awal */
 max-height:100vh;
+aspect-ratio:9/16;
 position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000000; /* Latar tempat video host & animasi warna hitam */
+background:#000000;
 transform:translateZ(0);
-box-shadow:none!important; /* Tanpa bayangan garis hitam */
-border:none!important;      /* Tanpa garis border di bawah */
+box-shadow:none!important;
+border:none!important;
 padding-bottom:0
 }
 
-/* KAMERA REALTIME & VIDEO HOST: LATAR WARNA HITAM */
+/* KAMERA REALTIME & VIDEO HOST: RATA PENUH */
 .host-fullscreen{
 position:absolute;
 inset:0;
 width:100%;
 height:100%;
 z-index:1;
-background:#000000; /* Latar warna hitam pekat */
+background:#000000;
 overflow:hidden;
 cursor:pointer;
 display:flex;
@@ -391,7 +391,7 @@ display:none
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST (LATAR HITAM) -->
+  <!-- KAMERA REALTIME / VIDEO HOST -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -437,7 +437,22 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// DETEKSI OTOMATIS TINGGI VIDEO HOST (PAS DENGAN PANJANG ASLI VIDEO)
+// PAS BUKA WEBSITE: LANGSUNG SET TINGGI KOTAK HITAM KE 9:16 PRESISI
+function fitScreen() {
+  const w = Math.min(window.innerWidth || 440, 440);
+  const maxH = window.innerHeight || 800;
+  let h = Math.round(w * 16 / 9);
+  if (h > maxH) {
+    h = maxH;
+  }
+  displayContainer.style.width = w + 'px';
+  displayContainer.style.height = h + 'px';
+  displayContainer.style.aspectRatio = '9 / 16';
+}
+fitScreen();
+window.addEventListener('resize', fitScreen);
+
+// DETEKSI OTOMATIS TINGGI JIKA VIDEO HOST / KAMERA MEMILIKI ASPEK LAIN
 function syncContainerToVideo(videoElement) {
   if (!videoElement) return;
   const w = videoElement.videoWidth;
@@ -716,7 +731,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY & VOID ENGINE (HALUS & SOLID) */
+/* WEBGL CHROMA KEY & VOID ENGINE (ANTI-TEMBUS & MULUS) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -750,7 +765,6 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
-    // HAPUS GREEN SCREEN ATAU VOID HITAM TANPA BOCOR
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -962,7 +976,7 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
   },5000);
 }
 
-/* ANTRIAN VIDEO GIFT */
+/* ANTRIAN VIDEO GIFT - ANTI MACET */
 function queueGiftVideo(src,repeatCount=1){
   if(!src) return;
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
@@ -1004,11 +1018,13 @@ function getGiftComboKey(data){
 
 async function resolveGiftVideo(data){
   if(data.videoBlob) return URL.createObjectURL(data.videoBlob);
-  if(data.giftId){
-    const blob=await getSavedVideo(data.giftId);
+  if(data.blob && data.blob instanceof Blob) return URL.createObjectURL(data.blob);
+  const gId = data.giftId || data.gift_id || data.id;
+  if(gId){
+    const blob=await getSavedVideo(gId);
     if(blob) return URL.createObjectURL(blob);
   }
-  return data.src || data.videoUrl || data.video_url || data.videoSrc || null;
+  return data.src || data.videoUrl || data.video_url || data.videoSrc || data.url || data.video || null;
 }
 
 function receiveGiftForCombo(data){
@@ -1160,7 +1176,7 @@ function connectWebSocket(){
             giftCount:d.giftCount??d.gift_count,
             repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
             videoBlob:d.videoBlob,
-            src:d.src||d.videoUrl||d.video_url||''
+            src:d.src||d.videoUrl||d.video_url||d.url||''
           });
         }
       }catch(err){}
@@ -1180,7 +1196,7 @@ function connectWebSocket(){
 }
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE */
+/* RENDERER VIDEO ENGINE - VERSI HANDAL 100% KELUAR */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1232,7 +1248,11 @@ function renderGiftFrame(){
 }
 
 function playGiftVideo(src,onFinished){
-  if(!src) return;
+  if(!src) {
+    if(typeof onFinished==='function') onFinished();
+    return;
+  }
+
   const video=giftVideo;
   const canvas=giftCanvas;
   const overlay=giftOverlay;
@@ -1248,11 +1268,9 @@ function playGiftVideo(src,onFinished){
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
-    if(generation!==giftVideoGeneration) return;
-
     overlay.style.display='none';
-
     stopGiftRenderer();
+
     video.onended=null;
     video.onerror=null;
     video.onloadedmetadata=null;
@@ -1260,7 +1278,6 @@ function playGiftVideo(src,onFinished){
     try{
       video.pause();
       video.removeAttribute('src');
-      video.load();
     }catch(e){}
 
     if(gl){
@@ -1273,6 +1290,7 @@ function playGiftVideo(src,onFinished){
       try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
     }
 
+    // Selalu lepaskan antrean video agar tidak pernah macet
     if(typeof onFinished==='function') onFinished();
   }
 
@@ -1282,9 +1300,12 @@ function playGiftVideo(src,onFinished){
 
   try{
     video.pause();
-    video.removeAttribute('src');
-    video.load();
   }catch(e){}
+
+  video.muted=true; // Muted agar 100% diizinkan autoplay oleh browser tanpa blokir
+  video.playsInline=true;
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
 
   if(!src.startsWith('blob:') && !src.startsWith('data:')){
     video.crossOrigin='anonymous';
@@ -1292,23 +1313,14 @@ function playGiftVideo(src,onFinished){
     video.removeAttribute('crossorigin');
   }
 
-  video.src=src;
-  video.muted=true;
   video.onended=finish;
-  video.onerror=finish;
+  video.onerror=(err)=>{
+    console.warn('Video error/blocked, finishing gracefully:', err);
+    finish();
+  };
 
-  glReady=initWebGL(canvas);
-  canvas2D=null;
-  if(!glReady){
-    try{ canvas2D=canvas.getContext('2d'); }catch(e){}
-  }
-
-  safetyTimer=setTimeout(()=>{
-    if(!finished) finish();
-  }, 12000);
-
-  video.onloadedmetadata=async()=>{
-    if(finished||generation!==giftVideoGeneration) return;
+  const startPlayback=async()=>{
+    if(finished || generation!==giftVideoGeneration) return;
 
     const renderWidth = video.videoWidth || 1080;
     const renderHeight = video.videoHeight || 1920;
@@ -1323,6 +1335,8 @@ function playGiftVideo(src,onFinished){
       }, (video.duration*1000)+1500);
     }
 
+    glReady=initWebGL(canvas);
+    canvas2D=null;
     if(glReady&&gl){
       gl.viewport(0,0,renderWidth,renderHeight);
       gl.useProgram(glProgram);
@@ -1333,7 +1347,7 @@ function playGiftVideo(src,onFinished){
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
       gl.enableVertexAttribArray(texLoc);
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
@@ -1341,28 +1355,48 @@ function playGiftVideo(src,onFinished){
       gl.bindTexture(gl.TEXTURE_2D,glTexture);
       gl.clearColor(0,0,0,0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-    }else if(canvas2D){
-      canvas2D.clearRect(0,0,renderWidth,renderHeight);
+    }else{
+      try{ canvas2D=canvas.getContext('2d'); }catch(e){}
     }
 
     lastVideoTime=-1;
 
     try{
       await video.play();
-      if(finished||generation!==giftVideoGeneration) return;
-      renderActive=true;
-      renderGiftFrame();
     }catch(err){
-      finish();
+      video.muted=true;
+      try{
+        await video.play();
+      }catch(e2){
+        console.error('Autoplay gagal total:', e2);
+        finish();
+        return;
+      }
     }
+
+    if(finished || generation!==giftVideoGeneration) return;
+    renderActive=true;
+    renderGiftFrame();
   };
 
-  video.load();
+  video.onloadedmetadata=startPlayback;
+
+  safetyTimer=setTimeout(()=>{
+    if(!finished) finish();
+  }, 15000);
+
+  video.src=src;
+
+  // Jika video dari blob / cache dan metadata sudah siap langsung dieksekusi detik itu juga
+  if(video.readyState >= 1){
+    startPlayback();
+  }
 }
 
+// FUNGSI TEST LANGSUNG DARI BROWSER: ketik playTestGift() di console
 window.playTestGift = function(url){
-  if(!url) return;
-  queueGiftVideo(url, 1);
+  const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+  queueGiftVideo(testUrl, 1);
 };
 
 /* CLEANUP */
