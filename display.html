@@ -37,7 +37,7 @@ align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG AGAK KE ATAS SEJAK AWAL BUKA */
+/* KOTAK TEMPAT HOST & ANIMASI */
 .phone-screen{
 width:100vw;
 max-width:440px;
@@ -97,10 +97,13 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD */
+/* OVERLAY VIDEO ANIMASI GIFT HD - SEJAJAR RAPI DARI ATAS */
 .gift-overlay{
 position:absolute;
-inset:0;
+top:0;
+left:0;
+right:0;
+bottom:0;
 width:100%;
 height:100%;
 z-index:5;
@@ -108,6 +111,7 @@ pointer-events:none;
 display:none;
 opacity:0;
 background:transparent;
+overflow:hidden;
 transition:opacity 0.15s ease-out
 }
 
@@ -121,14 +125,16 @@ display:none
 
 #giftCanvas{
 position:absolute;
-inset:0;
+top:0;
+left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-object-position:center;
+object-position:center top; /* Kunci sejajar rapi dari garis batas atas */
 display:block;
 pointer-events:none;
-z-index:2
+z-index:2;
+image-rendering:-webkit-optimize-contrast
 }
 
 /* LAYOUT 4 KIRI & 4 KANAN */
@@ -152,7 +158,7 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL - DIPERJELAS SEBELUM & SESUDAH ADA TARGET */
+/* KOTAK SLOT KOMAL */
 .slot-box{
 width:92px;
 height:92px;
@@ -220,7 +226,7 @@ z-index:3;
 text-shadow:0 2px 4px rgba(0,0,0,0.95)
 }
 
-/* FOTO PROFIL KOMAL: BIASA BULAT NATURAL */
+/* FOTO PROFIL KOMAL */
 .slot-circle-img{
 width:64px;
 height:64px;
@@ -255,7 +261,6 @@ z-index:6;
 box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
-/* BULAT BIRU BINTANG: GARIS PUTIH TIPIS */
 .cyan-diamond-circle{
 width:13.5px;
 height:13.5px;
@@ -448,7 +453,7 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16 DAN TERANGKAT DARI BAWAH
+// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16
 function fitScreen() {
   const w = Math.min(window.innerWidth || 440, 440);
   const gap = 85;
@@ -549,7 +554,7 @@ for(let i=1; i<=8; i++){
   `);
 }
 
-/* SISTEM FOTO ANTI-ERROR & TAJAM */
+/* SISTEM FOTO ANTI-ERROR */
 function loadSlotPhotoSafely(slotNum, rawUrl){
   const img = $(`img-slot-${slotNum}`);
   const bg = $(`bg-slot-${slotNum}`);
@@ -764,7 +769,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY & VOID ENGINE */
+/* WEBGL ENGINE: ULTRA-SMOOTH ANTI-PECAH & PEMBERSIH GARIS BATAS */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -786,7 +791,8 @@ function initWebGL(canvas){
 
     if(!gl) return false;
 
-    gl.disable(gl.BLEND);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const vsSource=`
     attribute vec2 a_pos;
@@ -797,6 +803,7 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
+    // SHADER ANTI-PECAH + PEMBERSIH GARIS ARTIFAK KOMPRESI DI BATAS TEPI/ATAS
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -805,24 +812,38 @@ function initWebGL(canvas){
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      // 1. Deteksi Green Screen
+      // 1. Deteksi Green Screen dengan Soft Feathering
       float maxRB = max(c.r, c.b);
       float greenDiff = c.g - maxRB;
-      bool isGreen = (greenDiff > 0.08 && c.g > 0.28 && c.g > c.r * 1.15 && c.g > c.b * 1.15);
+      float greenFactor = smoothstep(0.04, 0.16, greenDiff) * smoothstep(0.20, 0.42, c.g);
 
-      // 2. Deteksi Background Hitam Gelap (Void)
+      // Hilangkan kebocoran warna hijau di pinggir animasi
+      if (greenDiff > 0.01 && c.g > maxRB) {
+        c.g = mix(c.g, maxRB, 0.85);
+      }
+
+      // 2. Deteksi Background Hitam Gelap dengan Toleransi Kompresi
       float maxRGB = max(c.r, max(c.g, c.b));
       float minRGB = min(c.r, min(c.g, c.b));
       float sat = maxRGB - minRGB;
-      bool isBlack = (maxRGB < 0.065 && sat < 0.035);
 
-      if (isGreen || isBlack) {
+      // Bersihkan warna hitam hingga level abu-abu kompresi
+      float blackFactor = 1.0 - smoothstep(0.03, 0.16, maxRGB);
+      blackFactor *= (1.0 - smoothstep(0.05, 0.20, sat));
+
+      float removeFactor = max(greenFactor, blackFactor);
+      float alpha = clamp(1.0 - removeFactor, 0.0, 1.0);
+
+      // 3. PEMBERSIH GARIS BATAS ATAS & TEPIAN LUAR (Edge Bleed Dissolve)
+      // Menghilangkan 3 piksel garis patah / artefak kompresi di tepian paling luar
+      float edgeClean = smoothstep(0.0, 0.005, v_tex.y) * smoothstep(1.0, 0.995, v_tex.y)
+                      * smoothstep(0.0, 0.005, v_tex.x) * smoothstep(1.0, 0.995, v_tex.x);
+      alpha *= edgeClean;
+
+      if (alpha <= 0.01) {
         c = vec4(0.0);
       } else {
-        c.a = 1.0;
-        if (greenDiff > 0.02 && c.g > maxRB) {
-          c.g = maxRB;
-        }
+        c.a = alpha;
       }
 
       gl_FragColor = c;
@@ -855,11 +876,11 @@ function initWebGL(canvas){
 
     const posBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1, 1,-1, -1,1,  -1,1, 1,-1, 1,1]),gl.STATIC_DRAW);
 
     const texBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1, 1,1, 0,0,  0,0, 1,1, 1,0]),gl.STATIC_DRAW);
 
     glBuffers.pos=posBuffer;
     glBuffers.tex=texBuffer;
@@ -1260,6 +1281,8 @@ function renderGiftFrame(){
       lastVideoTime = video.currentTime;
       if(glReady && gl){
         try{
+          gl.clearColor(0,0,0,0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
           gl.bindTexture(gl.TEXTURE_2D, glTexture);
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -1270,6 +1293,7 @@ function renderGiftFrame(){
         }
       }else if(canvas2D){
         try{
+          canvas2D.clearRect(0,0,giftCanvas.width,giftCanvas.height);
           canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
         }catch(e){}
       }
@@ -1355,7 +1379,6 @@ function playGiftVideo(src,onFinished){
     video.load();
   }catch(e){}
 
-  // PENGATURAN CORS & AUDIO
   video.crossOrigin = 'anonymous';
   video.muted = false;
   video.volume = 1.0;
@@ -1382,11 +1405,9 @@ function playGiftVideo(src,onFinished){
   video.onloadedmetadata=async()=>{
     if(finished || generation!==giftVideoGeneration) return;
 
-    const originalWidth = video.videoWidth || 1080;
-    const originalHeight = video.videoHeight || 1920;
-    const scale = Math.min(1, 1080 / originalWidth, 1920 / originalHeight);
-    const renderWidth = Math.max(1, Math.round(originalWidth * scale));
-    const renderHeight = Math.max(1, Math.round(originalHeight * scale));
+    // RESOLUSI FULL HD (1:1 DENGAN VIDEO ASLI AGAR TIDAK PECAH)
+    const renderWidth = video.videoWidth || 1080;
+    const renderHeight = video.videoHeight || 1920;
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
@@ -1407,7 +1428,6 @@ function playGiftVideo(src,onFinished){
       gl.enableVertexAttribArray(posLoc);
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
-      // PERBAIKAN: Menggunakan glBuffers.tex (bukan texBuffer lokal)
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
       gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
       gl.enableVertexAttribArray(texLoc);
@@ -1454,7 +1474,7 @@ function playGiftVideo(src,onFinished){
   video.load();
 }
 
-// FUNGSI TEST LANGSUNG DARI BROWSER CONSOLE (Ketik playTestGift() untuk tes)
+// FUNGSI TEST LANGSUNG
 window.playTestGift = function(url){
   const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
   unlockAllAudio();
