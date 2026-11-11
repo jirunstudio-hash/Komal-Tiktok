@@ -16,7 +16,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB LUAR PUTIH */
+/* LATAR WEB LUAR: PUTIH BERSIH */
 html,body{
 width:100%;
 height:100%;
@@ -28,36 +28,36 @@ color:#fff
 body{
 display:flex;
 justify-content:center;
-align-items:flex-start; /* Kotak mulai dari atas */
+align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK HITAM: OTOMATIS MENDETEKSI PANJANG ASLI VIDEO HOST (RASIO 9:16) */
+/* KOTAK TEMPAT HOST & ANIMASI: LATAR WARNA HITAM PEKAT */
 .phone-screen{
 width:100vw;
 max-width:440px;
-/* Otomatis mendeteksi panjang ke bawah sesuai rasio asli video TikTok (9:16) */
-aspect-ratio:9/16;
+aspect-ratio:9/16; /* Rasio otomatis video TikTok Live */
 height:auto;
 max-height:100vh;
 position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000000;
+background:#000000; /* Latar tempat video host & animasi warna hitam */
 transform:translateZ(0);
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
-border-bottom:2px solid rgba(0,0,0,0.2) /* Garis batas bawah presisi */
+box-shadow:none!important; /* Tanpa bayangan garis hitam */
+border:none!important;      /* Tanpa garis border di bawah */
+padding-bottom:0
 }
 
-/* KAMERA REALTIME & VIDEO HOST: POSISI PERSIS 100% SAMA DENGAN ANIMASI */
+/* KAMERA REALTIME & VIDEO HOST: LATAR WARNA HITAM */
 .host-fullscreen{
 position:absolute;
 inset:0;
 width:100%;
 height:100%;
 z-index:1;
-background:#000000;
+background:#000000; /* Latar warna hitam pekat */
 overflow:hidden;
 cursor:pointer;
 display:flex;
@@ -92,7 +92,7 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD (UKURAN & POSISI SAMA PERSIS DENGAN HOST) */
+/* OVERLAY VIDEO ANIMASI GIFT HD */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -105,7 +105,6 @@ opacity:1;
 background:transparent
 }
 
-/* Video off-screen agar decoding browser tidak dicegat */
 #giftVideo{
 position:absolute;
 top:0;
@@ -392,7 +391,7 @@ display:none
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL OTOMATIS PERSISI -->
+  <!-- KAMERA REALTIME / VIDEO HOST (LATAR HITAM) -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -438,7 +437,7 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// DETEKSI OTOMATIS PANJANG KE BAWAH BERDASARKAN RESOLUSI VIDEO/KAMERA HOST
+// DETEKSI OTOMATIS TINGGI VIDEO HOST (PAS DENGAN PANJANG ASLI VIDEO)
 function syncContainerToVideo(videoElement) {
   if (!videoElement) return;
   const w = videoElement.videoWidth;
@@ -717,7 +716,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY ENGINE (ANTI-TEMBUS & SOLID) */
+/* WEBGL CHROMA KEY & VOID ENGINE (HALUS & SOLID) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -751,6 +750,7 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
+    // HAPUS GREEN SCREEN ATAU VOID HITAM TANPA BOCOR
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -764,10 +764,11 @@ function initWebGL(canvas){
       float greenDiff = c.g - maxRB;
       bool isGreen = (greenDiff > 0.08 && c.g > 0.28 && c.g > c.r * 1.15 && c.g > c.b * 1.15);
 
-      // 2. Deteksi Pure Black Background (Void)
+      // 2. Deteksi Background Hitam Gelap (Void)
       float maxRGB = max(c.r, max(c.g, c.b));
       float minRGB = min(c.r, min(c.g, c.b));
-      bool isBlack = (maxRGB < 0.045 && (maxRGB - minRGB) < 0.025);
+      float sat = maxRGB - minRGB;
+      bool isBlack = (maxRGB < 0.065 && sat < 0.035);
 
       if (isGreen || isBlack) {
         c.a = 0.0;
@@ -786,6 +787,7 @@ function initWebGL(canvas){
       gl.shaderSource(shader,src);
       gl.compileShader(shader);
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
+        console.error('Shader compile error:',gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -1178,7 +1180,7 @@ function connectWebSocket(){
 }
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE AKTIF DENGAN RAF LANGSUNG */
+/* RENDERER VIDEO ENGINE */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1291,7 +1293,7 @@ function playGiftVideo(src,onFinished){
   }
 
   video.src=src;
-  video.muted=true; // Muted agar autoplay tidak pernah diblokir browser
+  video.muted=true;
   video.onended=finish;
   video.onerror=finish;
 
@@ -1331,7 +1333,7 @@ function playGiftVideo(src,onFinished){
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
+      gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
       gl.enableVertexAttribArray(texLoc);
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
@@ -1358,7 +1360,6 @@ function playGiftVideo(src,onFinished){
   video.load();
 }
 
-// FUNGSI TEST LANGSUNG DARI CONSOLE BROWSER JIKA INGIN CEK ANIMASI
 window.playTestGift = function(url){
   if(!url) return;
   queueGiftVideo(url, 1);
