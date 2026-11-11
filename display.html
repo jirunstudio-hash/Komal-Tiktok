@@ -7,7 +7,7 @@
 
 <style>
 :root{
-  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM (85px meninggalkan latar putih bersih di bawah) */
+  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM DARI DASAR */
   --bottom-gap: 85px;
 }
 
@@ -21,7 +21,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB LUAR: PUTIH BERSIH (KIRI, KANAN, & BAWAH) */
+/* LATAR WEB LUAR: PUTIH BERSIH */
 html,body{
 width:100%;
 height:100%;
@@ -37,11 +37,10 @@ align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG NAIK (AGAK KE ATAS) SEJAK AWAL BUKA */
+/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG AGAK KE ATAS SEJAK BUKA */
 .phone-screen{
 width:100vw;
 max-width:440px;
-/* Langsung terangkat dari bawah sejak awal buka web */
 height:calc(100vh - var(--bottom-gap));
 max-height:calc(100vh - var(--bottom-gap));
 aspect-ratio:9/16;
@@ -56,7 +55,7 @@ border:none!important;
 padding-bottom:0
 }
 
-/* KAMERA REALTIME & VIDEO HOST: POSISI 100% PERSIS DI DALAM KOTAK */
+/* KAMERA REALTIME & VIDEO HOST */
 .host-fullscreen{
 position:absolute;
 inset:0;
@@ -98,7 +97,7 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD: UKURAN & POSISI SAMA PERSIS */
+/* OVERLAY VIDEO ANIMASI GIFT HD */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -153,12 +152,14 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL */
+/* KOTAK SLOT KOMAL - DIPERJELAS SEBELUM & SESUDAH ADA TARGET */
 .slot-box{
 width:92px;
 height:92px;
-background:#3a3d45;
-border:1.5px solid rgba(255,255,255,0.3);
+background:rgba(42, 45, 54, 0.9); /* Sebelum ada target: kontras tinggi & tegas */
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
+border:1.5px solid rgba(255,255,255,0.38); /* Garis kotak jelas */
 border-radius:15px;
 position:relative;
 overflow:hidden;
@@ -166,13 +167,15 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-box-shadow:0 4px 12px rgba(0,0,0,0.65);
-transition:transform .2s ease
+box-shadow:0 4px 14px rgba(0,0,0,0.7);
+transition:all .2s ease
 }
 
+/* KETIKA SUDAH ADA TARGET */
 .slot-box.has-photo{
-background:#16171d;
-border:1.5px solid rgba(255,255,255,0.45);
+background:#0c0d12;
+border:1.5px solid rgba(255,255,255,0.5);
+box-shadow:0 4px 16px rgba(0,0,0,0.85);
 animation:none!important
 }
 
@@ -182,7 +185,7 @@ inset:-8px!important;
 width:calc(100% + 16px)!important;
 height:calc(100% + 16px)!important;
 object-fit:cover!important;
-filter:blur(10px) brightness(.55)!important;
+filter:blur(8px) brightness(.55)!important;
 display:none;
 z-index:1;
 pointer-events:none
@@ -191,7 +194,7 @@ pointer-events:none
 .slot-bg-overlay{
 position:absolute;
 inset:0;
-background:rgba(0,0,0,.3);
+background:rgba(0,0,0,.35);
 display:none;
 z-index:2;
 pointer-events:none
@@ -199,29 +202,29 @@ pointer-events:none
 
 /* IKON PLUS & TEKS PERMINTAAN */
 .slot-plus-svg{
-width:26px;
-height:26px;
+width:28px;
+height:28px;
 stroke:#ffffff;
-stroke-width:3;
+stroke-width:3.2;
 stroke-linecap:round;
 z-index:3;
 margin-bottom:3px;
-filter:drop-shadow(0 2px 4px rgba(0,0,0,0.85))
+filter:drop-shadow(0 2px 5px rgba(0,0,0,0.9))
 }
 
 .slot-req{
 color:#ffffff;
 font-size:11px;
-font-weight:700;
-letter-spacing:0.2px;
+font-weight:800;
+letter-spacing:0.3px;
 z-index:3;
 text-shadow:0 2px 4px rgba(0,0,0,0.95)
 }
 
-/* FOTO PROFIL KOMAL */
+/* FOTO PROFIL KOMAL: BIASA BULAT NATURAL (TANPA GARIS PUTIH) */
 .slot-circle-img{
-width:62px;
-height:62px;
+width:64px;
+height:64px;
 border-radius:50%;
 object-fit:cover;
 display:none;
@@ -230,10 +233,12 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:2px solid #ffffff;
-box-shadow:0 4px 12px rgba(0,0,0,.85)
+border:none!important; /* Tanpa garis putih */
+box-shadow:0 4px 14px rgba(0,0,0,.85);
+image-rendering:-webkit-optimize-contrast
 }
 
+/* BADGE KOIN ANGKA 0 */
 .slot-coin-badge{
 position:absolute;
 top:5px;
@@ -251,15 +256,18 @@ z-index:6;
 box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
+/* BULAT BIRU BINTANG: DIBERIKAN GARIS PUTIH SEDIKIT TIPIS */
 .cyan-diamond-circle{
-width:13px;
-height:13px;
+width:13.5px;
+height:13.5px;
 background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-flex-shrink:0
+flex-shrink:0;
+border:1px solid rgba(255,255,255,0.95); /* Garis putih tipis presisi */
+box-shadow:0 0 3px rgba(56,189,248,0.5)
 }
 
 .star-svg{
@@ -441,10 +449,10 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// PAS BUKA WEBSITE: LANGSUNG POTONG GARIS BAWAH AGAR AGAK KE ATAS PERSIS SESUAI TAMPILAN
+// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16 DAN TERANGKAT DARI BAWAH
 function fitScreen() {
   const w = Math.min(window.innerWidth || 440, 440);
-  const gap = 85; // Mengangkat garis bawah sebesar 85px sejak awal buka
+  const gap = 85;
   const maxAllowedH = Math.max(400, (window.innerHeight || 800) - gap);
   let h = Math.round(w * 16 / 9);
   if (h > maxAllowedH) {
@@ -456,7 +464,6 @@ function fitScreen() {
 fitScreen();
 window.addEventListener('resize', fitScreen);
 
-// DETEKSI OTOMATIS TINGGI JIKA VIDEO HOST ASLI BERBEDA
 function syncContainerToVideo(videoElement) {
   if (!videoElement) return;
   const w = videoElement.videoWidth;
@@ -474,16 +481,22 @@ function syncContainerToVideo(videoElement) {
   }
 }
 
-// AUTO-UNLOCK AUDIO (KLIK 1 KALI DI MANA SAJA UNTUK AKTIFKAN SUARA BROWSER)
-let userHasInteracted = false;
-function unlockAudioPermission(){
-  if(userHasInteracted) return;
-  userHasInteracted = true;
-  const dummy = new Audio();
-  dummy.play().catch(()=>{});
+// AUTO-UNLOCK AUDIO UNTUK BROWSER (AGAR SUARA ANIMASI LANGSUNG AKTIF OTOMATIS)
+let audioUnlocked = false;
+function unlockAudioEngine() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      const ctx = new AudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+    }
+  } catch (e) {}
 }
-window.addEventListener('click', unlockAudioPermission, { passive: true });
-window.addEventListener('touchstart', unlockAudioPermission, { passive: true });
+['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt =>
+  window.addEventListener(evt, unlockAudioEngine, { passive: true })
+);
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
@@ -569,7 +582,7 @@ function loadSlotPhotoSafely(slotNum, rawUrl){
       bg.src = rawUrl;
     } else {
       slotBox.classList.remove('has-photo');
-      slotBox.style.background = '#3a3d45';
+      slotBox.style.background = 'rgba(42, 45, 54, 0.9)';
       img.style.display = 'none';
       bg.style.display = 'none';
       bgOverlay.style.display = 'none';
@@ -678,7 +691,7 @@ function stopHostSeamlessLoop(){
 
 /* KAMERA REALTIME HOST */
 async function startDisplayDirectCamera(){
-  unlockAudioPermission();
+  unlockAudioEngine();
   if(cameraStarting) return;
   stopHostSeamlessLoop();
 
@@ -932,7 +945,7 @@ function updateSlotDisplay(data){
     bg.style.display='none';
     bg.removeAttribute('src');
     bgOverlay.style.display='none';
-    slotBox.style.background='#3a3d45';
+    slotBox.style.background='rgba(42, 45, 54, 0.9)';
     icon.style.display='block';
     req.style.display='inline-block';
     namePill.style.display='none';
@@ -1314,6 +1327,7 @@ function playGiftVideo(src,onFinished){
       try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
     }
 
+    // Selalu lepaskan antrean video agar tidak pernah macet
     if(typeof onFinished==='function') onFinished();
   }
 
@@ -1326,9 +1340,9 @@ function playGiftVideo(src,onFinished){
     video.pause();
   }catch(e){}
 
-  // PENGATURAN SUARA AKTIF (AUDIO ON)
-  video.muted = false; // Suara aktif
-  video.volume = 1.0;  // Volume maksimal
+  // SUARA AKTIF DENGAN VOLUME PENUH
+  video.muted = false;
+  video.volume = 1.0;
   video.playsInline = true;
   video.setAttribute('playsinline','');
   video.setAttribute('webkit-playsinline','');
@@ -1387,7 +1401,7 @@ function playGiftVideo(src,onFinished){
 
     lastVideoTime=-1;
 
-    // COBA PUTAR DENGAN SUARA LENGKAP
+    // COBA PUTAR DENGAN AUDIO PENUH
     try{
       await video.play();
     }catch(audioErr){
@@ -1420,7 +1434,7 @@ function playGiftVideo(src,onFinished){
   }
 }
 
-// FUNGSI TEST LANGSUNG DARI BROWSER (Contoh: ketik playTestGift() di console browser)
+// FUNGSI TEST LANGSUNG DARI BROWSER: ketik playTestGift() di console browser
 window.playTestGift = function(url){
   const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
   queueGiftVideo(testUrl, 1);
