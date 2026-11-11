@@ -6,6 +6,11 @@
 <title>Display Studio - TikTok Live Optimized HD</title>
 
 <style>
+:root{
+  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM (85px meninggalkan latar putih bersih di bawah) */
+  --bottom-gap: 85px;
+}
+
 *{
 box-sizing:border-box;
 margin:0;
@@ -16,7 +21,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB LUAR: PUTIH BERSIH */
+/* LATAR WEB LUAR: PUTIH BERSIH (KIRI, KANAN, & BAWAH) */
 html,body{
 width:100%;
 height:100%;
@@ -32,12 +37,13 @@ align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK HITAM: SEJAK PERTAMA DIBUKA LANGSUNG PAS DI RASIO 9:16 */
+/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG NAIK (AGAK KE ATAS) SEJAK AWAL BUKA */
 .phone-screen{
 width:100vw;
 max-width:440px;
-height:calc(min(100vw, 440px) * 16 / 9); /* Langsung pas di rasio 9:16 sejak awal */
-max-height:100vh;
+/* Langsung terangkat dari bawah sejak awal buka web */
+height:calc(100vh - var(--bottom-gap));
+max-height:calc(100vh - var(--bottom-gap));
 aspect-ratio:9/16;
 position:relative;
 overflow:hidden;
@@ -50,7 +56,7 @@ border:none!important;
 padding-bottom:0
 }
 
-/* KAMERA REALTIME & VIDEO HOST: RATA PENUH */
+/* KAMERA REALTIME & VIDEO HOST: POSISI 100% PERSIS DI DALAM KOTAK */
 .host-fullscreen{
 position:absolute;
 inset:0;
@@ -92,7 +98,7 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD */
+/* OVERLAY VIDEO ANIMASI GIFT HD: UKURAN & POSISI SAMA PERSIS */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -101,19 +107,17 @@ height:100%;
 z-index:5;
 pointer-events:none;
 display:none;
-opacity:1;
-background:transparent
+opacity:0;
+background:transparent;
+transition:opacity 0.15s ease-out
+}
+
+.gift-overlay.visible{
+opacity:1
 }
 
 #giftVideo{
-position:absolute;
-top:0;
-left:0;
-width:1px;
-height:1px;
-opacity:0;
-pointer-events:none;
-z-index:-1
+display:none
 }
 
 #giftCanvas{
@@ -401,7 +405,7 @@ display:none
 
   <!-- OVERLAY VIDEO ANIMASI GIFT HD -->
   <div class="gift-overlay" id="giftOverlayContainer">
-    <video id="giftVideo" playsinline webkit-playsinline muted preload="auto"></video>
+    <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
@@ -437,33 +441,49 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// PAS BUKA WEBSITE: LANGSUNG SET TINGGI KOTAK HITAM KE 9:16 PRESISI
+// PAS BUKA WEBSITE: LANGSUNG POTONG GARIS BAWAH AGAR AGAK KE ATAS PERSIS SESUAI TAMPILAN
 function fitScreen() {
   const w = Math.min(window.innerWidth || 440, 440);
-  const maxH = window.innerHeight || 800;
+  const gap = 85; // Mengangkat garis bawah sebesar 85px sejak awal buka
+  const maxAllowedH = Math.max(400, (window.innerHeight || 800) - gap);
   let h = Math.round(w * 16 / 9);
-  if (h > maxH) {
-    h = maxH;
+  if (h > maxAllowedH) {
+    h = maxAllowedH;
   }
   displayContainer.style.width = w + 'px';
   displayContainer.style.height = h + 'px';
-  displayContainer.style.aspectRatio = '9 / 16';
 }
 fitScreen();
 window.addEventListener('resize', fitScreen);
 
-// DETEKSI OTOMATIS TINGGI JIKA VIDEO HOST / KAMERA MEMILIKI ASPEK LAIN
+// DETEKSI OTOMATIS TINGGI JIKA VIDEO HOST ASLI BERBEDA
 function syncContainerToVideo(videoElement) {
   if (!videoElement) return;
   const w = videoElement.videoWidth;
   const h = videoElement.videoHeight;
   if (w && h) {
-    const curWidth = displayContainer.clientWidth || 440;
-    const detectedHeight = Math.round(curWidth * (h / w));
-    displayContainer.style.aspectRatio = `${w} / ${h}`;
-    displayContainer.style.height = `${detectedHeight}px`;
+    const curWidth = Math.min(window.innerWidth || 440, 440);
+    const gap = 85;
+    const maxAllowedH = (window.innerHeight || 800) - gap;
+    let detectedHeight = Math.round(curWidth * (h / w));
+    if (detectedHeight > maxAllowedH) {
+      detectedHeight = maxAllowedH;
+    }
+    displayContainer.style.width = curWidth + 'px';
+    displayContainer.style.height = detectedHeight + 'px';
   }
 }
+
+// AUTO-UNLOCK AUDIO (KLIK 1 KALI DI MANA SAJA UNTUK AKTIFKAN SUARA BROWSER)
+let userHasInteracted = false;
+function unlockAudioPermission(){
+  if(userHasInteracted) return;
+  userHasInteracted = true;
+  const dummy = new Audio();
+  dummy.play().catch(()=>{});
+}
+window.addEventListener('click', unlockAudioPermission, { passive: true });
+window.addEventListener('touchstart', unlockAudioPermission, { passive: true });
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
 for(let i=1; i<=8; i++){
@@ -658,6 +678,7 @@ function stopHostSeamlessLoop(){
 
 /* KAMERA REALTIME HOST */
 async function startDisplayDirectCamera(){
+  unlockAudioPermission();
   if(cameraStarting) return;
   stopHostSeamlessLoop();
 
@@ -731,7 +752,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY & VOID ENGINE (ANTI-TEMBUS & MULUS) */
+/* WEBGL CHROMA KEY & VOID ENGINE (ANTI-TEMBUS & SOLID) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -976,7 +997,7 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
   },5000);
 }
 
-/* ANTRIAN VIDEO GIFT - ANTI MACET */
+/* ANTRIAN VIDEO GIFT - FULL SUARA & ANTI MACET */
 function queueGiftVideo(src,repeatCount=1){
   if(!src) return;
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
@@ -1196,7 +1217,7 @@ function connectWebSocket(){
 }
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE - VERSI HANDAL 100% KELUAR */
+/* RENDERER VIDEO ENGINE DENGAN AUDIO PENUH */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1268,9 +1289,12 @@ function playGiftVideo(src,onFinished){
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
-    overlay.style.display='none';
-    stopGiftRenderer();
+    overlay.classList.remove('visible');
+    setTimeout(()=>{
+      overlay.style.display='none';
+    }, 150);
 
+    stopGiftRenderer();
     video.onended=null;
     video.onerror=null;
     video.onloadedmetadata=null;
@@ -1290,20 +1314,22 @@ function playGiftVideo(src,onFinished){
       try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
     }
 
-    // Selalu lepaskan antrean video agar tidak pernah macet
     if(typeof onFinished==='function') onFinished();
   }
 
   activeFinishHandler=finish;
 
   overlay.style.display='block';
+  overlay.classList.add('visible');
 
   try{
     video.pause();
   }catch(e){}
 
-  video.muted=true; // Muted agar 100% diizinkan autoplay oleh browser tanpa blokir
-  video.playsInline=true;
+  // PENGATURAN SUARA AKTIF (AUDIO ON)
+  video.muted = false; // Suara aktif
+  video.volume = 1.0;  // Volume maksimal
+  video.playsInline = true;
   video.setAttribute('playsinline','');
   video.setAttribute('webkit-playsinline','');
 
@@ -1315,7 +1341,7 @@ function playGiftVideo(src,onFinished){
 
   video.onended=finish;
   video.onerror=(err)=>{
-    console.warn('Video error/blocked, finishing gracefully:', err);
+    console.warn('Video load error:', err);
     finish();
   };
 
@@ -1347,7 +1373,7 @@ function playGiftVideo(src,onFinished){
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
+      gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
       gl.enableVertexAttribArray(texLoc);
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
@@ -1361,14 +1387,15 @@ function playGiftVideo(src,onFinished){
 
     lastVideoTime=-1;
 
+    // COBA PUTAR DENGAN SUARA LENGKAP
     try{
       await video.play();
-    }catch(err){
+    }catch(audioErr){
+      console.warn('Browser mencegah autoplay bersuara, fallback ke muted:', audioErr);
       video.muted=true;
       try{
         await video.play();
       }catch(e2){
-        console.error('Autoplay gagal total:', e2);
         finish();
         return;
       }
@@ -1387,13 +1414,13 @@ function playGiftVideo(src,onFinished){
 
   video.src=src;
 
-  // Jika video dari blob / cache dan metadata sudah siap langsung dieksekusi detik itu juga
+  // Jika video blob/cache sudah siap langsung dieksekusi detik itu juga
   if(video.readyState >= 1){
     startPlayback();
   }
 }
 
-// FUNGSI TEST LANGSUNG DARI BROWSER: ketik playTestGift() di console
+// FUNGSI TEST LANGSUNG DARI BROWSER (Contoh: ketik playTestGift() di console browser)
 window.playTestGift = function(url){
   const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
   queueGiftVideo(testUrl, 1);
