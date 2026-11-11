@@ -7,7 +7,7 @@
 
 <style>
 :root{
-  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM DARI DASAR */
+  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM */
   --bottom-gap: 85px;
 }
 
@@ -106,17 +106,19 @@ height:100%;
 z-index:5;
 pointer-events:none;
 display:none;
-opacity:0;
-background:transparent;
-transition:opacity 0.15s ease-out
-}
-
-.gift-overlay.visible{
-opacity:1
+opacity:1;
+background:transparent
 }
 
 #giftVideo{
-display:none
+position:absolute;
+top:0;
+left:0;
+width:1px;
+height:1px;
+opacity:0;
+pointer-events:none;
+z-index:-1
 }
 
 #giftCanvas{
@@ -152,14 +154,14 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL - DIPERJELAS SEBELUM & SESUDAH ADA TARGET */
+/* KOTAK SLOT KOMAL - DIPERJELAS */
 .slot-box{
 width:92px;
 height:92px;
-background:rgba(42, 45, 54, 0.9); /* Sebelum ada target: kontras tinggi & tegas */
+background:rgba(42, 45, 54, 0.9);
 backdrop-filter:blur(8px);
 -webkit-backdrop-filter:blur(8px);
-border:1.5px solid rgba(255,255,255,0.38); /* Garis kotak jelas */
+border:1.5px solid rgba(255,255,255,0.38);
 border-radius:15px;
 position:relative;
 overflow:hidden;
@@ -171,7 +173,6 @@ box-shadow:0 4px 14px rgba(0,0,0,0.7);
 transition:all .2s ease
 }
 
-/* KETIKA SUDAH ADA TARGET */
 .slot-box.has-photo{
 background:#0c0d12;
 border:1.5px solid rgba(255,255,255,0.5);
@@ -221,7 +222,7 @@ z-index:3;
 text-shadow:0 2px 4px rgba(0,0,0,0.95)
 }
 
-/* FOTO PROFIL KOMAL: BIASA BULAT NATURAL (TANPA GARIS PUTIH) */
+/* FOTO PROFIL KOMAL: BIASA BULAT NATURAL */
 .slot-circle-img{
 width:64px;
 height:64px;
@@ -233,7 +234,7 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:none!important; /* Tanpa garis putih */
+border:none!important;
 box-shadow:0 4px 14px rgba(0,0,0,.85);
 image-rendering:-webkit-optimize-contrast
 }
@@ -256,7 +257,7 @@ z-index:6;
 box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
-/* BULAT BIRU BINTANG: DIBERIKAN GARIS PUTIH SEDIKIT TIPIS */
+/* BULAT BIRU BINTANG: GARIS PUTIH TIPIS */
 .cyan-diamond-circle{
 width:13.5px;
 height:13.5px;
@@ -266,7 +267,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 flex-shrink:0;
-border:1px solid rgba(255,255,255,0.95); /* Garis putih tipis presisi */
+border:1px solid rgba(255,255,255,0.95);
 box-shadow:0 0 3px rgba(56,189,248,0.5)
 }
 
@@ -481,21 +482,21 @@ function syncContainerToVideo(videoElement) {
   }
 }
 
-// AUTO-UNLOCK AUDIO UNTUK BROWSER (AGAR SUARA ANIMASI LANGSUNG AKTIF OTOMATIS)
-let audioUnlocked = false;
-function unlockAudioEngine() {
-  if (audioUnlocked) return;
-  audioUnlocked = true;
+// AUTO-UNLOCK AUDIO UNTUK BROWSER (MENGIZINKAN SUARA VIDEO BERPUTAR PENUH)
+let isAudioUnlocked = false;
+function unlockAllAudio() {
+  if (isAudioUnlocked) return;
+  isAudioUnlocked = true;
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-      const ctx = new AudioContext();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) {
+      const ctx = new AudioCtx();
       if (ctx.state === 'suspended') ctx.resume();
     }
   } catch (e) {}
 }
 ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt =>
-  window.addEventListener(evt, unlockAudioEngine, { passive: true })
+  window.addEventListener(evt, unlockAllAudio, { passive: true })
 );
 
 // MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
@@ -691,7 +692,7 @@ function stopHostSeamlessLoop(){
 
 /* KAMERA REALTIME HOST */
 async function startDisplayDirectCamera(){
-  unlockAudioEngine();
+  unlockAllAudio();
   if(cameraStarting) return;
   stopHostSeamlessLoop();
 
@@ -823,7 +824,7 @@ function initWebGL(canvas){
       } else {
         c.a = 1.0;
         if (greenDiff > 0.02 && c.g > maxRB) {
-          c.g = maxRB; // Despill hijau
+          c.g = maxRB;
         }
       }
 
@@ -1010,7 +1011,7 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
   },5000);
 }
 
-/* ANTRIAN VIDEO GIFT - FULL SUARA & ANTI MACET */
+/* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src,repeatCount=1){
   if(!src) return;
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
@@ -1230,7 +1231,7 @@ function connectWebSocket(){
 }
 connectWebSocket();
 
-/* RENDERER VIDEO ENGINE DENGAN AUDIO PENUH */
+/* RENDERER VIDEO ENGINE DENGAN DUAL-STAGE SAFE AUDIO PLAY */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1257,7 +1258,7 @@ function renderGiftFrame(){
     return;
   }
 
-  if(video.readyState >= video.HAVE_CURRENT_DATA){
+  if(video.readyState >= 2){
     if(video.currentTime !== lastVideoTime){
       lastVideoTime = video.currentTime;
       if(glReady && gl){
@@ -1266,14 +1267,12 @@ function renderGiftFrame(){
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
         }catch(e){
-          if(canvas2D){
-            try{ canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height); }catch(err){}
-          }
+          if(!canvas2D) canvas2D = giftCanvas.getContext('2d');
+          if(canvas2D) canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
         }
-      }else if(canvas2D){
-        try{
-          canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
-        }catch(e){}
+      }else{
+        if(!canvas2D) canvas2D = giftCanvas.getContext('2d');
+        if(canvas2D) canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
       }
     }
   }
@@ -1302,12 +1301,9 @@ function playGiftVideo(src,onFinished){
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
-    overlay.classList.remove('visible');
-    setTimeout(()=>{
-      overlay.style.display='none';
-    }, 150);
-
+    overlay.style.display='none';
     stopGiftRenderer();
+
     video.onended=null;
     video.onerror=null;
     video.onloadedmetadata=null;
@@ -1327,20 +1323,18 @@ function playGiftVideo(src,onFinished){
       try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
     }
 
-    // Selalu lepaskan antrean video agar tidak pernah macet
     if(typeof onFinished==='function') onFinished();
   }
 
   activeFinishHandler=finish;
 
   overlay.style.display='block';
-  overlay.classList.add('visible');
 
   try{
     video.pause();
   }catch(e){}
 
-  // SUARA AKTIF DENGAN VOLUME PENUH
+  // SUARA PENUH AKTIF
   video.muted = false;
   video.volume = 1.0;
   video.playsInline = true;
@@ -1355,7 +1349,7 @@ function playGiftVideo(src,onFinished){
 
   video.onended=finish;
   video.onerror=(err)=>{
-    console.warn('Video load error:', err);
+    console.warn('Video format warning:', err);
     finish();
   };
 
@@ -1401,15 +1395,18 @@ function playGiftVideo(src,onFinished){
 
     lastVideoTime=-1;
 
-    // COBA PUTAR DENGAN AUDIO PENUH
+    // DUAL-STAGE SAFE AUDIO PLAY: DIJAMIN BERPUTAR MUNCUL
     try{
       await video.play();
     }catch(audioErr){
-      console.warn('Browser mencegah autoplay bersuara, fallback ke muted:', audioErr);
+      console.warn('Browser menahan audio bersuara, memutar video aman & mencoba unmute:', audioErr);
       video.muted=true;
       try{
         await video.play();
-      }catch(e2){
+        if(isAudioUnlocked){
+          video.muted=false;
+        }
+      }catch(finalErr){
         finish();
         return;
       }
@@ -1428,15 +1425,15 @@ function playGiftVideo(src,onFinished){
 
   video.src=src;
 
-  // Jika video blob/cache sudah siap langsung dieksekusi detik itu juga
   if(video.readyState >= 1){
     startPlayback();
   }
 }
 
-// FUNGSI TEST LANGSUNG DARI BROWSER: ketik playTestGift() di console browser
+// TEST LANGSUNG DARI BROWSER (Ketik playTestGift() di console browser)
 window.playTestGift = function(url){
   const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+  unlockAllAudio();
   queueGiftVideo(testUrl, 1);
 };
 
