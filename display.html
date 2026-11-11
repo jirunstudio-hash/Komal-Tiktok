@@ -37,7 +37,7 @@ align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG AGAK KE ATAS SEJAK BUKA */
+/* KOTAK TEMPAT HOST & ANIMASI: LANGSUNG AGAK KE ATAS SEJAK AWAL BUKA */
 .phone-screen{
 width:100vw;
 max-width:440px;
@@ -106,19 +106,17 @@ height:100%;
 z-index:5;
 pointer-events:none;
 display:none;
-opacity:1;
-background:transparent
+opacity:0;
+background:transparent;
+transition:opacity 0.15s ease-out
+}
+
+.gift-overlay.visible{
+opacity:1
 }
 
 #giftVideo{
-position:absolute;
-top:0;
-left:0;
-width:1px;
-height:1px;
-opacity:0;
-pointer-events:none;
-z-index:-1
+display:none
 }
 
 #giftCanvas{
@@ -154,7 +152,7 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL - DIPERJELAS */
+/* KOTAK SLOT KOMAL - DIPERJELAS SEBELUM & SESUDAH ADA TARGET */
 .slot-box{
 width:92px;
 height:92px;
@@ -454,11 +452,7 @@ const displayContainer = $('displayContainer');
 function fitScreen() {
   const w = Math.min(window.innerWidth || 440, 440);
   const gap = 85;
-  const maxAllowedH = Math.max(400, (window.innerHeight || 800) - gap);
-  let h = Math.round(w * 16 / 9);
-  if (h > maxAllowedH) {
-    h = maxAllowedH;
-  }
+  const h = Math.max(400, (window.innerHeight || 800) - gap);
   displayContainer.style.width = w + 'px';
   displayContainer.style.height = h + 'px';
 }
@@ -482,11 +476,15 @@ function syncContainerToVideo(videoElement) {
   }
 }
 
-// AUTO-UNLOCK AUDIO UNTUK BROWSER (MENGIZINKAN SUARA VIDEO BERPUTAR PENUH)
+// AUTO-UNLOCK AUDIO UNTUK BROWSER (MENGAKTIFKAN SUARA PENUH OTOMATIS)
 let isAudioUnlocked = false;
 function unlockAllAudio() {
-  if (isAudioUnlocked) return;
   isAudioUnlocked = true;
+  const v = $('giftVideo');
+  if (v && !v.paused) {
+    v.muted = false;
+    v.volume = 1.0;
+  }
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (AudioCtx) {
@@ -788,8 +786,7 @@ function initWebGL(canvas){
 
     if(!gl) return false;
 
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.disable(gl.BLEND); // Mode solid anti-tembus
 
     const vsSource=`
     attribute vec2 a_pos;
@@ -1258,7 +1255,7 @@ function renderGiftFrame(){
     return;
   }
 
-  if(video.readyState >= 2){
+  if(video.readyState >= video.HAVE_CURRENT_DATA){
     if(video.currentTime !== lastVideoTime){
       lastVideoTime = video.currentTime;
       if(glReady && gl){
@@ -1267,12 +1264,18 @@ function renderGiftFrame(){
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
         }catch(e){
-          if(!canvas2D) canvas2D = giftCanvas.getContext('2d');
-          if(canvas2D) canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
+          if(canvas2D){
+            try{ canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height); }catch(err){}
+          }
         }
-      }else{
-        if(!canvas2D) canvas2D = giftCanvas.getContext('2d');
-        if(canvas2D) canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
+      }else if(canvas2D){
+        try{
+          canvas2D.drawImage(video, 0, 0, giftCanvas.width, giftCanvas.height);
+        }catch(e){}
+      }
+
+      if(!giftOverlay.classList.contains('visible')){
+        giftOverlay.classList.add('visible');
       }
     }
   }
@@ -1301,37 +1304,55 @@ function playGiftVideo(src,onFinished){
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
-    overlay.style.display='none';
-    stopGiftRenderer();
+    if(generation!==giftVideoGeneration){
+      if(typeof onFinished==='function') onFinished();
+      return;
+    }
 
-    video.onended=null;
-    video.onerror=null;
-    video.onloadedmetadata=null;
+    overlay.classList.remove('visible');
 
-    try{
-      video.pause();
-      video.removeAttribute('src');
-    }catch(e){}
+    setTimeout(()=>{
+      if(generation!==giftVideoGeneration){
+        if(typeof onFinished==='function') onFinished();
+        return;
+      }
 
-    if(gl){
+      stopGiftRenderer();
+      overlay.style.display='none';
+
+      video.onended=null;
+      video.onerror=null;
+      video.onloadedmetadata=null;
+
       try{
-        gl.clearColor(0,0,0,0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
       }catch(e){}
-    }
-    if(canvas2D){
-      try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
-    }
 
-    if(typeof onFinished==='function') onFinished();
+      if(gl){
+        try{
+          gl.clearColor(0,0,0,0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        }catch(e){}
+      }
+      if(canvas2D){
+        try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
+      }
+
+      if(typeof onFinished==='function') onFinished();
+    }, 150);
   }
 
   activeFinishHandler=finish;
 
   overlay.style.display='block';
+  overlay.classList.remove('visible');
 
   try{
     video.pause();
+    video.removeAttribute('src');
+    video.load();
   }catch(e){}
 
   // SUARA PENUH AKTIF
@@ -1341,23 +1362,30 @@ function playGiftVideo(src,onFinished){
   video.setAttribute('playsinline','');
   video.setAttribute('webkit-playsinline','');
 
-  if(!src.startsWith('blob:') && !src.startsWith('data:')){
-    video.crossOrigin='anonymous';
-  }else{
-    video.removeAttribute('crossorigin');
-  }
-
   video.onended=finish;
-  video.onerror=(err)=>{
-    console.warn('Video format warning:', err);
+  video.onerror=()=>{
+    console.warn('Video load error pada src:', src);
     finish();
   };
 
-  const startPlayback=async()=>{
+  glReady=initWebGL(canvas);
+  canvas2D=null;
+  if(!glReady){
+    try{ canvas2D=canvas.getContext('2d'); }catch(e){}
+  }
+
+  safetyTimer=setTimeout(()=>{
+    if(!finished) finish();
+  }, 15000);
+
+  video.onloadedmetadata=async()=>{
     if(finished || generation!==giftVideoGeneration) return;
 
-    const renderWidth = video.videoWidth || 1080;
-    const renderHeight = video.videoHeight || 1920;
+    const originalWidth = video.videoWidth || 1080;
+    const originalHeight = video.videoHeight || 1920;
+    const scale = Math.min(1, 1080 / originalWidth, 1920 / originalHeight);
+    const renderWidth = Math.max(1, Math.round(originalWidth * scale));
+    const renderHeight = Math.max(1, Math.round(originalHeight * scale));
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
@@ -1369,8 +1397,6 @@ function playGiftVideo(src,onFinished){
       }, (video.duration*1000)+1500);
     }
 
-    glReady=initWebGL(canvas);
-    canvas2D=null;
     if(glReady&&gl){
       gl.viewport(0,0,renderWidth,renderHeight);
       gl.useProgram(glProgram);
@@ -1389,50 +1415,48 @@ function playGiftVideo(src,onFinished){
       gl.bindTexture(gl.TEXTURE_2D,glTexture);
       gl.clearColor(0,0,0,0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-    }else{
-      try{ canvas2D=canvas.getContext('2d'); }catch(e){}
+    }else if(canvas2D){
+      canvas2D.clearRect(0,0,renderWidth,renderHeight);
     }
 
     lastVideoTime=-1;
 
-    // DUAL-STAGE SAFE AUDIO PLAY: DIJAMIN BERPUTAR MUNCUL
+    // COBA PUTAR LANGSUNG BERSUARA
     try{
       await video.play();
+      if(finished || generation!==giftVideoGeneration) return;
+      renderActive=true;
+      renderGiftFrame();
+      overlay.classList.add('visible');
     }catch(audioErr){
-      console.warn('Browser menahan audio bersuara, memutar video aman & mencoba unmute:', audioErr);
+      console.warn('Browser butuh interaksi, putar video dan unmute otomatis:', audioErr);
       video.muted=true;
       try{
         await video.play();
+        if(finished || generation!==giftVideoGeneration) return;
+        renderActive=true;
+        renderGiftFrame();
+        overlay.classList.add('visible');
+
+        // Jika user sudah klik di mana saja, langsung hidupkan suara
         if(isAudioUnlocked){
           video.muted=false;
+          video.volume=1.0;
         }
       }catch(finalErr){
+        console.error('Final play error:', finalErr);
         finish();
-        return;
       }
     }
-
-    if(finished || generation!==giftVideoGeneration) return;
-    renderActive=true;
-    renderGiftFrame();
   };
 
-  video.onloadedmetadata=startPlayback;
-
-  safetyTimer=setTimeout(()=>{
-    if(!finished) finish();
-  }, 15000);
-
   video.src=src;
-
-  if(video.readyState >= 1){
-    startPlayback();
-  }
+  video.load();
 }
 
-// TEST LANGSUNG DARI BROWSER (Ketik playTestGift() di console browser)
+// FUNGSI TEST LANGSUNG DARI BROWSER (Ketik playTestGift() di console browser)
 window.playTestGift = function(url){
-  const testUrl = url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+  const testUrl = url || 'https://www.w3schools.com/html/mov_bbb.mp4';
   unlockAllAudio();
   queueGiftVideo(testUrl, 1);
 };
