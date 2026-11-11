@@ -7,8 +7,8 @@
 
 <style>
 :root{
-  /* JARAK GARIS BAWAH KOTAK HITAM (0px = Turun penuh sampai ujung bawah layar) */
-  --bottom-gap: 0px;
+  /* JARAK ANGKAT GARIS BAWAH KOTAK HITAM */
+  --bottom-gap: 85px;
 }
 
 *{
@@ -21,7 +21,7 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB: BERSIH */
+/* LATAR WEB LUAR: PUTIH BERSIH */
 html,body{
 width:100%;
 height:100%;
@@ -33,11 +33,11 @@ color:#fff
 body{
 display:flex;
 justify-content:center;
-align-items:center; /* Posisi kotak pas sejajar di tengah & mentok bawah */
+align-items:flex-start; /* Kotak mulai rata dari atas */
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST & ANIMASI: MEMANJANG PENUH SAMPAI BAWAH */
+/* KOTAK TEMPAT HOST & ANIMASI */
 .phone-screen{
 width:100vw;
 max-width:440px;
@@ -55,11 +55,10 @@ border:none!important;
 padding-bottom:0
 }
 
-/* KAMERA REALTIME & VIDEO HOST: PENUH SAMPAI UJUNG BAWAH */
+/* KAMERA REALTIME & VIDEO HOST */
 .host-fullscreen{
 position:absolute;
 inset:0;
-bottom:0;
 width:100%;
 height:100%;
 z-index:1;
@@ -74,11 +73,10 @@ align-items:center
 .host-video,#hostCameraImg{
 position:absolute;
 inset:0;
-bottom:0;
 width:100%;
 height:100%;
 object-fit:cover;
-object-position:center center;
+object-position:center;
 z-index:2;
 display:none;
 backface-visibility:hidden;
@@ -99,10 +97,12 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY ANIMASI GIFT HD: MEMBENTANG PENUH SAMPAI UJUNG BAWAH */
+/* OVERLAY VIDEO ANIMASI GIFT HD - SEJAJAR RAPI DARI ATAS */
 .gift-overlay{
 position:absolute;
-inset:0;
+top:0;
+left:0;
+right:0;
 bottom:0;
 width:100%;
 height:100%;
@@ -125,12 +125,12 @@ display:none
 
 #giftCanvas{
 position:absolute;
-inset:0;
-bottom:0;
+top:0;
+left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-object-position:center top; /* Sejajar rapi dari atas sampai bawah */
+object-position:center top; /* Kunci sejajar rapi dari garis batas atas */
 display:block;
 pointer-events:none;
 z-index:2;
@@ -453,17 +453,10 @@ const colLeft = $('colLeft');
 const colRight = $('colRight');
 const displayContainer = $('displayContainer');
 
-// AMBIL NILAI GAP BAWAH DARI CSS DINAMIS
-function getBottomGap() {
-  const rootStyle = getComputedStyle(document.documentElement);
-  const val = parseInt(rootStyle.getPropertyValue('--bottom-gap'));
-  return isNaN(val) ? 0 : val;
-}
-
-// PAS BUKA WEB: MENYESUAIKAN TINGGI LAYAR HINGGA BAWAH
+// PAS BUKA WEB: LANGSUNG PAS DI RASIO 9:16
 function fitScreen() {
   const w = Math.min(window.innerWidth || 440, 440);
-  const gap = getBottomGap();
+  const gap = 85;
   const h = Math.max(400, (window.innerHeight || 800) - gap);
   displayContainer.style.width = w + 'px';
   displayContainer.style.height = h + 'px';
@@ -477,7 +470,7 @@ function syncContainerToVideo(videoElement) {
   const h = videoElement.videoHeight;
   if (w && h) {
     const curWidth = Math.min(window.innerWidth || 440, 440);
-    const gap = getBottomGap();
+    const gap = 85;
     const maxAllowedH = (window.innerHeight || 800) - gap;
     let detectedHeight = Math.round(curWidth * (h / w));
     if (detectedHeight > maxAllowedH) {
@@ -776,7 +769,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL ENGINE: ANTI-PECAH & PEMBERSIH GARIS TEPI */
+/* WEBGL ENGINE: ULTRA-SMOOTH ANTI-PECAH & PEMBERSIH GARIS BATAS */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -810,6 +803,7 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
+    // SHADER ANTI-PECAH + PEMBERSIH GARIS ARTIFAK KOMPRESI DI BATAS TEPI/ATAS
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -818,27 +812,30 @@ function initWebGL(canvas){
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      // 1. Deteksi Green Screen
+      // 1. Deteksi Green Screen dengan Soft Feathering
       float maxRB = max(c.r, c.b);
       float greenDiff = c.g - maxRB;
       float greenFactor = smoothstep(0.04, 0.16, greenDiff) * smoothstep(0.20, 0.42, c.g);
 
+      // Hilangkan kebocoran warna hijau di pinggir animasi
       if (greenDiff > 0.01 && c.g > maxRB) {
         c.g = mix(c.g, maxRB, 0.85);
       }
 
-      // 2. Deteksi Background Hitam Gelap
+      // 2. Deteksi Background Hitam Gelap dengan Toleransi Kompresi
       float maxRGB = max(c.r, max(c.g, c.b));
       float minRGB = min(c.r, min(c.g, c.b));
       float sat = maxRGB - minRGB;
 
+      // Bersihkan warna hitam hingga level abu-abu kompresi
       float blackFactor = 1.0 - smoothstep(0.03, 0.16, maxRGB);
       blackFactor *= (1.0 - smoothstep(0.05, 0.20, sat));
 
       float removeFactor = max(greenFactor, blackFactor);
       float alpha = clamp(1.0 - removeFactor, 0.0, 1.0);
 
-      // 3. Bersihkan garis batas atas dan tepian luar
+      // 3. PEMBERSIH GARIS BATAS ATAS & TEPIAN LUAR (Edge Bleed Dissolve)
+      // Menghilangkan 3 piksel garis patah / artefak kompresi di tepian paling luar
       float edgeClean = smoothstep(0.0, 0.005, v_tex.y) * smoothstep(1.0, 0.995, v_tex.y)
                       * smoothstep(0.0, 0.005, v_tex.x) * smoothstep(1.0, 0.995, v_tex.x);
       alpha *= edgeClean;
