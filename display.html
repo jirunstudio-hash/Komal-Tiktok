@@ -16,12 +16,12 @@ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,s
 text-rendering:optimizeLegibility
 }
 
-/* LATAR WEB DI LUAR KOTAK HOST DIUBAH JADI PUTIH */
+/* LATAR WEB DI LUAR KOTAK HOST PUTIH */
 html,body{
 width:100%;
 height:100%;
 overflow:hidden;
-background:#ffffff; /* Latar luar putih bersih */
+background:#ffffff;
 color:#fff
 }
 
@@ -32,7 +32,7 @@ align-items:center;
 background:#ffffff
 }
 
-/* KOTAK TEMPAT HOST FULL (TETAP FLAT ASLI TANPA FRAME HP) */
+/* KOTAK TEMPAT HOST FULL (PAS SAMPAI GARIS BAWAH) */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -41,12 +41,12 @@ position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000000; /* Di dalam kotak tetap hitam untuk video host & animasi */
+background:#000000;
 transform:translateZ(0);
-padding-bottom:45px
+padding-bottom:0 /* Disesuaikan: padding 45px dihapus agar mentok pas ke garis bawah */
 }
 
-/* KAMERA REALTIME & VIDEO HOST FULL LAYAR */
+/* KAMERA REALTIME & VIDEO HOST FULL SAMPAI GARIS BAWAH */
 .host-fullscreen{
 position:absolute;
 inset:0;
@@ -59,7 +59,7 @@ cursor:pointer;
 display:flex;
 justify-content:center;
 align-items:center;
-transform:translateY(-45px)
+transform:none /* Disesuaikan: potongan translateY dihapus agar video full sampai bawah */
 }
 
 .host-video,#hostCameraImg{
@@ -88,7 +88,7 @@ z-index:1;
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT HD */
+/* OVERLAY VIDEO ANIMASI GIFT HD (PAS SAMPAI BAWAH) */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -99,7 +99,7 @@ pointer-events:none;
 display:none;
 opacity:0;
 background:transparent;
-transform:translateY(-45px);
+transform:none; /* Disesuaikan: posisinya pas menempel sampai garis bawah */
 transition:opacity 0.15s ease-out;
 will-change:opacity
 }
@@ -387,7 +387,7 @@ display:none
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR -->
+  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR SAMPAI GARIS BAWAH -->
   <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
     <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
     <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
@@ -693,7 +693,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL CHROMA KEY YCBCR ENGINE (STANDAR OBS: MULUS, ANTI-GERIGI & SOLID) */
+/* WEBGL CHROMA KEY ENGINE STANDAR OBS BROADCAST */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
