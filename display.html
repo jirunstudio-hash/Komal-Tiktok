@@ -13,8 +13,7 @@ padding:0;
 font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 -webkit-font-smoothing:antialiased;
 -moz-osx-font-smoothing:grayscale;
-text-rendering:geometricPrecision;
-image-rendering:-webkit-optimize-contrast
+text-rendering:optimizeLegibility
 }
 
 html,body{
@@ -31,7 +30,7 @@ justify-content:center;
 align-items:center
 }
 
-/* LAYAR UTAMA (PRECISE PIXEL GRID) */
+/* LAYAR UTAMA */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -98,7 +97,7 @@ display:none;
 opacity:0;
 background:transparent;
 transform:translateY(-45px);
-transition:opacity 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+transition:opacity 0.15s ease-out;
 will-change:opacity
 }
 
@@ -119,12 +118,10 @@ object-fit:cover;
 object-position:center;
 display:block;
 pointer-events:none;
-image-rendering:-webkit-optimize-contrast;
-image-rendering:high-quality;
 z-index:2
 }
 
-/* 4 KOTAK KIRI & 4 KOTAK KANAN */
+/* LAYOUT 4 KIRI & 4 KANAN */
 .live-layout{
 position:relative;
 z-index:10;
@@ -136,8 +133,8 @@ pointer-events:none
 }
 
 .komal-col{
-width:94px;
-flex:0 0 94px;
+width:92px;
+flex:0 0 92px;
 display:flex;
 flex-direction:column;
 gap:8px;
@@ -145,12 +142,12 @@ position:relative;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL - SUPER CRISP & ULTRA HD */
+/* KOTAK SLOT KOMAL - DESAIN TAJAM & JERNIH */
 .slot-box{
-width:94px;
-height:94px;
-background:#52555d;
-border:1.5px solid rgba(255,255,255,0.32);
+width:92px;
+height:92px;
+background:#3a3d45;
+border:1.5px solid rgba(255,255,255,0.3);
 border-radius:15px;
 position:relative;
 overflow:hidden;
@@ -158,14 +155,13 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-box-shadow:0 4px 14px rgba(0,0,0,0.7);
-transition:transform .2s ease;
-image-rendering:-webkit-optimize-contrast
+box-shadow:0 4px 12px rgba(0,0,0,0.65);
+transition:transform .2s ease
 }
 
 .slot-box.has-photo{
-background:#111217;
-border:1.5px solid rgba(255,255,255,0.4);
+background:#16171d;
+border:1.5px solid rgba(255,255,255,0.45);
 animation:none!important
 }
 
@@ -175,7 +171,7 @@ inset:-8px!important;
 width:calc(100% + 16px)!important;
 height:calc(100% + 16px)!important;
 object-fit:cover!important;
-filter:blur(8px) brightness(.65)!important;
+filter:blur(10px) brightness(.55)!important;
 display:none;
 z-index:1;
 pointer-events:none
@@ -184,7 +180,7 @@ pointer-events:none
 .slot-bg-overlay{
 position:absolute;
 inset:0;
-background:rgba(0,0,0,.22);
+background:rgba(0,0,0,.3);
 display:none;
 z-index:2;
 pointer-events:none
@@ -199,7 +195,7 @@ stroke-width:3;
 stroke-linecap:round;
 z-index:3;
 margin-bottom:3px;
-filter:drop-shadow(0 2px 4px rgba(0,0,0,0.9))
+filter:drop-shadow(0 2px 4px rgba(0,0,0,0.85))
 }
 
 .slot-req{
@@ -211,10 +207,10 @@ z-index:3;
 text-shadow:0 2px 4px rgba(0,0,0,0.95)
 }
 
-/* FOTO PROFIL KOMAL RESOLUSI TINGGI */
+/* FOTO PROFIL KOMAL - JERNIH, TAJAM & BINGKAI SOLID */
 .slot-circle-img{
-width:60px;
-height:60px;
+width:62px;
+height:62px;
 border-radius:50%;
 object-fit:cover;
 display:none;
@@ -223,10 +219,8 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:2px solid rgba(255,255,255,0.5);
-box-shadow:0 4px 12px rgba(0,0,0,.85);
-image-rendering:-webkit-optimize-contrast;
-image-rendering:high-quality
+border:2px solid #ffffff;
+box-shadow:0 4px 12px rgba(0,0,0,.85)
 }
 
 .slot-coin-badge{
@@ -236,14 +230,14 @@ left:5px;
 display:flex;
 align-items:center;
 gap:3.5px;
-background:rgba(10,11,15,.92);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
+background:rgba(12,13,18,.92);
+backdrop-filter:blur(6px);
+-webkit-backdrop-filter:blur(6px);
 border:0.5px solid rgba(255,255,255,.35);
 padding:2px 6.5px 2px 3.5px;
 border-radius:999px;
 z-index:6;
-box-shadow:0 2px 6px rgba(0,0,0,.7)
+box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
 .cyan-diamond-circle{
@@ -267,7 +261,7 @@ fill:#fff
 font-size:10px;
 color:#fff;
 font-weight:800;
-text-shadow:0 1px 3px rgba(0,0,0,.95)
+text-shadow:0 1px 2px rgba(0,0,0,.9)
 }
 
 @keyframes popGiftBadge{
@@ -284,13 +278,12 @@ width:25px;
 height:25px;
 display:none;
 object-fit:contain;
-filter:drop-shadow(0 2px 6px rgba(0,0,0,.95));
+filter:drop-shadow(0 2px 6px rgba(0,0,0,.9));
 pointer-events:none;
-animation:popGiftBadge .3s ease-out;
-image-rendering:-webkit-optimize-contrast
+animation:popGiftBadge .3s ease-out
 }
 
-/* NAMA SLOT ULTRA-SHARP */
+/* NAMA SLOT */
 .slot-name-pill{
 position:absolute;
 bottom:6px;
@@ -300,9 +293,9 @@ display:flex;
 align-items:center;
 gap:4px;
 z-index:7;
-background:rgba(10,11,15,.92);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
+background:rgba(12,13,18,.92);
+backdrop-filter:blur(6px);
+-webkit-backdrop-filter:blur(6px);
 border:0.5px solid rgba(255,255,255,.35);
 padding:2px 6px;
 border-radius:999px;
@@ -318,7 +311,7 @@ letter-spacing:0.2px;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:64px;
+max-width:62px;
 text-shadow:0 1px 3px rgba(0,0,0,.95)
 }
 
@@ -401,7 +394,7 @@ display:none
 
   <!-- OVERLAY VIDEO ANIMASI GIFT HD -->
   <div class="gift-overlay" id="giftOverlayContainer">
-    <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
+    <video id="giftVideo" playsinline webkit-playsinline muted preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
@@ -488,18 +481,51 @@ for(let i=1; i<=8; i++){
   `);
 }
 
-// AUTO-UPSCALE AVATAR TIKTOK AGAR RESOLUSI ASLI 720P MAKSIMAL (BEBAS BURIK)
-function optimizeAvatarUrl(url){
-  if(!url || typeof url !== 'string') return url;
-  try {
-    return url
-      .replace(/~c5_\d+x\d+\.(jpeg|jpg|png|webp)/gi, '~c5_720x720.$1')
-      .replace(/:\d+:\d+\.(jpeg|jpg|png|webp)/gi, ':720:720.$1')
-      .replace(/_\d+x\d+\.(jpeg|jpg|png|webp)/gi, '_720x720.$1')
-      .replace(/\d+x\d+/g, '720x720');
-  } catch(e) {
-    return url;
+/* SISTEM FOTO ANTI-ERROR & TAJAM */
+function loadSlotPhotoSafely(slotNum, rawUrl){
+  const img = $(`img-slot-${slotNum}`);
+  const bg = $(`bg-slot-${slotNum}`);
+  const slotBox = $(`slot-${slotNum}`);
+  const icon = $(`icon-${slotNum}`);
+  const req = $(`req-${slotNum}`);
+  const bgOverlay = $(`overlay-slot-${slotNum}`);
+
+  if(!img || !rawUrl) return;
+
+  icon.style.display = 'none';
+  req.style.display = 'none';
+
+  // Coba versi resolusi tinggi jika URL mendukung
+  let targetUrl = rawUrl;
+  if(typeof rawUrl === 'string' && rawUrl.includes('100x100')){
+    targetUrl = rawUrl.replace('100x100', '300x300');
   }
+
+  img.onload = () => {
+    slotBox.classList.add('has-photo');
+    img.style.display = 'block';
+    bg.style.display = 'block';
+    bgOverlay.style.display = 'block';
+  };
+
+  img.onerror = () => {
+    // Jika 300x300 gagal/404, fallback ke URL asli agar foto tidak hilang/error
+    if(img.src !== rawUrl){
+      img.src = rawUrl;
+      bg.src = rawUrl;
+    } else {
+      slotBox.classList.remove('has-photo');
+      slotBox.style.background = '#3a3d45';
+      img.style.display = 'none';
+      bg.style.display = 'none';
+      bgOverlay.style.display = 'none';
+      icon.style.display = 'block';
+      req.style.display = 'inline-block';
+    }
+  };
+
+  img.src = targetUrl;
+  bg.src = targetUrl;
 }
 
 /* KONTROL MIKROFON */
@@ -525,7 +551,7 @@ function updateMicStatus(slotNum,status){
   mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
-/* VIDEO HOST SEAMLESS LOOP */
+/* SEAMLESS VIDEO HOST */
 function setupSeamlessHostVideo(url){
   stopHostSeamlessLoop();
 
@@ -593,7 +619,7 @@ function stopHostSeamlessLoop(){
   }
 }
 
-/* KAMERA REALTIME HOST 1080P HIGH DEFINITION */
+/* KAMERA REALTIME HOST */
 async function startDisplayDirectCamera(){
   if(cameraStarting) return;
   stopHostSeamlessLoop();
@@ -617,7 +643,7 @@ async function startDisplayDirectCamera(){
   cameraStarting=true;
   try{
     if(!navigator.mediaDevices?.getUserMedia){
-      throw new Error('Kamera membutuhkan HTTPS atau localhost.');
+      throw new Error('Kamera butuh HTTPS');
     }
 
     camImg.style.display='none';
@@ -625,9 +651,8 @@ async function startDisplayDirectCamera(){
     displayCamStream=await navigator.mediaDevices.getUserMedia({
       audio:false,
       video:{
-        width:{ideal:1080,min:720},
-        height:{ideal:1920,min:1280},
-        frameRate:{ideal:60,min:30},
+        width:{ideal:1080},
+        height:{ideal:1920},
         facingMode:'user'
       }
     });
@@ -641,7 +666,7 @@ async function startDisplayDirectCamera(){
   }catch(err){
     console.error('Kamera error:',err);
     placeholder.style.display='block';
-    placeholder.textContent='Kamera gagal aktif';
+    placeholder.textContent='Kamera standby / nonaktif';
   }finally{
     cameraStarting=false;
   }
@@ -667,7 +692,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL ENGINE: CHROMA KEY ANTI-ALIASING HALUS & BADAN GIFT 100% SOLID ANTI-TEMBUS */
+/* WEBGL CHROMA KEY YCBCR ENGINE (STANDAR OBS STUDIO: HALUS, ANTI-GERIGI & TIDAK TEMBUS) */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -684,8 +709,7 @@ function initWebGL(canvas){
       antialias:true,
       depth:false,
       stencil:false,
-      preserveDrawingBuffer:false,
-      powerPreference:'high-performance'
+      preserveDrawingBuffer:false
     });
 
     if(!gl) return false;
@@ -702,54 +726,59 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
-    // SHADER BROADCAST: SMOOTHSTEP PINGGIRAN MULUS + 100% SOLID OPAQUE DI DALAM
+    // SHADER STANDAR YCBCR: PINGGIRAN MULUS SEMPURNA & BADAN 100% SOLID
     const fsSource=`
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
+    #else
+    precision mediump float;
+    #endif
+
     uniform sampler2D u_tex;
     varying vec2 v_tex;
 
     void main(){
-      vec4 col = texture2D(u_tex, v_tex);
+      vec4 c = texture2D(u_tex, v_tex);
 
-      // 1. Dominansi Warna Hijau (Chroma Green)
-      float maxRB = max(col.r, col.b);
-      float greenDiff = col.g - maxRB;
+      // Konversi RGB ke YCbCr (Ruang warna chroma key standar broadcast)
+      float cb = -0.168736 * c.r - 0.331264 * c.g + 0.500000 * c.b;
+      float cr =  0.500000 * c.r - 0.418688 * c.g - 0.081312 * c.b;
 
-      // 2. Pinggiran Anti-Aliasing Mulus (Smoothstep tidak patah-patah)
-      float greenAlpha = 1.0 - smoothstep(0.045, 0.17, greenDiff);
+      // Jarak ke warna Green Screen
+      vec2 greenRef = vec2(-0.318, -0.438);
+      float chromaDist = distance(vec2(cb, cr), greenRef);
 
-      // 3. Deteksi Background Hitam Gelap Pekat (Pure Void)
-      float luma = dot(col.rgb, vec3(0.299, 0.587, 0.114));
-      float maxRGB = max(col.r, max(col.g, col.b));
-      float minRGB = min(col.r, min(col.g, col.b));
-      float saturation = maxRGB - minRGB;
+      // 1. Transisi Halus (Smoothstep Anti-Aliased, garis tidak patah-patah)
+      float greenAlpha = smoothstep(0.32, 0.45, chromaDist);
 
-      float blackAlpha = smoothstep(0.012, 0.05, luma);
-      if (saturation > 0.035) {
-        blackAlpha = 1.0; // Jika ada rona warna, kunci agar tetap solid
+      // 2. Deteksi Latar Hitam Gelap Murni (Black Void)
+      float maxVal = max(c.r, max(c.g, c.b));
+      float minVal = min(c.r, min(c.g, c.b));
+      float blackAlpha = smoothstep(0.015, 0.055, maxVal);
+      if ((maxVal - minVal) > 0.03) {
+        blackAlpha = 1.0;
       }
 
-      // Gabungkan alpha pembersih background
       float finalAlpha = min(greenAlpha, blackAlpha);
 
-      // 4. Despill Hijau: buang bias hijau di pinggir animasi
-      if (greenDiff > 0.01 && col.g > maxRB) {
-        col.g = maxRB;
+      // 3. Despill Hijau: buang pantulan warna hijau di tepi animasi
+      float maxRB = max(c.r, c.b);
+      if (c.g > maxRB) {
+        float despill = 1.0 - smoothstep(0.44, 0.56, chromaDist);
+        c.g = mix(c.g, maxRB, despill);
       }
 
-      // 5. KUNCI SOLID: Di dalam badan objek gift, alpha WAJIB 100% OPAQUE
-      // Host di belakang DIJAMIN TIDAK TEMBUS ke badan gift
-      if (finalAlpha > 0.82) {
+      // 4. KUNCI SOLID: Bagian tubuh animasi 100% OPAQUE (Host TIDAK AKAN TEMBUS)
+      if (finalAlpha > 0.88) {
         finalAlpha = 1.0;
       }
 
-      if (finalAlpha <= 0.008) {
+      if (finalAlpha <= 0.01) {
         discard;
       }
 
-      // Premultiply Alpha untuk blending WebGL sempurna
-      col.rgb *= finalAlpha;
-      gl_FragColor = vec4(col.rgb, finalAlpha);
+      c.rgb *= finalAlpha;
+      gl_FragColor = vec4(c.rgb, finalAlpha);
     }`;
 
     function createShader(type,src){
@@ -757,6 +786,7 @@ function initWebGL(canvas){
       gl.shaderSource(shader,src);
       gl.compileShader(shader);
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
+        console.error('Shader compile error:',gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -799,6 +829,7 @@ function initWebGL(canvas){
     isWebGLSupported=true;
     return true;
   }catch(e){
+    console.error('WebGL init failed:',e);
     return false;
   }
 }
@@ -841,7 +872,7 @@ function formatPoin(val){
   return val.toLocaleString('id-ID');
 }
 
-/* UPDATE TAMPILAN SLOT KOMAL CRISP HD */
+/* UPDATE SLOT DENGAN VALIDASI LENGKAP */
 function updateSlotDisplay(data){
   const{slotNum,nameInput,initialPoin,profileImg,action}=data;
   const slotBox=$(`slot-${slotNum}`);
@@ -866,7 +897,7 @@ function updateSlotDisplay(data){
     bg.style.display='none';
     bg.removeAttribute('src');
     bgOverlay.style.display='none';
-    slotBox.style.background='#52555d';
+    slotBox.style.background='#3a3d45';
     icon.style.display='block';
     req.style.display='inline-block';
     namePill.style.display='none';
@@ -910,25 +941,7 @@ function updateSlotDisplay(data){
   }
 
   if(profileImg){
-    const hdImg = optimizeAvatarUrl(profileImg);
-    icon.style.display='none';
-    req.style.display='none';
-
-    img.onload=()=>{
-      if(img.src===hdImg){
-        slotBox.classList.add('has-photo');
-      }
-    };
-    img.onerror=()=>{
-      slotBox.classList.remove('has-photo');
-      slotBox.style.background='#52555d';
-    };
-
-    img.src=hdImg;
-    img.style.display='block';
-    bg.src=hdImg;
-    bg.style.display='block';
-    bgOverlay.style.display='block';
+    loadSlotPhotoSafely(slotNum, profileImg);
   }
 }
 
@@ -939,7 +952,7 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
 
   if(badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
 
-  topBadge.src=optimizeAvatarUrl(badgeSrc);
+  topBadge.src=badgeSrc;
   topBadge.style.display='block';
 
   badgeTimers[slotNum]=setTimeout(()=>{
@@ -1287,7 +1300,7 @@ function playGiftVideo(src,onFinished){
       }
 
       if(typeof onFinished==='function') onFinished();
-    }, 180);
+    }, 150);
   }
 
   activeFinishHandler=finish;
@@ -1320,7 +1333,6 @@ function playGiftVideo(src,onFinished){
   video.onloadedmetadata=async()=>{
     if(finished||generation!==giftVideoGeneration) return;
 
-    // Dimensi Native HD Tanpa Downscale
     const renderWidth = video.videoWidth || 1080;
     const renderHeight = video.videoHeight || 1920;
 
