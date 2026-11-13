@@ -20,7 +20,7 @@ html,body{
 width:100%;
 height:100%;
 overflow:hidden;
-background:#000;
+background:#000000;
 color:#fff
 }
 
@@ -30,7 +30,7 @@ justify-content:center;
 align-items:center
 }
 
-/* LAYAR UTAMA (TETAP PERSIS ASLI: MAX 440PX) */
+/* LAYAR UTAMA (HITAM PEKAT) */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -39,25 +39,56 @@ position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000;
+background:#000000;
 transform:translateZ(0);
-padding-bottom:45px
+padding:8px 6px 45px 6px
 }
 
-/* KAMERA REALTIME & VIDEO HOST (TETAP MUNCUL SEPANJANG LIVE) */
+/* KOTAK HOST DI ATAS (AGAK ABU) */
 .host-fullscreen{
-position:absolute;
-inset:0;
+position:relative;
 width:100%;
-height:100%;
-z-index:1;
-background:#000;
+aspect-ratio:16 / 10;
+flex-shrink:0;
+z-index:2;
+background:#22242a;
+border:1px solid rgba(255,255,255,0.07);
+border-radius:12px;
 overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
-align-items:center;
-transform:translateY(-45px)
+align-items:center
+}
+
+.host-badge{
+position:absolute;
+top:10px;
+left:10px;
+z-index:6;
+background:rgba(0,0,0,0.55);
+color:#a1a5ae;
+font-size:12px;
+font-weight:700;
+padding:4px 10px;
+border-radius:999px;
+pointer-events:none
+}
+
+.unmute-hint{
+position:absolute;
+bottom:10px;
+right:10px;
+z-index:7;
+background:rgba(0,0,0,0.75);
+border:1px solid rgba(255,255,255,0.25);
+color:#fff;
+font-size:11px;
+font-weight:700;
+padding:5px 10px;
+border-radius:999px;
+display:none;
+pointer-events:none
 }
 
 .host-video,#hostCameraImg{
@@ -78,11 +109,6 @@ z-index:4
 }
 
 .host-placeholder{
-color:rgba(255,255,255,0.25);
-font-size:.8rem;
-font-weight:600;
-text-align:center;
-z-index:1;
 display:none
 }
 
@@ -106,13 +132,13 @@ will-change:opacity
 opacity:1
 }
 
-/* BACKDROP PENAHAN BAWAH SOLID (MENGUNCI VIDEO HOST DI BAWAH AGAR TIDAK TEMBUS) */
+/* BACKDROP PENAHAN BAWAH SOLID */
 .gift-bottom-backdrop{
 position:absolute;
 left:0;
 right:0;
 bottom:0;
-height:68%; /* Melindungi seluruh area tengah hingga bawah tempat animasi gift bermain */
+height:68%;
 background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 12%, #000000 25%, #000000 100%);
 pointer-events:none;
 z-index:1
@@ -137,34 +163,30 @@ image-rendering:-webkit-optimize-contrast;
 z-index:2
 }
 
-/* 4 KOTAK KIRI & 4 KOTAK KANAN */
+/* 8 KOTAK BAWAH (2 BARIS x 4 KOLOM) */
 .live-layout{
 position:relative;
 z-index:10;
 width:100%;
-display:flex;
-justify-content:space-between;
-padding:14px 8px 8px 8px;
+padding:8px 0;
 pointer-events:none
 }
 
-.komal-col{
-width:23%;
-max-width:92px;
-display:flex;
-flex-direction:column;
-gap:7px;
-position:relative;
+.komal-grid{
+width:100%;
+display:grid;
+grid-template-columns:repeat(4, 1fr);
+gap:6px;
 pointer-events:auto
 }
 
-/* KOTAK SLOT KOMAL */
+/* KOTAK SLOT KOMAL (AGAK ABU) */
 .slot-box{
 width:100%;
-aspect-ratio:1/1;
-background:#6e7178;
-border:1px solid rgba(255,255,255,0.15);
-border-radius:15px;
+aspect-ratio:1 / 1.06;
+background:#22242a;
+border:1px solid rgba(255,255,255,0.07);
+border-radius:10px;
 position:relative;
 overflow:hidden;
 display:flex;
@@ -172,7 +194,7 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 contain:layout paint;
-box-shadow:0 4px 14px rgba(0,0,0,0.55);
+box-shadow:0 3px 10px rgba(0,0,0,0.45);
 transition:transform .2s ease
 }
 
@@ -203,30 +225,28 @@ z-index:2;
 pointer-events:none
 }
 
-/* IKON PLUS & TEKS PERMINTAAN */
+/* IKON PLUS & TEKS PERMINTAAN (ABU) */
 .slot-plus-svg{
-width:26px;
-height:26px;
-stroke:#ffffff;
-stroke-width:3;
+width:24px;
+height:24px;
+stroke:#9a9da6;
+stroke-width:2.6;
 stroke-linecap:round;
 z-index:3;
-margin-bottom:4px;
-filter:drop-shadow(0 1px 3px rgba(0,0,0,0.65))
+margin-bottom:6px
 }
 
 .slot-req{
-color:#ffffff;
-font-size:.68rem;
-font-weight:700;
-letter-spacing:0.3px;
-z-index:3;
-text-shadow:0 1px 3px rgba(0,0,0,0.85)
+color:#9a9da6;
+font-size:.70rem;
+font-weight:600;
+letter-spacing:0.2px;
+z-index:3
 }
 
 .slot-circle-img{
-width:56px;
-height:56px;
+width:52px;
+height:52px;
 border-radius:50%;
 object-fit:cover;
 display:none;
@@ -301,37 +321,37 @@ animation:popGiftBadge .3s ease-out
 /* NAMA SLOT */
 .slot-name-pill{
 position:absolute;
-bottom:6px;
-left:6px;
-max-width:calc(100% - 34px);
+bottom:5px;
+left:5px;
+max-width:calc(100% - 30px);
 display:flex;
 align-items:center;
-gap:5px;
+gap:4px;
 z-index:7;
 background:rgba(12,13,18,.88);
 backdrop-filter:blur(6px);
 border:0.5px solid rgba(255,255,255,.25);
-padding:2.5px 7px;
+padding:2px 6px;
 border-radius:999px;
-min-height:22px;
+min-height:20px;
 box-shadow:0 2px 6px rgba(0,0,0,.65)
 }
 
 .slot-name-text{
 color:#fff;
-font-size:10.5px;
+font-size:10px;
 font-weight:800;
 letter-spacing:0.2px;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:68px;
+max-width:58px;
 text-shadow:0 1px 2px rgba(0,0,0,.95)
 }
 
 .slot-plus-circle{
-width:14px;
-height:14px;
+width:13px;
+height:13px;
 border-radius:50%;
 background:rgba(255,255,255,.28);
 display:flex;
@@ -341,18 +361,18 @@ flex-shrink:0
 }
 
 .slot-pill-plus-svg{
-width:8px;
-height:8px
+width:7px;
+height:7px
 }
 
 /* MIKROFON */
 .mic-container{
 position:absolute;
-bottom:6px;
-right:6px;
+bottom:5px;
+right:5px;
 z-index:8;
-width:20px;
-height:20px;
+width:18px;
+height:18px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -363,8 +383,8 @@ box-shadow:none!important
 }
 
 .mic-icon-svg{
-width:18px;
-height:18px;
+width:16px;
+height:16px;
 display:block;
 filter:drop-shadow(0 1px 3px rgba(0,0,0,0.95))
 }
@@ -404,25 +424,26 @@ box-shadow:none!important
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KAMERA REALTIME / VIDEO HOST FULL LAYAR (TETAP MUNCUL DI ATAS) -->
-  <div class="host-fullscreen" id="hostBox" onclick="startDisplayDirectCamera()" title="Klik layar untuk aktifkan kamera host">
-    <div id="hostPlaceholder" class="host-placeholder">Kamera Host (Standby)</div>
-    <video id="hostVideo" class="host-video" autoplay playsinline muted preload="auto"></video>
-    <video id="hostVideo2" class="host-video" playsinline muted preload="auto"></video>
+  <!-- KOTAK HOST ATAS (AGAK ABU, NANTI UNTUK UPLOAD VIDEO VIA CONTROL + SUARA) -->
+  <div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
+    <div class="host-badge">Host</div>
+    <div id="unmuteHint" class="unmute-hint">🔊 Ketuk untuk nyalakan suara</div>
+    <div id="hostPlaceholder" class="host-placeholder"></div>
+    <video id="hostVideo" class="host-video" autoplay playsinline preload="auto"></video>
+    <video id="hostVideo2" class="host-video" playsinline preload="auto"></video>
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT DENGAN PENAHAN SOLID ANTI-TEMBUS -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <div class="gift-bottom-backdrop"></div>
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
-  <!-- 4 KOTAK KIRI & 4 KOTAK KANAN -->
+  <!-- 8 KOTAK BAWAH (2 BARIS x 4 KOLOM, AGAK ABU) -->
   <div class="live-layout">
-    <div class="komal-col" id="colLeft"></div>
-    <div class="komal-col" id="colRight"></div>
+    <div class="komal-grid" id="komalGrid"></div>
   </div>
 
 </div>
@@ -441,24 +462,20 @@ let hostMediaObjectURL = null;
 
 let activeHostVid = 1;
 let hostLoopActive = false;
+let hostAudioWanted = true;
 
 const giftComboGroups = new Map();
 const giftVideoQueue = [];
 let giftVideoQueueBusy = false;
 
-let detectedHostName = 'Host';
-let detectedHostAvatar = 'https://p16-va-default.akamaized.net/tos-maliva-avt-0068/7334710890691510278~c5_100x100.jpeg';
-
 const $ = id => document.getElementById(id);
-const colLeft = $('colLeft');
-const colRight = $('colRight');
+const komalGrid = $('komalGrid');
 
-// MEMBUAT 4 SLOT KIRI & 4 SLOT KANAN
+// MEMBUAT 8 SLOT (BARIS 1: 1-4, BARIS 2: 5-8)
 for(let i=1; i<=8; i++){
   slotPoints[i] = 0;
-  const parentCol = i <= 4 ? colLeft : colRight;
 
-  parentCol.insertAdjacentHTML('beforeend',`
+  komalGrid.insertAdjacentHTML('beforeend',`
   <div class="slot-box" id="slot-${i}">
     <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
     <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
@@ -505,6 +522,26 @@ for(let i=1; i<=8; i++){
   `);
 }
 
+/* KLIK KOTAK HOST: NYALAKAN SUARA VIDEO HOST JIKA DIBLOKIR AUTOPLAY, ATAU AKTIFKAN KAMERA JIKA KOSONG */
+function handleHostBoxClick(){
+  if(hostLoopActive){
+    hostAudioWanted = true;
+    const v1 = $('hostVideo');
+    const v2 = $('hostVideo2');
+    const activeVid = activeHostVid === 1 ? v1 : v2;
+    const inactiveVid = activeHostVid === 1 ? v2 : v1;
+
+    activeVid.muted = false;
+    activeVid.volume = 1;
+    inactiveVid.muted = true;
+    inactiveVid.volume = 1;
+    if(activeVid.paused) activeVid.play().catch(()=>{});
+    $('unmuteHint').style.display = 'none';
+    return;
+  }
+  startDisplayDirectCamera();
+}
+
 /* KONTROL MIKROFON */
 function getMuteStatus(data){
   const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
@@ -528,7 +565,7 @@ function updateMicStatus(slotNum,status){
   mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
-/* SISTEM VIDEO HOST SEAMLESS LOOP */
+/* SISTEM VIDEO HOST SEAMLESS LOOP + SUARA AKTIF */
 function setupSeamlessHostVideo(url){
   stopHostSeamlessLoop();
 
@@ -540,6 +577,12 @@ function setupSeamlessHostVideo(url){
   v1.src = url;
   v2.src = url;
 
+  v1.muted = false;
+  v1.volume = 1;
+  v2.muted = true;
+  v2.volume = 1;
+  hostAudioWanted = true;
+
   v1.style.display = 'block';
   v2.style.display = 'block';
   v1.style.opacity = '1';
@@ -547,41 +590,78 @@ function setupSeamlessHostVideo(url){
   v1.style.zIndex = '3';
   v2.style.zIndex = '2';
 
-  v1.play().catch(()=>{});
   activeHostVid = 1;
   hostLoopActive = true;
 
-  const handleSeamlessLoop = () => {
+  v1.play().then(()=>{
+    $('unmuteHint').style.display = 'none';
+  }).catch(()=>{
+    v1.muted = true;
+    hostAudioWanted = false;
+    $('unmuteHint').style.display = 'block';
+    v1.play().catch(()=>{});
+  });
+
+  const switchToNext = () => {
     if (!hostLoopActive) return;
     const current = activeHostVid === 1 ? v1 : v2;
     const next = activeHostVid === 1 ? v2 : v1;
 
+    next.currentTime = 0;
+    next.muted = !hostAudioWanted;
+    next.volume = 1;
+
+    next.play().then(()=>{
+      current.muted = true;
+      next.style.zIndex = '3';
+      current.style.zIndex = '2';
+      next.style.opacity = '1';
+      current.style.opacity = '0';
+      activeHostVid = activeHostVid === 1 ? 2 : 1;
+
+      setTimeout(()=>{
+        if(hostLoopActive && current !== (activeHostVid === 1 ? v1 : v2)){
+          current.pause();
+        }
+      }, 240);
+    }).catch(()=>{});
+  };
+
+  const handleSeamlessLoop = (ev) => {
+    if (!hostLoopActive) return;
+    const current = activeHostVid === 1 ? v1 : v2;
+    if (ev.target !== current) return;
+
+    const next = activeHostVid === 1 ? v2 : v1;
     if (current.duration && current.currentTime > 0) {
       const timeLeft = current.duration - current.currentTime;
       if (timeLeft <= 0.22 && next.paused) {
-        next.currentTime = 0;
-        next.play().then(()=>{
-          next.style.zIndex = '3';
-          current.style.zIndex = '2';
-          next.style.opacity = '1';
-          current.style.opacity = '0';
-          activeHostVid = activeHostVid === 1 ? 2 : 1;
-        }).catch(()=>{});
+        switchToNext();
       }
     }
   };
 
+  const handleEndedFallback = (ev) => {
+    if (!hostLoopActive) return;
+    const current = activeHostVid === 1 ? v1 : v2;
+    if (ev.target === current) switchToNext();
+  };
+
   v1.ontimeupdate = handleSeamlessLoop;
   v2.ontimeupdate = handleSeamlessLoop;
+  v1.onended = handleEndedFallback;
+  v2.onended = handleEndedFallback;
 }
 
 function stopHostSeamlessLoop(){
   hostLoopActive = false;
+  $('unmuteHint').style.display = 'none';
   const v1 = $('hostVideo');
   const v2 = $('hostVideo2');
 
   if(v1){
     v1.ontimeupdate = null;
+    v1.onended = null;
     v1.pause();
     v1.removeAttribute('src');
     v1.style.opacity = '1';
@@ -589,6 +669,7 @@ function stopHostSeamlessLoop(){
   }
   if(v2){
     v2.ontimeupdate = null;
+    v2.onended = null;
     v2.pause();
     v2.removeAttribute('src');
     v2.style.opacity = '0';
@@ -607,6 +688,7 @@ async function startDisplayDirectCamera(){
   const placeholder=$('hostPlaceholder');
   const camImg=$('hostCameraImg');
 
+  hVid.muted = true;
   hVid2.style.display='none';
 
   if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
@@ -645,8 +727,6 @@ async function startDisplayDirectCamera(){
     await hVid.play();
   }catch(err){
     console.error('Kamera error:',err);
-    placeholder.style.display='block';
-    placeholder.textContent='Kamera gagal aktif';
   }finally{
     cameraStarting=false;
   }
@@ -706,7 +786,6 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
-    // SHADER: HANYA HAPUS BACKGROUND VOID MURNI, ELEMEN GIFT 100% SOLID OPAQUE
     const fsSource=`
     precision mediump float;
     uniform sampler2D u_tex;
@@ -715,21 +794,18 @@ function initWebGL(canvas){
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
-      // 1. Deteksi Background Hijau (Chroma Key)
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
       bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
 
-      // 2. Deteksi Background Hitam Video (Hanya void gelap pekat tanpa warna)
       float maxC = max(c.r, max(c.g, c.b));
       float minC = min(c.r, min(c.g, c.b));
       float chromaDiff = maxC - minC;
       bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
       if (isGreen || isBlack) {
-        c.a = 0.0; // Latar belakang transparan
+        c.a = 0.0;
       } else {
-        // Semua bagian tubuh gift (mobil, panggung, kilau, naga) WAJIB 100% SOLID OPAQUE
         c.a = 1.0;
         if (gDiff > 0.05 && c.g > maxRB) {
           c.g = maxRB;
@@ -853,7 +929,7 @@ function updateSlotDisplay(data){
     bg.style.display='none';
     bg.removeAttribute('src');
     bgOverlay.style.display='none';
-    slotBox.style.background='#6e7178';
+    slotBox.style.background='#22242a';
     icon.style.display='block';
     req.style.display='inline-block';
     namePill.style.display='none';
@@ -907,7 +983,7 @@ function updateSlotDisplay(data){
     };
     img.onerror=()=>{
       slotBox.classList.remove('has-photo');
-      slotBox.style.background='#6e7178';
+      slotBox.style.background='#22242a';
     };
 
     img.src=profileImg;
@@ -1057,6 +1133,9 @@ function handleIncomingMessage(data){
     if(data.videoBlob){
       hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
       setupSeamlessHostVideo(hostMediaObjectURL);
+      $('hostPlaceholder').style.display='none';
+    }else if(data.src||data.videoUrl){
+      setupSeamlessHostVideo(data.src||data.videoUrl);
       $('hostPlaceholder').style.display='none';
     }
   }
