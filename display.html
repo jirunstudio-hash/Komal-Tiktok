@@ -41,7 +41,7 @@ display:flex;
 flex-direction:column;
 background:#000000;
 transform:translateZ(0);
-padding:8px 6px 45px 6px
+padding:8px 6px 8px 6px
 }
 
 /* KOTAK HOST DI ATAS (TERPISAH AGAR TIDAK NABRAK VIDEO ANIMASI) */
@@ -122,10 +122,10 @@ overflow:hidden;
 z-index:10
 }
 
-/* OVERLAY ANIMASI GIFT HD (DI DEPAN KOTAK 1-8, POSISI AGAK KE BAWAH, TIDAK NABRAK HOST) */
+/* OVERLAY ANIMASI GIFT HD (DI DEPAN KOTAK 1-8, GARIS ATAS TURUN, FULL KE BAWAH TANPA TERPOTONG) */
 .gift-overlay{
 position:absolute;
-top:28px;
+top:45px;
 left:0;
 right:0;
 bottom:0;
@@ -156,8 +156,8 @@ position:absolute;
 inset:0;
 width:100%;
 height:100%;
-object-fit:cover;
-object-position:center;
+object-fit:contain;
+object-position:center bottom;
 display:block;
 pointer-events:none;
 transform:translateZ(0);
@@ -444,7 +444,7 @@ box-shadow:none!important
       <div class="komal-grid" id="komalGrid"></div>
     </div>
 
-    <!-- OVERLAY VIDEO ANIMASI GIFT (MUNCUL DI DEPAN 8 KOTAK, POSISI AGAK KE BAWAH, TIDAK NABRAK HOST) -->
+    <!-- OVERLAY VIDEO ANIMASI GIFT (MUNCUL DI DEPAN 8 KOTAK, FULL BAWAH TANPA TERPOTONG, TIDAK NABRAK HOST) -->
     <div class="gift-overlay" id="giftOverlayContainer">
       <div class="gift-bottom-backdrop"></div>
       <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
@@ -1404,14 +1404,9 @@ function playGiftVideo(src,onFinished){
     canvas.width=renderWidth;
     canvas.height=renderHeight;
 
-    /* SESUAIKAN FIT VIDEO AGAR TIDAK TERPOTONG SAMPING BILA LANDSCAPE & FULL LEBAR BILA PORTRAIT */
-    if(originalWidth > originalHeight){
-      canvas.style.objectFit = 'contain';
-      canvas.style.objectPosition = 'center';
-    }else{
-      canvas.style.objectFit = 'cover';
-      canvas.style.objectPosition = 'center';
-    }
+    /* TAMPILKAN FULL VIDEO TANPA TERPOTONG DI BAWAH MAUPUN ATAS */
+    canvas.style.objectFit = 'contain';
+    canvas.style.objectPosition = 'center bottom';
 
     if(video.duration&&Number.isFinite(video.duration)){
       clearTimeout(safetyTimer);
