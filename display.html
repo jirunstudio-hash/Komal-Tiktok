@@ -145,7 +145,7 @@ position:absolute;
 inset:0;
 width:100%;
 height:100%;
-object-fit:contain;
+object-fit:cover;
 object-position:center bottom;
 display:block;
 pointer-events:none;
@@ -426,7 +426,7 @@ box-shadow:none!important
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT (FULL ASLI, LATAR TRANSPARAN AGAR VIDEO HOST TETAP KELIHATAN) -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT (FULL SAMPAI PINGGIR, LATAR TRANSPARAN AGAR VIDEO HOST TETAP KELIHATAN) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <div class="gift-bottom-backdrop"></div>
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
@@ -1402,11 +1402,20 @@ function playGiftVideo(src,onFinished){
     canvas.width=renderWidth;
     canvas.height=renderHeight;
 
-    /* TAMPIL FULL ASLI KAYA VIDEO TANPA TERPOTONG */
-    canvas.style.objectFit = 'contain';
+    const overlayWidth = overlay.clientWidth || $('displayContainer').clientWidth || 440;
+    const overlayHeight = overlay.clientHeight || $('displayContainer').clientHeight || 800;
+    const overlayRatio = overlayWidth / Math.max(1, overlayHeight);
+    const videoRatio = originalWidth / Math.max(1, originalHeight);
+
+    /* SELALU FULL KE PINGGIR KIRI-KANAN SEPERTI SEBELUMNYA TANPA MENGORBANKAN KEUTUHAN VIDEO */
     if(originalWidth > originalHeight){
+      canvas.style.objectFit = 'contain';
       canvas.style.objectPosition = 'center 62%';
+    }else if(videoRatio < overlayRatio){
+      canvas.style.objectFit = 'cover';
+      canvas.style.objectPosition = 'center bottom';
     }else{
+      canvas.style.objectFit = 'contain';
       canvas.style.objectPosition = 'center bottom';
     }
 
