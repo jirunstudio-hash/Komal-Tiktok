@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized HD</title>
+<title>Display Studio - HD Clear</title>
 
 <style>
 *{
@@ -30,7 +31,6 @@ justify-content:center;
 align-items:center
 }
 
-/* LAYAR UTAMA - TANPA GARIS SAMPING */
 .phone-screen{
 width:100vw;
 height:100vh;
@@ -47,7 +47,6 @@ outline:none;
 box-shadow:none
 }
 
-/* KOTAK HOST - POSISI DAN UKURAN ASLI */
 .host-fullscreen{
 position:relative;
 width:100%;
@@ -69,7 +68,7 @@ position:absolute;
 top:10px;
 left:10px;
 z-index:6;
-background:rgba(0,0,0,.55);
+background:rgba(0,0,0,.72);
 color:#fff;
 font-size:12px;
 font-weight:800;
@@ -83,18 +82,17 @@ position:absolute;
 bottom:10px;
 right:10px;
 z-index:7;
-background:rgba(0,0,0,.75);
-border:1px solid rgba(255,255,255,.25);
+background:rgba(0,0,0,.88);
+border:1px solid rgba(255,255,255,.3);
 color:#fff;
 font-size:11px;
-font-weight:700;
+font-weight:800;
 padding:5px 10px;
 border-radius:999px;
 display:none;
 pointer-events:none
 }
 
-/* VIDEO HOST JELAS */
 .host-video,#hostCameraImg{
 position:absolute;
 inset:0;
@@ -114,7 +112,6 @@ transition:opacity .22s ease-in-out
 #hostCameraImg{z-index:4}
 .host-placeholder{display:none}
 
-/* OVERLAY ANIMASI GIFT */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -133,7 +130,6 @@ will-change:opacity
 .gift-bottom-backdrop{display:none}
 #giftVideo{display:none}
 
-/* VIDEO GIFT - POSISI ASLI, TANPA BLUR */
 #giftCanvas{
 position:absolute;
 inset:0;
@@ -149,7 +145,6 @@ image-rendering:auto;
 z-index:2
 }
 
-/* 8 KOTAK BAWAH - POSISI ASLI */
 .live-layout{
 position:relative;
 z-index:10;
@@ -166,12 +161,11 @@ gap:6px;
 pointer-events:auto
 }
 
-/* KOTAK SLOT */
 .slot-box{
 width:100%;
 aspect-ratio:1 / 1.06;
 background:#22242a;
-border:1px solid rgba(255,255,255,.07);
+border:1px solid rgba(255,255,255,.12);
 border-radius:10px;
 position:relative;
 overflow:hidden;
@@ -180,17 +174,17 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 contain:layout paint;
-box-shadow:0 3px 10px rgba(0,0,0,.45);
+box-shadow:0 3px 10px rgba(0,0,0,.55);
 transition:transform .2s ease
 }
 
 .slot-box.has-photo{
 background:#16171d;
-border:1px solid rgba(255,255,255,.22);
+border:1px solid rgba(255,255,255,.25);
 animation:none!important
 }
 
-/* LATAR FOTO TANPA EFEK BLUR */
+/* LATAR FOTO TANPA BLUR */
 .slot-bg-blur{
 position:absolute!important;
 inset:0!important;
@@ -212,7 +206,7 @@ z-index:2;
 pointer-events:none
 }
 
-/* IKON PLUS DAN PERMINTAAN */
+/* PERMINTAAN */
 .slot-plus-svg{
 width:24px;
 height:24px;
@@ -230,9 +224,6 @@ font-size:.70rem;
 font-weight:800;
 letter-spacing:.2px;
 z-index:3;
-background:transparent;
-border:none;
-padding:0;
 text-shadow:0 1px 3px #000
 }
 
@@ -242,6 +233,7 @@ width:52px;
 height:52px;
 border-radius:50%;
 object-fit:cover;
+object-position:center;
 image-rendering:auto;
 display:none;
 position:absolute;
@@ -261,12 +253,14 @@ left:5px;
 display:flex;
 align-items:center;
 gap:3.5px;
-background:rgba(12,13,18,.92);
-border:.5px solid rgba(255,255,255,.18);
+background:rgba(8,10,16,.96);
+backdrop-filter:none;
+-webkit-backdrop-filter:none;
+border:1px solid rgba(255,255,255,.25);
 padding:2px 6px 2px 3px;
 border-radius:999px;
 z-index:6;
-box-shadow:0 2px 5px rgba(0,0,0,.5)
+box-shadow:0 2px 5px rgba(0,0,0,.65)
 }
 
 .cyan-diamond-circle{
@@ -287,10 +281,11 @@ fill:#fff
 }
 
 .coin-count{
-font-size:.6rem;
+font-size:.68rem;
 color:#fff;
-font-weight:800;
-text-shadow:0 1px 2px rgba(0,0,0,.8)
+font-weight:900;
+text-shadow:0 1px 2px #000;
+font-variant-numeric:tabular-nums
 }
 
 @keyframes popGiftBadge{
@@ -322,24 +317,26 @@ display:flex;
 align-items:center;
 gap:4px;
 z-index:7;
-background:rgba(12,13,18,.94);
-border:.5px solid rgba(255,255,255,.25);
+background:rgba(5,7,12,.97);
+backdrop-filter:none;
+-webkit-backdrop-filter:none;
+border:1px solid rgba(255,255,255,.3);
 padding:2px 6px;
 border-radius:999px;
 min-height:20px;
-box-shadow:0 2px 6px rgba(0,0,0,.65)
+box-shadow:0 2px 6px rgba(0,0,0,.75)
 }
 
 .slot-name-text{
 color:#fff;
 font-size:10px;
-font-weight:800;
+font-weight:900;
 letter-spacing:.2px;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
 max-width:58px;
-text-shadow:0 1px 2px rgba(0,0,0,.95)
+text-shadow:0 1px 2px #000
 }
 
 .slot-plus-circle{
@@ -383,7 +380,6 @@ filter:drop-shadow(0 1px 3px rgba(0,0,0,.95))
 }
 
 .mic-icon-svg .mic-body{fill:#fff}
-
 .mic-icon-svg .mic-slash-bg{
 stroke:#000;
 stroke-width:4.6;
@@ -459,7 +455,6 @@ let giftVideoQueueBusy = false;
 const $ = id => document.getElementById(id);
 const komalGrid = $('komalGrid');
 
-/* MEMBUAT 8 SLOT */
 for(let i=1; i<=8; i++){
   slotPoints[i] = 0;
 
@@ -510,7 +505,6 @@ for(let i=1; i<=8; i++){
   `);
 }
 
-/* KLIK HOST */
 function handleHostBoxClick(){
   if(hostLoopActive){
     hostAudioWanted = true;
@@ -523,7 +517,6 @@ function handleHostBoxClick(){
     activeVid.volume = 1;
     inactiveVid.muted = true;
     inactiveVid.volume = 1;
-
     if(activeVid.paused) activeVid.play().catch(()=>{});
     $('unmuteHint').style.display = 'none';
     return;
@@ -531,10 +524,8 @@ function handleHostBoxClick(){
   startDisplayDirectCamera();
 }
 
-/* STATUS MIKROFON */
 function getMuteStatus(data){
   const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
-
   for(const key of keys){
     if(Object.prototype.hasOwnProperty.call(data,key)){
       const value=data[key];
@@ -549,13 +540,11 @@ function getMuteStatus(data){
 function updateMicStatus(slotNum,status){
   const mic=$(`mic-slot-${slotNum}`);
   if(!mic||status===null||status===undefined) return;
-
   slotMuteStates[slotNum]=Boolean(status);
   mic.classList.toggle('is-unmuted', !Boolean(status));
   mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
-/* VIDEO HOST SEAMLESS LOOP */
 function setupSeamlessHostVideo(url){
   stopHostSeamlessLoop();
 
@@ -594,7 +583,6 @@ function setupSeamlessHostVideo(url){
 
   const switchToNext = () => {
     if (!hostLoopActive) return;
-
     const current = activeHostVid === 1 ? v1 : v2;
     const next = activeHostVid === 1 ? v2 : v1;
 
@@ -614,30 +602,26 @@ function setupSeamlessHostVideo(url){
         if(hostLoopActive && current !== (activeHostVid === 1 ? v1 : v2)){
           current.pause();
         }
-      },240);
+      }, 240);
     }).catch(()=>{});
   };
 
   const handleSeamlessLoop = (ev) => {
     if (!hostLoopActive) return;
-
     const current = activeHostVid === 1 ? v1 : v2;
     if (ev.target !== current) return;
 
     const next = activeHostVid === 1 ? v2 : v1;
-
-    if(current.duration && current.currentTime > 0){
+    if (current.duration && current.currentTime > 0) {
       const timeLeft = current.duration - current.currentTime;
-      if(timeLeft <= .22 && next.paused){
-        switchToNext();
-      }
+      if (timeLeft <= 0.22 && next.paused) switchToNext();
     }
   };
 
   const handleEndedFallback = (ev) => {
-    if(!hostLoopActive) return;
+    if (!hostLoopActive) return;
     const current = activeHostVid === 1 ? v1 : v2;
-    if(ev.target === current) switchToNext();
+    if (ev.target === current) switchToNext();
   };
 
   v1.ontimeupdate = handleSeamlessLoop;
@@ -649,7 +633,6 @@ function setupSeamlessHostVideo(url){
 function stopHostSeamlessLoop(){
   hostLoopActive = false;
   $('unmuteHint').style.display = 'none';
-
   const v1 = $('hostVideo');
   const v2 = $('hostVideo2');
 
@@ -661,7 +644,6 @@ function stopHostSeamlessLoop(){
     v1.style.opacity = '1';
     v1.style.display = 'none';
   }
-
   if(v2){
     v2.ontimeupdate = null;
     v2.onended = null;
@@ -672,10 +654,8 @@ function stopHostSeamlessLoop(){
   }
 }
 
-/* KAMERA HOST */
 async function startDisplayDirectCamera(){
   if(cameraStarting) return;
-
   stopHostSeamlessLoop();
 
   const hVid=$('hostVideo');
@@ -707,9 +687,9 @@ async function startDisplayDirectCamera(){
     displayCamStream=await navigator.mediaDevices.getUserMedia({
       audio:false,
       video:{
-        width:{ideal:1080},
-        height:{ideal:1920},
-        frameRate:{ideal:30,max:30},
+        width:{ideal:1920},
+        height:{ideal:1080},
+        frameRate:{ideal:30,max:60},
         facingMode:'user'
       }
     });
@@ -718,7 +698,6 @@ async function startDisplayDirectCamera(){
     hVid.style.display='block';
     hVid.style.opacity='1';
     placeholder.style.display='none';
-
     await hVid.play();
   }catch(err){
     console.error('Kamera error:',err);
@@ -732,7 +711,6 @@ function stopDisplayDirectCamera(){
     displayCamStream.getTracks().forEach(track=>track.stop());
     displayCamStream=null;
   }
-
   const hVid=$('hostVideo');
   hVid.pause();
   hVid.srcObject=null;
@@ -747,7 +725,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL VIDEO GIFT */
+/* WEBGL GIFT */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -769,7 +747,6 @@ function initWebGL(canvas){
     });
 
     if(!gl) return false;
-
     gl.disable(gl.BLEND);
 
     const vsSource=`
@@ -787,25 +764,21 @@ function initWebGL(canvas){
     varying vec2 v_tex;
 
     void main(){
-      vec4 c=texture2D(u_tex,v_tex);
-      float maxRB=max(c.r,c.b);
-      float gDiff=c.g-maxRB;
+      vec4 c = texture2D(u_tex, v_tex);
+      float maxRB = max(c.r, c.b);
+      float gDiff = c.g - maxRB;
+      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
+      float maxC = max(c.r, max(c.g, c.b));
+      float minC = min(c.r, min(c.g, c.b));
+      float chromaDiff = maxC - minC;
+      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
-      bool isGreen=(gDiff>.15&&c.g>.32&&c.g>c.r*1.2&&c.g>c.b*1.2);
-
-      float maxC=max(c.r,max(c.g,c.b));
-      float minC=min(c.r,min(c.g,c.b));
-      float chromaDiff=maxC-minC;
-      bool isBlack=(maxC<.045&&chromaDiff<.02);
-
-      if(isGreen||isBlack){
-        gl_FragColor=vec4(0.0,0.0,0.0,0.0);
-      }else{
-        c.a=1.0;
-        if(gDiff>.05&&c.g>maxRB){
-          c.g=maxRB;
-        }
-        gl_FragColor=c;
+      if (isGreen || isBlack) {
+        gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+      } else {
+        c.a = 1.0;
+        if (gDiff > 0.05 && c.g > maxRB) c.g = maxRB;
+        gl_FragColor = c;
       }
     }`;
 
@@ -813,7 +786,6 @@ function initWebGL(canvas){
       const shader=gl.createShader(type);
       gl.shaderSource(shader,src);
       gl.compileShader(shader);
-
       if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
         gl.deleteShader(shader);
         return null;
@@ -829,7 +801,6 @@ function initWebGL(canvas){
     gl.attachShader(glProgram,vs);
     gl.attachShader(glProgram,fs);
     gl.linkProgram(glProgram);
-
     gl.deleteShader(vs);
     gl.deleteShader(fs);
 
@@ -837,26 +808,21 @@ function initWebGL(canvas){
 
     const posBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
-      -1,-1,1,-1,-1,1,-1,1,1,-1,1,1
-    ]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
 
     const texBuffer=gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
-      0,1,1,1,0,0,0,0,1,1,1,0
-    ]),gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
 
     glBuffers.pos=posBuffer;
     glBuffers.tex=texBuffer;
-
     glTexture=gl.createTexture();
+
     gl.bindTexture(gl.TEXTURE_2D,glTexture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-
     gl.useProgram(glProgram);
     gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
@@ -874,14 +840,12 @@ let dbPromise=null;
 
 function openDB(){
   if(dbPromise) return dbPromise;
-
   dbPromise=new Promise(resolve=>{
     const req=indexedDB.open(DB_NAME,1);
     req.onsuccess=()=>resolve(req.result);
     req.onerror=()=>{dbPromise=null;resolve(null)};
     req.onblocked=()=>{dbPromise=null;resolve(null)};
   });
-
   return dbPromise;
 }
 
@@ -889,7 +853,6 @@ async function getSavedVideo(id){
   try{
     const db=await openDB();
     if(!db) return null;
-
     return await new Promise(resolve=>{
       const tx=db.transaction(STORE_NAME,"readonly");
       const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
@@ -908,7 +871,6 @@ function formatPoin(val){
   return val.toLocaleString('id-ID');
 }
 
-/* UPDATE SLOT */
 function updateSlotDisplay(data){
   const{slotNum,nameInput,initialPoin,profileImg,action}=data;
   const slotBox=$(`slot-${slotNum}`);
@@ -946,19 +908,15 @@ function updateSlotDisplay(data){
       topBadge.style.display='none';
       topBadge.removeAttribute('src');
     }
-
     if(badgeTimers[slotNum]){
       clearTimeout(badgeTimers[slotNum]);
       delete badgeTimers[slotNum];
     }
-
     slotPoints[slotNum]=0;
     return;
   }
 
-  if(initialPoin!==undefined){
-    slotPoints[slotNum]=initialPoin;
-  }
+  if(initialPoin!==undefined) slotPoints[slotNum]=initialPoin;
 
   countElem.innerText=formatPoin(slotPoints[slotNum]);
   coinBadge.style.display='flex';
@@ -969,14 +927,9 @@ function updateSlotDisplay(data){
     mic.style.display='flex';
 
     const muteStatus=getMuteStatus(data);
-
-    if(muteStatus!==null){
-      updateMicStatus(slotNum,muteStatus);
-    }else if(slotMuteStates[slotNum]!==undefined){
-      updateMicStatus(slotNum,slotMuteStates[slotNum]);
-    }else{
-      updateMicStatus(slotNum,true);
-    }
+    if(muteStatus!==null) updateMicStatus(slotNum,muteStatus);
+    else if(slotMuteStates[slotNum]!==undefined) updateMicStatus(slotNum,slotMuteStates[slotNum]);
+    else updateMicStatus(slotNum,true);
   }
 
   if(profileImg){
@@ -984,11 +937,8 @@ function updateSlotDisplay(data){
     req.style.display='none';
 
     img.onload=()=>{
-      if(img.src===profileImg){
-        slotBox.classList.add('has-photo');
-      }
+      if(img.src===profileImg) slotBox.classList.add('has-photo');
     };
-
     img.onerror=()=>{
       slotBox.classList.remove('has-photo');
       slotBox.style.background='#22242a';
@@ -996,22 +946,18 @@ function updateSlotDisplay(data){
 
     img.src=profileImg;
     img.style.display='block';
-
     bg.src=profileImg;
     bg.style.display='block';
     bgOverlay.style.display='block';
   }
 }
 
-/* BADGE GIFT */
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
   if(!badgeSrc||!slotNum) return;
-
   const topBadge=$(`topbadge-slot-${slotNum}`);
   if(!topBadge) return;
 
   if(badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
-
   topBadge.src=badgeSrc;
   topBadge.style.display='block';
 
@@ -1025,37 +971,26 @@ function showGiftBadgeTemporarily(slotNum,badgeSrc){
 /* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src,repeatCount=1){
   if(!src) return;
-
   const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
-
-  giftVideoQueue.push({
-    src,
-    remaining:count,
-    isBlob:src.startsWith('blob:')
-  });
-
+  giftVideoQueue.push({src,remaining:count,isBlob:src.startsWith('blob:')});
   playNextGiftVideo();
 }
 
 function playNextGiftVideo(){
   if(giftVideoQueueBusy||giftVideoQueue.length===0) return;
-
   giftVideoQueueBusy=true;
   const item=giftVideoQueue[0];
 
   playGiftVideo(item.src,()=>{
     item.remaining--;
-
     if(item.remaining>0){
       giftVideoQueueBusy=false;
       setTimeout(playNextGiftVideo,50);
     }else{
       giftVideoQueue.shift();
-
       if(item.isBlob){
         try{URL.revokeObjectURL(item.src)}catch(e){}
       }
-
       giftVideoQueueBusy=false;
       setTimeout(playNextGiftVideo,50);
     }
@@ -1065,17 +1000,15 @@ function playNextGiftVideo(){
 function getGiftComboKey(data){
   const sender=String(data.senderName||data.username||'user').toLowerCase();
   const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
-  return `${sender}::${gift}`;
+  return`${sender}::${gift}`;
 }
 
 async function resolveGiftVideo(data){
   if(data.videoBlob) return URL.createObjectURL(data.videoBlob);
-
   if(data.giftId){
     const blob=await getSavedVideo(data.giftId);
     if(blob) return URL.createObjectURL(blob);
   }
-
   if(data.src) return data.src;
   return null;
 }
@@ -1087,14 +1020,7 @@ function receiveGiftForCombo(data){
   let group=giftComboGroups.get(key);
 
   if(!group){
-    group={
-      data:{...data},
-      count:0,
-      src:null,
-      timer:null,
-      revision:0,
-      videoPromise:Promise.resolve()
-    };
+    group={data:{...data},count:0,src:null,timer:null,revision:0,videoPromise:Promise.resolve()};
     giftComboGroups.set(key,group);
   }
 
@@ -1111,7 +1037,6 @@ function receiveGiftForCombo(data){
 
   group.videoPromise=group.videoPromise.then(async()=>{
     const resolvedSrc=await resolveGiftVideo(data);
-
     if(resolvedSrc){
       if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
         try{URL.revokeObjectURL(group.src)}catch(e){}
@@ -1123,25 +1048,15 @@ function receiveGiftForCombo(data){
   const finishCombo=async()=>{
     const finishingRevision=group.revision;
     await group.videoPromise;
-
     if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision) return;
-
     giftComboGroups.delete(key);
-
-    if(group.src){
-      queueGiftVideo(group.src,Math.max(1,group.count));
-    }
+    if(group.src) queueGiftVideo(group.src,Math.max(1,group.count));
   };
 
-  const comboEnded=data.repeatEnd===true||
-    data.repeat_end===true||
-    data.comboEnd===true||
-    data.combo_end===true;
-
+  const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
   group.timer=setTimeout(finishCombo,comboEnded?0:900);
 }
 
-/* BROADCAST CHANNEL */
 function handleIncomingMessage(data){
   if(!data) return;
 
@@ -1149,7 +1064,6 @@ function handleIncomingMessage(data){
     if(data.action==='start') startDisplayDirectCamera();
     else if(data.action==='stop') stopDisplayDirectCamera();
   }
-
   else if(data.type==='SET_HOST_VIDEO'){
     stopDisplayDirectCamera();
     const camImg=$('hostCameraImg');
@@ -1165,7 +1079,6 @@ function handleIncomingMessage(data){
       $('hostPlaceholder').style.display='none';
     }
   }
-
   else if(data.type==='RESET_HOST_MEDIA'){
     stopDisplayDirectCamera();
     stopHostSeamlessLoop();
@@ -1174,21 +1087,16 @@ function handleIncomingMessage(data){
     camImg.style.display='none';
     $('hostPlaceholder').style.display='none';
   }
-
   else if(data.type==='UPDATE_SLOT'){
     updateSlotDisplay(data);
   }
-
   else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
     const slotNum=Number(data.slotNum);
-
     if(slotNum>=1&&slotNum<=8){
       const status=getMuteStatus(data);
-
       if(status!==null){
         slotMuteStates[slotNum]=status;
         const mic=$(`mic-slot-${slotNum}`);
-
         if(mic){
           mic.style.display='flex';
           updateMicStatus(slotNum,status);
@@ -1196,20 +1104,15 @@ function handleIncomingMessage(data){
       }
     }
   }
-
   else if(data.type==='PLAY_GIFT'){
     const targetSlot=Number(data.targetSlot);
-
     if(targetSlot&&slotPoints[targetSlot]!==undefined){
       slotPoints[targetSlot]+=Number(data.increment||0);
-
       const countElem=$(`coincount-slot-${targetSlot}`);
       if(countElem) countElem.innerText=formatPoin(slotPoints[targetSlot]);
-
       const badge=$(`coin-badge-${targetSlot}`);
       if(badge) badge.style.display='flex';
     }
-
     if(data.badgeImg) showGiftBadgeTemporarily(targetSlot,data.badgeImg);
     receiveGiftForCombo(data);
   }
@@ -1225,21 +1128,17 @@ let manuallyClosed=false;
 
 function connectWebSocket(){
   if(manuallyClosed) return;
-
   if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN)) return;
 
   try{
     const protocol=location.protocol==='https:'?'wss:':'ws:';
     ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
 
-    ws.onopen=()=>{
-      reconnectDelay=1000;
-    };
+    ws.onopen=()=>{reconnectDelay=1000};
 
     ws.onmessage=event=>{
       try{
         const d=JSON.parse(event.data);
-
         if(d.type==='gift'){
           handleIncomingMessage({
             type:'PLAY_GIFT',
@@ -1261,16 +1160,13 @@ function connectWebSocket(){
     };
 
     ws.onerror=err=>{};
-
     ws.onclose=()=>{
       ws=null;
       if(manuallyClosed) return;
-
       clearTimeout(reconnectTimer);
       reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
       reconnectDelay=Math.min(reconnectDelay*1.5,10000);
     };
-
   }catch(err){
     clearTimeout(reconnectTimer);
     reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
@@ -1279,7 +1175,7 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO GIFT */
+/* RENDERER GIFT - RESOLUSI MENGIKUTI VIDEO ASLI */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1295,22 +1191,18 @@ let canvas2D=null;
 
 function stopGiftRenderer(){
   renderActive=false;
-
   if(renderFrameId!==null){
     cancelAnimationFrame(renderFrameId);
     renderFrameId=null;
   }
-
   if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
     giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
   }
-
   videoFrameCallbackId=null;
 }
 
 function renderGiftFrame(){
   if(!renderActive) return;
-
   const video=giftVideo;
 
   if(video.ended){
@@ -1325,14 +1217,10 @@ function renderGiftFrame(){
 
   if(video.currentTime!==lastVideoTime){
     lastVideoTime=video.currentTime;
-
     if(glReady&&gl){
       try{
         gl.bindTexture(gl.TEXTURE_2D,glTexture);
-        gl.texImage2D(
-          gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,
-          gl.UNSIGNED_BYTE,video
-        );
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
         gl.drawArrays(gl.TRIANGLES,0,6);
       }catch(e){}
     }else if(canvas2D){
@@ -1345,13 +1233,11 @@ function renderGiftFrame(){
       giftOverlay.classList.add('visible');
     }
   }
-
   scheduleGiftFrame();
 }
 
 function scheduleGiftFrame(){
   if(!renderActive) return;
-
   if(giftVideo.requestVideoFrameCallback){
     videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
       videoFrameCallbackId=null;
@@ -1373,26 +1259,21 @@ function playGiftVideo(src,onFinished){
 
   let finished=false;
   let safetyTimer=null;
-
   stopGiftRenderer();
 
   function finish(){
     if(finished) return;
-
     finished=true;
     activeFinishHandler=null;
     clearTimeout(safetyTimer);
-
     if(generation!==giftVideoGeneration) return;
 
     overlay.classList.remove('visible');
 
     setTimeout(()=>{
       if(generation!==giftVideoGeneration) return;
-
       stopGiftRenderer();
       overlay.style.display='none';
-
       video.onended=null;
       video.onerror=null;
       video.onloadedmetadata=null;
@@ -1409,19 +1290,14 @@ function playGiftVideo(src,onFinished){
           gl.clear(gl.COLOR_BUFFER_BIT);
         }catch(e){}
       }
-
       if(canvas2D){
-        try{
-          canvas2D.clearRect(0,0,canvas.width,canvas.height);
-        }catch(e){}
+        try{canvas2D.clearRect(0,0,canvas.width,canvas.height)}catch(e){}
       }
-
       if(typeof onFinished==='function') onFinished();
     },200);
   }
 
   activeFinishHandler=finish;
-
   overlay.style.display='block';
   overlay.classList.remove('visible');
 
@@ -1439,11 +1315,8 @@ function playGiftVideo(src,onFinished){
 
   glReady=initWebGL(canvas);
   canvas2D=null;
-
   if(!glReady){
-    try{
-      canvas2D=canvas.getContext('2d');
-    }catch(e){}
+    try{canvas2D=canvas.getContext('2d')}catch(e){}
   }
 
   safetyTimer=setTimeout(()=>{
@@ -1456,7 +1329,8 @@ function playGiftVideo(src,onFinished){
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
 
-    const scale=Math.min(1,1080/originalWidth,1920/originalHeight);
+    /* GUNAKAN RESOLUSI ASLI VIDEO, BATAS MAKSIMUM 4K */
+    const scale=Math.min(1,3840/originalWidth,2160/originalHeight);
     const renderWidth=Math.max(1,Math.round(originalWidth*scale));
     const renderHeight=Math.max(1,Math.round(originalHeight*scale));
 
@@ -1465,7 +1339,6 @@ function playGiftVideo(src,onFinished){
 
     if(video.duration&&Number.isFinite(video.duration)){
       clearTimeout(safetyTimer);
-
       safetyTimer=setTimeout(()=>{
         if(!finished) finish();
       },(video.duration*1000)+1500);
@@ -1497,19 +1370,14 @@ function playGiftVideo(src,onFinished){
 
     try{
       await video.play();
-
       if(finished||generation!==giftVideoGeneration) return;
-
       renderActive=true;
       renderGiftFrame();
     }catch(err){
       video.muted=true;
-
       try{
         await video.play();
-
         if(finished||generation!==giftVideoGeneration) return;
-
         renderActive=true;
         renderGiftFrame();
       }catch(error){
@@ -1531,33 +1399,22 @@ window.addEventListener('pagehide',()=>{
     displayCamStream.getTracks().forEach(track=>track.stop());
     displayCamStream=null;
   }
-
-  if(ws){
-    ws.close();
-    ws=null;
-  }
-
+  if(ws){ws.close();ws=null}
   clearTimeout(reconnectTimer);
 
-  for(const timer of Object.values(badgeTimers)){
-    clearTimeout(timer);
-  }
+  for(const timer of Object.values(badgeTimers)) clearTimeout(timer);
 
   for(const group of giftComboGroups.values()){
     clearTimeout(group.timer);
-
-    if(group.src?.startsWith('blob:')){
-      URL.revokeObjectURL(group.src);
-    }
+    if(group.src?.startsWith('blob:')) URL.revokeObjectURL(group.src);
   }
-
   giftComboGroups.clear();
 
   giftVideoQueue.forEach(item=>{
     if(item.isBlob) URL.revokeObjectURL(item.src);
   });
-
   giftVideoQueue.length=0;
+
   releaseHostObjectURL();
   channel.close();
 });
