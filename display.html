@@ -41,8 +41,6 @@ body{
   flex-direction:column;
   background:#000;
   padding:8px 6px 45px;
-  border:0;
-  outline:0;
 }
 
 /* HOST */
@@ -108,13 +106,13 @@ body{
 #hostCameraImg{z-index:4}
 .host-placeholder{display:none}
 
-/* VIDEO GIFT: KEMBALI MENCAKUP AREA HOST DAN BAWAH */
+/* VIDEO ANIMASI GIFT DI DEPAN KOTAK */
 .gift-overlay{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  z-index:9;
+  z-index:20;
   pointer-events:none;
   display:none;
   opacity:0;
@@ -140,7 +138,7 @@ body{
   inset:0;
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
   object-position:center;
   display:block;
   pointer-events:none;
@@ -265,7 +263,11 @@ body{
   flex-shrink:0;
 }
 
-.star-svg{width:7px;height:7px;fill:#fff}
+.star-svg{
+  width:7px;
+  height:7px;
+  fill:#fff;
+}
 
 .coin-count{
   font-size:.6rem;
@@ -333,7 +335,10 @@ body{
   flex-shrink:0;
 }
 
-.slot-pill-plus-svg{width:7px;height:7px}
+.slot-pill-plus-svg{
+  width:7px;
+  height:7px;
+}
 
 .mic-container{
   position:absolute;
@@ -394,13 +399,14 @@ body{
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- ANIMASI GIFT MENCAKUP LAYAR, KOTAK TARGET TETAP DI DEPAN -->
+  <!-- LAPISAN ANIMASI GIFT -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <div class="gift-bottom-backdrop"></div>
     <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
     <canvas id="giftCanvas"></canvas>
   </div>
 
+  <!-- TARGET 1 SAMPAI 8 -->
   <div class="live-layout">
     <div class="komal-grid" id="komalGrid"></div>
   </div>
@@ -477,7 +483,7 @@ for(let i=1;i<=8;i++){
   </div>`);
 }
 
-/* HOST */
+/* HOST VIDEO */
 function handleHostBoxClick(){
   if(hostLoopActive){
     hostAudioWanted=true;
@@ -1452,7 +1458,6 @@ function playGiftVideo(src,onFinished){
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
 
-    /* RESOLUSI MENGIKUTI VIDEO ASLI */
     canvas.width=originalWidth;
     canvas.height=originalHeight;
 
