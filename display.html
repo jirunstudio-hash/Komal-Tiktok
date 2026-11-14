@@ -106,19 +106,19 @@ z-index:4;
 display:none;
 }
 
-/* VIDEO KECIL HOST LANDSCAPE */
+/* VIDEO KECIL HOST - LANDSCAPE */
 .mini-gallery-box{
 position:absolute;
 left:9px;
 bottom:9px;
-width:120px;
-height:68px;
+width:140px;
+height:80px;
 z-index:26;
 overflow:hidden;
-border:2px solid #168cff;
-border-radius:8px;
+border:1px solid rgba(255,255,255,.16);
+border-radius:10px;
 background:#111;
-box-shadow:0 2px 10px rgba(0,0,0,.75);
+box-shadow:none;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -148,21 +148,6 @@ text-align:center;
 background:linear-gradient(135deg,#20242c,#080808);
 letter-spacing:.4px;
 pointer-events:none;
-}
-
-.mini-gallery-status{
-position:absolute;
-top:4px;
-left:4px;
-z-index:3;
-padding:2px 5px;
-border-radius:4px;
-background:rgba(0,0,0,.7);
-color:#fff;
-font-size:8px;
-font-weight:700;
-pointer-events:none;
-display:none;
 }
 
 /* KOTAK IKON KIRI ATAS */
@@ -546,25 +531,10 @@ box-shadow:none!important;
     <video id="hostVideo2" class="host-video" playsinline preload="auto"></video>
     <img id="hostCameraImg" alt="Host Cam">
 
-    <!-- VIDEO KECIL HOST LANDSCAPE -->
+    <!-- VIDEO KECIL HOST -->
     <div class="mini-gallery-box" id="miniGalleryBox" onclick="event.stopPropagation()">
-      <video
-        id="miniGalleryVideo"
-        class="mini-gallery-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto">
-      </video>
-
-      <div class="mini-gallery-placeholder" id="miniGalleryPlaceholder">
-        VIDEO KECIL HOST
-      </div>
-
-      <div class="mini-gallery-status" id="miniGalleryStatus">
-        HOST
-      </div>
+      <video id="miniGalleryVideo" class="mini-gallery-video" autoplay muted loop playsinline preload="auto"></video>
+      <div class="mini-gallery-placeholder" id="miniGalleryPlaceholder"></div>
     </div>
 
     <!-- IKON BERGANTIAN KIRI ATAS -->
@@ -599,8 +569,6 @@ const slotMuteStates = {};
 let displayCamStream = null;
 let cameraStarting = false;
 let hostMediaObjectURL = null;
-
-/* VIDEO KECIL HOST */
 let miniHostVideoURL = null;
 
 let activeHostVid = 1;
@@ -614,67 +582,56 @@ let giftVideoQueueBusy = false;
 const $ = id => document.getElementById(id);
 const komalGrid = $('komalGrid');
 
-/* FUNGSI VIDEO KECIL HOST */
+/* VIDEO KECIL HOST */
 function setMiniHostVideo(blobOrSrc){
-  const video = $('miniGalleryVideo');
-  const placeholder = $('miniGalleryPlaceholder');
-  const status = $('miniGalleryStatus');
+  const video=$('miniGalleryVideo');
+  const placeholder=$('miniGalleryPlaceholder');
 
-  if(!video || !placeholder) return;
-
-  resetMiniHostVideo();
-
-  if(blobOrSrc instanceof Blob){
-    miniHostVideoURL = URL.createObjectURL(blobOrSrc);
-    video.src = miniHostVideoURL;
-  }
-  else if(typeof blobOrSrc === 'string' && blobOrSrc){
-    video.src = blobOrSrc;
-  }
-  else{
-    return;
-  }
-
-  video.muted = true;
-  video.loop = true;
-  video.autoplay = true;
-  video.playsInline = true;
-  video.style.display = 'block';
-
-  placeholder.style.display = 'none';
-
-  if(status) status.style.display = 'block';
-
-  video.load();
-  video.play().catch(()=>{
-    video.muted = true;
-    video.play().catch(()=>{});
-  });
-}
-
-function resetMiniHostVideo(){
-  const video = $('miniGalleryVideo');
-  const placeholder = $('miniGalleryPlaceholder');
-  const status = $('miniGalleryStatus');
-
-  if(video){
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-    video.style.display = 'none';
-  }
-
-  if(placeholder){
-    placeholder.style.display = 'flex';
-  }
-
-  if(status){
-    status.style.display = 'none';
-  }
+  if(!video||!placeholder) return;
 
   if(miniHostVideoURL){
     URL.revokeObjectURL(miniHostVideoURL);
-    miniHostVideoURL = null;
+    miniHostVideoURL=null;
+  }
+
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+
+  if(blobOrSrc instanceof Blob){
+    miniHostVideoURL=URL.createObjectURL(blobOrSrc);
+    video.src=miniHostVideoURL;
+  }else if(typeof blobOrSrc==='string'&&blobOrSrc){
+    video.src=blobOrSrc;
+  }else{
+    resetMiniHostVideo();
+    return;
+  }
+
+  video.muted=true;
+  video.loop=true;
+  video.playsInline=true;
+  video.style.display='block';
+  placeholder.style.display='none';
+
+  video.play().catch(()=>{});
+}
+
+function resetMiniHostVideo(){
+  const video=$('miniGalleryVideo');
+  const placeholder=$('miniGalleryPlaceholder');
+
+  if(!video||!placeholder) return;
+
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+  video.style.display='none';
+  placeholder.style.display='none';
+
+  if(miniHostVideoURL){
+    URL.revokeObjectURL(miniHostVideoURL);
+    miniHostVideoURL=null;
   }
 }
 
@@ -690,7 +647,7 @@ const hostIconPairs = [
   },
   {
     first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21549ba24f76a01d00373cb8e35660ae.png~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff9a05ef8e9151bbe75.png~tplv-obj.webp'
+    second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp'
   },
   {
     first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e0589e95a2b41970f0f30f6202f5fce6~tplv-obj.webp',
@@ -702,7 +659,6 @@ const hostIconPairs = [
   }
 ];
 
-/* ANIMASI IKON OTOMATIS */
 let currentHostIconPair = 0;
 let hostIconTimer = null;
 
@@ -727,17 +683,14 @@ function showHostIconPair(index){
 
 function startHostIconAnimation(){
   stopHostIconAnimation();
-
   currentHostIconPair = 0;
   showHostIconPair(currentHostIconPair);
 
   hostIconTimer = setInterval(()=>{
     currentHostIconPair++;
-
     if(currentHostIconPair >= hostIconPairs.length){
       currentHostIconPair = 0;
     }
-
     showHostIconPair(currentHostIconPair);
   },3000);
 }
@@ -1164,17 +1117,9 @@ async function getSavedVideo(id){
 
 function formatPoin(val){
   const number=Number(val);
-
   if(!Number.isFinite(number)||number<=0) return '0';
-
-  if(number>=1000000){
-    return (number/1000000).toFixed(1)+'M';
-  }
-
-  if(number>=1000){
-    return (number/1000).toFixed(1)+'K';
-  }
-
+  if(number>=1000000) return (number/1000000).toFixed(1)+'M';
+  if(number>=1000) return (number/1000).toFixed(1)+'K';
   return Math.floor(number).toString();
 }
 
@@ -1378,13 +1323,9 @@ function receiveGiftForCombo(data){
   const finishCombo=async()=>{
     const finishingRevision=group.revision;
     await group.videoPromise;
-
     if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision) return;
-
     giftComboGroups.delete(key);
-    if(group.src){
-      queueGiftVideo(group.src,Math.max(1,group.count));
-    }
+    if(group.src) queueGiftVideo(group.src,Math.max(1,group.count));
   };
 
   const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
@@ -1399,27 +1340,6 @@ function handleIncomingMessage(data){
     if(data.action==='start') startDisplayDirectCamera();
     else if(data.action==='stop') stopDisplayDirectCamera();
   }
-
-  /* TERIMA VIDEO KECIL HOST DARI CONTROL PANEL */
-  else if(
-    data.type==='SET_MINI_GALLERY_VIDEO' ||
-    data.type==='SET_MINI_HOST_VIDEO' ||
-    data.type==='UPDATE_MINI_HOST_VIDEO'
-  ){
-    if(data.videoBlob){
-      setMiniHostVideo(data.videoBlob);
-    }
-    else if(data.src||data.videoUrl||data.url){
-      setMiniHostVideo(data.src||data.videoUrl||data.url);
-    }
-  }
-  else if(
-    data.type==='RESET_MINI_GALLERY_VIDEO' ||
-    data.type==='RESET_MINI_HOST_VIDEO'
-  ){
-    resetMiniHostVideo();
-  }
-
   else if(data.type==='SET_HOST_VIDEO'){
     stopDisplayDirectCamera();
     const camImg=$('hostCameraImg');
@@ -1442,6 +1362,16 @@ function handleIncomingMessage(data){
     releaseHostObjectURL();
     camImg.style.display='none';
     $('hostPlaceholder').style.display='none';
+  }
+  else if(data.type==='SET_MINI_GALLERY_VIDEO'){
+    if(data.videoBlob){
+      setMiniHostVideo(data.videoBlob);
+    }else if(data.src||data.videoUrl){
+      setMiniHostVideo(data.src||data.videoUrl);
+    }
+  }
+  else if(data.type==='RESET_MINI_GALLERY_VIDEO'){
+    resetMiniHostVideo();
   }
   else if(data.type==='UPDATE_SLOT'){
     updateSlotDisplay(data);
