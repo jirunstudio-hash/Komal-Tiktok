@@ -1,412 +1,424 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized HD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Display Studio - Ultra HD</title>
 
 <style>
+:root{
+  --bg:#000;
+  --panel:#202127;
+  --border:rgba(255,255,255,.24);
+  --text:#fff;
+  --muted:#c4c7d0;
+}
+
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
--webkit-font-smoothing:antialiased;
--moz-osx-font-smoothing:grayscale;
-text-rendering:optimizeLegibility
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
 }
 
 html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#000000;
-color:#fff
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
 }
 
 body{
-display:flex;
-justify-content:center;
-align-items:center
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .phone-screen{
-width:100vw;
-height:100vh;
-max-width:440px;
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-background:#000000;
-transform:translateZ(0);
-padding:8px 6px 45px 6px
+  width:100vw;
+  max-width:480px;
+  height:100dvh;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:#000;
+  padding:9px 7px 45px;
+  isolation:isolate;
 }
 
+/* HOST */
 .host-fullscreen{
-position:relative;
-width:100%;
-aspect-ratio:16 / 10;
-flex-shrink:0;
-z-index:2;
-background:#22242a;
-border:1px solid rgba(255,255,255,0.07);
-border-radius:12px;
-overflow:hidden;
-cursor:pointer;
-display:flex;
-justify-content:center;
-align-items:center
+  position:relative;
+  width:100%;
+  aspect-ratio:16/10;
+  flex-shrink:0;
+  z-index:2;
+  background:#22242a;
+  border:1.5px solid rgba(255,255,255,.28);
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
 }
 
 .host-badge{
-position:absolute;
-top:10px;
-left:10px;
-z-index:6;
-background:rgba(0,0,0,0.55);
-color:#a1a5ae;
-font-size:12px;
-font-weight:700;
-padding:4px 10px;
-border-radius:999px;
-pointer-events:none
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:6;
+  background:rgba(0,0,0,.88);
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+  padding:6px 12px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:20px;
+  pointer-events:none;
 }
 
 .unmute-hint{
-position:absolute;
-bottom:10px;
-right:10px;
-z-index:7;
-background:rgba(0,0,0,0.75);
-border:1px solid rgba(255,255,255,0.25);
-color:#fff;
-font-size:11px;
-font-weight:700;
-padding:5px 10px;
-border-radius:999px;
-display:none;
-pointer-events:none
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  z-index:7;
+  background:#111;
+  border:1px solid #fff;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding:7px 12px;
+  border-radius:20px;
+  display:none;
+  pointer-events:none;
 }
 
 .host-video,#hostCameraImg{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:2;
-display:none;
-backface-visibility:hidden;
-filter:none;
-transition:opacity 0.08s linear;
-will-change:opacity;
-transform:translateZ(0)
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:2;
+  display:none;
+  backface-visibility:hidden;
 }
 
-#hostCameraImg{
-z-index:4
-}
+#hostCameraImg{z-index:4}
+.host-placeholder{display:none}
 
-.host-placeholder{
-display:none
-}
-
+/* GIFT OVERLAY */
 .gift-overlay{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-z-index:20;
-pointer-events:none;
-display:none;
-opacity:0;
-background:transparent;
-transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
-will-change:opacity
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:20;
+  pointer-events:none;
+  display:none;
+  opacity:0;
+  background:transparent;
+  transition:opacity .18s ease;
 }
 
-.gift-overlay.visible{
-opacity:1
-}
-
-.gift-bottom-backdrop{
-display:none
-}
-
-#giftVideo{
-display:none
-}
+.gift-overlay.visible{opacity:1}
+.gift-bottom-backdrop{display:none}
+#giftVideo{display:none}
 
 #giftCanvas{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-object-position:center;
-display:block;
-pointer-events:none;
-transform:translateZ(0);
-backface-visibility:hidden;
-image-rendering:-webkit-optimize-contrast;
-z-index:2
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  pointer-events:none;
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 
+/* SLOT GRID */
 .live-layout{
-position:relative;
-z-index:10;
-width:100%;
-padding:8px 0;
-pointer-events:none
+  position:relative;
+  z-index:10;
+  width:100%;
+  padding:10px 0;
+  pointer-events:none;
 }
 
 .komal-grid{
-width:100%;
-display:grid;
-grid-template-columns:repeat(4, 1fr);
-gap:6px;
-pointer-events:auto
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:7px;
+  pointer-events:auto;
 }
 
 .slot-box{
-width:100%;
-aspect-ratio:1 / 1.06;
-background:#22242a;
-border:1px solid rgba(255,255,255,0.07);
-border-radius:10px;
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-contain:layout paint;
-box-shadow:0 3px 10px rgba(0,0,0,0.45);
-transition:transform .2s ease
+  width:100%;
+  aspect-ratio:1/1.06;
+  background:#22242a;
+  border:1.5px solid rgba(255,255,255,.24);
+  border-radius:11px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  contain:layout paint;
+  box-shadow:0 3px 12px rgba(0,0,0,.65);
 }
 
 .slot-box.has-photo{
-background:#16171d;
-border:1px solid rgba(255,255,255,0.22);
-animation:none!important
+  background:#15161b;
+  border:1.5px solid rgba(255,255,255,.48);
 }
 
+/* BACKGROUND FOTO */
 .slot-bg-blur{
-position:absolute!important;
-inset:-8px!important;
-width:calc(100% + 16px)!important;
-height:calc(100% + 16px)!important;
-object-fit:cover!important;
-filter:blur(8px) brightness(.7)!important;
-display:none;
-z-index:1;
-pointer-events:none
+  position:absolute!important;
+  inset:-8px!important;
+  width:calc(100% + 16px)!important;
+  height:calc(100% + 16px)!important;
+  object-fit:cover!important;
+  filter:blur(9px) brightness(.55)!important;
+  display:none;
+  z-index:1;
+  pointer-events:none;
 }
 
 .slot-bg-overlay{
-position:absolute;
-inset:0;
-background:rgba(0,0,0,.25);
-display:none;
-z-index:2;
-pointer-events:none
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.18);
+  display:none;
+  z-index:2;
+  pointer-events:none;
 }
 
+/* PERMINTAAN TANPA KOTAK */
 .slot-plus-svg{
-width:24px;
-height:24px;
-stroke:#9a9da6;
-stroke-width:2.6;
-stroke-linecap:round;
-z-index:3;
-margin-bottom:6px
+  width:27px;
+  height:27px;
+  stroke:#fff;
+  stroke-width:2.5;
+  stroke-linecap:round;
+  z-index:3;
+  margin-bottom:8px;
+  filter:drop-shadow(0 1px 3px #000);
 }
 
 .slot-req{
-color:#9a9da6;
-font-size:.70rem;
-font-weight:600;
-letter-spacing:0.2px;
-z-index:3
+  color:#fff;
+  font-size:clamp(10px,2.6vw,13px);
+  font-weight:900;
+  letter-spacing:.35px;
+  z-index:3;
+  background:transparent;
+  border:none;
+  padding:0;
+  border-radius:0;
+  text-shadow:0 1px 3px #000;
 }
 
 .slot-circle-img{
-width:52px;
-height:52px;
-border-radius:50%;
-object-fit:cover;
-display:none;
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-z-index:4;
-box-shadow:0 3px 10px rgba(0,0,0,.65);
-filter:none
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  object-fit:cover;
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  box-shadow:0 3px 12px rgba(0,0,0,.8);
+  border:1.5px solid rgba(255,255,255,.6);
 }
 
+/* KOIN */
 .slot-coin-badge{
-position:absolute;
-top:5px;
-left:5px;
-display:flex;
-align-items:center;
-gap:3.5px;
-background:rgba(12,13,18,.85);
-backdrop-filter:blur(4px);
-border:0.5px solid rgba(255,255,255,.18);
-padding:2px 6px 2px 3px;
-border-radius:999px;
-z-index:6;
-box-shadow:0 2px 5px rgba(0,0,0,.5)
+  position:absolute;
+  top:6px;
+  left:6px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  background:rgba(0,0,0,.92);
+  border:1px solid rgba(255,255,255,.35);
+  padding:4px 7px 4px 5px;
+  border-radius:30px;
+  z-index:6;
+  box-shadow:0 2px 7px #000;
 }
 
 .cyan-diamond-circle{
-width:13px;
-height:13px;
-background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0
+  width:15px;
+  height:15px;
+  background:radial-gradient(circle,#fff 15%,#38bdf8 52%,#0077ff 95%);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
 
 .star-svg{
-width:7px;
-height:7px;
-fill:#fff
+  width:8px;
+  height:8px;
+  fill:#fff;
 }
 
 .coin-count{
-font-size:.6rem;
-color:#fff;
-font-weight:800;
-text-shadow:0 1px 2px rgba(0,0,0,.8)
-}
-
-@keyframes popGiftBadge{
-0%{transform:scale(.5);opacity:0}
-100%{transform:scale(1);opacity:1}
+  font-size:11px;
+  color:#fff;
+  font-weight:900;
+  text-shadow:0 1px 3px #000;
 }
 
 .slot-top-badge{
-position:absolute;
-top:5px;
-right:5px;
-z-index:8;
-width:24px;
-height:24px;
-display:none;
-object-fit:contain;
-filter:drop-shadow(0 2px 5px rgba(0,0,0,.85));
-pointer-events:none;
-animation:popGiftBadge .3s ease-out
+  position:absolute;
+  top:6px;
+  right:6px;
+  z-index:8;
+  width:27px;
+  height:27px;
+  display:none;
+  object-fit:contain;
+  filter:drop-shadow(0 2px 5px #000);
+  pointer-events:none;
 }
 
+/* NAMA */
 .slot-name-pill{
-position:absolute;
-bottom:5px;
-left:5px;
-max-width:calc(100% - 30px);
-display:flex;
-align-items:center;
-gap:4px;
-z-index:7;
-background:rgba(12,13,18,.88);
-backdrop-filter:blur(6px);
-border:0.5px solid rgba(255,255,255,.25);
-padding:2px 6px;
-border-radius:999px;
-min-height:20px;
-box-shadow:0 2px 6px rgba(0,0,0,.65)
+  position:absolute;
+  bottom:6px;
+  left:5px;
+  max-width:calc(100% - 28px);
+  display:flex;
+  align-items:center;
+  gap:4px;
+  z-index:7;
+  background:rgba(0,0,0,.94);
+  border:1px solid rgba(255,255,255,.4);
+  padding:4px 7px;
+  border-radius:20px;
+  min-height:23px;
+  box-shadow:0 2px 7px #000;
 }
 
 .slot-name-text{
-color:#fff;
-font-size:10px;
-font-weight:800;
-letter-spacing:0.2px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-max-width:58px;
-text-shadow:0 1px 2px rgba(0,0,0,.95)
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:75px;
+  text-shadow:0 1px 3px #000;
 }
 
 .slot-plus-circle{
-width:13px;
-height:13px;
-border-radius:50%;
-background:rgba(255,255,255,.28);
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#555;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
 
 .slot-pill-plus-svg{
-width:7px;
-height:7px
+  width:8px;
+  height:8px;
 }
 
+/* MIKROFON */
 .mic-container{
-position:absolute;
-bottom:5px;
-right:5px;
-z-index:8;
-width:18px;
-height:18px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:transparent!important;
-border:none!important;
-border-radius:0!important;
-box-shadow:none!important
+  position:absolute;
+  bottom:7px;
+  right:5px;
+  z-index:8;
+  width:19px;
+  height:19px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent!important;
+  border:none!important;
+  box-shadow:none!important;
 }
 
 .mic-icon-svg{
-width:16px;
-height:16px;
-display:block;
-filter:drop-shadow(0 1px 3px rgba(0,0,0,0.95))
+  width:17px;
+  height:17px;
+  display:block;
+  filter:drop-shadow(0 1px 3px #000);
 }
 
-.mic-icon-svg .mic-body{
-fill:#ffffff
-}
+.mic-icon-svg .mic-body{fill:#fff}
 
 .mic-icon-svg .mic-slash-bg{
-stroke:#000000;
-stroke-width:4.6;
-stroke-linecap:round;
-display:block
+  stroke:#000;
+  stroke-width:4.6;
+  stroke-linecap:round;
+  display:block;
 }
 
 .mic-icon-svg .mic-slash{
-stroke:#ffffff;
-stroke-width:2.6;
-stroke-linecap:round;
-display:block;
-filter:drop-shadow(0 1px 2px rgba(0,0,0,0.95))
+  stroke:#fff;
+  stroke-width:2.6;
+  stroke-linecap:round;
+  display:block;
 }
 
 .mic-container.is-unmuted .mic-icon-svg .mic-slash,
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
-display:none
+  display:none;
 }
 
-.mic-container.is-muted{
-background:transparent!important;
-border:none!important;
-box-shadow:none!important
+/* LAYAR KECIL */
+@media(max-width:360px){
+  .phone-screen{padding-left:5px;padding-right:5px}
+  .komal-grid{gap:5px}
+  .slot-circle-img{width:43px;height:43px}
+  .slot-name-text{font-size:9px;max-width:52px}
+  .slot-coin-badge{padding:3px 5px}
+  .coin-count{font-size:10px}
+  .slot-plus-svg{width:22px;height:22px}
+  .slot-req{font-size:10px}
+}
+
+/* LAPTOP */
+@media(min-width:700px){
+  .phone-screen{
+    max-width:480px;
+    border-left:1px solid #292929;
+    border-right:1px solid #292929;
+  }
+}
+
+.slot-box,.host-fullscreen,.slot-name-pill,
+.slot-coin-badge,.host-badge{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
 }
 </style>
 </head>
 
 <body>
+
 <div class="phone-screen" id="displayContainer">
 
   <div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
@@ -433,28 +445,28 @@ box-shadow:none!important
 <script>
 'use strict';
 
-const channel = new BroadcastChannel('tiktok_live_channel');
-const slotPoints = {};
-const badgeTimers = {};
-const slotMuteStates = {};
+const channel=new BroadcastChannel('tiktok_live_channel');
+const $=id=>document.getElementById(id);
+const komalGrid=$('komalGrid');
 
-let displayCamStream = null;
-let cameraStarting = false;
-let hostMediaObjectURL = null;
+const slotPoints={};
+const badgeTimers={};
+const slotMuteStates={};
 
-let activeHostVid = 1;
-let hostLoopActive = false;
-let hostAudioWanted = true;
+let displayCamStream=null;
+let cameraStarting=false;
+let hostMediaObjectURL=null;
+let activeHostVid=1;
+let hostLoopActive=false;
+let hostAudioWanted=true;
 
-const giftComboGroups = new Map();
-const giftVideoQueue = [];
-let giftVideoQueueBusy = false;
+const giftComboGroups=new Map();
+const giftVideoQueue=[];
+let giftVideoQueueBusy=false;
 
-const $ = id => document.getElementById(id);
-const komalGrid = $('komalGrid');
-
-for(let i=1; i<=8; i++){
-  slotPoints[i] = 0;
+/* MEMBUAT 8 SLOT */
+for(let i=1;i<=8;i++){
+  slotPoints[i]=0;
 
   komalGrid.insertAdjacentHTML('beforeend',`
   <div class="slot-box" id="slot-${i}">
@@ -470,7 +482,7 @@ for(let i=1; i<=8; i++){
       <span class="coin-count" id="coincount-slot-${i}">0</span>
     </div>
 
-    <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
+    <img class="slot-top-badge" id="topbadge-slot-${i}" alt="Gift">
 
     <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
       <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -485,14 +497,14 @@ for(let i=1; i<=8; i++){
       <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
       <div class="slot-plus-circle">
         <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
-          <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
-          <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
+          <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></line>
+          <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></line>
         </svg>
       </div>
     </div>
 
     <div class="mic-container" id="mic-slot-${i}" style="display:none">
-      <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
+      <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none">
         <path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
         <path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
         <line class="mic-slash-bg" x1="4" y1="4" x2="20" y2="20"/>
@@ -503,210 +515,181 @@ for(let i=1; i<=8; i++){
   `);
 }
 
-/* KLIK KOTAK HOST */
-function handleHostBoxClick(){
-  if(hostLoopActive){
-    hostAudioWanted = true;
-
-    const v1 = $('hostVideo');
-    const v2 = $('hostVideo2');
-
-    const activeVid = activeHostVid === 1 ? v1 : v2;
-
-    activeVid.muted = false;
-    activeVid.volume = 1;
-
-    if(activeVid.paused) activeVid.play().catch(()=>{});
-
-    $('unmuteHint').style.display = 'none';
-    return;
-  }
-
-  startDisplayDirectCamera();
-}
-
-/* KONTROL MIKROFON */
+/* MIKROFON */
 function getMuteStatus(data){
   const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
 
   for(const key of keys){
     if(Object.prototype.hasOwnProperty.call(data,key)){
       const value=data[key];
-
-      if(typeof value==='boolean') return value;
-
-      if(value===1||value==='1'||value==='true'||value==='muted') return true;
-
-      if(value===0||value==='0'||value==='false'||value==='unmuted') return false;
+      if(typeof value==='boolean')return value;
+      if(value===1||value==='1'||value==='true'||value==='muted')return true;
+      if(value===0||value==='0'||value==='false'||value==='unmuted')return false;
     }
   }
-
   return null;
 }
 
 function updateMicStatus(slotNum,status){
   const mic=$(`mic-slot-${slotNum}`);
-
-  if(!mic||status===null||status===undefined) return;
+  if(!mic||status===null||status===undefined)return;
 
   slotMuteStates[slotNum]=Boolean(status);
-  mic.classList.toggle('is-unmuted', !Boolean(status));
-  mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
+  mic.classList.toggle('is-unmuted',!Boolean(status));
+  mic.title=status?'Mikrofon dimatikan':'Mikrofon aktif';
 }
 
-/* VIDEO HOST LOOP TANPA BATAS
-   Native browser loop menghindari pergantian dua decoder. */
-function setupSeamlessHostVideo(url){
+/* HOST */
+function handleHostBoxClick(){
+  if(hostLoopActive){
+    hostAudioWanted=true;
 
-  stopHostSeamlessLoop();
+    const v1=$('hostVideo');
+    const v2=$('hostVideo2');
+    const active=activeHostVid===1?v1:v2;
+    const inactive=activeHostVid===1?v2:v1;
 
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
+    active.muted=false;
+    active.volume=1;
+    inactive.muted=true;
 
-  v1.pause();
-  v2.pause();
-
-  v1.srcObject = null;
-  v2.srcObject = null;
-
-  v1.removeAttribute('src');
-  v2.removeAttribute('src');
-
-  v1.load();
-  v2.load();
-
-  v1.src = url;
-  v1.preload = 'auto';
-  v1.loop = true;
-  v1.playsInline = true;
-  v1.setAttribute('playsinline', '');
-  v1.setAttribute('webkit-playsinline', '');
-
-  v1.muted = false;
-  v1.volume = 1;
-
-  v1.style.display = 'block';
-  v1.style.opacity = '1';
-  v1.style.zIndex = '3';
-
-  v2.loop = false;
-  v2.style.display = 'none';
-  v2.style.opacity = '0';
-  v2.muted = true;
-
-  activeHostVid = 1;
-  hostLoopActive = true;
-  hostAudioWanted = true;
-
-  v1.onended = () => {
-    if(!hostLoopActive || v1.loop) return;
-
-    try{
-      v1.currentTime = 0;
-    }catch(e){}
-
-    v1.play().catch(()=>{});
-  };
-
-  v1.onerror = () => {
-    console.error('Video host gagal dimuat. Periksa format dan alamat video.');
-  };
-
-  v1.play().then(() => {
-
-    $('unmuteHint').style.display = 'none';
-
-  }).catch(() => {
-
-    v1.muted = true;
-    hostAudioWanted = false;
-
-    $('unmuteHint').style.display = 'block';
-
-    v1.play().catch(()=>{});
-
-  });
+    if(active.paused)active.play().catch(()=>{});
+    $('unmuteHint').style.display='none';
+    return;
+  }
+  startDisplayDirectCamera();
 }
 
 function stopHostSeamlessLoop(){
+  hostLoopActive=false;
+  $('unmuteHint').style.display='none';
 
-  hostLoopActive = false;
+  const v1=$('hostVideo');
+  const v2=$('hostVideo2');
 
-  $('unmuteHint').style.display = 'none';
-
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
-
-  if(v1){
-    v1.onended = null;
-    v1.onerror = null;
-    v1.pause();
-    v1.loop = false;
-    v1.removeAttribute('src');
-    v1.srcObject = null;
-    v1.load();
-    v1.style.opacity = '1';
-    v1.style.display = 'none';
-  }
-
-  if(v2){
-    v2.onended = null;
-    v2.onerror = null;
-    v2.pause();
-    v2.loop = false;
-    v2.removeAttribute('src');
-    v2.srcObject = null;
-    v2.load();
-    v2.style.opacity = '0';
-    v2.style.display = 'none';
-  }
-
-  activeHostVid = 1;
+  [v1,v2].forEach(v=>{
+    if(!v)return;
+    v.ontimeupdate=null;
+    v.onended=null;
+    v.pause();
+    v.removeAttribute('src');
+    v.load();
+    v.style.opacity='1';
+    v.style.display='none';
+  });
 }
 
-/* KAMERA REALTIME HOST */
-async function startDisplayDirectCamera(){
+function setupSeamlessHostVideo(url){
+  stopHostSeamlessLoop();
 
-  if(cameraStarting) return;
+  const v1=$('hostVideo');
+  const v2=$('hostVideo2');
+
+  v1.srcObject=null;
+  v2.srcObject=null;
+  v1.src=url;
+  v2.src=url;
+
+  v1.muted=false;
+  v1.volume=1;
+  v2.muted=true;
+  v2.volume=1;
+
+  hostAudioWanted=true;
+  activeHostVid=1;
+  hostLoopActive=true;
+
+  v1.style.display='block';
+  v2.style.display='block';
+  v1.style.opacity='1';
+  v2.style.opacity='0';
+  v1.style.zIndex='3';
+  v2.style.zIndex='2';
+
+  v1.play().then(()=>{
+    $('unmuteHint').style.display='none';
+  }).catch(()=>{
+    v1.muted=true;
+    hostAudioWanted=false;
+    $('unmuteHint').style.display='block';
+    v1.play().catch(()=>{});
+  });
+
+  function switchVideo(){
+    if(!hostLoopActive)return;
+
+    const current=activeHostVid===1?v1:v2;
+    const next=activeHostVid===1?v2:v1;
+
+    if(!next.paused)return;
+
+    next.currentTime=0;
+    next.muted=!hostAudioWanted;
+
+    next.play().then(()=>{
+      current.muted=true;
+      next.style.zIndex='3';
+      current.style.zIndex='2';
+      next.style.opacity='1';
+      current.style.opacity='0';
+
+      activeHostVid=activeHostVid===1?2:1;
+
+      setTimeout(()=>{
+        if(hostLoopActive)current.pause();
+      },240);
+    }).catch(()=>{});
+  }
+
+  function checkLoop(ev){
+    if(!hostLoopActive)return;
+
+    const current=activeHostVid===1?v1:v2;
+    if(ev.target!==current)return;
+
+    if(current.duration&&current.duration-current.currentTime<=.22){
+      switchVideo();
+    }
+  }
+
+  v1.ontimeupdate=checkLoop;
+  v2.ontimeupdate=checkLoop;
+  v1.onended=checkLoop;
+  v2.onended=checkLoop;
+}
+
+/* KAMERA */
+async function startDisplayDirectCamera(){
+  if(cameraStarting)return;
 
   stopHostSeamlessLoop();
 
   const hVid=$('hostVideo');
   const hVid2=$('hostVideo2');
-  const placeholder=$('hostPlaceholder');
-  const camImg=$('hostCameraImg');
 
-  hVid.muted = true;
+  hVid.muted=true;
   hVid2.style.display='none';
 
   if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
-
     hVid.srcObject=displayCamStream;
     hVid.style.display='block';
     hVid.style.opacity='1';
-
-    placeholder.style.display='none';
-
-    if(hVid.paused) await hVid.play().catch(()=>{});
-
+    await hVid.play().catch(()=>{});
     return;
   }
 
   cameraStarting=true;
 
   try{
-
     if(!navigator.mediaDevices?.getUserMedia){
       throw new Error('Kamera membutuhkan HTTPS atau localhost.');
     }
 
-    camImg.style.display='none';
-
     displayCamStream=await navigator.mediaDevices.getUserMedia({
       audio:false,
       video:{
-        width:{ideal:1080},
-        height:{ideal:1920},
+        width:{ideal:1920},
+        height:{ideal:1080},
         frameRate:{ideal:30,max:30},
         facingMode:'user'
       }
@@ -715,70 +698,57 @@ async function startDisplayDirectCamera(){
     hVid.srcObject=displayCamStream;
     hVid.style.display='block';
     hVid.style.opacity='1';
-
-    placeholder.style.display='none';
-
     await hVid.play();
 
   }catch(err){
-
     console.error('Kamera error:',err);
-
+    alert('Kamera tidak dapat diakses. Periksa izin kamera dan HTTPS.');
   }finally{
-
     cameraStarting=false;
-
   }
 }
 
 function stopDisplayDirectCamera(){
-
   if(displayCamStream){
-    displayCamStream.getTracks().forEach(track=>track.stop());
+    displayCamStream.getTracks().forEach(t=>t.stop());
     displayCamStream=null;
   }
 
-  const hVid=$('hostVideo');
-
-  hVid.pause();
-  hVid.srcObject=null;
-  hVid.style.display='none';
-
-  $('hostPlaceholder').style.display='none';
+  const v=$('hostVideo');
+  v.pause();
+  v.srcObject=null;
+  v.style.display='none';
 }
 
 function releaseHostObjectURL(){
-
   if(hostMediaObjectURL){
     URL.revokeObjectURL(hostMediaObjectURL);
     hostMediaObjectURL=null;
   }
 }
 
-/* WEBGL RENDERER */
+/* WEBGL */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
 let glBuffers={};
-let isWebGLSupported=false;
+let glReady=false;
+let canvas2D=null;
 
 function initWebGL(canvas){
-
-  if(gl&&glProgram&&glTexture) return true;
+  if(gl&&glProgram&&glTexture)return true;
 
   try{
-
     gl=canvas.getContext('webgl',{
       alpha:true,
       premultipliedAlpha:false,
       antialias:true,
       depth:false,
-      stencil:false,
       preserveDrawingBuffer:false,
       powerPreference:'high-performance'
     });
 
-    if(!gl) return false;
+    if(!gl)return false;
 
     gl.disable(gl.BLEND);
 
@@ -786,7 +756,6 @@ function initWebGL(canvas){
     attribute vec2 a_pos;
     attribute vec2 a_tex;
     varying vec2 v_tex;
-
     void main(){
       gl_Position=vec4(a_pos,0.0,1.0);
       v_tex=a_tex;
@@ -798,67 +767,43 @@ function initWebGL(canvas){
     varying vec2 v_tex;
 
     void main(){
+      vec4 c=texture2D(u_tex,v_tex);
+      float maxRB=max(c.r,c.b);
+      float gDiff=c.g-maxRB;
 
-      vec4 c = texture2D(u_tex, v_tex);
+      bool green=(gDiff>.15&&c.g>.32&&c.g>c.r*1.2&&c.g>c.b*1.2);
 
-      float maxRB = max(c.r, c.b);
-      float gDiff = c.g - maxRB;
+      float maxC=max(c.r,max(c.g,c.b));
+      float minC=min(c.r,min(c.g,c.b));
+      bool black=(maxC<.045&&(maxC-minC)<.02);
 
-      bool isGreen = (
-        gDiff > 0.15 &&
-        c.g > 0.32 &&
-        c.g > c.r * 1.2 &&
-        c.g > c.b * 1.2
-      );
-
-      float maxC = max(c.r, max(c.g, c.b));
-      float minC = min(c.r, min(c.g, c.b));
-      float chromaDiff = maxC - minC;
-
-      bool isBlack = (
-        maxC < 0.045 &&
-        chromaDiff < 0.02
-      );
-
-      if(isGreen || isBlack){
-
-        gl_FragColor = vec4(0.0,0.0,0.0,0.0);
-
+      if(green||black){
+        gl_FragColor=vec4(0.0,0.0,0.0,0.0);
       }else{
-
-        c.a = 1.0;
-
-        if(gDiff > 0.05 && c.g > maxRB){
-          c.g = maxRB;
-        }
-
-        gl_FragColor = c;
-
+        c.a=1.0;
+        if(gDiff>.05&&c.g>maxRB)c.g=maxRB;
+        gl_FragColor=c;
       }
     }`;
 
-    function createShader(type,src){
+    function shader(type,source){
+      const s=gl.createShader(type);
+      gl.shaderSource(s,source);
+      gl.compileShader(s);
 
-      const shader=gl.createShader(type);
-
-      gl.shaderSource(shader,src);
-      gl.compileShader(shader);
-
-      if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        gl.deleteShader(shader);
+      if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){
+        console.error(gl.getShaderInfoLog(s));
+        gl.deleteShader(s);
         return null;
       }
-
-      return shader;
+      return s;
     }
 
-    const vs=createShader(gl.VERTEX_SHADER,vsSource);
-    const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-
-    if(!vs||!fs) return false;
+    const vs=shader(gl.VERTEX_SHADER,vsSource);
+    const fs=shader(gl.FRAGMENT_SHADER,fsSource);
+    if(!vs||!fs)return false;
 
     glProgram=gl.createProgram();
-
     gl.attachShader(glProgram,vs);
     gl.attachShader(glProgram,fs);
     gl.linkProgram(glProgram);
@@ -866,137 +811,87 @@ function initWebGL(canvas){
     gl.deleteShader(vs);
     gl.deleteShader(fs);
 
-    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)) return false;
+    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS))return false;
 
-    const posBuffer=gl.createBuffer();
+    const pos=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,pos);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
+      -1,-1,1,-1,-1,1,
+      -1,1,1,-1,1,1
+    ]),gl.STATIC_DRAW);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
+    const tex=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,tex);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
+      0,1,1,1,0,0,
+      0,0,1,1,1,0
+    ]),gl.STATIC_DRAW);
 
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),
-      gl.STATIC_DRAW
-    );
-
-    const texBuffer=gl.createBuffer();
-
-    gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),
-      gl.STATIC_DRAW
-    );
-
-    glBuffers.pos=posBuffer;
-    glBuffers.tex=texBuffer;
-
+    glBuffers={pos,tex};
     glTexture=gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
 
     gl.useProgram(glProgram);
-
-    gl.uniform1i(
-      gl.getUniformLocation(glProgram,'u_tex'),
-      0
-    );
-
-    isWebGLSupported=true;
+    gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
     return true;
-
   }catch(e){
-
+    console.error('WebGL:',e);
     return false;
-
   }
 }
 
-/* DATABASE ASSETS */
-const DB_NAME="TikTokStudioStorageDB";
-const STORE_NAME="permanent_assets";
+/* DATABASE */
+const DB_NAME='TikTokStudioStorageDB';
+const STORE_NAME='permanent_assets';
 let dbPromise=null;
 
 function openDB(){
-
-  if(dbPromise) return dbPromise;
+  if(dbPromise)return dbPromise;
 
   dbPromise=new Promise(resolve=>{
-
     const req=indexedDB.open(DB_NAME,1);
-
     req.onsuccess=()=>resolve(req.result);
-
-    req.onerror=()=>{
-      dbPromise=null;
-      resolve(null);
-    };
-
-    req.onblocked=()=>{
-      dbPromise=null;
-      resolve(null);
-    };
-
+    req.onerror=()=>{dbPromise=null;resolve(null)};
+    req.onblocked=()=>{dbPromise=null;resolve(null)};
   });
 
   return dbPromise;
 }
 
 async function getSavedVideo(id){
-
   try{
-
     const db=await openDB();
-
-    if(!db) return null;
+    if(!db)return null;
 
     return await new Promise(resolve=>{
-
-      const tx=db.transaction(STORE_NAME,"readonly");
-
-      const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
-
+      const tx=db.transaction(STORE_NAME,'readonly');
+      const req=tx.objectStore(STORE_NAME).get('video_'+id);
       req.onsuccess=()=>resolve(req.result);
       req.onerror=()=>resolve(null);
-
     });
-
   }catch(e){
-
     return null;
-
   }
 }
 
 function formatPoin(val){
-
-  if(!val||val===0) return '0';
-
-  if(val>=1000000){
-    return (val/1000000).toFixed(1).replace('.',',')+'M';
-  }
-
-  if(val>=1000){
-    return (val/1000).toFixed(1).replace('.',',')+'K';
-  }
-
+  val=Number(val)||0;
+  if(val>=1000000)return (val/1000000).toFixed(1).replace('.',',')+'M';
+  if(val>=1000)return (val/1000).toFixed(1).replace('.',',')+'K';
   return val.toLocaleString('id-ID');
 }
 
 /* UPDATE SLOT */
 function updateSlotDisplay(data){
-
   const{slotNum,nameInput,initialPoin,profileImg,action}=data;
-
   const slotBox=$(`slot-${slotNum}`);
-
-  if(!slotBox) return;
+  if(!slotBox)return;
 
   const coinBadge=$(`coin-badge-${slotNum}`);
   const countElem=$(`coincount-slot-${slotNum}`);
@@ -1011,64 +906,48 @@ function updateSlotDisplay(data){
   const topBadge=$(`topbadge-slot-${slotNum}`);
 
   if(action==='clear_slot'){
-
     slotBox.classList.remove('has-photo');
-
     img.style.display='none';
     img.removeAttribute('src');
-
     bg.style.display='none';
     bg.removeAttribute('src');
-
     bgOverlay.style.display='none';
-
-    slotBox.style.background='#22242a';
-
     icon.style.display='block';
     req.style.display='inline-block';
-
     namePill.style.display='none';
     mic.style.display='none';
+    coinBadge.style.display='none';
 
     mic.classList.remove('is-unmuted');
-
     delete slotMuteStates[slotNum];
-
-    coinBadge.style.display='none';
 
     if(topBadge){
       topBadge.style.display='none';
       topBadge.removeAttribute('src');
     }
 
-    if(badgeTimers[slotNum]){
-      clearTimeout(badgeTimers[slotNum]);
-      delete badgeTimers[slotNum];
-    }
-
+    clearTimeout(badgeTimers[slotNum]);
+    delete badgeTimers[slotNum];
     slotPoints[slotNum]=0;
-
     return;
   }
 
   if(initialPoin!==undefined){
-    slotPoints[slotNum]=initialPoin;
+    slotPoints[slotNum]=Number(initialPoin)||0;
   }
 
   countElem.innerText=formatPoin(slotPoints[slotNum]);
-
   coinBadge.style.display='flex';
 
   if(nameInput){
-
     nameText.innerText=nameInput;
     namePill.style.display='flex';
     mic.style.display='flex';
 
-    const muteStatus=getMuteStatus(data);
+    const status=getMuteStatus(data);
 
-    if(muteStatus!==null){
-      updateMicStatus(slotNum,muteStatus);
+    if(status!==null){
+      updateMicStatus(slotNum,status);
     }else if(slotMuteStates[slotNum]!==undefined){
       updateMicStatus(slotNum,slotMuteStates[slotNum]);
     }else{
@@ -1077,19 +956,15 @@ function updateSlotDisplay(data){
   }
 
   if(profileImg){
-
     icon.style.display='none';
     req.style.display='none';
 
     img.onload=()=>{
-      if(img.src===profileImg){
-        slotBox.classList.add('has-photo');
-      }
+      slotBox.classList.add('has-photo');
     };
 
     img.onerror=()=>{
       slotBox.classList.remove('has-photo');
-      slotBox.style.background='#22242a';
     };
 
     img.src=profileImg;
@@ -1097,44 +972,36 @@ function updateSlotDisplay(data){
 
     bg.src=profileImg;
     bg.style.display='block';
-
     bgOverlay.style.display='block';
   }
 }
 
+/* BADGE GIFT */
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
+  if(!badgeSrc||!slotNum)return;
 
-  if(!badgeSrc||!slotNum) return;
+  const badge=$(`topbadge-slot-${slotNum}`);
+  if(!badge)return;
 
-  const topBadge=$(`topbadge-slot-${slotNum}`);
+  clearTimeout(badgeTimers[slotNum]);
 
-  if(!topBadge) return;
-
-  if(badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
-
-  topBadge.src=badgeSrc;
-  topBadge.style.display='block';
+  badge.src=badgeSrc;
+  badge.style.display='block';
 
   badgeTimers[slotNum]=setTimeout(()=>{
-
-    topBadge.style.display='none';
-    topBadge.removeAttribute('src');
-
+    badge.style.display='none';
+    badge.removeAttribute('src');
     delete badgeTimers[slotNum];
-
   },5000);
 }
 
 /* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src,repeatCount=1){
-
-  if(!src) return;
-
-  const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
+  if(!src)return;
 
   giftVideoQueue.push({
     src,
-    remaining:count,
+    remaining:Math.max(1,Math.min(999,Number(repeatCount)||1)),
     isBlob:src.startsWith('blob:')
   });
 
@@ -1142,82 +1009,58 @@ function queueGiftVideo(src,repeatCount=1){
 }
 
 function playNextGiftVideo(){
-
-  if(giftVideoQueueBusy || giftVideoQueue.length===0) return;
+  if(giftVideoQueueBusy||!giftVideoQueue.length)return;
 
   giftVideoQueueBusy=true;
-
   const item=giftVideoQueue[0];
 
   playGiftVideo(item.src,()=>{
-
     item.remaining--;
 
     if(item.remaining>0){
-
       giftVideoQueueBusy=false;
-
       setTimeout(playNextGiftVideo,50);
-
     }else{
-
       giftVideoQueue.shift();
 
       if(item.isBlob){
-        try{
-          URL.revokeObjectURL(item.src);
-        }catch(e){}
+        try{URL.revokeObjectURL(item.src)}catch(e){}
       }
 
       giftVideoQueueBusy=false;
-
       setTimeout(playNextGiftVideo,50);
-
     }
-
   });
 }
 
 function getGiftComboKey(data){
-
   const sender=String(data.senderName||data.username||'user').toLowerCase();
-
   const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
-
-  return`${sender}::${gift}`;
+  return sender+'::'+gift;
 }
 
 async function resolveGiftVideo(data){
-
-  if(data.videoBlob){
-    return URL.createObjectURL(data.videoBlob);
-  }
+  if(data.videoBlob)return URL.createObjectURL(data.videoBlob);
 
   if(data.giftId){
-
     const blob=await getSavedVideo(data.giftId);
-
-    if(blob) return URL.createObjectURL(blob);
-
+    if(blob)return URL.createObjectURL(blob);
   }
 
-  if(data.src) return data.src;
-
+  if(data.src)return data.src;
   return null;
 }
 
 function receiveGiftForCombo(data){
-
   const key=getGiftComboKey(data);
 
-  const rawCumulative=data.repeatCount??data.comboCount??data.repeat_count??data.combo_count;
+  const raw=data.repeatCount??data.comboCount??
+    data.repeat_count??data.combo_count;
 
-  const cumulativeCount=Number(rawCumulative);
-
+  const cumulative=Number(raw);
   let group=giftComboGroups.get(key);
 
   if(!group){
-
     group={
       data:{...data},
       count:0,
@@ -1226,177 +1069,120 @@ function receiveGiftForCombo(data){
       revision:0,
       videoPromise:Promise.resolve()
     };
-
     giftComboGroups.set(key,group);
   }
 
   group.revision++;
-
   group.data={...group.data,...data};
 
-  if(Number.isFinite(cumulativeCount)&&cumulativeCount>0){
-
-    group.count=Math.max(group.count,Math.floor(cumulativeCount));
-
+  if(Number.isFinite(cumulative)&&cumulative>0){
+    group.count=Math.max(group.count,Math.floor(cumulative));
   }else{
-
     group.count+=Math.max(1,Math.floor(Number(data.giftCount)||1));
-
   }
 
   clearTimeout(group.timer);
 
   group.videoPromise=group.videoPromise.then(async()=>{
+    const src=await resolveGiftVideo(data);
 
-    const resolvedSrc=await resolveGiftVideo(data);
-
-    if(resolvedSrc){
-
-      if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
-
-        try{
-          URL.revokeObjectURL(group.src);
-        }catch(e){}
-
+    if(src){
+      if(group.src?.startsWith('blob:')&&group.src!==src){
+        URL.revokeObjectURL(group.src);
       }
-
-      group.src=resolvedSrc;
-
+      group.src=src;
     }
+  }).catch(console.error);
 
-  }).catch(err=>console.error('Gagal memuat video gift:',err));
-
-  const finishCombo=async()=>{
-
-    const finishingRevision=group.revision;
-
+  const finish=async()=>{
+    const revision=group.revision;
     await group.videoPromise;
 
-    if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision) return;
+    if(giftComboGroups.get(key)!==group||group.revision!==revision)return;
 
     giftComboGroups.delete(key);
 
     if(group.src){
-      queueGiftVideo(group.src,Math.max(1,group.count));
+      queueGiftVideo(group.src,group.count);
     }
   };
 
-  const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
+  const ended=data.repeatEnd===true||
+    data.repeat_end===true||
+    data.comboEnd===true||
+    data.combo_end===true;
 
-  group.timer=setTimeout(finishCombo,comboEnded?0:900);
+  group.timer=setTimeout(finish,ended?0:900);
 }
 
 /* BROADCAST CHANNEL */
 function handleIncomingMessage(data){
-
-  if(!data) return;
+  if(!data)return;
 
   if(data.type==='TRIGGER_DISPLAY_CAMERA'){
-
-    if(data.action==='start') startDisplayDirectCamera();
-    else if(data.action==='stop') stopDisplayDirectCamera();
-
+    if(data.action==='start')startDisplayDirectCamera();
+    else if(data.action==='stop')stopDisplayDirectCamera();
   }
 
   else if(data.type==='SET_HOST_VIDEO'){
-
     stopDisplayDirectCamera();
-
-    const camImg=$('hostCameraImg');
-
-    camImg.style.display='none';
-
+    $('hostCameraImg').style.display='none';
     releaseHostObjectURL();
 
     if(data.videoBlob){
-
       hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
-
       setupSeamlessHostVideo(hostMediaObjectURL);
-
-      $('hostPlaceholder').style.display='none';
-
     }else if(data.src||data.videoUrl){
-
       setupSeamlessHostVideo(data.src||data.videoUrl);
-
-      $('hostPlaceholder').style.display='none';
-
     }
-
   }
 
   else if(data.type==='RESET_HOST_MEDIA'){
-
     stopDisplayDirectCamera();
-
     stopHostSeamlessLoop();
-
-    const camImg=$('hostCameraImg');
-
     releaseHostObjectURL();
-
-    camImg.style.display='none';
-
-    $('hostPlaceholder').style.display='none';
-
+    $('hostCameraImg').style.display='none';
   }
 
   else if(data.type==='UPDATE_SLOT'){
-
     updateSlotDisplay(data);
-
   }
 
   else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
-
     const slotNum=Number(data.slotNum);
 
     if(slotNum>=1&&slotNum<=8){
-
       const status=getMuteStatus(data);
 
       if(status!==null){
-
         slotMuteStates[slotNum]=status;
-
         const mic=$(`mic-slot-${slotNum}`);
 
         if(mic){
           mic.style.display='flex';
           updateMicStatus(slotNum,status);
         }
-
       }
-
     }
-
   }
 
   else if(data.type==='PLAY_GIFT'){
+    const target=Number(data.targetSlot);
 
-    const targetSlot=Number(data.targetSlot);
+    if(target&&slotPoints[target]!==undefined){
+      slotPoints[target]+=Number(data.increment||0);
 
-    if(targetSlot&&slotPoints[targetSlot]!==undefined){
+      $(`coincount-slot-${target}`).innerText=
+        formatPoin(slotPoints[target]);
 
-      slotPoints[targetSlot]+=Number(data.increment||0);
-
-      const countElem=$(`coincount-slot-${targetSlot}`);
-
-      if(countElem){
-        countElem.innerText=formatPoin(slotPoints[targetSlot]);
-      }
-
-      const badge=$(`coin-badge-${targetSlot}`);
-
-      if(badge) badge.style.display='flex';
-
+      $(`coin-badge-${target}`).style.display='flex';
     }
 
-    if(data.badgeImg) showGiftBadgeTemporarily(targetSlot,data.badgeImg);
+    if(data.badgeImg){
+      showGiftBadgeTemporarily(target,data.badgeImg);
+    }
 
     receiveGiftForCombo(data);
-
   }
 }
 
@@ -1409,13 +1195,12 @@ let reconnectDelay=1000;
 let manuallyClosed=false;
 
 function connectWebSocket(){
+  if(manuallyClosed)return;
 
-  if(manuallyClosed) return;
-
-  if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN)) return;
+  if(ws&&(ws.readyState===WebSocket.CONNECTING||
+    ws.readyState===WebSocket.OPEN))return;
 
   try{
-
     const protocol=location.protocol==='https:'?'wss:':'ws:';
 
     ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
@@ -1425,78 +1210,53 @@ function connectWebSocket(){
     };
 
     ws.onmessage=event=>{
-
       try{
-
         const d=JSON.parse(event.data);
 
         if(d.type==='gift'){
-
           handleIncomingMessage({
-
             type:'PLAY_GIFT',
-
             targetSlot:1,
-
             increment:Number(d.coins||1),
-
             badgeImg:d.giftImage||'',
-
             giftTitle:d.giftName||'Gift',
-
             senderName:d.nickname||d.username||'User',
-
             senderAvatar:d.avatar||'',
-
             giftId:d.giftId||d.gift_id||d.id||'',
-
-            repeatCount:d.repeatCount??d.repeat_count??d.comboCount??d.combo_count,
-
+            repeatCount:d.repeatCount??d.repeat_count??
+              d.comboCount??d.combo_count,
             giftCount:d.giftCount??d.gift_count,
-
-            repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
-
+            repeatEnd:d.repeatEnd??d.repeat_end??
+              d.comboEnd??d.combo_end,
             videoBlob:d.videoBlob,
-
             src:d.src||d.videoUrl||d.video_url||''
-
           });
-
         }
-
-      }catch(err){}
-
+      }catch(err){
+        console.error('WebSocket data error:',err);
+      }
     };
 
-    ws.onerror=err=>{};
+    ws.onerror=()=>{};
 
     ws.onclose=()=>{
-
       ws=null;
-
-      if(manuallyClosed) return;
+      if(manuallyClosed)return;
 
       clearTimeout(reconnectTimer);
-
       reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-
       reconnectDelay=Math.min(reconnectDelay*1.5,10000);
-
     };
 
   }catch(err){
-
     clearTimeout(reconnectTimer);
-
     reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-
   }
 }
 
 connectWebSocket();
 
-/* RENDERER VIDEO GIFT */
-let glReady=false;
+/* RENDER VIDEO GIFT */
 let renderActive=false;
 let renderFrameId=null;
 let videoFrameCallbackId=null;
@@ -1508,10 +1268,7 @@ const giftCanvas=$('giftCanvas');
 const giftVideo=$('giftVideo');
 const giftOverlay=$('giftOverlayContainer');
 
-let canvas2D=null;
-
 function stopGiftRenderer(){
-
   renderActive=false;
 
   if(renderFrameId!==null){
@@ -1527,106 +1284,64 @@ function stopGiftRenderer(){
 }
 
 function renderGiftFrame(){
-
-  if(!renderActive) return;
+  if(!renderActive)return;
 
   const video=giftVideo;
 
   if(video.ended){
-
-    if(activeFinishHandler) activeFinishHandler();
-
+    if(activeFinishHandler)activeFinishHandler();
     return;
   }
 
-  if(video.readyState < video.HAVE_CURRENT_DATA){
-
+  if(video.readyState<video.HAVE_CURRENT_DATA){
     scheduleGiftFrame();
-
     return;
   }
 
   if(video.currentTime!==lastVideoTime){
-
     lastVideoTime=video.currentTime;
 
     if(glReady&&gl){
-
       try{
-
         gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
         gl.texImage2D(
-          gl.TEXTURE_2D,
-          0,
-          gl.RGBA,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          video
+          gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,
+          gl.UNSIGNED_BYTE,video
         );
-
         gl.drawArrays(gl.TRIANGLES,0,6);
-
       }catch(e){}
-
     }else if(canvas2D){
-
       try{
-
-        canvas2D.drawImage(
-          video,
-          0,
-          0,
-          giftCanvas.width,
-          giftCanvas.height
-        );
-
+        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
       }catch(e){}
-
     }
 
-    if(!giftOverlay.classList.contains('visible')){
-      giftOverlay.classList.add('visible');
-    }
-
+    giftOverlay.classList.add('visible');
   }
 
   scheduleGiftFrame();
 }
 
 function scheduleGiftFrame(){
-
-  if(!renderActive) return;
+  if(!renderActive)return;
 
   if(giftVideo.requestVideoFrameCallback){
-
     videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
-
       videoFrameCallbackId=null;
-
       renderGiftFrame();
-
     });
-
   }else{
-
     renderFrameId=requestAnimationFrame(()=>{
-
       renderFrameId=null;
-
       renderGiftFrame();
-
     });
-
   }
 }
 
 function playGiftVideo(src,onFinished){
-
   const video=giftVideo;
   const canvas=giftCanvas;
   const overlay=giftOverlay;
-
   const generation=++giftVideoGeneration;
 
   let finished=false;
@@ -1635,62 +1350,42 @@ function playGiftVideo(src,onFinished){
   stopGiftRenderer();
 
   function finish(){
-
-    if(finished) return;
+    if(finished)return;
 
     finished=true;
-
     activeFinishHandler=null;
-
     clearTimeout(safetyTimer);
 
-    if(generation!==giftVideoGeneration) return;
+    if(generation!==giftVideoGeneration)return;
 
     overlay.classList.remove('visible');
 
     setTimeout(()=>{
-
-      if(generation!==giftVideoGeneration) return;
+      if(generation!==giftVideoGeneration)return;
 
       stopGiftRenderer();
-
       overlay.style.display='none';
 
       video.onended=null;
       video.onerror=null;
       video.onloadedmetadata=null;
 
-      try{
-
-        video.pause();
-
-        video.removeAttribute('src');
-
-        video.load();
-
-      }catch(e){}
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
 
       if(gl){
-
         try{
-
           gl.clearColor(0,0,0,0);
-
           gl.clear(gl.COLOR_BUFFER_BIT);
-
         }catch(e){}
-
       }
 
       if(canvas2D){
-
-        try{
-          canvas2D.clearRect(0,0,canvas.width,canvas.height);
-        }catch(e){}
-
+        canvas2D.clearRect(0,0,canvas.width,canvas.height);
       }
 
-      if(typeof onFinished==='function') onFinished();
+      if(typeof onFinished==='function')onFinished();
 
     },200);
   }
@@ -1698,48 +1393,33 @@ function playGiftVideo(src,onFinished){
   activeFinishHandler=finish;
 
   overlay.style.display='block';
-
   overlay.classList.remove('visible');
 
-  try{
-
-    video.pause();
-
-    video.removeAttribute('src');
-
-    video.load();
-
-  }catch(e){}
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
 
   video.src=src;
-
   video.muted=false;
   video.volume=1;
-
   video.onended=finish;
   video.onerror=finish;
 
   glReady=initWebGL(canvas);
-
   canvas2D=null;
 
   if(!glReady){
-
     try{
       canvas2D=canvas.getContext('2d');
     }catch(e){}
-
   }
 
   safetyTimer=setTimeout(()=>{
-
-    if(!finished) finish();
-
+    if(!finished)finish();
   },12000);
 
   video.onloadedmetadata=async()=>{
-
-    if(finished||generation!==giftVideoGeneration) return;
+    if(finished||generation!==giftVideoGeneration)return;
 
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
@@ -1750,94 +1430,68 @@ function playGiftVideo(src,onFinished){
       1920/originalHeight
     );
 
-    const renderWidth=Math.max(1,Math.round(originalWidth*scale));
-    const renderHeight=Math.max(1,Math.round(originalHeight*scale));
+    const width=Math.max(1,Math.round(originalWidth*scale));
+    const height=Math.max(1,Math.round(originalHeight*scale));
 
-    canvas.width=renderWidth;
-    canvas.height=renderHeight;
+    canvas.width=width;
+    canvas.height=height;
 
     if(video.duration&&Number.isFinite(video.duration)){
-
       clearTimeout(safetyTimer);
 
       safetyTimer=setTimeout(()=>{
-
-        if(!finished) finish();
-
-      },(video.duration*1000)+1500);
-
+        if(!finished)finish();
+      },video.duration*1000+1500);
     }
 
     if(glReady&&gl){
-
-      gl.viewport(0,0,renderWidth,renderHeight);
-
+      gl.viewport(0,0,width,height);
       gl.useProgram(glProgram);
 
       const posLoc=gl.getAttribLocation(glProgram,'a_pos');
-
       gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
-
       gl.enableVertexAttribArray(posLoc);
-
       gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
       const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-
       gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
-
       gl.enableVertexAttribArray(texLoc);
-
       gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
       gl.activeTexture(gl.TEXTURE0);
-
       gl.bindTexture(gl.TEXTURE_2D,glTexture);
-
       gl.clearColor(0,0,0,0);
-
       gl.clear(gl.COLOR_BUFFER_BIT);
 
     }else if(canvas2D){
-
-      canvas2D.clearRect(0,0,renderWidth,renderHeight);
-
+      canvas2D.clearRect(0,0,width,height);
     }
 
     lastVideoTime=-1;
 
     try{
-
       await video.play();
 
-      if(finished||generation!==giftVideoGeneration) return;
+      if(finished||generation!==giftVideoGeneration)return;
 
       renderActive=true;
-
       renderGiftFrame();
 
     }catch(err){
-
       video.muted=true;
 
       try{
-
         await video.play();
 
-        if(finished||generation!==giftVideoGeneration) return;
+        if(finished||generation!==giftVideoGeneration)return;
 
         renderActive=true;
-
         renderGiftFrame();
 
       }catch(error){
-
         finish();
-
       }
-
     }
-
   };
 
   video.load();
@@ -1845,62 +1499,45 @@ function playGiftVideo(src,onFinished){
 
 /* CLEANUP */
 window.addEventListener('pagehide',()=>{
-
   manuallyClosed=true;
 
   stopGiftRenderer();
-
   stopHostSeamlessLoop();
 
   if(displayCamStream){
-
-    displayCamStream.getTracks().forEach(track=>track.stop());
-
+    displayCamStream.getTracks().forEach(t=>t.stop());
     displayCamStream=null;
-
   }
 
   if(ws){
-
     ws.close();
-
     ws=null;
-
   }
 
   clearTimeout(reconnectTimer);
 
-  for(const timer of Object.values(badgeTimers)){
-    clearTimeout(timer);
-  }
+  Object.values(badgeTimers).forEach(clearTimeout);
 
   for(const group of giftComboGroups.values()){
-
     clearTimeout(group.timer);
 
     if(group.src?.startsWith('blob:')){
       URL.revokeObjectURL(group.src);
     }
-
   }
 
   giftComboGroups.clear();
 
   giftVideoQueue.forEach(item=>{
-
-    if(item.isBlob){
-      URL.revokeObjectURL(item.src);
-    }
-
+    if(item.isBlob)URL.revokeObjectURL(item.src);
   });
 
   giftVideoQueue.length=0;
 
   releaseHostObjectURL();
-
   channel.close();
-
 });
 </script>
+
 </body>
 </html>
