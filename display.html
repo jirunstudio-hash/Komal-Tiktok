@@ -48,13 +48,30 @@ aspect-ratio:16 / 10;
 flex-shrink:0;
 z-index:2;
 background:#292c34;
-border:1px solid rgba(255,255,255,.07);
+border:1px solid #168cff;
 border-radius:12px;
 overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
 align-items:center;
+animation:hostBlueBlink 1.4s ease-in-out infinite;
+}
+
+@keyframes hostBlueBlink{
+0%,100%{
+border-color:rgba(22,140,255,.35);
+box-shadow:
+0 0 3px rgba(22,140,255,.25),
+inset 0 0 2px rgba(22,140,255,.12);
+}
+50%{
+border-color:#168cff;
+box-shadow:
+0 0 7px rgba(22,140,255,.95),
+0 0 15px rgba(22,140,255,.65),
+inset 0 0 7px rgba(22,140,255,.25);
+}
 }
 
 .unmute-hint{
@@ -195,22 +212,28 @@ z-index:2;
 pointer-events:none;
 }
 
+/* IKON PLUS ABU-ABU TIMBUL */
 .slot-plus-svg{
 width:24px;
 height:24px;
-stroke:#a1a5ae;
+stroke:#b4b8c2;
 stroke-width:2.6;
 stroke-linecap:round;
 z-index:3;
 margin-bottom:6px;
+filter:drop-shadow(0 1px 2px rgba(0,0,0,.9));
 }
 
+/* TEKS PERMINTAAN ABU-ABU TIMBUL */
 .slot-req{
-color:#a1a5ae;
+color:#b4b8c2;
 font-size:.70rem;
 font-weight:400;
 letter-spacing:.2px;
 z-index:3;
+text-shadow:
+0 1px 1px rgba(0,0,0,.95),
+0 -1px 1px rgba(255,255,255,.10);
 }
 
 .slot-circle-img{
@@ -245,7 +268,6 @@ z-index:6;
 box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
 
-/* LINGKARAN BIRU DENGAN GARIS PUTIH */
 .cyan-diamond-circle{
 width:14px;
 height:14px;
@@ -261,7 +283,6 @@ overflow:hidden;
 box-shadow:0 0 0 1px rgba(255,255,255,.25);
 }
 
-/* BINTANG PUTIH TEPAT DI TENGAH */
 .star-svg{
 width:100%;
 height:100%;
@@ -279,7 +300,6 @@ margin:0;
 transform:translateY(-.2px);
 }
 
-/* ANGKA POIN NORMAL SEPERTI TIKTOK */
 .coin-count{
 font-family:Arial,Helvetica,sans-serif;
 font-size:10px;
@@ -867,7 +887,6 @@ async function getSavedVideo(id){
   }
 }
 
-/* FORMAT ANGKA KOIN OTOMATIS: 45.0K / 1.2M */
 function formatPoin(val){
   const number=Number(val);
 
