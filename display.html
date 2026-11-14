@@ -112,15 +112,13 @@ z-index:4
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT (MUNCUL DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) */
+/* OVERLAY VIDEO ANIMASI GIFT (POSISI DI ATAS, TANPA GREEN SCREEN, TIDAK MENUTUP KOTAK 1-8) */
 .gift-overlay{
 position:absolute;
-bottom:70px;
+top:8px;
 left:6px;
 right:6px;
-height:33%;
-min-height:200px;
-max-height:290px;
+aspect-ratio:16 / 10;
 z-index:20;
 pointer-events:none;
 display:none;
@@ -417,14 +415,14 @@ box-shadow:none!important
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- 8 KOTAK TENGAH (2 BARIS x 4 KOLOM, AGAK ABU) -->
-  <div class="live-layout">
-    <div class="komal-grid" id="komalGrid"></div>
-  </div>
-
-  <!-- OVERLAY VIDEO ANIMASI GIFT (DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT (KELUAR ASLI, POSISI DI ATAS, TANPA GREEN SCREEN) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
+  </div>
+
+  <!-- 8 KOTAK BAWAH (2 BARIS x 4 KOLOM, AGAK ABU) -->
+  <div class="live-layout">
+    <div class="komal-grid" id="komalGrid"></div>
   </div>
 
 </div>
