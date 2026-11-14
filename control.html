@@ -223,6 +223,24 @@
                 <span id="remoteHostStatus" style="font-size:0.65rem; color:#aaa; font-weight:normal;">Host Standby</span>
             </h3>
 
+            <!-- DETEKSI NAMA & USERNAME HOST -->
+            <div class="host-media-box" style="margin-bottom: 10px;">
+                <div class="host-media-title">👤 Nama Host TikTok (Deteksi Otomatis)</div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <input type="text" id="hostUsernameInput" placeholder="Masukkan username TikTok host (contoh: @nama)" style="flex:1; min-width:160px;">
+                    <button id="btnDetectHost" class="btn-tiktok" onclick="detectHostTikTokUser()">🔍 Deteksi Host</button>
+                    <button class="btn-red" style="padding: 9px 11px; font-size:0.75rem;" onclick="resetHostName()" title="Reset Nama Host">✖</button>
+                </div>
+                <div id="hostProfilePreview" class="profile-preview" style="margin-top:4px;">
+                    <img id="hostPrevImg" src="" alt="Avatar Host" referrerpolicy="no-referrer">
+                    <div class="profile-meta" style="flex:1; min-width:0;">
+                        <b id="hostPrevNick" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Nama Host</b>
+                        <span id="hostPrevUser">@username</span>
+                    </div>
+                    <span id="hostDetectBadge" style="font-size:0.7rem; color:#10b981; font-weight:700;">✅ Tampil di Display</span>
+                </div>
+            </div>
+
             <div class="host-media-container">
                 <div class="host-media-box">
                     <div class="host-media-title">📷 Opsi A: Kamera Langsung (On-Cam)</div>
@@ -371,6 +389,122 @@
     <script>
         const channel = new BroadcastChannel('tiktok_live_channel');
 
+        // ================= DETEKSI & TAMPILKAN NAMA HOST =================
+        function applyHostProfileUI(info) {
+            const preview = document.getElementById('hostProfilePreview');
+            const img = document.getElementById('hostPrevImg');
+            const nick = document.getElementById('hostPrevNick');
+            const user = document.getElementById('hostPrevUser');
+            const badge = document.getElementById('hostDetectBadge');
+
+            if (!info) {
+                preview.style.display = 'none';
+                img.removeAttribute('src');
+                return;
+            }
+
+            nick.innerText = info.nickname || info.username || 'Host';
+            user.innerText = '@' + (info.username || 'host');
+
+            if (info.avatar) {
+                img.src = info.avatar;
+                img.style.display = 'block';
+                badge.innerText = '✅ Terdeteksi & Tampil';
+                badge.style.color = '#10b981';
+            } else {
+                img.style.display = 'none';
+                img.removeAttribute('src');
+                badge.innerText = '✅ Tampil (Manual)';
+                badge.style.color = '#fcd34d';
+            }
+
+            preview.style.display = 'flex';
+        }
+
+        async function detectHostTikTokUser() {
+            const inputElem = document.getElementById('hostUsernameInput');
+            const inputVal = inputElem.value.trim();
+            if (!inputVal) return;
+
+            const cleanUser = inputVal.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, '')
+                                      .replace(/^@/, '')
+                                      .split(/[/?#]/)[0].trim();
+            if (!cleanUser) return;
+
+            const btn = document.getElementById('btnDetectHost');
+            btn.innerText = '⏳ Mencari...';
+            btn.disabled = true;
+
+            let hostInfo = null;
+            try {
+                const data = await requestTikwmUser(cleanUser);
+                hostInfo = {
+                    username: data.username,
+                    nickname: data.nickname,
+                    avatar: data.avatar
+                };
+            } catch (err) {
+                hostInfo = {
+                    username: cleanUser,
+                    nickname: cleanUser,
+                    avatar: ''
+                };
+            } finally {
+                btn.innerText = '🔍 Deteksi Host';
+                btn.disabled = false;
+            }
+
+            applyHostProfileUI(hostInfo);
+            try {
+                localStorage.setItem('host_profile_info', JSON.stringify(hostInfo));
+            } catch (e) {}
+
+            channel.postMessage({
+                type: 'SET_HOST_INFO',
+                username: hostInfo.username,
+                nickname: hostInfo.nickname,
+                avatar: hostInfo.avatar
+            });
+        }
+
+        function resetHostName() {
+            document.getElementById('hostUsernameInput').value = '';
+            applyHostProfileUI(null);
+            try {
+                localStorage.removeItem('host_profile_info');
+            } catch (e) {}
+
+            channel.postMessage({
+                type: 'SET_HOST_INFO',
+                action: 'clear'
+            });
+        }
+
+        document.getElementById('hostUsernameInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                detectHostTikTokUser();
+            }
+        });
+
+        function restoreSavedHostInfo() {
+            try {
+                const saved = localStorage.getItem('host_profile_info');
+                if (!saved) return;
+                const info = JSON.parse(saved);
+                if (info && (info.nickname || info.username)) {
+                    document.getElementById('hostUsernameInput').value = info.username || '';
+                    applyHostProfileUI(info);
+                    channel.postMessage({
+                        type: 'SET_HOST_INFO',
+                        username: info.username || '',
+                        nickname: info.nickname || info.username || 'Host',
+                        avatar: info.avatar || ''
+                    });
+                }
+            } catch (e) {}
+        }
+
         // ================= SOUND CONTROL (TEROMPET & MUSIK) =================
         const hornAudio = document.getElementById("hornAudio");
         const musicAudio = document.getElementById("musicAudio");
@@ -389,7 +523,6 @@
                 setTimeout(() => { status.innerText = "Audio Standby"; status.style.color = "#aaa"; }, 2000);
             }
 
-            // Kirim sinyal broadcast jika display juga ingin membunyikan
             channel.postMessage({ type: 'PLAY_SOUND', sound: 'horn' });
         }
 
@@ -1050,6 +1183,7 @@
         // ================= SAAT HALAMAN DIBUKA =================
         window.onload = () => {
             checkHostVideoStatus();
+            restoreSavedHostInfo();
             renderGiftsUI();
             renderSlotList();
         };
