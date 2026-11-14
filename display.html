@@ -106,7 +106,6 @@ z-index:4;
 display:none;
 }
 
-/* VIDEO KECIL HOST */
 .mini-gallery-box{
 position:absolute;
 left:9px;
@@ -150,7 +149,6 @@ letter-spacing:.4px;
 pointer-events:none;
 }
 
-/* IKON DI ATAS VIDEO KECIL TANPA KOTAK */
 .host-icon-animation{
 position:absolute;
 left:9px;
@@ -217,10 +215,6 @@ opacity:0;
 background:transparent;
 transition:opacity .22s cubic-bezier(.25,1,.5,1);
 will-change:opacity;
-}
-
-.gift-overlay.visible{
-opacity:1;
 }
 
 .gift-bottom-backdrop{
@@ -394,11 +388,6 @@ line-height:1;
 white-space:nowrap;
 }
 
-@keyframes popGiftBadge{
-0%{transform:scale(.5);opacity:0}
-100%{transform:scale(1);opacity:1}
-}
-
 .slot-top-badge{
 position:absolute;
 top:5px;
@@ -411,6 +400,11 @@ object-fit:contain;
 filter:drop-shadow(0 2px 5px rgba(0,0,0,.85));
 pointer-events:none;
 animation:popGiftBadge .3s ease-out;
+}
+
+@keyframes popGiftBadge{
+0%{transform:scale(.5);opacity:0}
+100%{transform:scale(1);opacity:1}
 }
 
 .slot-name-pill{
@@ -566,13 +560,51 @@ let giftVideoQueueBusy = false;
 const $ = id => document.getElementById(id);
 const komalGrid = $('komalGrid');
 
-/* VIDEO KECIL HOST */
+/* =========================================
+   PENGATURAN VOLUME OTOMATIS HOST
+========================================= */
+
+const HOST_VOLUME_NORMAL = 1.0;
+const HOST_VOLUME_DURING_GIFT = 0.5;
+
+let giftVolumeDucked = false;
+
+function setHostVolume(volume){
+const v1=$('hostVideo');
+const v2=$('hostVideo2');
+
+[v1,v2].forEach(video=>{
+if(video){
+video.volume=volume;
+}
+});
+}
+
+function lowerHostVolumeForGift(){
+giftVolumeDucked=true;
+setHostVolume(HOST_VOLUME_DURING_GIFT);
+}
+
+function restoreHostVolumeAfterGift(){
+giftVolumeDucked=false;
+setHostVolume(HOST_VOLUME_NORMAL);
+}
+
+function getCurrentHostVolume(){
+return giftVolumeDucked
+?HOST_VOLUME_DURING_GIFT
+:HOST_VOLUME_NORMAL;
+}
+
+/* =========================================
+   VIDEO KECIL HOST
+========================================= */
+
 function setMiniHostVideo(blobOrSrc){
 const video=$('miniGalleryVideo');
 const placeholder=$('miniGalleryPlaceholder');
 if(!video||!placeholder)return;
 
-/* Jangan timpa kamera realtime yang sedang aktif */
 if(displayCamStream &&
 displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
 return;
@@ -611,7 +643,6 @@ const video=$('miniGalleryVideo');
 const placeholder=$('miniGalleryPlaceholder');
 if(!video||!placeholder)return;
 
-/* Jangan matikan kamera yang sedang aktif */
 if(displayCamStream &&
 displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
 return;
@@ -630,7 +661,10 @@ miniHostVideoURL=null;
 }
 }
 
-/* LIMA PASANG IKON */
+/* =========================================
+   ANIMASI IKON HOST
+========================================= */
+
 const hostIconPairs=[
 {
 first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp',
@@ -693,7 +727,10 @@ hostIconTimer=null;
 
 startHostIconAnimation();
 
-/* BUAT 8 SLOT */
+/* =========================================
+   BUAT 8 SLOT
+========================================= */
+
 for(let i=1;i<=8;i++){
 slotPoints[i]=0;
 
@@ -739,7 +776,10 @@ komalGrid.insertAdjacentHTML('beforeend',`
 `);
 }
 
-/* KLIK HOST BESAR */
+/* =========================================
+   KLIK HOST BESAR
+========================================= */
+
 function handleHostBoxClick(){
 if(hostLoopActive){
 hostAudioWanted=true;
@@ -749,9 +789,10 @@ const activeVid=activeHostVid===1?v1:v2;
 const inactiveVid=activeHostVid===1?v2:v1;
 
 activeVid.muted=false;
-activeVid.volume=1;
+activeVid.volume=getCurrentHostVolume();
 inactiveVid.muted=true;
-inactiveVid.volume=1;
+inactiveVid.volume=getCurrentHostVolume();
+
 if(activeVid.paused)activeVid.play().catch(()=>{});
 $('unmuteHint').style.display='none';
 return;
@@ -780,7 +821,10 @@ mic.classList.toggle('is-unmuted',!Boolean(status));
 mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
-/* LOOP VIDEO HOST BESAR */
+/* =========================================
+   LOOP VIDEO HOST BESAR
+========================================= */
+
 function setupSeamlessHostVideo(url){
 stopHostSeamlessLoop();
 
@@ -796,9 +840,9 @@ v1.loop=false;
 v2.loop=false;
 
 v1.muted=false;
-v1.volume=1;
+v1.volume=getCurrentHostVolume();
 v2.muted=true;
-v2.volume=1;
+v2.volume=getCurrentHostVolume();
 hostAudioWanted=true;
 
 v1.style.display='block';
@@ -831,7 +875,7 @@ const next=activeHostVid===1?v2:v1;
 
 next.currentTime=0;
 next.muted=!hostAudioWanted;
-next.volume=1;
+next.volume=getCurrentHostVolume();
 
 next.play().then(()=>{
 current.muted=true;
@@ -899,7 +943,10 @@ v.style.display='none';
 });
 }
 
-/* ONCAM: KAMERA REALTIME DI KOTAK KECIL */
+/* =========================================
+   ONCAM: KAMERA REALTIME DI KOTAK KECIL
+========================================= */
+
 async function startDisplayDirectCamera(){
 if(cameraStarting)return;
 
@@ -928,7 +975,6 @@ if(!navigator.mediaDevices?.getUserMedia){
 throw new Error('Kamera membutuhkan HTTPS atau localhost.');
 }
 
-/* Hentikan video mini biasa sebelum kamera dinyalakan */
 miniVideo.pause();
 miniVideo.srcObject=null;
 miniVideo.removeAttribute('src');
@@ -967,7 +1013,7 @@ cameraStarting=false;
 }
 }
 
-/* OFFCAM: MATIKAN KAMERA */
+/* OFFCAM */
 function stopDisplayDirectCamera(){
 if(displayCamStream){
 displayCamStream.getTracks().forEach(track=>track.stop());
@@ -990,7 +1036,10 @@ placeholder.style.display='none';
 }
 }
 
-/* WEBGL */
+/* =========================================
+   WEBGL VIDEO GIFT
+========================================= */
+
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -1012,6 +1061,7 @@ powerPreference:'high-performance'
 });
 
 if(!gl)return false;
+
 gl.disable(gl.BLEND);
 
 const vsSource=`
@@ -1093,24 +1143,30 @@ gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
 isWebGLSupported=true;
 return true;
+
 }catch(e){
 return false;
 }
 }
 
-/* DATABASE ASSETS */
+/* =========================================
+   DATABASE ASSETS
+========================================= */
+
 const DB_NAME="TikTokStudioStorageDB";
 const STORE_NAME="permanent_assets";
 let dbPromise=null;
 
 function openDB(){
 if(dbPromise)return dbPromise;
+
 dbPromise=new Promise(resolve=>{
 const req=indexedDB.open(DB_NAME,1);
 req.onsuccess=()=>resolve(req.result);
 req.onerror=()=>{dbPromise=null;resolve(null);};
 req.onblocked=()=>{dbPromise=null;resolve(null);};
 });
+
 return dbPromise;
 }
 
@@ -1118,12 +1174,14 @@ async function getSavedVideo(id){
 try{
 const db=await openDB();
 if(!db)return null;
+
 return await new Promise(resolve=>{
 const tx=db.transaction(STORE_NAME,"readonly");
 const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
 req.onsuccess=()=>resolve(req.result);
 req.onerror=()=>resolve(null);
 });
+
 }catch(e){
 return null;
 }
@@ -1137,7 +1195,10 @@ if(number>=1000)return(number/1000).toFixed(1)+'K';
 return Math.floor(number).toString();
 }
 
-/* UPDATE SLOT */
+/* =========================================
+   UPDATE SLOT
+========================================= */
+
 function updateSlotDisplay(data){
 const{slotNum,nameInput,initialPoin,profileImg,action}=data;
 const slotBox=$(`slot-${slotNum}`);
@@ -1231,6 +1292,7 @@ bgOverlay.style.display='block';
 
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
 if(!badgeSrc||!slotNum)return;
+
 const topBadge=$(`topbadge-slot-${slotNum}`);
 if(!topBadge)return;
 
@@ -1246,15 +1308,21 @@ delete badgeTimers[slotNum];
 },5000);
 }
 
-/* ANTRIAN VIDEO GIFT */
+/* =========================================
+   ANTRIAN VIDEO GIFT
+========================================= */
+
 function queueGiftVideo(src,repeatCount=1){
 if(!src)return;
+
 const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
+
 giftVideoQueue.push({
 src,
 remaining:count,
 isBlob:src.startsWith('blob:')
 });
+
 playNextGiftVideo();
 }
 
@@ -1266,14 +1334,17 @@ const item=giftVideoQueue[0];
 
 playGiftVideo(item.src,()=>{
 item.remaining--;
+
 if(item.remaining>0){
 giftVideoQueueBusy=false;
 setTimeout(playNextGiftVideo,50);
 }else{
 giftVideoQueue.shift();
+
 if(item.isBlob){
 try{URL.revokeObjectURL(item.src);}catch(e){}
 }
+
 giftVideoQueueBusy=false;
 setTimeout(playNextGiftVideo,50);
 }
@@ -1288,10 +1359,12 @@ return`${sender}::${gift}`;
 
 async function resolveGiftVideo(data){
 if(data.videoBlob)return URL.createObjectURL(data.videoBlob);
+
 if(data.giftId){
 const blob=await getSavedVideo(data.giftId);
 if(blob)return URL.createObjectURL(blob);
 }
+
 if(data.src)return data.src;
 return null;
 }
@@ -1327,6 +1400,7 @@ clearTimeout(group.timer);
 
 group.videoPromise=group.videoPromise.then(async()=>{
 const resolvedSrc=await resolveGiftVideo(data);
+
 if(resolvedSrc){
 if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
 try{URL.revokeObjectURL(group.src);}catch(e){}
@@ -1338,8 +1412,11 @@ group.src=resolvedSrc;
 const finishCombo=async()=>{
 const finishingRevision=group.revision;
 await group.videoPromise;
+
 if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision)return;
+
 giftComboGroups.delete(key);
+
 if(group.src)queueGiftVideo(group.src,Math.max(1,group.count));
 };
 
@@ -1347,7 +1424,10 @@ const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===
 group.timer=setTimeout(finishCombo,comboEnded?0:900);
 }
 
-/* BROADCAST CHANNEL */
+/* =========================================
+   BROADCAST CHANNEL
+========================================= */
+
 function handleIncomingMessage(data){
 if(!data)return;
 
@@ -1355,8 +1435,8 @@ if(data.type==='TRIGGER_DISPLAY_CAMERA'){
 if(data.action==='start')startDisplayDirectCamera();
 else if(data.action==='stop')stopDisplayDirectCamera();
 }
+
 else if(data.type==='SET_HOST_VIDEO'){
-/* Kamera kecil tidak perlu menggantikan video host besar */
 const camImg=$('hostCameraImg');
 camImg.style.display='none';
 releaseHostObjectURL();
@@ -1370,6 +1450,7 @@ setupSeamlessHostVideo(data.src||data.videoUrl);
 $('hostPlaceholder').style.display='none';
 }
 }
+
 else if(data.type==='RESET_HOST_MEDIA'){
 stopHostSeamlessLoop();
 const camImg=$('hostCameraImg');
@@ -1377,6 +1458,7 @@ releaseHostObjectURL();
 camImg.style.display='none';
 $('hostPlaceholder').style.display='none';
 }
+
 else if(data.type==='SET_MINI_GALLERY_VIDEO'){
 if(data.videoBlob){
 setMiniHostVideo(data.videoBlob);
@@ -1384,19 +1466,25 @@ setMiniHostVideo(data.videoBlob);
 setMiniHostVideo(data.src||data.videoUrl);
 }
 }
+
 else if(data.type==='RESET_MINI_GALLERY_VIDEO'){
 resetMiniHostVideo();
 }
+
 else if(data.type==='UPDATE_SLOT'){
 updateSlotDisplay(data);
 }
+
 else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
 const slotNum=Number(data.slotNum);
+
 if(slotNum>=1&&slotNum<=8){
 const status=getMuteStatus(data);
+
 if(status!==null){
 slotMuteStates[slotNum]=status;
 const mic=$(`mic-slot-${slotNum}`);
+
 if(mic){
 mic.style.display='flex';
 updateMicStatus(slotNum,status);
@@ -1404,24 +1492,32 @@ updateMicStatus(slotNum,status);
 }
 }
 }
+
 else if(data.type==='PLAY_GIFT'){
 const targetSlot=Number(data.targetSlot);
+
 if(targetSlot&&slotPoints[targetSlot]!==undefined){
 slotPoints[targetSlot]+=Number(data.increment||0);
+
 const countElem=$(`coincount-slot-${targetSlot}`);
 if(countElem)countElem.innerText=formatPoin(slotPoints[targetSlot]);
+
 const badge=$(`coin-badge-${targetSlot}`);
 if(badge)badge.style.display='flex';
 }
 
 if(data.badgeImg)showGiftBadgeTemporarily(targetSlot,data.badgeImg);
+
 receiveGiftForCombo(data);
 }
 }
 
 channel.onmessage=event=>handleIncomingMessage(event.data);
 
-/* WEBSOCKET */
+/* =========================================
+   WEBSOCKET
+========================================= */
+
 let ws=null;
 let reconnectTimer=null;
 let reconnectDelay=1000;
@@ -1429,6 +1525,7 @@ let manuallyClosed=false;
 
 function connectWebSocket(){
 if(manuallyClosed)return;
+
 if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN))return;
 
 try{
@@ -1442,6 +1539,7 @@ reconnectDelay=1000;
 ws.onmessage=event=>{
 try{
 const d=JSON.parse(event.data);
+
 if(d.type==='gift'){
 handleIncomingMessage({
 type:'PLAY_GIFT',
@@ -1459,17 +1557,21 @@ videoBlob:d.videoBlob,
 src:d.src||d.videoUrl||d.video_url||''
 });
 }
+
 }catch(err){}
 };
 
 ws.onerror=()=>{};
+
 ws.onclose=()=>{
 ws=null;
 if(manuallyClosed)return;
+
 clearTimeout(reconnectTimer);
 reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
 reconnectDelay=Math.min(reconnectDelay*1.5,10000);
 };
+
 }catch(err){
 clearTimeout(reconnectTimer);
 reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
@@ -1478,7 +1580,10 @@ reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
 
 connectWebSocket();
 
-/* RENDERER VIDEO GIFT */
+/* =========================================
+   RENDERER VIDEO GIFT
+========================================= */
+
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1494,18 +1599,22 @@ let canvas2D=null;
 
 function stopGiftRenderer(){
 renderActive=false;
+
 if(renderFrameId!==null){
 cancelAnimationFrame(renderFrameId);
 renderFrameId=null;
 }
+
 if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
 giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
 }
+
 videoFrameCallbackId=null;
 }
 
 function renderGiftFrame(){
 if(!renderActive)return;
+
 const video=giftVideo;
 
 if(video.ended){
@@ -1557,6 +1666,10 @@ renderGiftFrame();
 }
 }
 
+/* =========================================
+   PUTAR VIDEO GIFT + TURUNKAN VOLUME HOST
+========================================= */
+
 function playGiftVideo(src,onFinished){
 const video=giftVideo;
 const canvas=giftCanvas;
@@ -1565,7 +1678,11 @@ const generation=++giftVideoGeneration;
 
 let finished=false;
 let safetyTimer=null;
+
 stopGiftRenderer();
+
+/* VOLUME HOST LANGSUNG TURUN KE 50% */
+lowerHostVolumeForGift();
 
 function finish(){
 if(finished)return;
@@ -1605,7 +1722,11 @@ canvas2D.clearRect(0,0,canvas.width,canvas.height);
 }catch(e){}
 }
 
+/* VOLUME HOST KEMBALI KE 100% */
+restoreHostVolumeAfterGift();
+
 if(typeof onFinished==='function')onFinished();
+
 },200);
 }
 
@@ -1650,6 +1771,7 @@ canvas.height=renderHeight;
 
 if(video.duration&&Number.isFinite(video.duration)){
 clearTimeout(safetyTimer);
+
 safetyTimer=setTimeout(()=>{
 if(!finished)finish();
 },(video.duration*1000)+1500);
@@ -1673,6 +1795,7 @@ gl.activeTexture(gl.TEXTURE0);
 gl.bindTexture(gl.TEXTURE_2D,glTexture);
 gl.clearColor(0,0,0,0);
 gl.clear(gl.COLOR_BUFFER_BIT);
+
 }else if(canvas2D){
 canvas2D.clearRect(0,0,renderWidth,renderHeight);
 }
@@ -1681,16 +1804,23 @@ lastVideoTime=-1;
 
 try{
 await video.play();
+
 if(finished||generation!==giftVideoGeneration)return;
+
 renderActive=true;
 renderGiftFrame();
+
 }catch(err){
 video.muted=true;
+
 try{
 await video.play();
+
 if(finished||generation!==giftVideoGeneration)return;
+
 renderActive=true;
 renderGiftFrame();
+
 }catch(error){
 finish();
 }
@@ -1700,7 +1830,10 @@ finish();
 video.load();
 }
 
-/* CLEANUP */
+/* =========================================
+   CLEANUP
+========================================= */
+
 function releaseHostObjectURL(){
 if(hostMediaObjectURL){
 URL.revokeObjectURL(hostMediaObjectURL);
@@ -1710,6 +1843,7 @@ hostMediaObjectURL=null;
 
 window.addEventListener('pagehide',()=>{
 manuallyClosed=true;
+
 stopGiftRenderer();
 stopHostSeamlessLoop();
 stopHostIconAnimation();
@@ -1729,15 +1863,18 @@ clearTimeout(timer);
 
 for(const group of giftComboGroups.values()){
 clearTimeout(group.timer);
+
 if(group.src?.startsWith('blob:')){
 URL.revokeObjectURL(group.src);
 }
 }
+
 giftComboGroups.clear();
 
 giftVideoQueue.forEach(item=>{
 if(item.isBlob)URL.revokeObjectURL(item.src);
 });
+
 giftVideoQueue.length=0;
 
 releaseHostObjectURL();
