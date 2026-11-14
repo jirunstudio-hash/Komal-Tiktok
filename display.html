@@ -245,10 +245,11 @@ z-index:6;
 box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
 
-/* LINGKARAN BIRU GARIS PUTIH */
+/* LINGKARAN BIRU DENGAN GARIS PUTIH */
 .cyan-diamond-circle{
 width:14px;
 height:14px;
+min-width:14px;
 background:#168cff;
 border:1px solid #fff;
 border-radius:50%;
@@ -256,26 +257,38 @@ display:flex;
 align-items:center;
 justify-content:center;
 flex-shrink:0;
+overflow:hidden;
 box-shadow:0 0 0 1px rgba(255,255,255,.25);
 }
 
-/* BINTANG SIMBOL ★ */
+/* BINTANG PUTIH TEPAT DI TENGAH */
 .star-svg{
+width:100%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
 color:#fff;
-font-size:10px;
-line-height:1;
+font-family:Arial,Helvetica,sans-serif;
+font-size:9px;
 font-weight:400;
-display:block;
+line-height:1;
+text-align:center;
+padding:0;
+margin:0;
+transform:translateY(-.2px);
 }
 
-/* ANGKA POIN FONT NORMAL */
+/* ANGKA POIN NORMAL SEPERTI TIKTOK */
 .coin-count{
-font-size:.6rem;
-color:#fff;
+font-family:Arial,Helvetica,sans-serif;
+font-size:10px;
 font-weight:400;
-text-shadow:none;
+color:#fff;
 letter-spacing:0;
 line-height:1;
+white-space:nowrap;
+text-shadow:none;
 }
 
 @keyframes popGiftBadge{
@@ -854,11 +867,21 @@ async function getSavedVideo(id){
   }
 }
 
+/* FORMAT ANGKA KOIN OTOMATIS: 45.0K / 1.2M */
 function formatPoin(val){
-  if(!val||val===0) return '0';
-  if(val>=1000000) return (val/1000000).toFixed(1).replace('.',',')+'M';
-  if(val>=1000) return (val/1000).toFixed(1).replace('.',',')+'K';
-  return val.toLocaleString('id-ID');
+  const number=Number(val);
+
+  if(!Number.isFinite(number)||number<=0) return '0';
+
+  if(number>=1000000){
+    return (number/1000000).toFixed(1)+'M';
+  }
+
+  if(number>=1000){
+    return (number/1000).toFixed(1)+'K';
+  }
+
+  return Math.floor(number).toString();
 }
 
 /* UPDATE SLOT */
