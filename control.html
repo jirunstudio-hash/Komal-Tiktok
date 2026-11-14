@@ -23,18 +23,7 @@ button:disabled{opacity:.65;cursor:wait}
 .btn-red{background:#ef4444;color:#fff}
 .btn-red:hover{background:#dc2626}
 .btn-blue{background:#2563eb;color:#fff}
-.btn-tiktok{
-background:#fe2c55;
-color:#fff;
-width:42px;
-min-width:42px;
-height:38px;
-padding:0;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0;
-}
+.btn-tiktok{background:#fe2c55;color:#fff;width:42px;min-width:42px;height:38px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .btn-tiktok:empty{visibility:hidden}
 .profile-preview{display:none;align-items:center;gap:12px;background:#222230;padding:10px 14px;border-radius:8px;margin-top:6px;border:1px solid #38384a}
 .profile-preview img{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #fe2c55;background:#333}
@@ -72,25 +61,10 @@ flex-shrink:0;
 .gift-edit-label{font-size:.62rem;color:#9ca3af;align-self:flex-start}
 .gift-delete-btn{width:100%;background:#991b1b;color:white;padding:6px;font-size:.68rem;border-radius:5px}
 .manual-info{color:#9ca3af;font-size:.68rem;line-height:1.5;margin-top:9px}
-
-/* LOADING BULAT */
-.search-loader{
-width:18px;
-height:18px;
-border:2.5px solid rgba(255,255,255,.25);
-border-top-color:#fff;
-border-right-color:#fff;
-border-radius:50%;
-display:inline-block;
-animation:searchSpin .7s linear infinite;
-}
-@keyframes searchSpin{
-to{transform:rotate(360deg)}
-}
-@media(max-width:420px){
-.manual-gift-form{grid-template-columns:1fr}
-.manual-gift-form .full{grid-column:auto}
-}
+.search-loader{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.25);border-top-color:#fff;border-right-color:#fff;border-radius:50%;display:inline-block;animation:searchSpin .7s linear infinite}
+@keyframes searchSpin{to{transform:rotate(360deg)}}
+.mini-video-info{font-size:.7rem;color:#9ca3af;line-height:1.5}
+@media(max-width:420px){.manual-gift-form{grid-template-columns:1fr}.manual-gift-form .full{grid-column:auto}}
 </style>
 </head>
 
@@ -123,6 +97,41 @@ to{transform:rotate(360deg)}
 <button class="btn-red" style="width:100%;margin-top:10px;font-size:.72rem;padding:6px" onclick="resetHostMediaStandby()">⏹ Reset Layar Host (Standby)</button>
 </div>
 
+<!-- VIDEO KECIL HOST LANDSCAPE -->
+<div class="card" style="border:1.5px solid #168cff">
+<h3 style="color:#38bdf8">🎞️ Video Kecil Host — Landscape</h3>
+
+<div class="host-media-box">
+<div class="host-media-title">📁 Upload Video Kecil (.mp4)</div>
+
+<span class="video-status status-empty" id="miniHostVideoStatus">⚠️ Belum Ada Video Kecil</span>
+
+<label class="file-label" for="miniHostVideoFileInput" style="text-align:center;font-size:.78rem">
+📂 PILIH VIDEO KECIL HOST
+</label>
+
+<input
+type="file"
+id="miniHostVideoFileInput"
+class="hidden-file"
+accept="video/mp4,video/*"
+onchange="uploadMiniHostVideo(event)"
+>
+
+<div class="mini-video-info">
+Video ini akan ditampilkan dalam bentuk landscape di pojok kiri bawah kotak Host utama pada halaman Display.
+</div>
+
+<button class="btn-blue" style="width:100%" onclick="playMiniHostVideoOnDisplay()">
+▶️ PUTAR VIDEO KECIL DI HOST
+</button>
+
+<button class="btn-red" style="width:100%" onclick="resetMiniHostVideo()">
+⏹ HAPUS VIDEO KECIL DARI HOST
+</button>
+</div>
+</div>
+
 <!-- SOUND -->
 <div class="card" style="border:1.5px solid #20d59a">
 <h3 style="color:#20d59a">🎺 Sound Control (Terompet & Musik)</h3>
@@ -141,10 +150,7 @@ to{transform:rotate(360deg)}
 <label>Ketik Username TikTok — Profil muncul otomatis:</label>
 <div style="display:flex;gap:6px">
 <input type="text" id="tiktokUsernameInput" placeholder="Contoh: fazgading atau @user" style="flex:1;min-width:0" autocomplete="off">
-
-<!-- TOMBOL TANPA TEKS -->
 <button id="btnDetectTikTok" class="btn-tiktok" onclick="detectTikTokUser()" aria-label="Status pencarian"></button>
-
 </div>
 <span id="tiktokSearchStatus" style="font-size:.7rem;color:#aaa;margin-top:5px">Ketik username untuk mencari profil otomatis.</span>
 </div>
@@ -160,14 +166,10 @@ to{transform:rotate(360deg)}
 <div class="form-group" style="margin-top:10px">
 <label>Pilih Kotak Tujuan (1 - 8):</label>
 <select id="targetSlotSelect">
-<option value="1">Kotak 1</option>
-<option value="2">Kotak 2</option>
-<option value="3">Kotak 3</option>
-<option value="4">Kotak 4</option>
-<option value="5">Kotak 5</option>
-<option value="6">Kotak 6</option>
-<option value="7">Kotak 7</option>
-<option value="8">Kotak 8</option>
+<option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+<option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+<option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+<option value="7">Kotak 7</option><option value="8">Kotak 8</option>
 </select>
 </div>
 
@@ -181,14 +183,10 @@ to{transform:rotate(360deg)}
 <div class="form-group">
 <label style="color:#fcd34d">Pilih Kotak Penerima Gift:</label>
 <select id="targetSlotGift" style="border-color:#f59e0b">
-<option value="1">Kotak 1</option>
-<option value="2">Kotak 2</option>
-<option value="3">Kotak 3</option>
-<option value="4">Kotak 4</option>
-<option value="5">Kotak 5</option>
-<option value="6">Kotak 6</option>
-<option value="7">Kotak 7</option>
-<option value="8">Kotak 8</option>
+<option value="1">Kotak 1</option><option value="2">Kotak 2</option>
+<option value="3">Kotak 3</option><option value="4">Kotak 4</option>
+<option value="5">Kotak 5</option><option value="6">Kotak 6</option>
+<option value="7">Kotak 7</option><option value="8">Kotak 8</option>
 </select>
 </div>
 
@@ -319,7 +317,19 @@ req.onerror=()=>resolve(null);
 });
 }
 
-/* HOST */
+async function deleteAsset(key){
+const db=await openDB();
+if(!db)return false;
+return new Promise(resolve=>{
+const tx=db.transaction(STORE_NAME,"readwrite");
+tx.objectStore(STORE_NAME).delete(key);
+tx.oncomplete=()=>resolve(true);
+tx.onerror=()=>resolve(false);
+tx.onabort=()=>resolve(false);
+});
+}
+
+/* HOST UTAMA */
 function controlDisplayCamera(action){
 channel.postMessage({type:'TRIGGER_DISPLAY_CAMERA',action});
 document.getElementById('btnRemoteStartCam').style.display=action==='start'?'none':'block';
@@ -348,6 +358,60 @@ document.getElementById('btnRemoteStartCam').style.display='block';
 document.getElementById('btnRemoteStopCam').style.display='none';
 document.getElementById('remoteHostStatus').innerText="Host Standby";
 channel.postMessage({type:'RESET_HOST_MEDIA'});
+}
+
+/* VIDEO KECIL HOST */
+async function uploadMiniHostVideo(e){
+const file=e.target.files[0];
+if(!file)return;
+
+if(!file.type.startsWith('video/')){
+alert('Pilih file video yang benar.');
+e.target.value='';
+return;
+}
+
+const status=document.getElementById('miniHostVideoStatus');
+status.className='video-status status-empty';
+status.innerText='⏳ Menyimpan video...';
+
+const saved=await saveAsset('mini_host_video',file);
+
+if(saved){
+status.className='video-status status-ready';
+status.innerText='✅ Video Kecil Siap';
+}else{
+status.className='video-status status-empty';
+status.innerText='❌ Gagal Menyimpan Video';
+}
+}
+
+async function playMiniHostVideoOnDisplay(){
+const videoFile=await getAsset('mini_host_video');
+
+if(!videoFile){
+alert('Pilih video kecil Host terlebih dahulu!');
+return;
+}
+
+channel.postMessage({
+type:'SET_MINI_GALLERY_VIDEO',
+videoBlob:videoFile
+});
+
+document.getElementById('miniHostVideoStatus').innerText='✅ Video Dikirim ke Display';
+}
+
+async function resetMiniHostVideo(){
+channel.postMessage({type:'RESET_MINI_GALLERY_VIDEO'});
+
+await deleteAsset('mini_host_video');
+
+const status=document.getElementById('miniHostVideoStatus');
+status.className='video-status status-empty';
+status.innerText='⚠️ Belum Ada Video Kecil';
+
+document.getElementById('miniHostVideoFileInput').value='';
 }
 
 /* GIFT */
@@ -389,6 +453,7 @@ function getOriginalGiftName(id){
 const gift=[...GIFTS_DATABASE,...getCustomGifts()].find(g=>g.id===id);
 return gift?gift.title:'';
 }
+
 async function renderGiftsUI(){
 const container=document.getElementById('giftCatalogGrid');
 container.innerHTML='';
@@ -456,6 +521,7 @@ box.appendChild(del);
 container.appendChild(box);
 }
 }
+
 async function uploadGiftVideo(id,e){
 const file=e.target.files[0];
 if(!file)return;
@@ -464,6 +530,7 @@ const status=document.getElementById('status_'+id);
 status.className='video-status '+(saved?'status-ready':'status-empty');
 status.innerText=saved?'✅ Video Siap':'❌ Gagal Menyimpan';
 }
+
 async function addCustomGift(){
 const name=document.getElementById('customGiftName').value.trim();
 const coins=Math.max(0,parseInt(document.getElementById('customGiftCoins').value)||0);
@@ -488,11 +555,13 @@ document.getElementById('customGiftVideo').value='';
 await renderGiftsUI();
 alert('Gift berhasil ditambahkan!');
 }
+
 async function deleteCustomGift(id){
 if(!confirm('Hapus gift ini?'))return;
 localStorage.setItem('custom_tiktok_gifts',JSON.stringify(getCustomGifts().filter(g=>g.id!==id)));
 await renderGiftsUI();
 }
+
 async function triggerGift(id){
 const gift=[...GIFTS_DATABASE,...getCustomGifts()].find(g=>g.id===id);
 if(!gift)return;
@@ -519,14 +588,17 @@ return String(value||'').trim()
 .replace(/^@+/,'')
 .split(/[/?#]/)[0].trim();
 }
+
 function setTikTokSearchStatus(message,color='#aaa'){
 const status=document.getElementById('tiktokSearchStatus');
 status.innerText=message;
 status.style.color=color;
 }
+
 function hideTikTokPreview(){
 document.getElementById('profilePreviewBox').style.display='none';
 }
+
 function extractTikwmUser(raw){
 if(!raw||typeof raw!=='object')throw new Error('Respons kosong');
 const root=raw.data||raw;
@@ -540,6 +612,7 @@ nickname:String(u.nickname||u.name||username),
 avatar:String(u.avatarLarger||u.avatarMedium||u.avatarThumb||u.avatar||u.avatar_url||'')
 };
 }
+
 async function requestTikwmUser(username){
 const response=await fetch('https://www.tikwm.com/api/user/info/',{
 method:'POST',
@@ -571,8 +644,6 @@ return;
 }
 
 setTikTokSearchStatus('Sedang mencari target TikTok...','#38bdf8');
-
-/* LOADING BULAT SAJA, TANPA TULISAN */
 button.disabled=true;
 button.innerHTML='<span class="search-loader"></span>';
 
@@ -701,6 +772,7 @@ slotData[slotNum]=null;
 channel.postMessage({type:'UPDATE_SLOT',slotNum,action:'clear_slot'});
 renderSlotList();
 }
+
 function clearAllSlots(){
 for(let i=1;i<=8;i++){
 slotData[i]=null;
@@ -717,6 +789,14 @@ const status=document.getElementById('hostVideoStatus');
 status.className='video-status status-ready';
 status.innerText='✅ Video Host Siap';
 }
+
+const miniVideo=await getAsset('mini_host_video');
+if(miniVideo){
+const status=document.getElementById('miniHostVideoStatus');
+status.className='video-status status-ready';
+status.innerText='✅ Video Kecil Siap';
+}
+
 await renderGiftsUI();
 renderSlotList();
 };
