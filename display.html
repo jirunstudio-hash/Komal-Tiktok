@@ -44,13 +44,13 @@ transform:translateZ(0);
 padding:8px 6px 45px 6px
 }
 
-/* KOTAK HOST DI ATAS */
+/* KOTAK HOST DI ATAS (AGAK ABU) */
 .host-fullscreen{
 position:relative;
 width:100%;
 aspect-ratio:16 / 10;
 flex-shrink:0;
-z-index:5;
+z-index:2;
 background:#22242a;
 border:1px solid rgba(255,255,255,0.07);
 border-radius:12px;
@@ -66,41 +66,13 @@ position:absolute;
 top:10px;
 left:10px;
 z-index:6;
-background:rgba(0,0,0,0.58);
-backdrop-filter:blur(4px);
-border:0.5px solid rgba(255,255,255,0.16);
+background:rgba(0,0,0,0.55);
 color:#a1a5ae;
 font-size:12px;
 font-weight:700;
 padding:4px 10px;
 border-radius:999px;
-pointer-events:none;
-display:flex;
-align-items:center;
-gap:6px;
-max-width:calc(100% - 20px)
-}
-
-.host-badge.has-host{
-color:#ffffff;
-padding:3px 10px 3px 4px
-}
-
-.host-badge-avatar{
-width:20px;
-height:20px;
-border-radius:50%;
-object-fit:cover;
-display:none;
-flex-shrink:0;
-border:1px solid rgba(255,255,255,0.35)
-}
-
-.host-badge-name{
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-max-width:190px
+pointer-events:none
 }
 
 .unmute-hint{
@@ -140,17 +112,24 @@ z-index:4
 display:none
 }
 
-/* OVERLAY ANIMASI GIFT HD (FULL SATU LAYAR DI DEPAN HOST & KOTAK 1-8, LATAR TRANSPARAN AGAR HOST TETAP KELIHATAN) */
+/* OVERLAY VIDEO ANIMASI GIFT (MUNCUL DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) */
 .gift-overlay{
 position:absolute;
-inset:0;
-width:100%;
-height:100%;
-z-index:40;
+bottom:70px;
+left:6px;
+right:6px;
+height:33%;
+min-height:200px;
+max-height:290px;
+z-index:20;
 pointer-events:none;
 display:none;
 opacity:0;
-background:transparent;
+background:#000000;
+border:1px solid rgba(255,255,255,0.12);
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 8px 24px rgba(0,0,0,0.75);
 transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 will-change:opacity
 }
@@ -159,28 +138,12 @@ will-change:opacity
 opacity:1
 }
 
-/* BACKDROP PENAHAN DIMATIKAN AGAR HOST & KOTAK 1-8 TETAP KELIHATAN SAAT GIFT PLAY */
-.gift-bottom-backdrop{
-display:none
-}
-
 #giftVideo{
-display:none
-}
-
-#giftCanvas{
-position:absolute;
-inset:0;
 width:100%;
 height:100%;
-object-fit:cover;
-object-position:center bottom;
+object-fit:contain;
 display:block;
-pointer-events:none;
-transform:translateZ(0);
-backface-visibility:hidden;
-image-rendering:auto;
-z-index:2
+background:#000000
 }
 
 /* 8 KOTAK BAWAH (2 BARIS x 4 KOLOM) */
@@ -444,12 +407,9 @@ box-shadow:none!important
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <!-- KOTAK HOST ATAS -->
+  <!-- KOTAK HOST ATAS (AGAK ABU, NANTI UNTUK UPLOAD VIDEO VIA CONTROL + SUARA) -->
   <div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
-    <div class="host-badge" id="hostBadge">
-      <img id="hostBadgeAvatar" class="host-badge-avatar" referrerpolicy="no-referrer" alt="Host">
-      <span id="hostBadgeName" class="host-badge-name">Host</span>
-    </div>
+    <div class="host-badge">Host</div>
     <div id="unmuteHint" class="unmute-hint">🔊 Ketuk untuk nyalakan suara</div>
     <div id="hostPlaceholder" class="host-placeholder"></div>
     <video id="hostVideo" class="host-video" autoplay playsinline preload="auto"></video>
@@ -457,16 +417,14 @@ box-shadow:none!important
     <img id="hostCameraImg" alt="Host Cam">
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT (FULL SAMPAI PINGGIR, LATAR TRANSPARAN AGAR VIDEO HOST TETAP KELIHATAN) -->
-  <div class="gift-overlay" id="giftOverlayContainer">
-    <div class="gift-bottom-backdrop"></div>
-    <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
-    <canvas id="giftCanvas"></canvas>
-  </div>
-
-  <!-- 8 KOTAK BAWAH (2 BARIS x 4 KOLOM) -->
+  <!-- 8 KOTAK TENGAH (2 BARIS x 4 KOLOM, AGAK ABU) -->
   <div class="live-layout">
     <div class="komal-grid" id="komalGrid"></div>
+  </div>
+
+  <!-- OVERLAY VIDEO ANIMASI GIFT (DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) -->
+  <div class="gift-overlay" id="giftOverlayContainer">
+    <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
   </div>
 
 </div>
@@ -544,46 +502,6 @@ for(let i=1; i<=8; i++){
   </div>
   `);
 }
-
-/* UPDATE NAMA & FOTO HOST DI BADGE ATAS */
-function updateHostBadge(data){
-  const badge = $('hostBadge');
-  const avatar = $('hostBadgeAvatar');
-  const name = $('hostBadgeName');
-  if(!badge || !avatar || !name) return;
-
-  if(!data || data.action === 'clear'){
-    badge.classList.remove('has-host');
-    avatar.style.display = 'none';
-    avatar.removeAttribute('src');
-    name.innerText = 'Host';
-    return;
-  }
-
-  const displayName = String(data.nickname || data.name || data.username || 'Host').trim();
-  name.innerText = displayName || 'Host';
-  badge.classList.add('has-host');
-
-  if(data.avatar){
-    avatar.onload = () => { avatar.style.display = 'block'; };
-    avatar.onerror = () => { avatar.style.display = 'none'; };
-    avatar.src = data.avatar;
-  }else{
-    avatar.style.display = 'none';
-    avatar.removeAttribute('src');
-  }
-}
-
-/* MUAT ULANG NAMA HOST JIKA TERSIMPAN */
-try{
-  const savedHost = localStorage.getItem('host_profile_info');
-  if(savedHost){
-    const parsed = JSON.parse(savedHost);
-    if(parsed && (parsed.nickname || parsed.username)){
-      updateHostBadge(parsed);
-    }
-  }
-}catch(e){}
 
 /* KLIK KOTAK HOST: NYALAKAN SUARA VIDEO HOST JIKA DIBLOKIR AUTOPLAY, ATAU AKTIFKAN KAMERA JIKA KOSONG */
 function handleHostBoxClick(){
@@ -812,131 +730,6 @@ function releaseHostObjectURL(){
   if(hostMediaObjectURL){
     URL.revokeObjectURL(hostMediaObjectURL);
     hostMediaObjectURL=null;
-  }
-}
-
-/* WEBGL RENDERER: EFEK GIFT HD JERNIH, WARNA ASLI & LATAR TRANSPARAN */
-let gl=null;
-let glProgram=null;
-let glTexture=null;
-let glBuffers={};
-let isWebGLSupported=false;
-
-function initWebGL(canvas){
-  if(gl&&glProgram&&glTexture) return true;
-
-  try{
-    gl=canvas.getContext('webgl',{
-      alpha:true,
-      premultipliedAlpha:true,
-      antialias:true,
-      depth:false,
-      stencil:false,
-      preserveDrawingBuffer:false,
-      powerPreference:'high-performance'
-    });
-
-    if(!gl) return false;
-
-    gl.disable(gl.BLEND);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);
-
-    const vsSource=`
-    attribute vec2 a_pos;
-    attribute vec2 a_tex;
-    varying vec2 v_tex;
-    void main(){
-      gl_Position=vec4(a_pos,0.0,1.0);
-      v_tex=a_tex;
-    }`;
-
-    const fsSource=`
-    precision highp float;
-    uniform sampler2D u_tex;
-    varying vec2 v_tex;
-
-    void main(){
-      vec4 c = texture2D(u_tex, v_tex);
-
-      if (c.a < 0.98) {
-        gl_FragColor = vec4(c.rgb * c.a, c.a);
-        return;
-      }
-
-      float maxRB = max(c.r, c.b);
-      float gDiff = c.g - maxRB;
-
-      float greenAlpha = 1.0;
-      if (c.g > 0.28 && gDiff > 0.11 && c.g > c.r * 1.2 && c.g > c.b * 1.2) {
-        greenAlpha = 1.0 - smoothstep(0.11, 0.19, gDiff);
-        float despill = smoothstep(0.09, 0.17, gDiff);
-        c.g = mix(c.g, maxRB, despill * 0.85);
-      }
-
-      float maxC = max(c.r, max(c.g, c.b));
-      float minC = min(c.r, min(c.g, c.b));
-      float chromaDiff = maxC - minC;
-      float blackAlpha = 1.0;
-      if (maxC < 0.075 && chromaDiff < 0.03) {
-        blackAlpha = smoothstep(0.025, 0.075, maxC);
-      }
-
-      float finalAlpha = min(greenAlpha, blackAlpha);
-      if (finalAlpha < 0.02) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-      } else {
-        gl_FragColor = vec4(c.rgb * finalAlpha, finalAlpha);
-      }
-    }`;
-
-    function createShader(type,src){
-      const shader=gl.createShader(type);
-      gl.shaderSource(shader,src);
-      gl.compileShader(shader);
-      if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    }
-
-    const vs=createShader(gl.VERTEX_SHADER,vsSource);
-    const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-    if(!vs||!fs) return false;
-
-    glProgram=gl.createProgram();
-    gl.attachShader(glProgram,vs);
-    gl.attachShader(glProgram,fs);
-    gl.linkProgram(glProgram);
-    gl.deleteShader(vs);
-    gl.deleteShader(fs);
-
-    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)) return false;
-
-    const posBuffer=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
-
-    const texBuffer=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
-
-    glBuffers.pos=posBuffer;
-    glBuffers.tex=texBuffer;
-    glTexture=gl.createTexture();
-
-    gl.bindTexture(gl.TEXTURE_2D,glTexture);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-    gl.useProgram(glProgram);
-    gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
-
-    isWebGLSupported=true;
-    return true;
-  }catch(e){
-    return false;
   }
 }
 
@@ -1194,10 +987,7 @@ function receiveGiftForCombo(data){
 function handleIncomingMessage(data){
   if(!data) return;
 
-  if(data.type==='SET_HOST_INFO'){
-    updateHostBadge(data);
-  }
-  else if(data.type==='TRIGGER_DISPLAY_CAMERA'){
+  if(data.type==='TRIGGER_DISPLAY_CAMERA'){
     if(data.action==='start') startDisplayDirectCamera();
     else if(data.action==='stop') stopDisplayDirectCamera();
   }
@@ -1315,93 +1105,22 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO BEBAS BUG (HD 1440p BUFFER) */
-let glReady=false;
-let renderActive=false;
-let renderFrameId=null;
-let videoFrameCallbackId=null;
-let lastVideoTime=-1;
+/* PEMUTAR VIDEO GIFT ASLI (TANPA GREEN SCREEN) */
 let giftVideoGeneration=0;
-let activeFinishHandler=null;
-
-const giftCanvas=$('giftCanvas');
 const giftVideo=$('giftVideo');
 const giftOverlay=$('giftOverlayContainer');
-let canvas2D=null;
-
-function stopGiftRenderer(){
-  renderActive=false;
-  if(renderFrameId!==null){ cancelAnimationFrame(renderFrameId); renderFrameId=null; }
-  if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
-    giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
-  }
-  videoFrameCallbackId=null;
-}
-
-function renderGiftFrame(){
-  if(!renderActive) return;
-  const video=giftVideo;
-
-  if(video.ended){
-    if(activeFinishHandler) activeFinishHandler();
-    return;
-  }
-
-  if(video.readyState < video.HAVE_CURRENT_DATA){
-    scheduleGiftFrame();
-    return;
-  }
-
-  if(video.currentTime!==lastVideoTime){
-    lastVideoTime=video.currentTime;
-    if(glReady&&gl){
-      try{
-        gl.bindTexture(gl.TEXTURE_2D,glTexture);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
-        gl.drawArrays(gl.TRIANGLES,0,6);
-      }catch(e){}
-    }else if(canvas2D){
-      try{
-        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
-      }catch(e){}
-    }
-
-    if(!giftOverlay.classList.contains('visible')){
-      giftOverlay.classList.add('visible');
-    }
-  }
-  scheduleGiftFrame();
-}
-
-function scheduleGiftFrame(){
-  if(!renderActive) return;
-  if(giftVideo.requestVideoFrameCallback){
-    videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
-      videoFrameCallbackId=null;
-      renderGiftFrame();
-    });
-  }else{
-    renderFrameId=requestAnimationFrame(()=>{
-      renderFrameId=null;
-      renderGiftFrame();
-    });
-  }
-}
 
 function playGiftVideo(src,onFinished){
   const video=giftVideo;
-  const canvas=giftCanvas;
   const overlay=giftOverlay;
   const generation=++giftVideoGeneration;
 
   let finished=false;
   let safetyTimer=null;
-  stopGiftRenderer();
 
   function finish(){
     if(finished) return;
     finished=true;
-    activeFinishHandler=null;
     clearTimeout(safetyTimer);
 
     if(generation!==giftVideoGeneration) return;
@@ -1411,11 +1130,11 @@ function playGiftVideo(src,onFinished){
     setTimeout(()=>{
       if(generation!==giftVideoGeneration) return;
 
-      stopGiftRenderer();
       overlay.style.display='none';
       video.onended=null;
       video.onerror=null;
       video.onloadedmetadata=null;
+      video.onplaying=null;
 
       try{
         video.pause();
@@ -1423,21 +1142,9 @@ function playGiftVideo(src,onFinished){
         video.load();
       }catch(e){}
 
-      if(gl){
-        try{
-          gl.clearColor(0,0,0,0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        }catch(e){}
-      }
-      if(canvas2D){
-        try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
-      }
-
       if(typeof onFinished==='function') onFinished();
     }, 200);
   }
-
-  activeFinishHandler=finish;
 
   overlay.style.display='block';
   overlay.classList.remove('visible');
@@ -1454,44 +1161,17 @@ function playGiftVideo(src,onFinished){
   video.onended=finish;
   video.onerror=finish;
 
-  glReady=initWebGL(canvas);
-  canvas2D=null;
-  if(!glReady){
-    try{ canvas2D=canvas.getContext('2d'); }catch(e){}
-  }
+  video.onplaying=()=>{
+    if(finished||generation!==giftVideoGeneration) return;
+    overlay.classList.add('visible');
+  };
 
   safetyTimer=setTimeout(()=>{
     if(!finished) finish();
-  }, 12000);
+  }, 15000);
 
   video.onloadedmetadata=async()=>{
     if(finished||generation!==giftVideoGeneration) return;
-
-    const originalWidth=video.videoWidth||1080;
-    const originalHeight=video.videoHeight||1920;
-    const scale=Math.min(1, 1440/originalWidth, 2560/originalHeight);
-    const renderWidth=Math.max(1, Math.round(originalWidth*scale));
-    const renderHeight=Math.max(1, Math.round(originalHeight*scale));
-
-    canvas.width=renderWidth;
-    canvas.height=renderHeight;
-
-    const overlayWidth = overlay.clientWidth || $('displayContainer').clientWidth || 440;
-    const overlayHeight = overlay.clientHeight || $('displayContainer').clientHeight || 800;
-    const overlayRatio = overlayWidth / Math.max(1, overlayHeight);
-    const videoRatio = originalWidth / Math.max(1, originalHeight);
-
-    /* SELALU FULL KE PINGGIR KIRI-KANAN SEPERTI SEBELUMNYA TANPA MENGORBANKAN KEUTUHAN VIDEO */
-    if(originalWidth > originalHeight){
-      canvas.style.objectFit = 'contain';
-      canvas.style.objectPosition = 'center 62%';
-    }else if(videoRatio < overlayRatio){
-      canvas.style.objectFit = 'cover';
-      canvas.style.objectPosition = 'center bottom';
-    }else{
-      canvas.style.objectFit = 'contain';
-      canvas.style.objectPosition = 'center bottom';
-    }
 
     if(video.duration&&Number.isFinite(video.duration)){
       clearTimeout(safetyTimer);
@@ -1500,42 +1180,12 @@ function playGiftVideo(src,onFinished){
       }, (video.duration*1000)+1500);
     }
 
-    if(glReady&&gl){
-      gl.viewport(0,0,renderWidth,renderHeight);
-      gl.useProgram(glProgram);
-
-      const posLoc=gl.getAttribLocation(glProgram,'a_pos');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
-      gl.enableVertexAttribArray(posLoc);
-      gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
-
-      const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
-      gl.enableVertexAttribArray(texLoc);
-      gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
-
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D,glTexture);
-      gl.clearColor(0,0,0,0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }else if(canvas2D){
-      canvas2D.clearRect(0,0,renderWidth,renderHeight);
-    }
-
-    lastVideoTime=-1;
-
     try{
       await video.play();
-      if(finished||generation!==giftVideoGeneration) return;
-      renderActive=true;
-      renderGiftFrame();
     }catch(err){
       video.muted=true;
       try{
         await video.play();
-        if(finished||generation!==giftVideoGeneration) return;
-        renderActive=true;
-        renderGiftFrame();
       }catch(error){
         finish();
       }
@@ -1548,7 +1198,6 @@ function playGiftVideo(src,onFinished){
 /* CLEANUP */
 window.addEventListener('pagehide',()=>{
   manuallyClosed=true;
-  stopGiftRenderer();
   stopHostSeamlessLoop();
 
   if(displayCamStream){
