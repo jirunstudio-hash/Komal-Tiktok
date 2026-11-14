@@ -123,10 +123,10 @@ overflow:hidden;
 z-index:10
 }
 
-/* OVERLAY ANIMASI GIFT HD (DI DEPAN KOTAK 1-8, FULL LEBAR & BAWAH, GARIS ATAS TURUN, TIDAK NABRAK HOST) */
+/* OVERLAY ANIMASI GIFT HD (DI DEPAN KOTAK 1-8, JELAS & FULL, TIDAK NABRAK HOST) */
 .gift-overlay{
 position:absolute;
-top:42px;
+top:12px;
 left:0;
 right:0;
 bottom:0;
@@ -163,7 +163,7 @@ display:block;
 pointer-events:none;
 transform:translateZ(0);
 backface-visibility:hidden;
-image-rendering:-webkit-optimize-contrast;
+image-rendering:auto;
 z-index:2
 }
 
@@ -445,7 +445,7 @@ box-shadow:none!important
       <div class="komal-grid" id="komalGrid"></div>
     </div>
 
-    <!-- OVERLAY VIDEO ANIMASI GIFT (FULL LEBAR & BAWAH, DI DEPAN 8 KOTAK, TIDAK NABRAK HOST) -->
+    <!-- OVERLAY VIDEO ANIMASI GIFT (FULL LEBAR & BAWAH, JELAS, DI DEPAN 8 KOTAK, TIDAK NABRAK HOST) -->
     <div class="gift-overlay" id="giftOverlayContainer">
       <div class="gift-bottom-backdrop"></div>
       <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
@@ -759,7 +759,7 @@ function releaseHostObjectURL(){
   }
 }
 
-/* WEBGL RENDERER: EFEK GIFT 100% SOLID & LATAR TRANSPARAN */
+/* WEBGL RENDERER: EFEK GIFT HD JERNIH, WARNA ASLI & LATAR TRANSPARAN */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -772,7 +772,7 @@ function initWebGL(canvas){
   try{
     gl=canvas.getContext('webgl',{
       alpha:true,
-      premultipliedAlpha:false,
+      premultipliedAlpha:true,
       antialias:true,
       depth:false,
       stencil:false,
@@ -783,6 +783,7 @@ function initWebGL(canvas){
     if(!gl) return false;
 
     gl.disable(gl.BLEND);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);
 
     const vsSource=`
     attribute vec2 a_pos;
@@ -794,30 +795,41 @@ function initWebGL(canvas){
     }`;
 
     const fsSource=`
-    precision mediump float;
+    precision highp float;
     uniform sampler2D u_tex;
     varying vec2 v_tex;
 
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
 
+      if (c.a < 0.98) {
+        gl_FragColor = vec4(c.rgb * c.a, c.a);
+        return;
+      }
+
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
-      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
+
+      float greenAlpha = 1.0;
+      if (c.g > 0.28 && gDiff > 0.11 && c.g > c.r * 1.2 && c.g > c.b * 1.2) {
+        greenAlpha = 1.0 - smoothstep(0.11, 0.19, gDiff);
+        float despill = smoothstep(0.09, 0.17, gDiff);
+        c.g = mix(c.g, maxRB, despill * 0.85);
+      }
 
       float maxC = max(c.r, max(c.g, c.b));
       float minC = min(c.r, min(c.g, c.b));
       float chromaDiff = maxC - minC;
-      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
+      float blackAlpha = 1.0;
+      if (maxC < 0.075 && chromaDiff < 0.03) {
+        blackAlpha = smoothstep(0.02, 0.075, maxC);
+      }
 
-      if (isGreen || isBlack) {
+      float finalAlpha = min(greenAlpha, blackAlpha);
+      if (finalAlpha < 0.02) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
       } else {
-        c.a = 1.0;
-        if (gDiff > 0.05 && c.g > maxRB) {
-          c.g = maxRB;
-        }
-        gl_FragColor = c;
+        gl_FragColor = vec4(c.rgb * finalAlpha, finalAlpha);
       }
     }`;
 
@@ -1244,7 +1256,7 @@ function connectWebSocket(){
 
 connectWebSocket();
 
-/* RENDERER VIDEO BEBAS BUG (HD 1080p BUFFER) */
+/* RENDERER VIDEO BEBAS BUG (HD 1440p BUFFER) */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1398,15 +1410,26 @@ function playGiftVideo(src,onFinished){
 
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
-    const scale=Math.min(1, 1080/originalWidth, 1920/originalHeight);
+    const scale=Math.min(1, 1440/originalWidth, 2560/originalHeight);
     const renderWidth=Math.max(1, Math.round(originalWidth*scale));
     const renderHeight=Math.max(1, Math.round(originalHeight*scale));
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
 
-    canvas.style.objectFit = 'cover';
-    canvas.style.objectPosition = 'center bottom';
+    const overlayWidth = overlay.clientWidth || 440;
+    const overlayHeight = overlay.clientHeight || 540;
+    const overlayRatio = overlayWidth / Math.max(1, overlayHeight);
+    const videoRatio = originalWidth / Math.max(1, originalHeight);
+
+    /* LANDSCAPE / LEBAR -> CONTAIN AGAR SAMPING TIDAK KEPOTONG; PORTRAIT -> COVER FULL RATA BAWAH */
+    if(videoRatio > overlayRatio * 1.05){
+      canvas.style.objectFit = 'contain';
+      canvas.style.objectPosition = 'center bottom';
+    }else{
+      canvas.style.objectFit = 'cover';
+      canvas.style.objectPosition = 'center bottom';
+    }
 
     if(video.duration&&Number.isFinite(video.duration)){
       clearTimeout(safetyTimer);
