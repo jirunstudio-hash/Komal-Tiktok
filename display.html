@@ -112,24 +112,26 @@ z-index:4
 display:none
 }
 
-/* OVERLAY VIDEO ANIMASI GIFT (MUNCUL DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) */
+/* OVERLAY VIDEO ANIMASI GIFT (UKURAN SEDANG, TENGAH-ATAS, DI DEPAN KOTAK, TANPA GREEN SCREEN) */
 .gift-overlay{
 position:absolute;
-bottom:70px;
-left:6px;
-right:6px;
-height:33%;
-min-height:200px;
-max-height:290px;
+top:10%;
+left:50%;
+transform:translateX(-50%);
+width:84%;
+max-width:350px;
+height:44%;
+min-height:240px;
+max-height:370px;
 z-index:20;
 pointer-events:none;
 display:none;
 opacity:0;
 background:#000000;
-border:1px solid rgba(255,255,255,0.12);
-border-radius:12px;
+border:1px solid rgba(255,255,255,0.16);
+border-radius:14px;
 overflow:hidden;
-box-shadow:0 8px 24px rgba(0,0,0,0.75);
+box-shadow:0 12px 32px rgba(0,0,0,0.85);
 transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 will-change:opacity
 }
@@ -422,7 +424,7 @@ box-shadow:none!important
     <div class="komal-grid" id="komalGrid"></div>
   </div>
 
-  <!-- OVERLAY VIDEO ANIMASI GIFT (DI TAMPILAN BAWAH, AGAK NAIK KE ATAS, TANPA GREEN SCREEN) -->
+  <!-- OVERLAY VIDEO ANIMASI GIFT (UKURAN SEDANG, TENGAH-ATAS, DI DEPAN KOTAK, TANPA GREEN SCREEN) -->
   <div class="gift-overlay" id="giftOverlayContainer">
     <video id="giftVideo" playsinline webkit-playsinline preload="auto"></video>
   </div>
