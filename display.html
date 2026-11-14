@@ -217,6 +217,11 @@ transition:opacity .22s cubic-bezier(.25,1,.5,1);
 will-change:opacity;
 }
 
+/* PERBAIKAN: TAMPILKAN ANIMASI SAAT CLASS VISIBLE AKTIF */
+.gift-overlay.visible{
+opacity:1;
+}
+
 .gift-bottom-backdrop{
 display:none;
 }
@@ -1326,8 +1331,14 @@ isBlob:src.startsWith('blob:')
 playNextGiftVideo();
 }
 
+/* PERBAIKAN: VOLUME TETAP 50% SELAMA ANTREAN */
 function playNextGiftVideo(){
-if(giftVideoQueueBusy||giftVideoQueue.length===0)return;
+if(giftVideoQueueBusy)return;
+
+if(giftVideoQueue.length===0){
+restoreHostVolumeAfterGift();
+return;
+}
 
 giftVideoQueueBusy=true;
 const item=giftVideoQueue[0];
@@ -1722,9 +1733,7 @@ canvas2D.clearRect(0,0,canvas.width,canvas.height);
 }catch(e){}
 }
 
-/* VOLUME HOST KEMBALI KE 100% */
-restoreHostVolumeAfterGift();
-
+/* VOLUME DIKEMBALIKAN SETELAH SELURUH ANTREAN SELESAI */
 if(typeof onFinished==='function')onFinished();
 
 },200);
