@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -44,7 +45,7 @@ transform:translateZ(0);
 padding:8px 6px 45px 6px
 }
 
-/* KOTAK HOST - TAMPILAN DIPERJELAS */
+/* KOTAK HOST */
 .host-fullscreen{
 position:relative;
 width:100%;
@@ -115,7 +116,7 @@ z-index:4
 display:none
 }
 
-/* OVERLAY ANIMASI GIFT - TIDAK DIUBAH */
+/* OVERLAY ANIMASI GIFT */
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -174,7 +175,7 @@ gap:6px;
 pointer-events:auto
 }
 
-/* KOTAK 1-8 - TAMPILAN DIPERJELAS */
+/* KOTAK 1-8 */
 .slot-box{
 width:100%;
 aspect-ratio:1 / 1.06;
@@ -774,8 +775,9 @@ function initWebGL(canvas){
       v_tex=a_tex;
     }`;
 
+    /* GREEN SCREEN - TEPI LEBIH HALUS */
     const fsSource=`
-    precision mediump float;
+    precision highp float;
     uniform sampler2D u_tex;
     varying vec2 v_tex;
 
@@ -784,22 +786,27 @@ function initWebGL(canvas){
 
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
-      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
+
+      float greenStrength = smoothstep(0.08, 0.24, gDiff)
+                          * smoothstep(0.20, 0.48, c.g);
 
       float maxC = max(c.r, max(c.g, c.b));
       float minC = min(c.r, min(c.g, c.b));
       float chromaDiff = maxC - minC;
-      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
-      if (isGreen || isBlack) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-      } else {
-        c.a = 1.0;
-        if (gDiff > 0.05 && c.g > maxRB) {
-          c.g = maxRB;
-        }
-        gl_FragColor = c;
+      float blackStrength = 1.0 - smoothstep(0.025, 0.075, maxC);
+      blackStrength *= 1.0 - smoothstep(0.01, 0.04, chromaDiff);
+
+      float transparency = max(greenStrength, blackStrength);
+
+      c.a = 1.0 - transparency;
+
+      if(greenStrength > 0.01){
+        float spill = smoothstep(0.02, 0.18, gDiff);
+        c.g = mix(c.g, maxRB, spill * 0.85);
       }
+
+      gl_FragColor = vec4(c.rgb, c.a);
     }`;
 
     function createShader(type,src){
