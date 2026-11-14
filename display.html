@@ -106,7 +106,7 @@ z-index:4;
 display:none;
 }
 
-/* VIDEO KECIL HOST - LANDSCAPE */
+/* VIDEO KECIL HOST */
 .mini-gallery-box{
 position:absolute;
 left:9px;
@@ -150,20 +150,20 @@ letter-spacing:.4px;
 pointer-events:none;
 }
 
-/* KOTAK IKON KIRI ATAS */
+/* IKON DI TENGAH TEPAT DI ATAS VIDEO KECIL */
 .host-icon-animation{
 position:absolute;
-top:10px;
-left:10px;
-bottom:auto;
-z-index:25;
+left:9px;
+bottom:96px;
+top:auto;
+z-index:27;
 display:flex;
 align-items:center;
 justify-content:center;
 gap:7px;
-width:auto;
-min-width:104px;
-max-width:125px;
+width:140px;
+min-width:140px;
+max-width:140px;
 height:37px;
 padding:5px 8px;
 background:rgba(0,0,0,.78);
@@ -313,7 +313,6 @@ stroke-width:2.6;
 stroke-linecap:round;
 z-index:3;
 margin-bottom:6px;
-filter:drop-shadow(0 1px 2px rgba(0,0,0,.9));
 }
 
 .slot-req{
@@ -337,7 +336,6 @@ left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
 box-shadow:0 3px 10px rgba(0,0,0,.65);
-filter:none;
 }
 
 .slot-coin-badge{
@@ -383,9 +381,6 @@ font-size:9px;
 font-weight:400;
 line-height:1;
 text-align:center;
-padding:0;
-margin:0;
-transform:translateY(-.2px);
 }
 
 .coin-count{
@@ -396,7 +391,6 @@ color:#fff;
 letter-spacing:0;
 line-height:1;
 white-space:nowrap;
-text-shadow:none;
 }
 
 @keyframes popGiftBadge{
@@ -433,14 +427,12 @@ border:0;
 padding:2px 6px;
 border-radius:999px;
 min-height:20px;
-box-shadow:none;
 }
 
 .slot-name-text{
 color:#fff;
 font-size:10px;
 font-weight:500;
-letter-spacing:0;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
@@ -487,17 +479,13 @@ display:block;
 filter:drop-shadow(0 1px 3px rgba(0,0,0,.95));
 }
 
-.mic-icon-svg .mic-body{
-fill:#fff;
-}
-
+.mic-icon-svg .mic-body{fill:#fff}
 .mic-icon-svg .mic-slash-bg{
 stroke:#000;
 stroke-width:4.6;
 stroke-linecap:round;
 display:block;
 }
-
 .mic-icon-svg .mic-slash{
 stroke:#fff;
 stroke-width:2.6;
@@ -505,12 +493,10 @@ stroke-linecap:round;
 display:block;
 filter:drop-shadow(0 1px 2px rgba(0,0,0,.95));
 }
-
 .mic-container.is-unmuted .mic-icon-svg .mic-slash,
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
 display:none;
 }
-
 .mic-container.is-muted{
 background:transparent!important;
 border:none!important;
@@ -522,39 +508,37 @@ box-shadow:none!important;
 <body>
 <div class="phone-screen" id="displayContainer">
 
-  <div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
+<div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
 
-    <div id="unmuteHint" class="unmute-hint">🔊 Ketuk untuk nyalakan suara</div>
-    <div id="hostPlaceholder" class="host-placeholder"></div>
+<div id="unmuteHint" class="unmute-hint">🔊 Ketuk untuk nyalakan suara</div>
+<div id="hostPlaceholder" class="host-placeholder"></div>
 
-    <video id="hostVideo" class="host-video" autoplay playsinline preload="auto"></video>
-    <video id="hostVideo2" class="host-video" playsinline preload="auto"></video>
-    <img id="hostCameraImg" alt="Host Cam">
+<video id="hostVideo" class="host-video" autoplay playsinline preload="auto"></video>
+<video id="hostVideo2" class="host-video" playsinline preload="auto"></video>
+<img id="hostCameraImg" alt="Host Cam">
 
-    <!-- VIDEO KECIL HOST -->
-    <div class="mini-gallery-box" id="miniGalleryBox" onclick="event.stopPropagation()">
-      <video id="miniGalleryVideo" class="mini-gallery-video" autoplay muted loop playsinline preload="auto"></video>
-      <div class="mini-gallery-placeholder" id="miniGalleryPlaceholder"></div>
-    </div>
+<div class="mini-gallery-box" id="miniGalleryBox" onclick="event.stopPropagation()">
+<video id="miniGalleryVideo" class="mini-gallery-video" autoplay muted loop playsinline preload="auto"></video>
+<div class="mini-gallery-placeholder" id="miniGalleryPlaceholder"></div>
+</div>
 
-    <!-- IKON BERGANTIAN KIRI ATAS -->
-    <div class="host-icon-animation" id="hostIconAnimation">
-      <img id="hostIconFirst" alt="Ikon pertama">
-      <span class="host-icon-arrow">➜</span>
-      <img id="hostIconSecond" alt="Ikon kedua">
-    </div>
+<div class="host-icon-animation" id="hostIconAnimation">
+<img id="hostIconFirst" alt="Ikon pertama">
+<span class="host-icon-arrow">➜</span>
+<img id="hostIconSecond" alt="Ikon kedua">
+</div>
 
-  </div>
+</div>
 
-  <div class="gift-overlay" id="giftOverlayContainer">
-    <div class="gift-bottom-backdrop"></div>
-    <video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
-    <canvas id="giftCanvas"></canvas>
-  </div>
+<div class="gift-overlay" id="giftOverlayContainer">
+<div class="gift-bottom-backdrop"></div>
+<video id="giftVideo" playsinline webkit-playsinline muted crossorigin="anonymous" preload="auto"></video>
+<canvas id="giftCanvas"></canvas>
+</div>
 
-  <div class="live-layout">
-    <div class="komal-grid" id="komalGrid"></div>
-  </div>
+<div class="live-layout">
+<div class="komal-grid" id="komalGrid"></div>
+</div>
 
 </div>
 
@@ -584,395 +568,389 @@ const komalGrid = $('komalGrid');
 
 /* VIDEO KECIL HOST */
 function setMiniHostVideo(blobOrSrc){
-  const video=$('miniGalleryVideo');
-  const placeholder=$('miniGalleryPlaceholder');
+const video=$('miniGalleryVideo');
+const placeholder=$('miniGalleryPlaceholder');
+if(!video||!placeholder)return;
 
-  if(!video||!placeholder) return;
+if(miniHostVideoURL){
+URL.revokeObjectURL(miniHostVideoURL);
+miniHostVideoURL=null;
+}
 
-  if(miniHostVideoURL){
-    URL.revokeObjectURL(miniHostVideoURL);
-    miniHostVideoURL=null;
-  }
+video.pause();
+video.removeAttribute('src');
+video.load();
 
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
+if(blobOrSrc instanceof Blob){
+miniHostVideoURL=URL.createObjectURL(blobOrSrc);
+video.src=miniHostVideoURL;
+}else if(typeof blobOrSrc==='string'&&blobOrSrc){
+video.src=blobOrSrc;
+}else{
+resetMiniHostVideo();
+return;
+}
 
-  if(blobOrSrc instanceof Blob){
-    miniHostVideoURL=URL.createObjectURL(blobOrSrc);
-    video.src=miniHostVideoURL;
-  }else if(typeof blobOrSrc==='string'&&blobOrSrc){
-    video.src=blobOrSrc;
-  }else{
-    resetMiniHostVideo();
-    return;
-  }
-
-  video.muted=true;
-  video.loop=true;
-  video.playsInline=true;
-  video.style.display='block';
-  placeholder.style.display='none';
-
-  video.play().catch(()=>{});
+video.muted=true;
+video.loop=true;
+video.playsInline=true;
+video.style.display='block';
+placeholder.style.display='none';
+video.play().catch(()=>{});
 }
 
 function resetMiniHostVideo(){
-  const video=$('miniGalleryVideo');
-  const placeholder=$('miniGalleryPlaceholder');
+const video=$('miniGalleryVideo');
+const placeholder=$('miniGalleryPlaceholder');
+if(!video||!placeholder)return;
 
-  if(!video||!placeholder) return;
+video.pause();
+video.removeAttribute('src');
+video.load();
+video.style.display='none';
+placeholder.style.display='none';
 
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
-  video.style.display='none';
-  placeholder.style.display='none';
-
-  if(miniHostVideoURL){
-    URL.revokeObjectURL(miniHostVideoURL);
-    miniHostVideoURL=null;
-  }
+if(miniHostVideoURL){
+URL.revokeObjectURL(miniHostVideoURL);
+miniHostVideoURL=null;
+}
 }
 
 /* LIMA PASANG IKON */
-const hostIconPairs = [
-  {
-    first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp'
-  },
-  {
-    first:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/374dfe46d5b09ce1db19be06202d34f5.png~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp'
-  },
-  {
-    first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21549ba24f76a01d00373cb8e35660ae.png~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp'
-  },
-  {
-    first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e0589e95a2b41970f0f30f6202f5fce6~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp'
-  },
-  {
-    first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/79a02148079526539f7599150da9fd28.png~tplv-obj.webp',
-    second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp'
-  }
+const hostIconPairs=[
+{
+first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp',
+second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp'
+},
+{
+first:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/374dfe46d5b09ce1db19be06202d34f5.png~tplv-obj.webp',
+second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp'
+},
+{
+first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21549ba24f76a01d00373cb8e35660ae.png~tplv-obj.webp',
+second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp'
+},
+{
+first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e0589e95a2b41970f0f30f6202f5fce6~tplv-obj.webp',
+second:'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/e5af942cbf6c909da2f11950b1df8b8d.png~tplv-obj.webp'
+},
+{
+first:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/79a02148079526539f7599150da9fd28.png~tplv-obj.webp',
+second:'https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp'
+}
 ];
 
-let currentHostIconPair = 0;
-let hostIconTimer = null;
+let currentHostIconPair=0;
+let hostIconTimer=null;
 
 function showHostIconPair(index){
-  const pair = hostIconPairs[index];
-  const first = $('hostIconFirst');
-  const second = $('hostIconSecond');
+const pair=hostIconPairs[index];
+const first=$('hostIconFirst');
+const second=$('hostIconSecond');
+if(!pair||!first||!second)return;
 
-  if(!pair || !first || !second) return;
-
-  first.src = pair.first;
-  second.src = pair.second;
-
-  first.style.animation='none';
-  second.style.animation='none';
-
-  void first.offsetWidth;
-
-  first.style.animation='iconAppear .35s ease-out';
-  second.style.animation='iconAppear .35s ease-out';
+first.src=pair.first;
+second.src=pair.second;
+first.style.animation='none';
+second.style.animation='none';
+void first.offsetWidth;
+first.style.animation='iconAppear .35s ease-out';
+second.style.animation='iconAppear .35s ease-out';
 }
 
 function startHostIconAnimation(){
-  stopHostIconAnimation();
-  currentHostIconPair = 0;
-  showHostIconPair(currentHostIconPair);
+stopHostIconAnimation();
+currentHostIconPair=0;
+showHostIconPair(currentHostIconPair);
 
-  hostIconTimer = setInterval(()=>{
-    currentHostIconPair++;
-    if(currentHostIconPair >= hostIconPairs.length){
-      currentHostIconPair = 0;
-    }
-    showHostIconPair(currentHostIconPair);
-  },3000);
+hostIconTimer=setInterval(()=>{
+currentHostIconPair++;
+if(currentHostIconPair>=hostIconPairs.length)currentHostIconPair=0;
+showHostIconPair(currentHostIconPair);
+},3000);
 }
 
 function stopHostIconAnimation(){
-  if(hostIconTimer){
-    clearInterval(hostIconTimer);
-    hostIconTimer = null;
-  }
+if(hostIconTimer){
+clearInterval(hostIconTimer);
+hostIconTimer=null;
+}
 }
 
 startHostIconAnimation();
 
 /* BUAT 8 SLOT */
-for(let i=1; i<=8; i++){
-  slotPoints[i] = 0;
+for(let i=1;i<=8;i++){
+slotPoints[i]=0;
 
-  komalGrid.insertAdjacentHTML('beforeend',`
-  <div class="slot-box" id="slot-${i}">
-    <img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
-    <div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
+komalGrid.insertAdjacentHTML('beforeend',`
+<div class="slot-box" id="slot-${i}">
+<img id="bg-slot-${i}" class="slot-bg-blur" referrerpolicy="no-referrer">
+<div class="slot-bg-overlay" id="overlay-slot-${i}"></div>
 
-    <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none">
-      <div class="cyan-diamond-circle">
-        <span class="star-svg">★</span>
-      </div>
-      <span class="coin-count" id="coincount-slot-${i}">0</span>
-    </div>
+<div class="slot-coin-badge" id="coin-badge-${i}" style="display:none">
+<div class="cyan-diamond-circle"><span class="star-svg">★</span></div>
+<span class="coin-count" id="coincount-slot-${i}">0</span>
+</div>
 
-    <img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
+<img class="slot-top-badge" id="topbadge-slot-${i}" referrerpolicy="no-referrer" crossorigin="anonymous" alt="Gift">
 
-    <svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
-      <line x1="12" y1="5" x2="12" y2="19"></line>
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
+<svg class="slot-plus-svg" id="icon-${i}" viewBox="0 0 24 24" fill="none">
+<line x1="12" y1="5" x2="12" y2="19"></line>
+<line x1="5" y1="12" x2="19" y2="12"></line>
+</svg>
 
-    <span class="slot-req" id="req-${i}">Permintaan</span>
+<span class="slot-req" id="req-${i}">Permintaan</span>
+<img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
 
-    <img id="img-slot-${i}" class="slot-circle-img" referrerpolicy="no-referrer">
+<div class="slot-name-pill" id="namepill-slot-${i}" style="display:none">
+<span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
+<div class="slot-plus-circle">
+<svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
+<line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
+<line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
+</svg>
+</div>
+</div>
 
-    <div class="slot-name-pill" id="namepill-slot-${i}" style="display:none">
-      <span class="slot-name-text" id="nametext-slot-${i}">Slot ${i}</span>
-      <div class="slot-plus-circle">
-        <svg class="slot-pill-plus-svg" viewBox="0 0 16 16" fill="none">
-          <line x1="8" y1="2.5" x2="8" y2="13.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
-          <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></line>
-        </svg>
-      </div>
-    </div>
-
-    <div class="mic-container" id="mic-slot-${i}" style="display:none">
-      <svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
-        <path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-        <path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
-        <line class="mic-slash-bg" x1="4" y1="4" x2="20" y2="20"/>
-        <line class="mic-slash" x1="4" y1="4" x2="20" y2="20"/>
-      </svg>
-    </div>
-  </div>
-  `);
+<div class="mic-container" id="mic-slot-${i}" style="display:none">
+<svg class="mic-icon-svg" viewBox="0 0 24 24" fill="none" aria-label="Status mikrofon">
+<path class="mic-body" d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+<path class="mic-body" d="M19 10v1a7 7 0 0 1-6 6.93V20h3v2H8v-2h3v-2.07A7 7 0 0 1 5 11v-1h2v1a5 5 0 0 0 10 0v-1h2z"/>
+<line class="mic-slash-bg" x1="4" y1="4" x2="20" y2="20"/>
+<line class="mic-slash" x1="4" y1="4" x2="20" y2="20"/>
+</svg>
+</div>
+</div>
+`);
 }
 
 function handleHostBoxClick(){
-  if(hostLoopActive){
-    hostAudioWanted = true;
-    const v1 = $('hostVideo');
-    const v2 = $('hostVideo2');
-    const activeVid = activeHostVid === 1 ? v1 : v2;
-    const inactiveVid = activeHostVid === 1 ? v2 : v1;
+if(hostLoopActive){
+hostAudioWanted=true;
+const v1=$('hostVideo');
+const v2=$('hostVideo2');
+const activeVid=activeHostVid===1?v1:v2;
+const inactiveVid=activeHostVid===1?v2:v1;
 
-    activeVid.muted = false;
-    activeVid.volume = 1;
-    inactiveVid.muted = true;
-    inactiveVid.volume = 1;
-    if(activeVid.paused) activeVid.play().catch(()=>{});
-    $('unmuteHint').style.display = 'none';
-    return;
-  }
-  startDisplayDirectCamera();
+activeVid.muted=false;
+activeVid.volume=1;
+inactiveVid.muted=true;
+inactiveVid.volume=1;
+if(activeVid.paused)activeVid.play().catch(()=>{});
+$('unmuteHint').style.display='none';
+return;
+}
+startDisplayDirectCamera();
 }
 
 function getMuteStatus(data){
-  const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
-  for(const key of keys){
-    if(Object.prototype.hasOwnProperty.call(data,key)){
-      const value=data[key];
-      if(typeof value==='boolean') return value;
-      if(value===1||value==='1'||value==='true'||value==='muted') return true;
-      if(value===0||value==='0'||value==='false'||value==='unmuted') return false;
-    }
-  }
-  return null;
+const keys=['isMuted','is_mute','mute','muted','isMicMuted','micMuted','is_mic_muted'];
+for(const key of keys){
+if(Object.prototype.hasOwnProperty.call(data,key)){
+const value=data[key];
+if(typeof value==='boolean')return value;
+if(value===1||value==='1'||value==='true'||value==='muted')return true;
+if(value===0||value==='0'||value==='false'||value==='unmuted')return false;
+}
+}
+return null;
 }
 
 function updateMicStatus(slotNum,status){
-  const mic=$(`mic-slot-${slotNum}`);
-  if(!mic||status===null||status===undefined) return;
-
-  slotMuteStates[slotNum]=Boolean(status);
-  mic.classList.toggle('is-unmuted', !Boolean(status));
-  mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
+const mic=$(`mic-slot-${slotNum}`);
+if(!mic||status===null||status===undefined)return;
+slotMuteStates[slotNum]=Boolean(status);
+mic.classList.toggle('is-unmuted',!Boolean(status));
+mic.title=status?'Mikrofon dimatikan (Muted)':'Mikrofon aktif';
 }
 
+/* LOOP VIDEO HOST BESAR */
 function setupSeamlessHostVideo(url){
-  stopHostSeamlessLoop();
+stopHostSeamlessLoop();
 
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
+const v1=$('hostVideo');
+const v2=$('hostVideo2');
 
-  v1.srcObject = null;
-  v2.srcObject = null;
-  v1.src = url;
-  v2.src = url;
+v1.srcObject=null;
+v2.srcObject=null;
+v1.src=url;
+v2.src=url;
 
-  v1.muted = false;
-  v1.volume = 1;
-  v2.muted = true;
-  v2.volume = 1;
-  hostAudioWanted = true;
+v1.loop=false;
+v2.loop=false;
 
-  v1.style.display = 'block';
-  v2.style.display = 'block';
-  v1.style.opacity = '1';
-  v2.style.opacity = '0';
-  v1.style.zIndex = '3';
-  v2.style.zIndex = '2';
+v1.muted=false;
+v1.volume=1;
+v2.muted=true;
+v2.volume=1;
+hostAudioWanted=true;
 
-  activeHostVid = 1;
-  hostLoopActive = true;
+v1.style.display='block';
+v2.style.display='block';
+v1.style.opacity='1';
+v2.style.opacity='0';
+v1.style.zIndex='3';
+v2.style.zIndex='2';
 
-  v1.play().then(()=>{
-    $('unmuteHint').style.display = 'none';
-  }).catch(()=>{
-    v1.muted = true;
-    hostAudioWanted = false;
-    $('unmuteHint').style.display = 'block';
-    v1.play().catch(()=>{});
-  });
+activeHostVid=1;
+hostLoopActive=true;
 
-  const switchToNext = () => {
-    if (!hostLoopActive) return;
-    const current = activeHostVid === 1 ? v1 : v2;
-    const next = activeHostVid === 1 ? v2 : v1;
+v1.play().then(()=>{
+$('unmuteHint').style.display='none';
+}).catch(()=>{
+v1.muted=true;
+hostAudioWanted=false;
+$('unmuteHint').style.display='block';
+v1.play().catch(()=>{});
+});
 
-    next.currentTime = 0;
-    next.muted = !hostAudioWanted;
-    next.volume = 1;
+let switching=false;
 
-    next.play().then(()=>{
-      current.muted = true;
-      next.style.zIndex = '3';
-      current.style.zIndex = '2';
-      next.style.opacity = '1';
-      current.style.opacity = '0';
-      activeHostVid = activeHostVid === 1 ? 2 : 1;
+const switchToNext=()=>{
+if(!hostLoopActive||switching)return;
+switching=true;
 
-      setTimeout(()=>{
-        if(hostLoopActive && current !== (activeHostVid === 1 ? v1 : v2)){
-          current.pause();
-        }
-      }, 240);
-    }).catch(()=>{});
-  };
+const current=activeHostVid===1?v1:v2;
+const next=activeHostVid===1?v2:v1;
 
-  const handleSeamlessLoop = (ev) => {
-    if (!hostLoopActive) return;
-    const current = activeHostVid === 1 ? v1 : v2;
-    if (ev.target !== current) return;
+next.currentTime=0;
+next.muted=!hostAudioWanted;
+next.volume=1;
 
-    const next = activeHostVid === 1 ? v2 : v1;
-    if (current.duration && current.currentTime > 0) {
-      const timeLeft = current.duration - current.currentTime;
-      if (timeLeft <= 0.22 && next.paused) {
-        switchToNext();
-      }
-    }
-  };
+next.play().then(()=>{
+current.muted=true;
 
-  const handleEndedFallback = (ev) => {
-    if (!hostLoopActive) return;
-    const current = activeHostVid === 1 ? v1 : v2;
-    if (ev.target === current) switchToNext();
-  };
+next.style.zIndex='3';
+current.style.zIndex='2';
+next.style.opacity='1';
+current.style.opacity='0';
 
-  v1.ontimeupdate = handleSeamlessLoop;
-  v2.ontimeupdate = handleSeamlessLoop;
-  v1.onended = handleEndedFallback;
-  v2.onended = handleEndedFallback;
+activeHostVid=activeHostVid===1?2:1;
+
+setTimeout(()=>{
+if(hostLoopActive){
+current.pause();
+current.currentTime=0;
+}
+switching=false;
+},240);
+}).catch(()=>{
+switching=false;
+});
+};
+
+const handleTimeUpdate=(ev)=>{
+if(!hostLoopActive)return;
+const current=activeHostVid===1?v1:v2;
+if(ev.target!==current)return;
+
+if(current.duration&&Number.isFinite(current.duration)){
+const timeLeft=current.duration-current.currentTime;
+if(timeLeft<=0.20&&!switching){
+switchToNext();
+}
+}
+};
+
+const handleEnded=(ev)=>{
+if(!hostLoopActive)return;
+const current=activeHostVid===1?v1:v2;
+if(ev.target===current)switchToNext();
+};
+
+v1.ontimeupdate=handleTimeUpdate;
+v2.ontimeupdate=handleTimeUpdate;
+v1.onended=handleEnded;
+v2.onended=handleEnded;
 }
 
 function stopHostSeamlessLoop(){
-  hostLoopActive = false;
-  $('unmuteHint').style.display = 'none';
-  const v1 = $('hostVideo');
-  const v2 = $('hostVideo2');
+hostLoopActive=false;
+$('unmuteHint').style.display='none';
 
-  if(v1){
-    v1.ontimeupdate = null;
-    v1.onended = null;
-    v1.pause();
-    v1.removeAttribute('src');
-    v1.style.opacity = '1';
-    v1.style.display = 'none';
-  }
-  if(v2){
-    v2.ontimeupdate = null;
-    v2.onended = null;
-    v2.pause();
-    v2.removeAttribute('src');
-    v2.style.opacity = '0';
-    v2.style.display = 'none';
-  }
+const v1=$('hostVideo');
+const v2=$('hostVideo2');
+
+[v1,v2].forEach((v,index)=>{
+if(!v)return;
+v.ontimeupdate=null;
+v.onended=null;
+v.pause();
+v.removeAttribute('src');
+v.load();
+v.style.opacity=index===0?'1':'0';
+v.style.display='none';
+});
 }
 
 async function startDisplayDirectCamera(){
-  if(cameraStarting) return;
+if(cameraStarting)return;
 
-  stopHostSeamlessLoop();
+stopHostSeamlessLoop();
 
-  const hVid=$('hostVideo');
-  const hVid2=$('hostVideo2');
-  const placeholder=$('hostPlaceholder');
-  const camImg=$('hostCameraImg');
+const hVid=$('hostVideo');
+const hVid2=$('hostVideo2');
+const placeholder=$('hostPlaceholder');
+const camImg=$('hostCameraImg');
 
-  hVid.muted = true;
-  hVid2.style.display='none';
+hVid.muted=true;
+hVid2.style.display='none';
 
-  if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
-    hVid.srcObject=displayCamStream;
-    hVid.style.display='block';
-    hVid.style.opacity='1';
-    placeholder.style.display='none';
-    if(hVid.paused) await hVid.play().catch(()=>{});
-    return;
-  }
+if(displayCamStream&&displayCamStream.getVideoTracks().some(t=>t.readyState==='live')){
+hVid.srcObject=displayCamStream;
+hVid.style.display='block';
+hVid.style.opacity='1';
+placeholder.style.display='none';
+if(hVid.paused)await hVid.play().catch(()=>{});
+return;
+}
 
-  cameraStarting=true;
+cameraStarting=true;
 
-  try{
-    if(!navigator.mediaDevices?.getUserMedia){
-      throw new Error('Kamera membutuhkan HTTPS atau localhost.');
-    }
+try{
+if(!navigator.mediaDevices?.getUserMedia){
+throw new Error('Kamera membutuhkan HTTPS atau localhost.');
+}
 
-    camImg.style.display='none';
+camImg.style.display='none';
 
-    displayCamStream=await navigator.mediaDevices.getUserMedia({
-      audio:false,
-      video:{
-        width:{ideal:1080},
-        height:{ideal:1920},
-        frameRate:{ideal:30,max:30},
-        facingMode:'user'
-      }
-    });
+displayCamStream=await navigator.mediaDevices.getUserMedia({
+audio:false,
+video:{
+width:{ideal:1080},
+height:{ideal:1920},
+frameRate:{ideal:30,max:30},
+facingMode:'user'
+}
+});
 
-    hVid.srcObject=displayCamStream;
-    hVid.style.display='block';
-    hVid.style.opacity='1';
-    placeholder.style.display='none';
-
-    await hVid.play();
-  }catch(err){
-    console.error('Kamera error:',err);
-  }finally{
-    cameraStarting=false;
-  }
+hVid.srcObject=displayCamStream;
+hVid.style.display='block';
+hVid.style.opacity='1';
+placeholder.style.display='none';
+await hVid.play();
+}catch(err){
+console.error('Kamera error:',err);
+}finally{
+cameraStarting=false;
+}
 }
 
 function stopDisplayDirectCamera(){
-  if(displayCamStream){
-    displayCamStream.getTracks().forEach(track=>track.stop());
-    displayCamStream=null;
-  }
-
-  const hVid=$('hostVideo');
-  hVid.pause();
-  hVid.srcObject=null;
-  hVid.style.display='none';
-  $('hostPlaceholder').style.display='none';
+if(displayCamStream){
+displayCamStream.getTracks().forEach(track=>track.stop());
+displayCamStream=null;
 }
 
-/* WEBGL RENDERER */
+const hVid=$('hostVideo');
+hVid.pause();
+hVid.srcObject=null;
+hVid.style.display='none';
+$('hostPlaceholder').style.display='none';
+}
+
+/* WEBGL */
 let gl=null;
 let glProgram=null;
 let glTexture=null;
@@ -980,108 +958,104 @@ let glBuffers={};
 let isWebGLSupported=false;
 
 function initWebGL(canvas){
-  if(gl&&glProgram&&glTexture) return true;
+if(gl&&glProgram&&glTexture)return true;
 
-  try{
-    gl=canvas.getContext('webgl',{
-      alpha:true,
-      premultipliedAlpha:false,
-      antialias:true,
-      depth:false,
-      stencil:false,
-      preserveDrawingBuffer:false,
-      powerPreference:'high-performance'
-    });
+try{
+gl=canvas.getContext('webgl',{
+alpha:true,
+premultipliedAlpha:false,
+antialias:true,
+depth:false,
+stencil:false,
+preserveDrawingBuffer:false,
+powerPreference:'high-performance'
+});
 
-    if(!gl) return false;
+if(!gl)return false;
+gl.disable(gl.BLEND);
 
-    gl.disable(gl.BLEND);
+const vsSource=`
+attribute vec2 a_pos;
+attribute vec2 a_tex;
+varying vec2 v_tex;
+void main(){
+gl_Position=vec4(a_pos,0.0,1.0);
+v_tex=a_tex;
+}`;
 
-    const vsSource=`
-    attribute vec2 a_pos;
-    attribute vec2 a_tex;
-    varying vec2 v_tex;
-    void main(){
-      gl_Position=vec4(a_pos,0.0,1.0);
-      v_tex=a_tex;
-    }`;
+const fsSource=`
+precision mediump float;
+uniform sampler2D u_tex;
+varying vec2 v_tex;
+void main(){
+vec4 c=texture2D(u_tex,v_tex);
+float maxRB=max(c.r,c.b);
+float gDiff=c.g-maxRB;
+float maxC=max(c.r,max(c.g,c.b));
+float greenAmount=smoothstep(0.08,0.28,gDiff);
+float blackAmount=1.0-smoothstep(0.025,0.085,maxC);
+float alpha=1.0-max(greenAmount,blackAmount);
+if(gDiff>0.0&&c.g>maxRB){
+float spill=clamp(gDiff*1.8,0.0,0.75);
+c.g=mix(c.g,maxRB,spill);
+}
+c.a=alpha;
+gl_FragColor=c;
+}`;
 
-    const fsSource=`
-    precision mediump float;
-    uniform sampler2D u_tex;
-    varying vec2 v_tex;
+function createShader(type,src){
+const shader=gl.createShader(type);
+gl.shaderSource(shader,src);
+gl.compileShader(shader);
+if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
+gl.deleteShader(shader);
+return null;
+}
+return shader;
+}
 
-    void main(){
-      vec4 c = texture2D(u_tex, v_tex);
-      float maxRB = max(c.r, c.b);
-      float gDiff = c.g - maxRB;
+const vs=createShader(gl.VERTEX_SHADER,vsSource);
+const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
+if(!vs||!fs)return false;
 
-      float maxC = max(c.r, max(c.g, c.b));
-      float minC = min(c.r, min(c.g, c.b));
-      float chromaDiff = maxC - minC;
+glProgram=gl.createProgram();
+gl.attachShader(glProgram,vs);
+gl.attachShader(glProgram,fs);
+gl.linkProgram(glProgram);
+gl.deleteShader(vs);
+gl.deleteShader(fs);
 
-      float greenAmount = smoothstep(0.08, 0.28, gDiff);
-      float blackAmount = 1.0 - smoothstep(0.025, 0.085, maxC);
-      float alpha = 1.0 - max(greenAmount, blackAmount);
+if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS))return false;
 
-      if(gDiff > 0.0 && c.g > maxRB){
-        float spill = clamp(gDiff * 1.8, 0.0, 0.75);
-        c.g = mix(c.g, maxRB, spill);
-      }
+const posBuffer=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
+-1,-1,1,-1,-1,1,-1,1,1,-1,1,1
+]),gl.STATIC_DRAW);
 
-      c.a = alpha;
-      gl_FragColor = c;
-    }`;
+const texBuffer=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
+0,1,1,1,0,0,0,0,1,1,1,0
+]),gl.STATIC_DRAW);
 
-    function createShader(type,src){
-      const shader=gl.createShader(type);
-      gl.shaderSource(shader,src);
-      gl.compileShader(shader);
-      if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    }
+glBuffers.pos=posBuffer;
+glBuffers.tex=texBuffer;
+glTexture=gl.createTexture();
 
-    const vs=createShader(gl.VERTEX_SHADER,vsSource);
-    const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-    if(!vs||!fs) return false;
+gl.bindTexture(gl.TEXTURE_2D,glTexture);
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+gl.useProgram(glProgram);
+gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
 
-    glProgram=gl.createProgram();
-    gl.attachShader(glProgram,vs);
-    gl.attachShader(glProgram,fs);
-    gl.linkProgram(glProgram);
-    gl.deleteShader(vs);
-    gl.deleteShader(fs);
-
-    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)) return false;
-
-    const posBuffer=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
-
-    const texBuffer=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]),gl.STATIC_DRAW);
-
-    glBuffers.pos=posBuffer;
-    glBuffers.tex=texBuffer;
-    glTexture=gl.createTexture();
-
-    gl.bindTexture(gl.TEXTURE_2D,glTexture);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-    gl.useProgram(glProgram);
-    gl.uniform1i(gl.getUniformLocation(glProgram,'u_tex'),0);
-
-    isWebGLSupported=true;
-    return true;
-  }catch(e){
-    return false;
-  }
+isWebGLSupported=true;
+return true;
+}catch(e){
+return false;
+}
 }
 
 /* DATABASE ASSETS */
@@ -1090,319 +1064,320 @@ const STORE_NAME="permanent_assets";
 let dbPromise=null;
 
 function openDB(){
-  if(dbPromise) return dbPromise;
-  dbPromise=new Promise(resolve=>{
-    const req=indexedDB.open(DB_NAME,1);
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>{ dbPromise=null; resolve(null); };
-    req.onblocked=()=>{ dbPromise=null; resolve(null); };
-  });
-  return dbPromise;
+if(dbPromise)return dbPromise;
+dbPromise=new Promise(resolve=>{
+const req=indexedDB.open(DB_NAME,1);
+req.onsuccess=()=>resolve(req.result);
+req.onerror=()=>{dbPromise=null;resolve(null);};
+req.onblocked=()=>{dbPromise=null;resolve(null);};
+});
+return dbPromise;
 }
 
 async function getSavedVideo(id){
-  try{
-    const db=await openDB();
-    if(!db) return null;
-    return await new Promise(resolve=>{
-      const tx=db.transaction(STORE_NAME,"readonly");
-      const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>resolve(null);
-    });
-  }catch(e){
-    return null;
-  }
+try{
+const db=await openDB();
+if(!db)return null;
+return await new Promise(resolve=>{
+const tx=db.transaction(STORE_NAME,"readonly");
+const req=tx.objectStore(STORE_NAME).get(`video_${id}`);
+req.onsuccess=()=>resolve(req.result);
+req.onerror=()=>resolve(null);
+});
+}catch(e){
+return null;
+}
 }
 
 function formatPoin(val){
-  const number=Number(val);
-  if(!Number.isFinite(number)||number<=0) return '0';
-  if(number>=1000000) return (number/1000000).toFixed(1)+'M';
-  if(number>=1000) return (number/1000).toFixed(1)+'K';
-  return Math.floor(number).toString();
+const number=Number(val);
+if(!Number.isFinite(number)||number<=0)return '0';
+if(number>=1000000)return(number/1000000).toFixed(1)+'M';
+if(number>=1000)return(number/1000).toFixed(1)+'K';
+return Math.floor(number).toString();
 }
 
 /* UPDATE SLOT */
 function updateSlotDisplay(data){
-  const{slotNum,nameInput,initialPoin,profileImg,action}=data;
-  const slotBox=$(`slot-${slotNum}`);
-  if(!slotBox) return;
+const{slotNum,nameInput,initialPoin,profileImg,action}=data;
+const slotBox=$(`slot-${slotNum}`);
+if(!slotBox)return;
 
-  const coinBadge=$(`coin-badge-${slotNum}`);
-  const countElem=$(`coincount-slot-${slotNum}`);
-  const namePill=$(`namepill-slot-${slotNum}`);
-  const nameText=$(`nametext-slot-${slotNum}`);
-  const mic=$(`mic-slot-${slotNum}`);
-  const img=$(`img-slot-${slotNum}`);
-  const bg=$(`bg-slot-${slotNum}`);
-  const bgOverlay=$(`overlay-slot-${slotNum}`);
-  const icon=$(`icon-${slotNum}`);
-  const req=$(`req-${slotNum}`);
-  const topBadge=$(`topbadge-slot-${slotNum}`);
+const coinBadge=$(`coin-badge-${slotNum}`);
+const countElem=$(`coincount-slot-${slotNum}`);
+const namePill=$(`namepill-slot-${slotNum}`);
+const nameText=$(`nametext-slot-${slotNum}`);
+const mic=$(`mic-slot-${slotNum}`);
+const img=$(`img-slot-${slotNum}`);
+const bg=$(`bg-slot-${slotNum}`);
+const bgOverlay=$(`overlay-slot-${slotNum}`);
+const icon=$(`icon-${slotNum}`);
+const req=$(`req-${slotNum}`);
+const topBadge=$(`topbadge-slot-${slotNum}`);
 
-  if(action==='clear_slot'){
-    slotBox.classList.remove('has-photo');
-    img.style.display='none';
-    img.removeAttribute('src');
-    bg.style.display='none';
-    bg.removeAttribute('src');
-    bgOverlay.style.display='none';
-    slotBox.style.background='#292c34';
-    icon.style.display='block';
-    req.style.display='inline-block';
-    namePill.style.display='none';
-    mic.style.display='none';
-    mic.classList.remove('is-unmuted');
-    delete slotMuteStates[slotNum];
-    coinBadge.style.display='none';
+if(action==='clear_slot'){
+slotBox.classList.remove('has-photo');
+img.style.display='none';
+img.removeAttribute('src');
+bg.style.display='none';
+bg.removeAttribute('src');
+bgOverlay.style.display='none';
+slotBox.style.background='#292c34';
+icon.style.display='block';
+req.style.display='inline-block';
+namePill.style.display='none';
+mic.style.display='none';
+mic.classList.remove('is-unmuted');
+delete slotMuteStates[slotNum];
+coinBadge.style.display='none';
 
-    if(topBadge){
-      topBadge.style.display='none';
-      topBadge.removeAttribute('src');
-    }
-    if(badgeTimers[slotNum]){
-      clearTimeout(badgeTimers[slotNum]);
-      delete badgeTimers[slotNum];
-    }
-    slotPoints[slotNum]=0;
-    return;
-  }
+if(topBadge){
+topBadge.style.display='none';
+topBadge.removeAttribute('src');
+}
 
-  if(initialPoin!==undefined){
-    slotPoints[slotNum]=initialPoin;
-  }
+if(badgeTimers[slotNum]){
+clearTimeout(badgeTimers[slotNum]);
+delete badgeTimers[slotNum];
+}
 
-  countElem.innerText=formatPoin(slotPoints[slotNum]);
-  coinBadge.style.display='flex';
+slotPoints[slotNum]=0;
+return;
+}
 
-  if(nameInput){
-    nameText.innerText=nameInput;
-    namePill.style.display='flex';
-    mic.style.display='flex';
+if(initialPoin!==undefined)slotPoints[slotNum]=initialPoin;
 
-    const muteStatus=getMuteStatus(data);
-    if(muteStatus!==null){
-      updateMicStatus(slotNum,muteStatus);
-    }else if(slotMuteStates[slotNum]!==undefined){
-      updateMicStatus(slotNum,slotMuteStates[slotNum]);
-    }else{
-      updateMicStatus(slotNum,true);
-    }
-  }
+countElem.innerText=formatPoin(slotPoints[slotNum]);
+coinBadge.style.display='flex';
 
-  if(profileImg){
-    icon.style.display='none';
-    req.style.display='none';
+if(nameInput){
+nameText.innerText=nameInput;
+namePill.style.display='flex';
+mic.style.display='flex';
 
-    img.onload=()=>{
-      if(img.src===profileImg){
-        slotBox.classList.add('has-photo');
-        slotBox.style.background='#191b22';
-      }
-    };
-    img.onerror=()=>{
-      slotBox.classList.remove('has-photo');
-      slotBox.style.background='#292c34';
-    };
+const muteStatus=getMuteStatus(data);
+if(muteStatus!==null){
+updateMicStatus(slotNum,muteStatus);
+}else if(slotMuteStates[slotNum]!==undefined){
+updateMicStatus(slotNum,slotMuteStates[slotNum]);
+}else{
+updateMicStatus(slotNum,true);
+}
+}
 
-    img.src=profileImg;
-    img.style.display='block';
-    bg.src=profileImg;
-    bg.style.display='block';
-    bgOverlay.style.display='block';
-  }
+if(profileImg){
+icon.style.display='none';
+req.style.display='none';
+
+img.onload=()=>{
+if(img.src===profileImg){
+slotBox.classList.add('has-photo');
+slotBox.style.background='#191b22';
+}
+};
+
+img.onerror=()=>{
+slotBox.classList.remove('has-photo');
+slotBox.style.background='#292c34';
+};
+
+img.src=profileImg;
+img.style.display='block';
+bg.src=profileImg;
+bg.style.display='block';
+bgOverlay.style.display='block';
+}
 }
 
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
-  if(!badgeSrc||!slotNum) return;
-  const topBadge=$(`topbadge-slot-${slotNum}`);
-  if(!topBadge) return;
+if(!badgeSrc||!slotNum)return;
+const topBadge=$(`topbadge-slot-${slotNum}`);
+if(!topBadge)return;
 
-  if(badgeTimers[slotNum]) clearTimeout(badgeTimers[slotNum]);
+if(badgeTimers[slotNum])clearTimeout(badgeTimers[slotNum]);
 
-  topBadge.src=badgeSrc;
-  topBadge.style.display='block';
+topBadge.src=badgeSrc;
+topBadge.style.display='block';
 
-  badgeTimers[slotNum]=setTimeout(()=>{
-    topBadge.style.display='none';
-    topBadge.removeAttribute('src');
-    delete badgeTimers[slotNum];
-  },5000);
+badgeTimers[slotNum]=setTimeout(()=>{
+topBadge.style.display='none';
+topBadge.removeAttribute('src');
+delete badgeTimers[slotNum];
+},5000);
 }
 
 /* ANTRIAN VIDEO GIFT */
 function queueGiftVideo(src,repeatCount=1){
-  if(!src) return;
-  const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
-  giftVideoQueue.push({
-    src,
-    remaining:count,
-    isBlob:src.startsWith('blob:')
-  });
-  playNextGiftVideo();
+if(!src)return;
+const count=Math.max(1,Math.min(999,Number(repeatCount)||1));
+giftVideoQueue.push({
+src,
+remaining:count,
+isBlob:src.startsWith('blob:')
+});
+playNextGiftVideo();
 }
 
 function playNextGiftVideo(){
-  if(giftVideoQueueBusy || giftVideoQueue.length===0) return;
+if(giftVideoQueueBusy||giftVideoQueue.length===0)return;
 
-  giftVideoQueueBusy=true;
-  const item=giftVideoQueue[0];
+giftVideoQueueBusy=true;
+const item=giftVideoQueue[0];
 
-  playGiftVideo(item.src,()=>{
-    item.remaining--;
-    if(item.remaining>0){
-      giftVideoQueueBusy=false;
-      setTimeout(playNextGiftVideo,50);
-    }else{
-      giftVideoQueue.shift();
-      if(item.isBlob){
-        try{ URL.revokeObjectURL(item.src); }catch(e){}
-      }
-      giftVideoQueueBusy=false;
-      setTimeout(playNextGiftVideo,50);
-    }
-  });
+playGiftVideo(item.src,()=>{
+item.remaining--;
+if(item.remaining>0){
+giftVideoQueueBusy=false;
+setTimeout(playNextGiftVideo,50);
+}else{
+giftVideoQueue.shift();
+if(item.isBlob){
+try{URL.revokeObjectURL(item.src);}catch(e){}
+}
+giftVideoQueueBusy=false;
+setTimeout(playNextGiftVideo,50);
+}
+});
 }
 
 function getGiftComboKey(data){
-  const sender=String(data.senderName||data.username||'user').toLowerCase();
-  const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
-  return`${sender}::${gift}`;
+const sender=String(data.senderName||data.username||'user').toLowerCase();
+const gift=String(data.giftId||data.giftTitle||'gift').toLowerCase();
+return`${sender}::${gift}`;
 }
 
 async function resolveGiftVideo(data){
-  if(data.videoBlob) return URL.createObjectURL(data.videoBlob);
-  if(data.giftId){
-    const blob=await getSavedVideo(data.giftId);
-    if(blob) return URL.createObjectURL(blob);
-  }
-  if(data.src) return data.src;
-  return null;
+if(data.videoBlob)return URL.createObjectURL(data.videoBlob);
+if(data.giftId){
+const blob=await getSavedVideo(data.giftId);
+if(blob)return URL.createObjectURL(blob);
+}
+if(data.src)return data.src;
+return null;
 }
 
 function receiveGiftForCombo(data){
-  const key=getGiftComboKey(data);
-  const rawCumulative=data.repeatCount??data.comboCount??data.repeat_count??data.combo_count;
-  const cumulativeCount=Number(rawCumulative);
-  let group=giftComboGroups.get(key);
+const key=getGiftComboKey(data);
+const rawCumulative=data.repeatCount??data.comboCount??data.repeat_count??data.combo_count;
+const cumulativeCount=Number(rawCumulative);
+let group=giftComboGroups.get(key);
 
-  if(!group){
-    group={
-      data:{...data},
-      count:0,
-      src:null,
-      timer:null,
-      revision:0,
-      videoPromise:Promise.resolve()
-    };
-    giftComboGroups.set(key,group);
-  }
+if(!group){
+group={
+data:{...data},
+count:0,
+src:null,
+timer:null,
+revision:0,
+videoPromise:Promise.resolve()
+};
+giftComboGroups.set(key,group);
+}
 
-  group.revision++;
-  group.data={...group.data,...data};
+group.revision++;
+group.data={...group.data,...data};
 
-  if(Number.isFinite(cumulativeCount)&&cumulativeCount>0){
-    group.count=Math.max(group.count,Math.floor(cumulativeCount));
-  }else{
-    group.count+=Math.max(1,Math.floor(Number(data.giftCount)||1));
-  }
+if(Number.isFinite(cumulativeCount)&&cumulativeCount>0){
+group.count=Math.max(group.count,Math.floor(cumulativeCount));
+}else{
+group.count+=Math.max(1,Math.floor(Number(data.giftCount)||1));
+}
 
-  clearTimeout(group.timer);
+clearTimeout(group.timer);
 
-  group.videoPromise=group.videoPromise.then(async()=>{
-    const resolvedSrc=await resolveGiftVideo(data);
-    if(resolvedSrc){
-      if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
-        try{ URL.revokeObjectURL(group.src); }catch(e){}
-      }
-      group.src=resolvedSrc;
-    }
-  }).catch(err=>console.error('Gagal memuat video gift:',err));
+group.videoPromise=group.videoPromise.then(async()=>{
+const resolvedSrc=await resolveGiftVideo(data);
+if(resolvedSrc){
+if(group.src&&group.src.startsWith('blob:')&&group.src!==resolvedSrc){
+try{URL.revokeObjectURL(group.src);}catch(e){}
+}
+group.src=resolvedSrc;
+}
+}).catch(err=>console.error('Gagal memuat video gift:',err));
 
-  const finishCombo=async()=>{
-    const finishingRevision=group.revision;
-    await group.videoPromise;
-    if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision) return;
-    giftComboGroups.delete(key);
-    if(group.src) queueGiftVideo(group.src,Math.max(1,group.count));
-  };
+const finishCombo=async()=>{
+const finishingRevision=group.revision;
+await group.videoPromise;
+if(giftComboGroups.get(key)!==group||group.revision!==finishingRevision)return;
+giftComboGroups.delete(key);
+if(group.src)queueGiftVideo(group.src,Math.max(1,group.count));
+};
 
-  const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
-  group.timer=setTimeout(finishCombo,comboEnded?0:900);
+const comboEnded=data.repeatEnd===true||data.repeat_end===true||data.comboEnd===true||data.combo_end===true;
+group.timer=setTimeout(finishCombo,comboEnded?0:900);
 }
 
 /* BROADCAST CHANNEL */
 function handleIncomingMessage(data){
-  if(!data) return;
+if(!data)return;
 
-  if(data.type==='TRIGGER_DISPLAY_CAMERA'){
-    if(data.action==='start') startDisplayDirectCamera();
-    else if(data.action==='stop') stopDisplayDirectCamera();
-  }
-  else if(data.type==='SET_HOST_VIDEO'){
-    stopDisplayDirectCamera();
-    const camImg=$('hostCameraImg');
-    camImg.style.display='none';
-    releaseHostObjectURL();
+if(data.type==='TRIGGER_DISPLAY_CAMERA'){
+if(data.action==='start')startDisplayDirectCamera();
+else if(data.action==='stop')stopDisplayDirectCamera();
+}
+else if(data.type==='SET_HOST_VIDEO'){
+stopDisplayDirectCamera();
+const camImg=$('hostCameraImg');
+camImg.style.display='none';
+releaseHostObjectURL();
 
-    if(data.videoBlob){
-      hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
-      setupSeamlessHostVideo(hostMediaObjectURL);
-      $('hostPlaceholder').style.display='none';
-    }else if(data.src||data.videoUrl){
-      setupSeamlessHostVideo(data.src||data.videoUrl);
-      $('hostPlaceholder').style.display='none';
-    }
-  }
-  else if(data.type==='RESET_HOST_MEDIA'){
-    stopDisplayDirectCamera();
-    stopHostSeamlessLoop();
-    const camImg=$('hostCameraImg');
-    releaseHostObjectURL();
-    camImg.style.display='none';
-    $('hostPlaceholder').style.display='none';
-  }
-  else if(data.type==='SET_MINI_GALLERY_VIDEO'){
-    if(data.videoBlob){
-      setMiniHostVideo(data.videoBlob);
-    }else if(data.src||data.videoUrl){
-      setMiniHostVideo(data.src||data.videoUrl);
-    }
-  }
-  else if(data.type==='RESET_MINI_GALLERY_VIDEO'){
-    resetMiniHostVideo();
-  }
-  else if(data.type==='UPDATE_SLOT'){
-    updateSlotDisplay(data);
-  }
-  else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
-    const slotNum=Number(data.slotNum);
-    if(slotNum>=1&&slotNum<=8){
-      const status=getMuteStatus(data);
-      if(status!==null){
-        slotMuteStates[slotNum]=status;
-        const mic=$(`mic-slot-${slotNum}`);
-        if(mic){
-          mic.style.display='flex';
-          updateMicStatus(slotNum,status);
-        }
-      }
-    }
-  }
-  else if(data.type==='PLAY_GIFT'){
-    const targetSlot=Number(data.targetSlot);
-    if(targetSlot&&slotPoints[targetSlot]!==undefined){
-      slotPoints[targetSlot]+=Number(data.increment||0);
-      const countElem=$(`coincount-slot-${targetSlot}`);
-      if(countElem) countElem.innerText=formatPoin(slotPoints[targetSlot]);
-      const badge=$(`coin-badge-${targetSlot}`);
-      if(badge) badge.style.display='flex';
-    }
+if(data.videoBlob){
+hostMediaObjectURL=URL.createObjectURL(data.videoBlob);
+setupSeamlessHostVideo(hostMediaObjectURL);
+$('hostPlaceholder').style.display='none';
+}else if(data.src||data.videoUrl){
+setupSeamlessHostVideo(data.src||data.videoUrl);
+$('hostPlaceholder').style.display='none';
+}
+}
+else if(data.type==='RESET_HOST_MEDIA'){
+stopDisplayDirectCamera();
+stopHostSeamlessLoop();
+const camImg=$('hostCameraImg');
+releaseHostObjectURL();
+camImg.style.display='none';
+$('hostPlaceholder').style.display='none';
+}
+else if(data.type==='SET_MINI_GALLERY_VIDEO'){
+if(data.videoBlob){
+setMiniHostVideo(data.videoBlob);
+}else if(data.src||data.videoUrl){
+setMiniHostVideo(data.src||data.videoUrl);
+}
+}
+else if(data.type==='RESET_MINI_GALLERY_VIDEO'){
+resetMiniHostVideo();
+}
+else if(data.type==='UPDATE_SLOT'){
+updateSlotDisplay(data);
+}
+else if(data.type==='UPDATE_SLOT_MUTE'||data.type==='SLOT_MUTE_UPDATE'){
+const slotNum=Number(data.slotNum);
+if(slotNum>=1&&slotNum<=8){
+const status=getMuteStatus(data);
+if(status!==null){
+slotMuteStates[slotNum]=status;
+const mic=$(`mic-slot-${slotNum}`);
+if(mic){
+mic.style.display='flex';
+updateMicStatus(slotNum,status);
+}
+}
+}
+}
+else if(data.type==='PLAY_GIFT'){
+const targetSlot=Number(data.targetSlot);
+if(targetSlot&&slotPoints[targetSlot]!==undefined){
+slotPoints[targetSlot]+=Number(data.increment||0);
+const countElem=$(`coincount-slot-${targetSlot}`);
+if(countElem)countElem.innerText=formatPoin(slotPoints[targetSlot]);
+const badge=$(`coin-badge-${targetSlot}`);
+if(badge)badge.style.display='flex';
+}
 
-    if(data.badgeImg) showGiftBadgeTemporarily(targetSlot,data.badgeImg);
-    receiveGiftForCombo(data);
-  }
+if(data.badgeImg)showGiftBadgeTemporarily(targetSlot,data.badgeImg);
+receiveGiftForCombo(data);
+}
 }
 
 channel.onmessage=event=>handleIncomingMessage(event.data);
@@ -1414,57 +1389,57 @@ let reconnectDelay=1000;
 let manuallyClosed=false;
 
 function connectWebSocket(){
-  if(manuallyClosed) return;
-  if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN)) return;
+if(manuallyClosed)return;
+if(ws&&(ws.readyState===WebSocket.CONNECTING||ws.readyState===WebSocket.OPEN))return;
 
-  try{
-    const protocol=location.protocol==='https:'?'wss:':'ws:';
-    ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
+try{
+const protocol=location.protocol==='https:'?'wss:':'ws:';
+ws=new WebSocket(`${protocol}//${location.host||'localhost:8081'}`);
 
-    ws.onopen=()=>{
-      reconnectDelay=1000;
-    };
+ws.onopen=()=>{
+reconnectDelay=1000;
+};
 
-    ws.onmessage=event=>{
-      try{
-        const d=JSON.parse(event.data);
-        if(d.type==='gift'){
-          handleIncomingMessage({
-            type:'PLAY_GIFT',
-            targetSlot:1,
-            increment:Number(d.coins||1),
-            badgeImg:d.giftImage||'',
-            giftTitle:d.giftName||'Gift',
-            senderName:d.nickname||d.username||'User',
-            senderAvatar:d.avatar||'',
-            giftId:d.giftId||d.gift_id||d.id||'',
-            repeatCount:d.repeatCount??d.repeat_count??d.comboCount??d.combo_count,
-            giftCount:d.giftCount??d.gift_count,
-            repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
-            videoBlob:d.videoBlob,
-            src:d.src||d.videoUrl||d.video_url||''
-          });
-        }
-      }catch(err){}
-    };
+ws.onmessage=event=>{
+try{
+const d=JSON.parse(event.data);
+if(d.type==='gift'){
+handleIncomingMessage({
+type:'PLAY_GIFT',
+targetSlot:1,
+increment:Number(d.coins||1),
+badgeImg:d.giftImage||'',
+giftTitle:d.giftName||'Gift',
+senderName:d.nickname||d.username||'User',
+senderAvatar:d.avatar||'',
+giftId:d.giftId||d.gift_id||d.id||'',
+repeatCount:d.repeatCount??d.repeat_count??d.comboCount??d.combo_count,
+giftCount:d.giftCount??d.gift_count,
+repeatEnd:d.repeatEnd??d.repeat_end??d.comboEnd??d.combo_end,
+videoBlob:d.videoBlob,
+src:d.src||d.videoUrl||d.video_url||''
+});
+}
+}catch(err){}
+};
 
-    ws.onerror=err=>{};
-    ws.onclose=()=>{
-      ws=null;
-      if(manuallyClosed) return;
-      clearTimeout(reconnectTimer);
-      reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-      reconnectDelay=Math.min(reconnectDelay*1.5,10000);
-    };
-  }catch(err){
-    clearTimeout(reconnectTimer);
-    reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
-  }
+ws.onerror=()=>{};
+ws.onclose=()=>{
+ws=null;
+if(manuallyClosed)return;
+clearTimeout(reconnectTimer);
+reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
+reconnectDelay=Math.min(reconnectDelay*1.5,10000);
+};
+}catch(err){
+clearTimeout(reconnectTimer);
+reconnectTimer=setTimeout(connectWebSocket,reconnectDelay);
+}
 }
 
 connectWebSocket();
 
-/* RENDERER VIDEO */
+/* RENDERER VIDEO GIFT */
 let glReady=false;
 let renderActive=false;
 let renderFrameId=null;
@@ -1479,253 +1454,259 @@ const giftOverlay=$('giftOverlayContainer');
 let canvas2D=null;
 
 function stopGiftRenderer(){
-  renderActive=false;
-  if(renderFrameId!==null){
-    cancelAnimationFrame(renderFrameId);
-    renderFrameId=null;
-  }
-  if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
-    giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
-  }
-  videoFrameCallbackId=null;
+renderActive=false;
+if(renderFrameId!==null){
+cancelAnimationFrame(renderFrameId);
+renderFrameId=null;
+}
+if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
+giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
+}
+videoFrameCallbackId=null;
 }
 
 function renderGiftFrame(){
-  if(!renderActive) return;
-  const video=giftVideo;
+if(!renderActive)return;
+const video=giftVideo;
 
-  if(video.ended){
-    if(activeFinishHandler) activeFinishHandler();
-    return;
-  }
+if(video.ended){
+if(activeFinishHandler)activeFinishHandler();
+return;
+}
 
-  if(video.readyState < video.HAVE_CURRENT_DATA){
-    scheduleGiftFrame();
-    return;
-  }
+if(video.readyState<video.HAVE_CURRENT_DATA){
+scheduleGiftFrame();
+return;
+}
 
-  if(video.currentTime!==lastVideoTime){
-    lastVideoTime=video.currentTime;
-    if(glReady&&gl){
-      try{
-        gl.bindTexture(gl.TEXTURE_2D,glTexture);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
-        gl.drawArrays(gl.TRIANGLES,0,6);
-      }catch(e){}
-    }else if(canvas2D){
-      try{
-        canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
-      }catch(e){}
-    }
+if(video.currentTime!==lastVideoTime){
+lastVideoTime=video.currentTime;
 
-    if(!giftOverlay.classList.contains('visible')){
-      giftOverlay.classList.add('visible');
-    }
-  }
-  scheduleGiftFrame();
+if(glReady&&gl){
+try{
+gl.bindTexture(gl.TEXTURE_2D,glTexture);
+gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
+gl.drawArrays(gl.TRIANGLES,0,6);
+}catch(e){}
+}else if(canvas2D){
+try{
+canvas2D.drawImage(video,0,0,giftCanvas.width,giftCanvas.height);
+}catch(e){}
+}
+
+if(!giftOverlay.classList.contains('visible')){
+giftOverlay.classList.add('visible');
+}
+}
+
+scheduleGiftFrame();
 }
 
 function scheduleGiftFrame(){
-  if(!renderActive) return;
-  if(giftVideo.requestVideoFrameCallback){
-    videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
-      videoFrameCallbackId=null;
-      renderGiftFrame();
-    });
-  }else{
-    renderFrameId=requestAnimationFrame(()=>{
-      renderFrameId=null;
-      renderGiftFrame();
-    });
-  }
+if(!renderActive)return;
+
+if(giftVideo.requestVideoFrameCallback){
+videoFrameCallbackId=giftVideo.requestVideoFrameCallback(()=>{
+videoFrameCallbackId=null;
+renderGiftFrame();
+});
+}else{
+renderFrameId=requestAnimationFrame(()=>{
+renderFrameId=null;
+renderGiftFrame();
+});
+}
 }
 
 function playGiftVideo(src,onFinished){
-  const video=giftVideo;
-  const canvas=giftCanvas;
-  const overlay=giftOverlay;
-  const generation=++giftVideoGeneration;
+const video=giftVideo;
+const canvas=giftCanvas;
+const overlay=giftOverlay;
+const generation=++giftVideoGeneration;
 
-  let finished=false;
-  let safetyTimer=null;
-  stopGiftRenderer();
+let finished=false;
+let safetyTimer=null;
+stopGiftRenderer();
 
-  function finish(){
-    if(finished) return;
-    finished=true;
-    activeFinishHandler=null;
-    clearTimeout(safetyTimer);
+function finish(){
+if(finished)return;
+finished=true;
+activeFinishHandler=null;
+clearTimeout(safetyTimer);
 
-    if(generation!==giftVideoGeneration) return;
+if(generation!==giftVideoGeneration)return;
 
-    overlay.classList.remove('visible');
+overlay.classList.remove('visible');
 
-    setTimeout(()=>{
-      if(generation!==giftVideoGeneration) return;
+setTimeout(()=>{
+if(generation!==giftVideoGeneration)return;
 
-      stopGiftRenderer();
-      overlay.style.display='none';
-      video.onended=null;
-      video.onerror=null;
-      video.onloadedmetadata=null;
+stopGiftRenderer();
+overlay.style.display='none';
+video.onended=null;
+video.onerror=null;
+video.onloadedmetadata=null;
 
-      try{
-        video.pause();
-        video.removeAttribute('src');
-        video.load();
-      }catch(e){}
+try{
+video.pause();
+video.removeAttribute('src');
+video.load();
+}catch(e){}
 
-      if(gl){
-        try{
-          gl.clearColor(0,0,0,0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        }catch(e){}
-      }
-      if(canvas2D){
-        try{
-          canvas2D.clearRect(0,0,canvas.width,canvas.height);
-        }catch(e){}
-      }
+if(gl){
+try{
+gl.clearColor(0,0,0,0);
+gl.clear(gl.COLOR_BUFFER_BIT);
+}catch(e){}
+}
 
-      if(typeof onFinished==='function') onFinished();
-    },200);
-  }
+if(canvas2D){
+try{
+canvas2D.clearRect(0,0,canvas.width,canvas.height);
+}catch(e){}
+}
 
-  activeFinishHandler=finish;
+if(typeof onFinished==='function')onFinished();
+},200);
+}
 
-  overlay.style.display='block';
-  overlay.classList.remove('visible');
+activeFinishHandler=finish;
+overlay.style.display='block';
+overlay.classList.remove('visible');
 
-  try{
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-  }catch(e){}
+try{
+video.pause();
+video.removeAttribute('src');
+video.load();
+}catch(e){}
 
-  video.src=src;
-  video.muted=false;
-  video.volume=1;
-  video.onended=finish;
-  video.onerror=finish;
+video.src=src;
+video.muted=false;
+video.volume=1;
+video.onended=finish;
+video.onerror=finish;
 
-  glReady=initWebGL(canvas);
-  canvas2D=null;
-  if(!glReady){
-    try{ canvas2D=canvas.getContext('2d'); }catch(e){}
-  }
+glReady=initWebGL(canvas);
+canvas2D=null;
 
-  safetyTimer=setTimeout(()=>{
-    if(!finished) finish();
-  },12000);
+if(!glReady){
+try{canvas2D=canvas.getContext('2d');}catch(e){}
+}
 
-  video.onloadedmetadata=async()=>{
-    if(finished||generation!==giftVideoGeneration) return;
+safetyTimer=setTimeout(()=>{
+if(!finished)finish();
+},12000);
 
-    const originalWidth=video.videoWidth||1080;
-    const originalHeight=video.videoHeight||1920;
-    const scale=Math.min(1,1080/originalWidth,1920/originalHeight);
-    const renderWidth=Math.max(1,Math.round(originalWidth*scale));
-    const renderHeight=Math.max(1,Math.round(originalHeight*scale));
+video.onloadedmetadata=async()=>{
+if(finished||generation!==giftVideoGeneration)return;
 
-    canvas.width=renderWidth;
-    canvas.height=renderHeight;
+const originalWidth=video.videoWidth||1080;
+const originalHeight=video.videoHeight||1920;
+const scale=Math.min(1,1080/originalWidth,1920/originalHeight);
+const renderWidth=Math.max(1,Math.round(originalWidth*scale));
+const renderHeight=Math.max(1,Math.round(originalHeight*scale));
 
-    if(video.duration&&Number.isFinite(video.duration)){
-      clearTimeout(safetyTimer);
-      safetyTimer=setTimeout(()=>{
-        if(!finished) finish();
-      },(video.duration*1000)+1500);
-    }
+canvas.width=renderWidth;
+canvas.height=renderHeight;
 
-    if(glReady&&gl){
-      gl.viewport(0,0,renderWidth,renderHeight);
-      gl.useProgram(glProgram);
+if(video.duration&&Number.isFinite(video.duration)){
+clearTimeout(safetyTimer);
+safetyTimer=setTimeout(()=>{
+if(!finished)finish();
+},(video.duration*1000)+1500);
+}
 
-      const posLoc=gl.getAttribLocation(glProgram,'a_pos');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
-      gl.enableVertexAttribArray(posLoc);
-      gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
+if(glReady&&gl){
+gl.viewport(0,0,renderWidth,renderHeight);
+gl.useProgram(glProgram);
 
-      const texLoc=gl.getAttribLocation(glProgram,'a_tex');
-      gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
-      gl.enableVertexAttribArray(texLoc);
-      gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
+const posLoc=gl.getAttribLocation(glProgram,'a_pos');
+gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.pos);
+gl.enableVertexAttribArray(posLoc);
+gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
 
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D,glTexture);
-      gl.clearColor(0,0,0,0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }else if(canvas2D){
-      canvas2D.clearRect(0,0,renderWidth,renderHeight);
-    }
+const texLoc=gl.getAttribLocation(glProgram,'a_tex');
+gl.bindBuffer(gl.ARRAY_BUFFER,glBuffers.tex);
+gl.enableVertexAttribArray(texLoc);
+gl.vertexAttribPointer(texLoc,2,gl.FLOAT,false,0,0);
 
-    lastVideoTime=-1;
+gl.activeTexture(gl.TEXTURE0);
+gl.bindTexture(gl.TEXTURE_2D,glTexture);
+gl.clearColor(0,0,0,0);
+gl.clear(gl.COLOR_BUFFER_BIT);
+}else if(canvas2D){
+canvas2D.clearRect(0,0,renderWidth,renderHeight);
+}
 
-    try{
-      await video.play();
-      if(finished||generation!==giftVideoGeneration) return;
-      renderActive=true;
-      renderGiftFrame();
-    }catch(err){
-      video.muted=true;
-      try{
-        await video.play();
-        if(finished||generation!==giftVideoGeneration) return;
-        renderActive=true;
-        renderGiftFrame();
-      }catch(error){
-        finish();
-      }
-    }
-  };
+lastVideoTime=-1;
 
-  video.load();
+try{
+await video.play();
+if(finished||generation!==giftVideoGeneration)return;
+renderActive=true;
+renderGiftFrame();
+}catch(err){
+video.muted=true;
+try{
+await video.play();
+if(finished||generation!==giftVideoGeneration)return;
+renderActive=true;
+renderGiftFrame();
+}catch(error){
+finish();
+}
+}
+};
+
+video.load();
 }
 
 /* CLEANUP */
 function releaseHostObjectURL(){
-  if(hostMediaObjectURL){
-    URL.revokeObjectURL(hostMediaObjectURL);
-    hostMediaObjectURL=null;
-  }
+if(hostMediaObjectURL){
+URL.revokeObjectURL(hostMediaObjectURL);
+hostMediaObjectURL=null;
+}
 }
 
 window.addEventListener('pagehide',()=>{
-  manuallyClosed=true;
-  stopGiftRenderer();
-  stopHostSeamlessLoop();
-  stopHostIconAnimation();
-  resetMiniHostVideo();
+manuallyClosed=true;
+stopGiftRenderer();
+stopHostSeamlessLoop();
+stopHostIconAnimation();
+resetMiniHostVideo();
 
-  if(displayCamStream){
-    displayCamStream.getTracks().forEach(track=>track.stop());
-    displayCamStream=null;
-  }
-  if(ws){
-    ws.close();
-    ws=null;
-  }
-  clearTimeout(reconnectTimer);
+if(displayCamStream){
+displayCamStream.getTracks().forEach(track=>track.stop());
+displayCamStream=null;
+}
 
-  for(const timer of Object.values(badgeTimers)){
-    clearTimeout(timer);
-  }
+if(ws){
+ws.close();
+ws=null;
+}
 
-  for(const group of giftComboGroups.values()){
-    clearTimeout(group.timer);
-    if(group.src?.startsWith('blob:')){
-      URL.revokeObjectURL(group.src);
-    }
-  }
-  giftComboGroups.clear();
+clearTimeout(reconnectTimer);
 
-  giftVideoQueue.forEach(item=>{
-    if(item.isBlob) URL.revokeObjectURL(item.src);
-  });
-  giftVideoQueue.length=0;
+for(const timer of Object.values(badgeTimers)){
+clearTimeout(timer);
+}
 
-  releaseHostObjectURL();
-  channel.close();
+for(const group of giftComboGroups.values()){
+clearTimeout(group.timer);
+if(group.src?.startsWith('blob:')){
+URL.revokeObjectURL(group.src);
+}
+}
+giftComboGroups.clear();
+
+giftVideoQueue.forEach(item=>{
+if(item.isBlob)URL.revokeObjectURL(item.src);
+});
+giftVideoQueue.length=0;
+
+releaseHostObjectURL();
+channel.close();
 });
 </script>
 </body>
