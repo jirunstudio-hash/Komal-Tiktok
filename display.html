@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Display Studio - TikTok Live Optimized HD</title>
+<title>Display Studio - TikTok Live</title>
 
 <style>
 *{
@@ -12,22 +13,20 @@ margin:0;
 padding:0;
 font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 -webkit-font-smoothing:antialiased;
--moz-osx-font-smoothing:grayscale;
-text-rendering:optimizeLegibility
 }
 
 html,body{
 width:100%;
 height:100%;
 overflow:hidden;
-background:#000000;
-color:#fff
+background:#000;
+color:#fff;
 }
 
 body{
 display:flex;
 justify-content:center;
-align-items:center
+align-items:center;
 }
 
 .phone-screen{
@@ -38,9 +37,8 @@ position:relative;
 overflow:hidden;
 display:flex;
 flex-direction:column;
-background:#000000;
-transform:translateZ(0);
-padding:8px 6px 45px 6px
+background:#000;
+padding:8px 6px 45px;
 }
 
 .host-fullscreen{
@@ -50,27 +48,13 @@ aspect-ratio:16 / 10;
 flex-shrink:0;
 z-index:2;
 background:#292c34;
-border:1px solid rgba(255,255,255,0.07);
+border:1px solid rgba(255,255,255,.07);
 border-radius:12px;
 overflow:hidden;
 cursor:pointer;
 display:flex;
 justify-content:center;
-align-items:center
-}
-
-.host-badge{
-position:absolute;
-top:10px;
-left:10px;
-z-index:6;
-background:rgba(0,0,0,0.55);
-color:#a1a5ae;
-font-size:12px;
-font-weight:500;
-padding:4px 10px;
-border-radius:999px;
-pointer-events:none
+align-items:center;
 }
 
 .unmute-hint{
@@ -78,15 +62,15 @@ position:absolute;
 bottom:10px;
 right:10px;
 z-index:7;
-background:rgba(0,0,0,0.75);
-border:1px solid rgba(255,255,255,0.25);
+background:rgba(0,0,0,.75);
+border:1px solid rgba(255,255,255,.25);
 color:#fff;
 font-size:11px;
 font-weight:700;
 padding:5px 10px;
 border-radius:999px;
 display:none;
-pointer-events:none
+pointer-events:none;
 }
 
 .host-video,#hostCameraImg{
@@ -99,15 +83,15 @@ z-index:2;
 display:none;
 backface-visibility:hidden;
 filter:none;
-transition:opacity 0.22s ease-in-out
+transition:opacity .22s ease-in-out;
 }
 
 #hostCameraImg{
-z-index:4
+z-index:4;
 }
 
 .host-placeholder{
-display:none
+display:none;
 }
 
 .gift-overlay{
@@ -120,20 +104,20 @@ pointer-events:none;
 display:none;
 opacity:0;
 background:transparent;
-transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1);
-will-change:opacity
+transition:opacity .22s cubic-bezier(.25,1,.5,1);
+will-change:opacity;
 }
 
 .gift-overlay.visible{
-opacity:1
+opacity:1;
 }
 
 .gift-bottom-backdrop{
-display:none
+display:none;
 }
 
 #giftVideo{
-display:none
+display:none;
 }
 
 #giftCanvas{
@@ -148,7 +132,7 @@ pointer-events:none;
 transform:translateZ(0);
 backface-visibility:hidden;
 image-rendering:-webkit-optimize-contrast;
-z-index:2
+z-index:2;
 }
 
 .live-layout{
@@ -156,15 +140,15 @@ position:relative;
 z-index:10;
 width:100%;
 padding:8px 0;
-pointer-events:none
+pointer-events:none;
 }
 
 .komal-grid{
 width:100%;
 display:grid;
-grid-template-columns:repeat(4, 1fr);
+grid-template-columns:repeat(4,1fr);
 gap:6px;
-pointer-events:auto
+pointer-events:auto;
 }
 
 .slot-box{
@@ -181,13 +165,13 @@ align-items:center;
 justify-content:center;
 contain:layout paint;
 box-shadow:none;
-transition:transform .2s ease
+transition:transform .2s ease;
 }
 
 .slot-box.has-photo{
 background:#191b22;
 border:1px solid rgba(255,255,255,.22);
-animation:none!important
+animation:none!important;
 }
 
 .slot-bg-blur{
@@ -199,7 +183,7 @@ object-fit:cover!important;
 filter:blur(8px) brightness(.7)!important;
 display:none;
 z-index:1;
-pointer-events:none
+pointer-events:none;
 }
 
 .slot-bg-overlay{
@@ -208,7 +192,7 @@ inset:0;
 background:rgba(0,0,0,.25);
 display:none;
 z-index:2;
-pointer-events:none
+pointer-events:none;
 }
 
 .slot-plus-svg{
@@ -218,15 +202,15 @@ stroke:#a1a5ae;
 stroke-width:2.6;
 stroke-linecap:round;
 z-index:3;
-margin-bottom:6px
+margin-bottom:6px;
 }
 
 .slot-req{
 color:#a1a5ae;
 font-size:.70rem;
 font-weight:400;
-letter-spacing:0.2px;
-z-index:3
+letter-spacing:.2px;
+z-index:3;
 }
 
 .slot-circle-img{
@@ -241,7 +225,7 @@ left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
 box-shadow:0 3px 10px rgba(0,0,0,.65);
-filter:none
+filter:none;
 }
 
 /* BADGE POIN */
@@ -258,39 +242,40 @@ border:1px solid rgba(255,255,255,.18);
 padding:2px 6px 2px 3px;
 border-radius:999px;
 z-index:6;
-box-shadow:0 2px 5px rgba(0,0,0,.5)
+box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
 
-/* LINGKARAN BIRU DENGAN GARIS PUTIH */
+/* LINGKARAN BIRU GARIS PUTIH */
 .cyan-diamond-circle{
 width:14px;
 height:14px;
 background:#168cff;
-border:1px solid #ffffff;
+border:1px solid #fff;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
 flex-shrink:0;
-box-shadow:0 0 0 1px rgba(255,255,255,.25)
+box-shadow:0 0 0 1px rgba(255,255,255,.25);
 }
 
-/* BINTANG PUTIH */
+/* BINTANG SIMBOL ★ */
 .star-svg{
-width:8px;
-height:8px;
-fill:#ffffff;
-display:block
+color:#fff;
+font-size:10px;
+line-height:1;
+font-weight:400;
+display:block;
 }
 
 /* ANGKA POIN FONT NORMAL */
 .coin-count{
 font-size:.6rem;
-color:#ffffff;
+color:#fff;
 font-weight:400;
 text-shadow:none;
 letter-spacing:0;
-line-height:1
+line-height:1;
 }
 
 @keyframes popGiftBadge{
@@ -309,7 +294,7 @@ display:none;
 object-fit:contain;
 filter:drop-shadow(0 2px 5px rgba(0,0,0,.85));
 pointer-events:none;
-animation:popGiftBadge .3s ease-out
+animation:popGiftBadge .3s ease-out;
 }
 
 .slot-name-pill{
@@ -327,7 +312,7 @@ border:0;
 padding:2px 6px;
 border-radius:999px;
 min-height:20px;
-box-shadow:none
+box-shadow:none;
 }
 
 .slot-name-text{
@@ -339,7 +324,7 @@ white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
 max-width:58px;
-text-shadow:0 1px 2px rgba(0,0,0,.8)
+text-shadow:0 1px 2px rgba(0,0,0,.8);
 }
 
 .slot-plus-circle{
@@ -350,12 +335,12 @@ background:rgba(255,255,255,.28);
 display:flex;
 align-items:center;
 justify-content:center;
-flex-shrink:0
+flex-shrink:0;
 }
 
 .slot-pill-plus-svg{
 width:7px;
-height:7px
+height:7px;
 }
 
 .mic-container{
@@ -371,44 +356,44 @@ justify-content:center;
 background:transparent!important;
 border:none!important;
 border-radius:0!important;
-box-shadow:none!important
+box-shadow:none!important;
 }
 
 .mic-icon-svg{
 width:16px;
 height:16px;
 display:block;
-filter:drop-shadow(0 1px 3px rgba(0,0,0,0.95))
+filter:drop-shadow(0 1px 3px rgba(0,0,0,.95));
 }
 
 .mic-icon-svg .mic-body{
-fill:#ffffff
+fill:#fff;
 }
 
 .mic-icon-svg .mic-slash-bg{
-stroke:#000000;
+stroke:#000;
 stroke-width:4.6;
 stroke-linecap:round;
-display:block
+display:block;
 }
 
 .mic-icon-svg .mic-slash{
-stroke:#ffffff;
+stroke:#fff;
 stroke-width:2.6;
 stroke-linecap:round;
 display:block;
-filter:drop-shadow(0 1px 2px rgba(0,0,0,0.95))
+filter:drop-shadow(0 1px 2px rgba(0,0,0,.95));
 }
 
 .mic-container.is-unmuted .mic-icon-svg .mic-slash,
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
-display:none
+display:none;
 }
 
 .mic-container.is-muted{
 background:transparent!important;
 border:none!important;
-box-shadow:none!important
+box-shadow:none!important;
 }
 </style>
 </head>
@@ -417,7 +402,6 @@ box-shadow:none!important
 <div class="phone-screen" id="displayContainer">
 
   <div class="host-fullscreen" id="hostBox" onclick="handleHostBoxClick()">
-    <div class="host-badge">Host</div>
     <div id="unmuteHint" class="unmute-hint">🔊 Ketuk untuk nyalakan suara</div>
     <div id="hostPlaceholder" class="host-placeholder"></div>
     <video id="hostVideo" class="host-video" autoplay playsinline preload="auto"></video>
@@ -470,9 +454,7 @@ for(let i=1; i<=8; i++){
 
     <div class="slot-coin-badge" id="coin-badge-${i}" style="display:none">
       <div class="cyan-diamond-circle">
-        <svg class="star-svg" viewBox="0 0 24 24">
-          <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
-        </svg>
+        <span class="star-svg">★</span>
       </div>
       <span class="coin-count" id="coincount-slot-${i}">0</span>
     </div>
@@ -729,13 +711,6 @@ function stopDisplayDirectCamera(){
   $('hostPlaceholder').style.display='none';
 }
 
-function releaseHostObjectURL(){
-  if(hostMediaObjectURL){
-    URL.revokeObjectURL(hostMediaObjectURL);
-    hostMediaObjectURL=null;
-  }
-}
-
 /* WEBGL RENDERER */
 let gl=null;
 let glProgram=null;
@@ -777,21 +752,18 @@ function initWebGL(canvas){
 
     void main(){
       vec4 c = texture2D(u_tex, v_tex);
-
       float maxRB = max(c.r, c.b);
       float gDiff = c.g - maxRB;
-      bool isGreen = (gDiff > 0.15 && c.g > 0.32 && c.g > c.r * 1.2 && c.g > c.b * 1.2);
 
       float maxC = max(c.r, max(c.g, c.b));
       float minC = min(c.r, min(c.g, c.b));
       float chromaDiff = maxC - minC;
-      bool isBlack = (maxC < 0.045 && chromaDiff < 0.02);
 
       float greenAmount = smoothstep(0.08, 0.28, gDiff);
       float blackAmount = 1.0 - smoothstep(0.025, 0.085, maxC);
       float alpha = 1.0 - max(greenAmount, blackAmount);
 
-      if (gDiff > 0.0 && c.g > maxRB) {
+      if(gDiff > 0.0 && c.g > maxRB){
         float spill = clamp(gDiff * 1.8, 0.0, 0.75);
         c.g = mix(c.g, maxRB, spill);
       }
@@ -953,7 +925,7 @@ function updateSlotDisplay(data){
     }else if(slotMuteStates[slotNum]!==undefined){
       updateMicStatus(slotNum,slotMuteStates[slotNum]);
     }else{
-      updateMicStatus(slotNum, true);
+      updateMicStatus(slotNum,true);
     }
   }
 
@@ -1240,7 +1212,10 @@ let canvas2D=null;
 
 function stopGiftRenderer(){
   renderActive=false;
-  if(renderFrameId!==null){ cancelAnimationFrame(renderFrameId); renderFrameId=null; }
+  if(renderFrameId!==null){
+    cancelAnimationFrame(renderFrameId);
+    renderFrameId=null;
+  }
   if(videoFrameCallbackId!==null&&giftVideo.cancelVideoFrameCallback){
     giftVideo.cancelVideoFrameCallback(videoFrameCallbackId);
   }
@@ -1339,11 +1314,13 @@ function playGiftVideo(src,onFinished){
         }catch(e){}
       }
       if(canvas2D){
-        try{ canvas2D.clearRect(0,0,canvas.width,canvas.height); }catch(e){}
+        try{
+          canvas2D.clearRect(0,0,canvas.width,canvas.height);
+        }catch(e){}
       }
 
       if(typeof onFinished==='function') onFinished();
-    }, 200);
+    },200);
   }
 
   activeFinishHandler=finish;
@@ -1371,16 +1348,16 @@ function playGiftVideo(src,onFinished){
 
   safetyTimer=setTimeout(()=>{
     if(!finished) finish();
-  }, 12000);
+  },12000);
 
   video.onloadedmetadata=async()=>{
     if(finished||generation!==giftVideoGeneration) return;
 
     const originalWidth=video.videoWidth||1080;
     const originalHeight=video.videoHeight||1920;
-    const scale=Math.min(1, 1080/originalWidth, 1920/originalHeight);
-    const renderWidth=Math.max(1, Math.round(originalWidth*scale));
-    const renderHeight=Math.max(1, Math.round(originalHeight*scale));
+    const scale=Math.min(1,1080/originalWidth,1920/originalHeight);
+    const renderWidth=Math.max(1,Math.round(originalWidth*scale));
+    const renderHeight=Math.max(1,Math.round(originalHeight*scale));
 
     canvas.width=renderWidth;
     canvas.height=renderHeight;
@@ -1389,7 +1366,7 @@ function playGiftVideo(src,onFinished){
       clearTimeout(safetyTimer);
       safetyTimer=setTimeout(()=>{
         if(!finished) finish();
-      }, (video.duration*1000)+1500);
+      },(video.duration*1000)+1500);
     }
 
     if(glReady&&gl){
@@ -1438,6 +1415,13 @@ function playGiftVideo(src,onFinished){
 }
 
 /* CLEANUP */
+function releaseHostObjectURL(){
+  if(hostMediaObjectURL){
+    URL.revokeObjectURL(hostMediaObjectURL);
+    hostMediaObjectURL=null;
+  }
+}
+
 window.addEventListener('pagehide',()=>{
   manuallyClosed=true;
   stopGiftRenderer();
@@ -1447,13 +1431,21 @@ window.addEventListener('pagehide',()=>{
     displayCamStream.getTracks().forEach(track=>track.stop());
     displayCamStream=null;
   }
-  if(ws){ ws.close(); ws=null; }
+  if(ws){
+    ws.close();
+    ws=null;
+  }
   clearTimeout(reconnectTimer);
 
-  for(const timer of Object.values(badgeTimers)) clearTimeout(timer);
+  for(const timer of Object.values(badgeTimers)){
+    clearTimeout(timer);
+  }
+
   for(const group of giftComboGroups.values()){
     clearTimeout(group.timer);
-    if(group.src?.startsWith('blob:')) URL.revokeObjectURL(group.src);
+    if(group.src?.startsWith('blob:')){
+      URL.revokeObjectURL(group.src);
+    }
   }
   giftComboGroups.clear();
 
