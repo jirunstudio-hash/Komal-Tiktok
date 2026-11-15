@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Situs Diblokir | Internet Positif</title>
+  <title>Beranda Website</title>
   <style>
     :root {
       --primary-blue: #0d3b66;
@@ -24,12 +24,34 @@
 
     body {
       font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-dark);
       line-height: 1.6;
+    }
+
+    /* =========================================
+       GAYA HALAMAN ASLI (SEBELUM DIBLOKIR)
+       Ganti atau sesuaikan dengan CSS web Anda
+       ========================================= */
+    #halaman-asli {
       min-height: 100vh;
+      background-color: #ffffff;
+      color: #222222;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    /* =========================================
+       GAYA HALAMAN BLOKIR (AWALNYA TERSEMBUNYI)
+       ========================================= */
+    #halaman-blokir {
+      display: none; /* Disembunyikan saat awal buka */
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: var(--bg-color);
+      color: var(--text-dark);
     }
 
     /* Header Top Bar */
@@ -287,84 +309,99 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="top-bar">
-    <div class="brand">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(255,255,255,0.15)"/>
-        <line x1="9" y1="9" x2="15" y2="15"/>
-        <line x1="15" y1="9" x2="9" y2="15"/>
-      </svg>
-      <div class="brand-text">
-        <h1>INTERNET POSITIF</h1>
-        <span>Sistem Penyaringan Konten Digital</span>
-      </div>
-    </div>
-    <div class="badge-status">AKSES DIBATASI</div>
-  </header>
+  <!-- =================================================
+       1. ISI WEBSITE ASLI ANDA TARUH DI DALAM DIV INI
+       ================================================= -->
+  <div id="halaman-asli">
+    <h1>Selamat Datang di Website</h1>
+    <p style="margin-top: 10px; color: #555;">
+      Halaman sedang dimuat... (tunggu 5 detik, tampilan akan berubah otomatis tanpa refresh).
+    </p>
+  </div>
 
-  <!-- Main Content -->
-  <main class="container">
-    <section class="block-card">
-      <div class="card-header">
-        <svg class="shield-icon" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L3 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-4z" fill="#fdecea" stroke="#c62828" stroke-width="1.8"/>
-          <path d="M12 8v5" stroke="#c62828" stroke-width="2.2" stroke-linecap="round"/>
-          <circle cx="12" cy="16.5" r="1.2" fill="#c62828"/>
+  <!-- =================================================
+       2. TAMPILAN HALAMAN BLOKIR (MUNCUL OTOMATIS)
+       ================================================= -->
+  <div id="halaman-blokir">
+    <!-- Header -->
+    <header class="top-bar">
+      <div class="brand">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(255,255,255,0.15)"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
         </svg>
-        <h2>SITUS DIBLOKIR</h2>
-        <p class="en-subtitle">WEBSITE BLOCKED</p>
-      </div>
-
-      <div class="card-body">
-        <div class="notice-box">
-          <p class="notice-id">
-            MAAF, AKSES KE SITUS INI TIDAK DAPAT DILAKUKAN KARENA TERINDIKASI MENGANDUNG KONTEN YANG MELANGGAR PERATURAN PERUNDANG-UNDANGAN DI INDONESIA.
-          </p>
-          <p class="notice-en">
-            Sorry, access to this website has been denied because it contains content that violates applicable regulations in Indonesia.
-          </p>
-        </div>
-
-        <div class="legal-ref">
-          <p>
-            <strong>Dasar Hukum:</strong> Undang-Undang Nomor 19 Tahun 2016 tentang Informasi dan Transaksi Elektronik (UU ITE) serta peraturan terkait Penyelenggara Sistem Elektronik Lingkup Privat.
-          </p>
-          <p>
-            Pemblokiran dilakukan melalui penyaringan DNS pada jaringan penyedia layanan internet (ISP).
-          </p>
-        </div>
-
-        <table class="info-grid">
-          <tr>
-            <th>Domain / URL</th>
-            <td id="domain-name">memuat...</td>
-          </tr>
-          <tr>
-            <th>Kategori Pemblokiran</th>
-            <td>Konten Terlarang / Pelanggaran Kebijakan</td>
-          </tr>
-          <tr>
-            <th>Waktu Akses</th>
-            <td id="access-time">memuat...</td>
-          </tr>
-          <tr>
-            <th>Status</th>
-            <td><strong style="color: #c62828;">DIBLOKIR (ERR_ACCESS_DENIED)</strong></td>
-          </tr>
-        </table>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="showModal('normalisasi')">Ajukan Normalisasi</button>
-          <button class="btn btn-outline" onclick="showModal('info')">Detail Pemblokiran</button>
+        <div class="brand-text">
+          <h1>INTERNET POSITIF</h1>
+          <span>Sistem Penyaringan Konten Digital</span>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="badge-status">AKSES DIBATASI</div>
+    </header>
 
-  <footer>
-    Sistem Penyaringan Konten Internet &bull; Kode Status: HTTP 403 Forbidden
-  </footer>
+    <!-- Main Content -->
+    <main class="container">
+      <section class="block-card">
+        <div class="card-header">
+          <svg class="shield-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-4z" fill="#fdecea" stroke="#c62828" stroke-width="1.8"/>
+            <path d="M12 8v5" stroke="#c62828" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="12" cy="16.5" r="1.2" fill="#c62828"/>
+          </svg>
+          <h2>SITUS DIBLOKIR</h2>
+          <p class="en-subtitle">WEBSITE BLOCKED</p>
+        </div>
+
+        <div class="card-body">
+          <div class="notice-box">
+            <p class="notice-id">
+              MAAF, AKSES KE SITUS INI TIDAK DAPAT DILAKUKAN KARENA TERINDIKASI MENGANDUNG KONTEN YANG MELANGGAR PERATURAN PERUNDANG-UNDANGAN DI INDONESIA.
+            </p>
+            <p class="notice-en">
+              Sorry, access to this website has been denied because it contains content that violates applicable regulations in Indonesia.
+            </p>
+          </div>
+
+          <div class="legal-ref">
+            <p>
+              <strong>Dasar Hukum:</strong> Undang-Undang Nomor 19 Tahun 2016 tentang Informasi dan Transaksi Elektronik (UU ITE) serta peraturan terkait Penyelenggara Sistem Elektronik Lingkup Privat.
+            </p>
+            <p>
+              Pemblokiran dilakukan melalui penyaringan DNS pada jaringan penyedia layanan internet (ISP).
+            </p>
+          </div>
+
+          <table class="info-grid">
+            <tr>
+              <th>Domain / URL</th>
+              <td id="domain-name">memuat...</td>
+            </tr>
+            <tr>
+              <th>Kategori Pemblokiran</th>
+              <td>Konten Terlarang / Pelanggaran Kebijakan</td>
+            </tr>
+            <tr>
+              <th>Waktu Akses</th>
+              <td id="access-time">memuat...</td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td><strong style="color: #c62828;">DIBLOKIR (ERR_ACCESS_DENIED)</strong></td>
+            </tr>
+          </table>
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="showModal('normalisasi')">Ajukan Normalisasi</button>
+            <button class="btn btn-outline" onclick="showModal('info')">Detail Pemblokiran</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Sistem Penyaringan Konten Internet &bull; Kode Status: HTTP 403 Forbidden
+    </footer>
+  </div>
 
   <!-- Modal Pop-up -->
   <div class="modal-overlay" id="infoModal">
@@ -376,18 +413,48 @@
   </div>
 
   <script>
-    const domainEl = document.getElementById("domain-name");
-    const timeEl = document.getElementById("access-time");
+    function aktifkanBlokir() {
+      // 1. Sembunyikan halaman asli & tampilkan halaman blokir tanpa refresh
+      document.getElementById("halaman-asli").style.display = "none";
+      document.getElementById("halaman-blokir").style.display = "flex";
 
-    const currentHost = window.location.hostname;
-    domainEl.textContent = currentHost ? currentHost : "akses-dibatasi.id";
+      // 2. Ubah judul tab browser
+      document.title = "Situs Diblokir | Internet Positif";
 
-    const now = new Date();
-    timeEl.textContent = now.toLocaleString("id-ID", {
-      dateStyle: "full",
-      timeStyle: "medium"
-    }) + " WIB";
+      // 3. Isi domain dan waktu tepat saat berubah
+      const domainEl = document.getElementById("domain-name");
+      const timeEl = document.getElementById("access-time");
 
+      const currentHost = window.location.hostname;
+      domainEl.textContent = currentHost ? currentHost : "akses-dibatasi.id";
+
+      const now = new Date();
+      timeEl.textContent = now.toLocaleString("id-ID", {
+        dateStyle: "full",
+        timeStyle: "medium"
+      }) + " WIB";
+    }
+
+    // === PILIH SALAH SATU PEMICU DI BAWAH INI ===
+
+    // Opsi A: Otomatis berubah setelah 5 detik (5000 ms)
+    setTimeout(aktifkanBlokir, 5000);
+
+    /* 
+    // Opsi B: Berubah dari jarak jauh lewat file status.json di server (hapus tanda komentar /* dan * / jika ingin pakai ini, lalu hapus Opsi A)
+    const cekStatus = setInterval(async () => {
+      try {
+        const res = await fetch("/status.json?t=" + Date.now());
+        const data = await res.json();
+        if (data.diblokir === true) {
+          aktifkanBlokir();
+          clearInterval(cekStatus);
+        }
+      } catch (e) {}
+    }, 2000);
+    */
+
+    // Fungsi Modal
     function showModal(type) {
       const modal = document.getElementById("infoModal");
       const title = document.getElementById("modalTitle");
