@@ -344,7 +344,7 @@
           </tr>
           <tr>
             <th>Alasan Pemblokiran</th>
-            <td>Konten Terlarang / Pelanggaran Kebijakan (Simulasi)</td>
+            <td>Konten Terlarang / Pelanggaran Kebijakan</td>
           </tr>
           <tr>
             <th>Waktu Akses</th>
@@ -365,7 +365,7 @@
   </main>
 
   <footer>
-    Halaman Simulasi Pemblokiran Akses &bull; Gunakan hanya untuk keperluan edukasi, desain UI, atau halaman error 404.
+    halaman error 404.
   </footer>
 
   <!-- Modal Pop-up -->
@@ -398,8 +398,8 @@
       const message = document.getElementById("modalMessage");
 
       if (type === "normalisasi") {
-        title.textContent = "Ketahuan! 😄";
-        message.textContent = "Tenang saja, situs ini sebenarnya tidak diblokir sungguhan. Ini hanyalah halaman simulasi / lelucon!";
+        title.textContent = "";
+        message.textContent = "";
       } else {
         title.textContent = "Detail Teknis";
         message.textContent = "Tidak ada pemblokiran jaringan nyata yang terjadi. Anda dapat mengedit teks HTML ini untuk mengubahnya menjadi halaman 404 atau maintenance.";
