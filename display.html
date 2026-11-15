@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -246,7 +245,7 @@ z-index:3;
 text-shadow:0 1px 3px rgba(0,0,0,.8);
 }
 
-/* Foto profil tetap di tengah */
+/* Foto profil tanpa garis putih */
 .slot-circle-img{
 width:56px;
 height:56px;
@@ -258,10 +257,8 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:2px solid rgba(255,255,255,.88);
-box-shadow:
-0 2px 8px rgba(0,0,0,.55),
-0 0 0 2px rgba(255,255,255,.12);
+border:none!important;
+box-shadow:none!important;
 }
 
 /* Badge koin */
@@ -282,9 +279,9 @@ box-shadow:0 2px 6px rgba(0,0,0,.4);
 }
 
 .cyan-diamond-circle{
-width:14px;
-height:14px;
-min-width:14px;
+width:15px;
+height:15px;
+min-width:15px;
 background:#168cff;
 border:1px solid #fff;
 border-radius:50%;
@@ -296,6 +293,7 @@ overflow:hidden;
 box-shadow:0 0 0 1px rgba(255,255,255,.2);
 }
 
+/* Bintang sedikit lebih besar */
 .star-svg{
 width:100%;
 height:100%;
@@ -304,7 +302,7 @@ align-items:center;
 justify-content:center;
 color:#fff;
 font-family:Arial,Helvetica,sans-serif;
-font-size:9px;
+font-size:11px;
 font-weight:400;
 line-height:1;
 text-align:center;
@@ -385,7 +383,7 @@ width:7px;
 height:7px;
 }
 
-/* Ikon mikrofon */
+/* Ikon mikrofon tanpa kotak atau lingkaran */
 .mic-container{
 position:absolute;
 bottom:5px;
@@ -396,11 +394,11 @@ height:20px;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,0,0,.62)!important;
-border:1px solid rgba(255,255,255,.14)!important;
-border-radius:50%!important;
-box-shadow:0 1px 4px rgba(0,0,0,.35)!important;
-backdrop-filter:blur(4px);
+background:transparent!important;
+border:none!important;
+border-radius:0!important;
+box-shadow:none!important;
+backdrop-filter:none!important;
 }
 
 .mic-icon-svg{
@@ -429,9 +427,9 @@ filter:drop-shadow(0 1px 2px rgba(0,0,0,.95));
 display:none;
 }
 .mic-container.is-muted{
-background:rgba(0,0,0,.62)!important;
-border:1px solid rgba(255,255,255,.14)!important;
-box-shadow:0 1px 4px rgba(0,0,0,.35)!important;
+background:transparent!important;
+border:none!important;
+box-shadow:none!important;
 }
 
 /* Tampilan layar kecil */
@@ -966,7 +964,7 @@ const bg=$(`bg-slot-${slotNum}`);
 const bgOverlay=$(`overlay-slot-${slotNum}`);
 const icon=$(`icon-${slotNum}`);
 const req=$(`req-${slotNum}`);
-const topBadge=$(`topbadge-${slotNum}`);
+const topBadge=$(`topbadge-slot-${slotNum}`);
 
 if(action==='clear_slot'){
 slotBox.classList.remove('has-photo');
@@ -1055,7 +1053,7 @@ bgOverlay.style.display='block';
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
 if(!badgeSrc||!slotNum)return;
 
-const topBadge=$(`topbadge-${slotNum}`);
+const topBadge=$(`topbadge-slot-${slotNum}`);
 if(!topBadge)return;
 
 if(badgeTimers[slotNum])clearTimeout(badgeTimers[slotNum]);
