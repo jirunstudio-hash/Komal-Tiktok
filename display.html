@@ -41,8 +41,6 @@ background:#000;
 padding:8px 6px 45px;
 }
 
-/* HOST */
-
 .host-fullscreen{
 position:relative;
 width:100%;
@@ -104,8 +102,6 @@ transition:opacity .22s ease-in-out;
 display:none;
 }
 
-/* GIFT OVERLAY */
-
 .gift-overlay{
 position:absolute;
 inset:0;
@@ -147,34 +143,34 @@ image-rendering:-webkit-optimize-contrast;
 z-index:2;
 }
 
-/* MEMBER GRID */
-
 .live-layout{
 position:relative;
 z-index:10;
 width:100%;
-padding:9px 0;
+padding:8px 0;
 pointer-events:none;
 }
+
+/* =========================================
+   GRID KOTAK TIKTOK LIVE
+========================================= */
 
 .komal-grid{
 width:100%;
 display:grid;
 grid-template-columns:repeat(4,minmax(0,1fr));
-gap:7px;
-padding:2px;
+gap:6px;
 pointer-events:auto;
 }
 
-/* KOTAK MEMBER */
-
+/* Tampilan dasar kotak */
 .slot-box{
 width:100%;
-aspect-ratio:1 / 1.08;
-min-width:0;
-background:linear-gradient(145deg,#292d37 0%,#191c24 100%);
-border:1px solid rgba(255,255,255,.18);
-border-radius:12px;
+aspect-ratio:1 / 1.06;
+background:
+linear-gradient(145deg,#24252d 0%,#191a21 55%,#15161c 100%);
+border:1px solid rgba(255,255,255,.13);
+border-radius:9px;
 position:relative;
 overflow:hidden;
 display:flex;
@@ -183,76 +179,77 @@ align-items:center;
 justify-content:center;
 contain:layout paint;
 box-shadow:
-0 2px 7px rgba(0,0,0,.35),
-inset 0 1px 0 rgba(255,255,255,.06);
-transition:border-color .2s ease,box-shadow .2s ease;
+0 2px 5px rgba(0,0,0,.35),
+inset 0 1px 0 rgba(255,255,255,.035);
+transition:
+border-color .2s ease,
+background .2s ease,
+box-shadow .2s ease;
 }
 
+/* Kotak ketika member memiliki foto */
 .slot-box.has-photo{
-background:#191b22;
-border:1px solid rgba(255,255,255,.28);
+background:#191a21;
+border:1px solid rgba(255,255,255,.20);
 box-shadow:
-0 3px 10px rgba(0,0,0,.4),
-inset 0 0 0 1px rgba(255,255,255,.04);
+0 2px 7px rgba(0,0,0,.4),
+inset 0 0 0 1px rgba(255,255,255,.025);
 animation:none!important;
 }
 
-/* BACKGROUND FOTO BLUR */
-
+/* Background blur foto */
 .slot-bg-blur{
 position:absolute!important;
 inset:-8px!important;
 width:calc(100% + 16px)!important;
 height:calc(100% + 16px)!important;
 object-fit:cover!important;
-filter:blur(5px) brightness(.78)!important;
+filter:blur(7px) brightness(.72)!important;
 display:none;
 z-index:1;
 pointer-events:none;
-transform:scale(1.04);
 }
 
+/* Lapisan gelap foto */
 .slot-bg-overlay{
 position:absolute;
 inset:0;
 background:linear-gradient(
 180deg,
 rgba(0,0,0,.12) 0%,
-rgba(0,0,0,.04) 45%,
-rgba(0,0,0,.42) 100%
+rgba(0,0,0,.08) 45%,
+rgba(0,0,0,.38) 100%
 );
 display:none;
 z-index:2;
 pointer-events:none;
 }
 
-/* SLOT KOSONG */
-
+/* Ikon tambah */
 .slot-plus-svg{
-width:27px;
-height:27px;
-stroke:#d5d9e2;
+width:25px;
+height:25px;
+stroke:#aeb2bd;
 stroke-width:2.3;
 stroke-linecap:round;
 z-index:3;
-margin-bottom:7px;
-filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+margin-bottom:6px;
 }
 
+/* Tulisan permintaan */
 .slot-req{
-color:#e2e5ec;
-font-size:10px;
-font-weight:600;
-letter-spacing:.15px;
+color:#b8bbc5;
+font-size:.70rem;
+font-weight:500;
+letter-spacing:.1px;
 z-index:3;
-text-shadow:0 1px 3px rgba(0,0,0,.9);
+text-shadow:0 1px 3px rgba(0,0,0,.8);
 }
 
-/* FOTO PROFIL */
-
+/* Foto profil tetap di tengah */
 .slot-circle-img{
-width:62px;
-height:62px;
+width:56px;
+height:56px;
 border-radius:50%;
 object-fit:cover;
 display:none;
@@ -261,15 +258,13 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 z-index:4;
-border:2px solid rgba(255,255,255,.92);
+border:2px solid rgba(255,255,255,.88);
 box-shadow:
-0 3px 12px rgba(0,0,0,.65),
-0 0 0 3px rgba(255,255,255,.12);
-background:#292c34;
+0 2px 8px rgba(0,0,0,.55),
+0 0 0 2px rgba(255,255,255,.12);
 }
 
-/* BADGE KOIN */
-
+/* Badge koin */
 .slot-coin-badge{
 position:absolute;
 top:5px;
@@ -278,19 +273,18 @@ display:flex;
 align-items:center;
 gap:4px;
 background:rgba(12,13,18,.88);
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:1px solid rgba(255,255,255,.2);
-padding:3px 7px 3px 4px;
+backdrop-filter:blur(5px);
+border:1px solid rgba(255,255,255,.16);
+padding:3px 6px 3px 3px;
 border-radius:999px;
 z-index:6;
-box-shadow:0 2px 6px rgba(0,0,0,.45);
+box-shadow:0 2px 6px rgba(0,0,0,.4);
 }
 
 .cyan-diamond-circle{
-width:15px;
-height:15px;
-min-width:15px;
+width:14px;
+height:14px;
+min-width:14px;
 background:#168cff;
 border:1px solid #fff;
 border-radius:50%;
@@ -299,7 +293,7 @@ align-items:center;
 justify-content:center;
 flex-shrink:0;
 overflow:hidden;
-box-shadow:0 0 0 1px rgba(255,255,255,.25);
+box-shadow:0 0 0 1px rgba(255,255,255,.2);
 }
 
 .star-svg{
@@ -319,22 +313,21 @@ text-align:center;
 .coin-count{
 font-family:Arial,Helvetica,sans-serif;
 font-size:10px;
-font-weight:600;
+font-weight:500;
 color:#fff;
 letter-spacing:0;
 line-height:1;
 white-space:nowrap;
 }
 
-/* BADGE GIFT */
-
+/* Badge gift */
 .slot-top-badge{
 position:absolute;
 top:5px;
 right:5px;
 z-index:8;
-width:25px;
-height:25px;
+width:24px;
+height:24px;
 display:none;
 object-fit:contain;
 filter:drop-shadow(0 2px 5px rgba(0,0,0,.85));
@@ -347,25 +340,23 @@ animation:popGiftBadge .3s ease-out;
 100%{transform:scale(1);opacity:1}
 }
 
-/* NAMA MEMBER */
-
+/* Label nama member */
 .slot-name-pill{
 position:absolute;
 bottom:5px;
 left:5px;
-max-width:calc(100% - 29px);
+max-width:calc(100% - 30px);
 display:flex;
 align-items:center;
 gap:4px;
 z-index:7;
-background:rgba(0,0,0,.72);
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-border:1px solid rgba(255,255,255,.2);
+background:rgba(0,0,0,.64);
+backdrop-filter:blur(5px);
+border:1px solid rgba(255,255,255,.12);
 padding:3px 7px;
 border-radius:999px;
-min-height:22px;
-box-shadow:0 2px 5px rgba(0,0,0,.3);
+min-height:21px;
+box-shadow:0 1px 4px rgba(0,0,0,.25);
 }
 
 .slot-name-text{
@@ -375,15 +366,14 @@ font-weight:600;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-max-width:65px;
-text-shadow:0 1px 2px rgba(0,0,0,.7);
+max-width:58px;
 }
 
 .slot-plus-circle{
 width:13px;
 height:13px;
 border-radius:50%;
-background:rgba(255,255,255,.28);
+background:rgba(255,255,255,.25);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -395,42 +385,38 @@ width:7px;
 height:7px;
 }
 
-/* MIKROFON */
-
+/* Ikon mikrofon */
 .mic-container{
 position:absolute;
-bottom:6px;
-right:6px;
+bottom:5px;
+right:5px;
 z-index:8;
-width:19px;
-height:19px;
+width:20px;
+height:20px;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,0,0,.55)!important;
-border:1px solid rgba(255,255,255,.2)!important;
+background:rgba(0,0,0,.62)!important;
+border:1px solid rgba(255,255,255,.14)!important;
 border-radius:50%!important;
-box-shadow:0 2px 5px rgba(0,0,0,.35)!important;
+box-shadow:0 1px 4px rgba(0,0,0,.35)!important;
+backdrop-filter:blur(4px);
 }
 
 .mic-icon-svg{
-width:12px;
-height:12px;
+width:13px;
+height:13px;
 display:block;
 filter:drop-shadow(0 1px 2px rgba(0,0,0,.7));
 }
 
-.mic-icon-svg .mic-body{
-fill:#fff;
-}
-
+.mic-icon-svg .mic-body{fill:#fff}
 .mic-icon-svg .mic-slash-bg{
 stroke:#000;
 stroke-width:4.6;
 stroke-linecap:round;
 display:block;
 }
-
 .mic-icon-svg .mic-slash{
 stroke:#fff;
 stroke-width:2.6;
@@ -438,44 +424,30 @@ stroke-linecap:round;
 display:block;
 filter:drop-shadow(0 1px 2px rgba(0,0,0,.95));
 }
-
 .mic-container.is-unmuted .mic-icon-svg .mic-slash,
 .mic-container.is-unmuted .mic-icon-svg .mic-slash-bg{
 display:none;
 }
-
 .mic-container.is-muted{
-background:rgba(0,0,0,.55)!important;
-border:1px solid rgba(255,255,255,.2)!important;
-box-shadow:0 2px 5px rgba(0,0,0,.35)!important;
+background:rgba(0,0,0,.62)!important;
+border:1px solid rgba(255,255,255,.14)!important;
+box-shadow:0 1px 4px rgba(0,0,0,.35)!important;
 }
 
-/* LAYAR KECIL */
-
+/* Tampilan layar kecil */
 @media(max-width:360px){
 .komal-grid{
 gap:5px;
 }
-
+.slot-box{
+border-radius:8px;
+}
 .slot-circle-img{
-width:52px;
-height:52px;
+width:48px;
+height:48px;
 }
-
 .slot-name-text{
-font-size:9px;
 max-width:48px;
-}
-
-.slot-name-pill{
-padding:2px 5px;
-}
-
-.slot-coin-badge{
-padding:2px 5px 2px 3px;
-}
-
-.coin-count{
 font-size:9px;
 }
 }
@@ -994,7 +966,7 @@ const bg=$(`bg-slot-${slotNum}`);
 const bgOverlay=$(`overlay-slot-${slotNum}`);
 const icon=$(`icon-${slotNum}`);
 const req=$(`req-${slotNum}`);
-const topBadge=$(`topbadge-slot-${slotNum}`);
+const topBadge=$(`topbadge-${slotNum}`);
 
 if(action==='clear_slot'){
 slotBox.classList.remove('has-photo');
@@ -1006,7 +978,7 @@ bg.style.display='none';
 bg.removeAttribute('src');
 
 bgOverlay.style.display='none';
-slotBox.style.background='linear-gradient(145deg,#292d37 0%,#191c24 100%)';
+slotBox.style.background='';
 
 icon.style.display='block';
 req.style.display='inline-block';
@@ -1067,7 +1039,7 @@ slotBox.style.background='#191b22';
 
 img.onerror=()=>{
 slotBox.classList.remove('has-photo');
-slotBox.style.background='linear-gradient(145deg,#292d37 0%,#191c24 100%)';
+slotBox.style.background='';
 };
 
 img.src=profileImg;
@@ -1083,7 +1055,7 @@ bgOverlay.style.display='block';
 function showGiftBadgeTemporarily(slotNum,badgeSrc){
 if(!badgeSrc||!slotNum)return;
 
-const topBadge=$(`topbadge-slot-${slotNum}`);
+const topBadge=$(`topbadge-${slotNum}`);
 if(!topBadge)return;
 
 if(badgeTimers[slotNum])clearTimeout(badgeTimers[slotNum]);
