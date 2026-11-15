@@ -228,7 +228,7 @@
       border-top: 1px solid var(--border-color);
     }
 
-    /* Modal Prank / Info */
+    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -290,7 +290,6 @@
   <!-- Header -->
   <header class="top-bar">
     <div class="brand">
-      <!-- Ikon Perisai Custom SVG -->
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(255,255,255,0.15)"/>
         <line x1="9" y1="9" x2="15" y2="15"/>
@@ -336,14 +335,13 @@
           </p>
         </div>
 
-        <!-- Tabel Detail (Otomatis terisi via JavaScript) -->
         <table class="info-grid">
           <tr>
             <th>Domain / URL</th>
             <td id="domain-name">memuat...</td>
           </tr>
           <tr>
-            <th>Alasan Pemblokiran</th>
+            <th>Kategori Pemblokiran</th>
             <td>Konten Terlarang / Pelanggaran Kebijakan</td>
           </tr>
           <tr>
@@ -358,14 +356,14 @@
 
         <div class="actions">
           <button class="btn btn-primary" onclick="showModal('normalisasi')">Ajukan Normalisasi</button>
-          <button class="btn btn-outline" onclick="showModal('info')">Cek Detail Pemblokiran</button>
+          <button class="btn btn-outline" onclick="showModal('info')">Detail Pemblokiran</button>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    halaman error 404.
+    Sistem Penyaringan Konten Internet &bull; Kode Status: HTTP 403 Forbidden
   </footer>
 
   <!-- Modal Pop-up -->
@@ -378,12 +376,11 @@
   </div>
 
   <script>
-    // Mengisi nama domain dan waktu saat ini secara otomatis
     const domainEl = document.getElementById("domain-name");
     const timeEl = document.getElementById("access-time");
 
     const currentHost = window.location.hostname;
-    domainEl.textContent = currentHost ? currentHost : "situs-contoh.id (Mode Lokal)";
+    domainEl.textContent = currentHost ? currentHost : "akses-dibatasi.id";
 
     const now = new Date();
     timeEl.textContent = now.toLocaleString("id-ID", {
@@ -391,18 +388,17 @@
       timeStyle: "medium"
     }) + " WIB";
 
-    // Fungsi Modal (Bisa diedit sesuai kebutuhan)
     function showModal(type) {
       const modal = document.getElementById("infoModal");
       const title = document.getElementById("modalTitle");
       const message = document.getElementById("modalMessage");
 
       if (type === "normalisasi") {
-        title.textContent = "";
-        message.textContent = "";
+        title.textContent = "Pengajuan Normalisasi";
+        message.textContent = "Untuk mengajukan peninjauan ulang atau normalisasi akses situs ini, silakan hubungi administrator jaringan atau penyedia layanan internet (ISP) Anda.";
       } else {
         title.textContent = "Detail Teknis";
-        message.textContent = "Tidak ada pemblokiran jaringan nyata yang terjadi. Anda dapat mengedit teks HTML ini untuk mengubahnya menjadi halaman 404 atau maintenance.";
+        message.textContent = "Akses ke halaman tujuan dibatasi oleh kebijakan penyaringan DNS jaringan (Kode: ERR_ACCESS_DENIED).";
       }
 
       modal.classList.add("active");
